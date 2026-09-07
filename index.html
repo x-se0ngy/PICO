@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -34,12 +35,47 @@
     <!-- Figma에서 화면을 넘겨주시면 이 안에 하나씩 붙여넣을게요.     -->
     <!-- ===================================================== -->
     <main class="screen" id="screen-home">
-      <div class="placeholder">
-        <p class="eyebrow">PICO</p>
-        <h1>화면 준비 중</h1>
-        <p class="desc">Figma 디자인을 넘겨주시면<br/>이 자리에 실제 화면이 들어갑니다.</p>
-        <div class="frame-tag">393 × 852</div>
+      <div class="home-bg"></div>
+
+      <div class="home-topnav">
+        <img class="home-logo" src="https://www.figma.com/api/mcp/asset/25902ce1-6a8c-4bdf-8b57-023a9bf2045f.png" alt="PICO" />
+        <div class="home-topnav-icons">
+          <img src="https://www.figma.com/api/mcp/asset/af59a639-3b93-48c1-a468-180ecef08384.svg" alt="알림" />
+          <img src="https://www.figma.com/api/mcp/asset/0d8e618a-0359-4bdd-a3fc-cd8e929014c9.svg" alt="공유" />
+        </div>
       </div>
+
+      <section class="mission-card">
+        <div class="mission-card-bg" style="background-image:url('https://www.figma.com/api/mcp/asset/a0d20a19-a59b-4e72-b0f8-c4f84048ed43.png')"></div>
+        <div class="mission-card-body">
+          <div class="mission-tag">
+            <img src="https://www.figma.com/api/mcp/asset/9f2ceb24-31cd-4454-b11c-074b2a193ada.svg" alt="" />
+            <span>오늘의 미션</span>
+          </div>
+          <p class="mission-title">학교 주변의 배추흰나비를 관찰해보세요!</p>
+          <div class="mission-location">
+            <img src="https://www.figma.com/api/mcp/asset/05bae509-dc32-407f-bcf2-a2ff71710edd.svg" alt="" />
+            <span>어울 초등학교 · 반경 300m</span>
+          </div>
+        </div>
+        <button class="mission-cta" style="background-image:url('https://www.figma.com/api/mcp/asset/17ec6fca-fbd2-48d3-b2d1-9061725759bc.png')">
+          탐험 시작하기
+          <img src="https://www.figma.com/api/mcp/asset/c975a991-bbf1-465d-8234-34c63d8d7132.svg" alt="" />
+        </button>
+      </section>
+
+      <section class="field-header">
+        <h2>나만의 들판</h2>
+        <div class="field-hint">
+          <img src="https://www.figma.com/api/mcp/asset/e45ed185-327c-4b99-a847-8a5182bba98d.svg" alt="" />
+          <span>발견할수록, 들판이 더 살아나요.</span>
+          <img class="field-arrow" src="https://www.figma.com/api/mcp/asset/c975a991-bbf1-465d-8234-34c63d8d7132.svg" alt="" />
+        </div>
+      </section>
+
+      <section class="field-area">
+        <!-- 컬렉션/발견 콘텐츠가 이 안에 채워질 예정 -->
+      </section>
     </main>
 
     <nav class="tab-bar">
