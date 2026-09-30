@@ -1,93 +1,156 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-<title>PICO</title>
+<title>PICO · 새싹 탐험가의 들판</title>
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#2A0E0B" />
+<meta name="theme-color" content="#221B17" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="PICO" />
-<link rel="apple-touch-icon" href="icons/icon-192.png" />
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="home-map.css" />
 </head>
 <body>
 
-  <!-- 393x852 device frame. 배포 후에는 이 영역이 폰 화면 전체를 채웁니다. -->
-  <div class="device-frame" id="app-root">
+  <!-- Figma: 1. 디융프 - visual / home (53:5125) · 393x852 -->
+  <div class="mh-phone" id="screen-home-map">
 
-    <div class="status-bar">
-      <span class="time">9:41</span>
-      <span class="status-icons">•••</span>
+    <!-- 드래그·확대 가능한 지도 (Figma: image 3206 [Vectorized]) -->
+    <div class="mh-viewport" id="map-viewport">
+      <div class="mh-world" id="map-world" data-map-width="393" data-map-height="852" data-screen-x="0" data-screen-y="0">
+        <img class="mh-map" src="assets/home-map/map.png" alt="" draggable="false" onerror="this.hidden=true" />
+
+        <!-- 지도 위 오버레이 (좌표는 Figma 화면 기준) -->
+        <div class="mh-overlays" aria-label="관찰 지도">
+      <!-- 관찰 핀 (발견할 수 있는 곳) -->
+      <button class="mh-pin" data-place="riverside-grass" style="left:329.95px; top:255.04px" aria-label="발견할 수 있는 곳: 중랑천 둑길 풀숲"></button>
+      <button class="mh-pin" data-place="flower-bed" style="left:67.98px;  top:517.02px" aria-label="발견할 수 있는 곳: 후문 꽃밭"></button>
+      <button class="mh-pin" data-place="playground-tree" style="left:151.86px; top:560.1px"  aria-label="발견할 수 있는 곳: 놀이터 느티나무"></button>
+      <button class="mh-pin" data-place="alley-garden" style="left:200.88px; top:628.09px" aria-label="발견할 수 있는 곳: 골목 텃밭"></button>
+
+      <!-- 깃발 마커 (탐험한 곳) -->
+      <button class="mh-flag" data-place="forest-pond" style="left:130.04px; top:263px" aria-label="탐험한 곳: 숲속 작은 연못"></button>
+      <button class="mh-flag" data-place="shade-path" style="left:165.08px; top:330.22px" aria-label="탐험한 곳: 그늘 산책길"></button>
+      <button class="mh-flag" data-place="rock-garden" style="left:301.65px; top:445.74px" aria-label="탐험한 곳: 돌 정원"></button>
+      <button class="mh-flag" data-place="flower-bed" style="left:56.35px;  top:520.35px" aria-label="탐험한 곳: 후문 꽃밭"></button>
+
+      <!-- 발견 생물 뱃지 -->
+      <button class="mh-critter" data-place="forest-pond" style="left:138.98px; top:241px" aria-label="숲속 작은 연못에서 발견한 달팽이">🐌</button>
+      <button class="mh-critter" data-place="rock-garden" style="left:308.87px; top:424.94px" aria-label="돌 정원에서 발견한 달팽이">🐌</button>
+
+      <!-- 관찰 중인 친구 수: 지금 map.png 에 이 라벨이 찍혀 있어 숨겨둠.
+           라벨을 숨기고 지도를 다시 내보내면 hidden 을 지워주세요. -->
+      <span class="mh-watching" style="left:76px; top:497.01px" hidden>5명 관찰중</span>
+
+      <!-- 지명 -->
+      <span class="mh-place" style="left:210.9px; top:295.9px">서울 어린이 대공원</span>
+      <span class="mh-place mh-place--river" style="left:336px; top:577px">중랑천</span>
+        </div>
+
+        <!-- 내 서식지: 카메라로 발견하고 그린 피코들이 사는 곳 -->
+        <div class="mh-bugs" id="map-bugs" aria-label="내 피코들"></div>
+      </div>
     </div>
 
-    <!-- ===================================================== -->
-    <!-- 여기부터가 실제 화면 영역입니다.                          -->
-    <!-- Figma에서 화면을 넘겨주시면 이 안에 하나씩 붙여넣을게요.     -->
-    <!-- ===================================================== -->
-    <main class="screen" id="screen-home">
-      <div class="home-bg"></div>
+    <!-- 지도 컨트롤 -->
+    <div class="mh-map-controls">
+      <button class="mh-ctrl" id="map-locate" aria-label="처음 위치로">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <rect x="3.2" y="3.1" width="13.6" height="13.8" stroke="currentColor" stroke-width="2.4" transform="rotate(-2 10 10)"/>
+          <rect x="8.6" y="8.5" width="2.9" height="2.9" fill="currentColor" transform="rotate(8 10 10)"/>
+          <rect x="8.8" y="0" width="2.4" height="3.6" fill="currentColor"/>
+          <rect x="8.8" y="16.4" width="2.4" height="3.6" fill="currentColor"/>
+          <rect x="0" y="8.8" width="3.6" height="2.4" fill="currentColor"/>
+          <rect x="16.4" y="8.8" width="3.6" height="2.4" fill="currentColor"/>
+        </svg>
+      </button>
+      <div class="mh-ctrl-group">
+        <button class="mh-ctrl" id="map-zoom-in" aria-label="확대">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="0.6" y="6.7" width="14.8" height="2.6" fill="currentColor" transform="rotate(-2 8 8)"/>
+            <rect x="6.7" y="0.6" width="2.6" height="14.8" fill="currentColor" transform="rotate(3 8 8)"/>
+          </svg>
+        </button>
+        <button class="mh-ctrl" id="map-zoom-out" aria-label="축소">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="0.6" y="6.7" width="14.8" height="2.6" fill="currentColor" transform="rotate(-2 8 8)"/>
+          </svg>
+        </button>
+      </div>
+    </div>
 
-      <div class="home-topnav">
-        <img class="home-logo" src="https://www.figma.com/api/mcp/asset/25902ce1-6a8c-4bdf-8b57-023a9bf2045f.png" alt="PICO" />
-        <div class="home-topnav-icons">
-          <img src="https://www.figma.com/api/mcp/asset/af59a639-3b93-48c1-a468-180ecef08384.svg" alt="알림" />
-          <img src="https://www.figma.com/api/mcp/asset/0d8e618a-0359-4bdd-a3fc-cd8e929014c9.svg" alt="공유" />
-        </div>
+    <!-- 상단: 상태바 + GNB + 들판 이름 -->
+    <header class="mh-header">
+      <div class="mh-status">
+        <span class="mh-status-time">9:41</span>
+        <span class="mh-status-icons">
+          <img src="assets/home-map/signal.svg"  width="18" height="10" alt="" />
+          <img src="assets/home-map/wifi.svg"    width="16" height="11" alt="" />
+          <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+        </span>
       </div>
 
-      <section class="mission-card">
-        <div class="mission-card-bg" style="background-image:url('https://www.figma.com/api/mcp/asset/a0d20a19-a59b-4e72-b0f8-c4f84048ed43.png')"></div>
-        <div class="mission-card-body">
-          <div class="mission-tag">
-            <img src="https://www.figma.com/api/mcp/asset/9f2ceb24-31cd-4454-b11c-074b2a193ada.svg" alt="" />
-            <span>오늘의 미션</span>
-          </div>
-          <p class="mission-title">학교 주변의 배추흰나비를 관찰해보세요!</p>
-          <div class="mission-location">
-            <img src="https://www.figma.com/api/mcp/asset/05bae509-dc32-407f-bcf2-a2ff71710edd.svg" alt="" />
-            <span>어울 초등학교 · 반경 300m</span>
-          </div>
-        </div>
-        <button class="mission-cta" style="background-image:url('https://www.figma.com/api/mcp/asset/17ec6fca-fbd2-48d3-b2d1-9061725759bc.png')">
-          탐험 시작하기
-          <img src="https://www.figma.com/api/mcp/asset/c975a991-bbf1-465d-8234-34c63d8d7132.svg" alt="" />
-        </button>
-      </section>
+      <nav class="mh-gnb">
+        <button class="mh-icon-btn" aria-label="메뉴"><img src="assets/home-map/menu.svg" width="24" height="21" alt="" /></button>
+        <img class="mh-logo" src="assets/home-map/logo.svg" width="31" height="32" alt="PICO" />
+        <button class="mh-icon-btn" aria-label="프로필"><img src="assets/home-map/profile.svg" width="28" height="24" alt="" /></button>
+      </nav>
 
-      <section class="field-header">
-        <h2>나만의 들판</h2>
-        <div class="field-hint">
-          <img src="https://www.figma.com/api/mcp/asset/e45ed185-327c-4b99-a847-8a5182bba98d.svg" alt="" />
-          <span>발견할수록, 들판이 더 살아나요.</span>
-          <img class="field-arrow" src="https://www.figma.com/api/mcp/asset/c975a991-bbf1-465d-8234-34c63d8d7132.svg" alt="" />
-        </div>
-      </section>
+      <div class="mh-field-title">
+        <span class="mh-field-title-bg"><img src="assets/home-map/banner-paper.png" alt="" onerror="this.parentNode.classList.add('is-missing'); this.hidden=true" /></span>
+        <h1>새싹 탐험가의 들판</h1>
+      </div>
+    </header>
 
-      <section class="field-area">
-        <!-- 컬렉션/발견 콘텐츠가 이 안에 채워질 예정 -->
-      </section>
-    </main>
-
-    <nav class="tab-bar">
-      <button class="tab active" data-tab="home">홈</button>
-      <button class="tab" data-tab="map">맵</button>
-      <button class="tab camera-btn" data-tab="camera" aria-label="카메라"></button>
-      <button class="tab" data-tab="collection">도감</button>
-      <button class="tab" data-tab="badges">뱃지</button>
+    <!-- 하단 탭바 (찢긴 종이) -->
+    <nav class="mh-tabbar">
+      <span class="mh-tabbar-bg"><img src="assets/home-map/bottom-paper.png" alt="" onerror="this.parentNode.classList.add('is-missing'); this.hidden=true" /></span>
+      <div class="mh-tabs">
+        <button class="mh-tab" data-tab="collection" aria-label="도감"><img src="assets/home-map/tab-folder.svg" width="23" height="20" alt="" /></button>
+        <a class="mh-tab mh-tab--camera" href="discover.html" aria-label="카메라로 발견하기"><img src="assets/home-map/tab-camera.svg" width="31" height="24" alt="" /></a>
+        <button class="mh-tab" data-tab="badges" aria-label="뱃지"><img src="assets/home-map/tab-trophy.svg" width="21" height="22" alt="" /></button>
+      </div>
     </nav>
+
+    <!-- 정보 카드: 마커(장소) / 피코(곤충) -->
+    <section class="mh-card" id="info-card" role="dialog" aria-modal="false" aria-labelledby="info-title" hidden>
+      <button class="mh-card-close" id="info-close" aria-label="닫기">
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <rect x="0.5" y="5.7" width="13" height="2.6" fill="currentColor" transform="rotate(45 7 7)"/>
+          <rect x="0.5" y="5.7" width="13" height="2.6" fill="currentColor" transform="rotate(-43 7 7)"/>
+        </svg>
+      </button>
+      <div class="mh-card-head">
+        <div class="mh-card-thumb" id="info-thumb" aria-hidden="true"></div>
+        <div class="mh-card-titles">
+          <p class="mh-card-eyebrow" id="info-eyebrow"></p>
+          <h2 class="mh-card-title" id="info-title"></h2>
+          <p class="mh-card-meta" id="info-meta"></p>
+        </div>
+      </div>
+      <p class="mh-card-text" id="info-text"></p>
+      <ul class="mh-card-chips" id="info-chips"></ul>
+      <div class="mh-card-more" id="info-more" hidden></div>
+      <button class="mh-card-toggle" id="info-toggle" aria-expanded="false" aria-controls="info-more">자세히 보기</button>
+    </section>
 
   </div>
 
-  <script src="app.js"></script>
+  <script src="home-map.js"></script>
+  <script src="home-map-habitat.js"></script>
+  <script src="home-map-data.js"></script>
+  <script src="home-map-info.js"></script>
+  <script>
+    // PWA: 홈 화면에 추가 지원
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
 </body>
 </html>

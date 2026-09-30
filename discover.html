@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>PICO · 발견하기</title>
+<meta name="theme-color" content="#221B17" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="home-map.css" />
+<link rel="stylesheet" href="discover.css" />
+</head>
+<body>
+<!-- Figma: 1. 디융프 - visual
+     카메라(100:9595) → STEP1(100:9641) → STEP2(100:9795) → STEP3(100:9745)
+     → STEP4(100:9695) → STEP5(100:9845) → 관찰 완료(100:9898) -->
+<div class="mh-phone dc-phone" id="discover">
+
+  <!-- ================= 0. 카메라 (FIND) ================= -->
+  <section class="dc-screen dc-camera is-active" data-screen="camera" aria-label="카메라로 발견하기">
+    <!-- 실제 카메라 화면 -->
+    <video class="dc-cam-video" id="cam-video" playsinline muted autoplay aria-label="카메라 화면"></video>
+    <p class="dc-cam-msg" id="cam-msg" role="status" hidden></p>
+    <div class="dc-camera-glow" aria-hidden="true"></div>
+
+    <div class="dc-status dc-status--light" aria-hidden="true">
+      <span class="dc-status-time">9:41</span>
+      <span class="dc-status-icons">
+        <img src="assets/home-map/signal.svg" width="18" height="10" alt="" />
+        <img src="assets/home-map/wifi.svg" width="16" height="11" alt="" />
+        <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+      </span>
+    </div>
+    <div class="dc-topbar">
+      <a class="dc-icon" href="index.html" aria-label="들판으로 돌아가기"><img src="assets/discover/icon-back-light.svg" width="32" height="32" alt="" /></a>
+      <button class="dc-icon" aria-label="더보기"><img src="assets/discover/icon-more-light.svg" width="32" height="32" alt="" /></button>
+    </div>
+
+    <div class="dc-tip">
+      <img class="dc-tip-bg" src="assets/discover/tip-banner.png" width="349" height="81" alt="" />
+      <div class="dc-tip-body">
+        <span class="dc-badge dc-badge--tip">PICO TIP</span>
+        <p class="dc-tip-text" id="tip-text"></p>
+      </div>
+    </div>
+
+    <div class="dc-camera-bar">
+      <img class="dc-dark-paper" src="assets/discover/paper-bottom-dark.png" width="393" height="145" alt="" />
+      <div class="dc-camera-row">
+        <label class="dc-gallery" aria-label="앨범에서 사진 고르기">
+          <img id="gallery-thumb" src="assets/discover/gallery-thumb.png" width="48" height="48" alt="" />
+          <input id="gallery-input" type="file" accept="image/*" hidden />
+        </label>
+        <button class="dc-shutter" id="shutter" aria-label="찰칵! 발견하기"><img src="assets/discover/icon-shutter.svg" width="32" height="32" alt="" /></button>
+        <button class="dc-flip" id="flip-btn" aria-label="앞뒤 카메라 바꾸기"><img src="assets/discover/icon-flip.svg" width="32" height="32" alt="" /></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STEP 1 ~ 4 (그리기) : 템플릿으로 채움 ================= -->
+  <template id="draw-template">
+    <section class="dc-screen dc-draw" data-screen="">
+      <img class="dc-abs dc-paper-bg" src="assets/discover/paper-bg.png" alt="" />
+      <img class="dc-abs dc-photo" alt="" />
+      <!-- 앞 단계에서 그린 그림 (누적) -->
+      <canvas class="dc-canvas dc-prev" width="786" height="1000" aria-hidden="true"></canvas>
+      <canvas class="dc-canvas dc-now" width="786" height="1000" aria-label="그림 그리는 곳"></canvas>
+      <img class="dc-abs dc-paper-top" alt="" />
+
+      <div class="dc-status" aria-hidden="true">
+        <span class="dc-status-time">9:41</span>
+        <span class="dc-status-icons">
+          <img src="assets/home-map/signal.svg" width="18" height="10" alt="" />
+          <img src="assets/home-map/wifi.svg" width="16" height="11" alt="" />
+          <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+        </span>
+      </div>
+      <div class="dc-gnb">
+        <button class="dc-icon dc-back" aria-label="이전 단계"><img src="assets/discover/icon-back.svg" width="22" height="22" alt="" /></button>
+      </div>
+
+      <header class="dc-step-head">
+        <div class="dc-step-row">
+          <span class="dc-badge dc-step-badge"></span>
+          <p class="dc-step-title"></p>
+        </div>
+        <h1 class="dc-step-q"></h1>
+        <p class="dc-step-hint"></p>
+      </header>
+
+      <div class="dc-crayons" role="radiogroup" aria-label="크레파스 고르기"></div>
+
+      <div class="dc-bottom">
+        <img class="dc-bottom-bg" alt="" />
+        <button class="dc-next" disabled>
+          <span>다 그렸어요!</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17.4523 9.96929L17.4358 9.98573L17.4523 10.0022L12.5745 16.1355L10.7616 14.3223L14.0756 11.0081L2.44664 11.9268V8.94057L14.0531 8.94057L10.7616 5.64886L12.5745 3.83596L17.4523 9.96929Z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </section>
+  </template>
+
+  <!-- ================= STEP 5 (오늘의 발견) ================= -->
+  <section class="dc-screen dc-record" data-screen="step5" aria-label="STEP 5 오늘의 발견">
+    <img class="dc-abs dc-paper-bg" src="assets/discover/paper-bg.png" alt="" />
+    <img class="dc-abs dc-photo5 is-capture" id="photo5" style="left:0; top:236px; width:393px; height:525px" alt="" />
+    <!-- STEP 1~4 에서 그린 그림 전체 -->
+    <canvas class="dc-canvas dc-prev dc-all" id="all-drawing" width="786" height="1000" aria-hidden="true"></canvas>
+    <img class="dc-abs dc-green" src="assets/discover/paper-green.png" style="left:0; top:510px; width:393px; height:342px" alt="" />
+    <img class="dc-abs" src="assets/discover/paper-top.png" style="left:0; top:0; width:393px; height:261px" alt="" />
+
+    <div class="dc-status" aria-hidden="true">
+      <span class="dc-status-time">9:41</span>
+      <span class="dc-status-icons">
+        <img src="assets/home-map/signal.svg" width="18" height="10" alt="" />
+        <img src="assets/home-map/wifi.svg" width="16" height="11" alt="" />
+        <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+      </span>
+    </div>
+    <div class="dc-gnb">
+      <button class="dc-icon dc-back" aria-label="이전 단계"><img src="assets/discover/icon-back.svg" width="22" height="22" alt="" /></button>
+    </div>
+
+    <header class="dc-step-head">
+      <div class="dc-step-row">
+        <span class="dc-badge dc-step-badge">STEP 5</span>
+        <p class="dc-step-title">오늘의 발견</p>
+      </div>
+      <h1 class="dc-step-q" id="record-q"></h1>
+      <p class="dc-step-hint">PICO가 정리한 오늘의 기록을 살펴봐요.</p>
+    </header>
+
+    <div class="dc-note" id="record-lines"></div>
+    <label class="dc-myline">
+      <span class="dc-visually-hidden">나만의 한 줄</span>
+      <input id="my-line" type="text" maxlength="40" placeholder="나만의 한 줄을 더 적어 볼까요?" autocomplete="off" />
+    </label>
+
+    <div class="dc-bottom">
+      <img class="dc-bottom-bg" src="assets/discover/paper-bottom-dark.png" alt="" />
+      <button class="dc-next is-ready" id="record-next">
+        <span>다 적었어요!</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17.4523 9.96929L17.4358 9.98573L17.4523 10.0022L12.5745 16.1355L10.7616 14.3223L14.0756 11.0081L2.44664 11.9268V8.94057L14.0531 8.94057L10.7616 5.64886L12.5745 3.83596L17.4523 9.96929Z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= 관찰 완료 ================= -->
+  <section class="dc-screen dc-done" data-screen="done" aria-label="관찰 완료">
+    <img class="dc-abs" src="assets/discover/paper-done.png" style="left:0; top:0; width:393px; height:852px" alt="" />
+
+    <div class="dc-status" aria-hidden="true">
+      <span class="dc-status-time">9:41</span>
+      <span class="dc-status-icons">
+        <img src="assets/home-map/signal.svg" width="18" height="10" alt="" />
+        <img src="assets/home-map/wifi.svg" width="16" height="11" alt="" />
+        <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+      </span>
+    </div>
+    <div class="dc-topbar">
+      <button class="dc-icon dc-back" aria-label="이전 단계"><img src="assets/discover/icon-back-dark.svg" width="32" height="32" alt="" /></button>
+      <div class="dc-topbar-right">
+        <button class="dc-icon" id="share-btn" aria-label="공유하기"><img src="assets/discover/icon-share.svg" width="32" height="32" alt="" /></button>
+        <button class="dc-icon" aria-label="더보기"><img src="assets/discover/icon-more-dark.svg" width="32" height="32" alt="" /></button>
+      </div>
+    </div>
+
+    <h1 class="dc-done-title">관찰 완료 !</h1>
+
+    <article class="dc-card" aria-labelledby="card-name">
+      <img class="dc-abs" src="assets/discover/card-dark.png" style="left:0; top:0; width:265px; height:377px" alt="" />
+      <div class="dc-card-head">
+        <p class="dc-card-cat" id="card-cat"></p>
+        <p class="dc-card-name" id="card-name"></p>
+      </div>
+      <p class="dc-card-lv"><small>LV</small><span id="card-lv"></span></p>
+      <img class="dc-abs dc-card-sticker" id="card-sticker" alt="" />
+      <img class="dc-abs dc-card-logo" src="assets/discover/card-logo.svg" width="21" height="23" alt="" />
+      <p class="dc-card-text" id="card-text"></p>
+    </article>
+
+    <p class="dc-done-caption" id="done-caption"></p>
+
+    <div class="dc-bottom">
+      <img class="dc-bottom-bg" src="assets/discover/paper-bottom-dark.png" alt="" />
+      <button class="dc-next is-ready" id="release-btn">
+        <span>들판에 놓아주기</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17.4523 9.96929L17.4358 9.98573L17.4523 10.0022L12.5745 16.1355L10.7616 14.3223L14.0756 11.0081L2.44664 11.9268V8.94057L14.0531 8.94057L10.7616 5.64886L12.5745 3.83596L17.4523 9.96929Z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </section>
+
+</div>
+
+<script src="discover.js"></script>
+</body>
+</html>
