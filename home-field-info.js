@@ -1,12 +1,11 @@
 /* =========================================================
-   PICO · 홈 지도 정보 카드
-   - 마커(핀·깃발·달팽이 뱃지)를 누르면 → 발견할 수 있는 곳 정보
-   - 돌아다니는 피코를 누르면 → 곤충 정보 + 자세히 보기
+   PICO · 홈 정보 카드
+   - 레이더 신호를 누르면 → 방향 · 거리 · 관찰 힌트 (종 이름은 비밀) + 찾으러 가기
+   - 돌아다니는 피코를 누르면 → 내가 그린 친구 정보
    ========================================================= */
 (() => {
-  const data = window.PicoData || { places: {}, insects: {} };
-  const map = window.PicoMap;
-  const phone = document.getElementById('screen-home-map');
+  const data = window.PicoData || { insects: {} };
+  const phone = document.getElementById('screen-home');
   const card = document.getElementById('info-card');
   if (!card || !phone) return;
 
@@ -19,10 +18,11 @@
     chips: document.getElementById('info-chips'),
     more: document.getElementById('info-more'),
     toggle: document.getElementById('info-toggle'),
+    go: document.getElementById('info-go'),
     close: document.getElementById('info-close'),
   };
 
-  let current = null;       // { type, release?, marker? }
+  let current = null;       // { type, release? }
 
   const LENS = {
     LOOK: 'LOOK · 생김새를 자세히 봤어요',
@@ -34,10 +34,10 @@
   // ---------- 공통 ----------
   function reset() {
     if (current?.release) current.release();
-    if (current?.marker) current.marker.classList.remove('is-selected');
     el.thumb.replaceChildren();
     el.chips.replaceChildren();
     el.more.replaceChildren();
+    el.go.hidden = true;
     setExpanded(false);
   }
 
@@ -51,7 +51,6 @@
   function show() {
     card.hidden = false;
     phone.classList.add('has-card');
-    // 다음 프레임에 등장 애니메이션
     requestAnimationFrame(() => card.classList.add('is-open'));
   }
 
@@ -85,57 +84,59 @@
     el.more.appendChild(wrap);
   }
 
+  // 받침 있으면 '을', 없으면 '를'
+  function eul(word) {
+    const c = word.charCodeAt(word.length - 1);
+    if (c < 0xac00 || c > 0xd7a3) return '을(를)';
+    return (c - 0xac00) % 28 ? '을' : '를';
+  }
+
   function formatDate(iso) {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return '';
     return `${d.getMonth() + 1}월 ${d.getDate()}일 발견`;
   }
 
-  // ---------- 장소 카드 ----------
-  function openPlace(id, marker) {
-    const place = data.places[id];
-    if (!place) return;
+  // ---------- 생태 신호 카드 ----------
+  function openSignal(s) {
     reset();
-    current = { type: 'place', marker };
-    marker?.classList.add('is-selected');
+    current = { type: 'signal', release: s.release };
+    const found = s.found || [];
 
-    const visited = place.kind === 'visited';
-    const icon = document.createElement('img');
-    icon.src = visited ? 'assets/home-map/flag.svg' : 'assets/home-map/pin.svg';
-    icon.alt = '';
-    el.thumb.className = 'mh-card-thumb mh-card-thumb--place';
-    el.thumb.appendChild(icon);
-
-    el.eyebrow.textContent = visited ? '탐험한 곳' : '발견할 수 있는 곳';
-    el.title.textContent = place.name;
-    el.meta.textContent = [place.distance, place.habitat].filter(Boolean).join(' · ');
-    el.text.textContent = place.summary || '';
-
-    const found = new Set(place.found || []);
-    (place.insects || []).forEach((name) => chip(name, found.has(name) ? 'found' : ''));
-
-    row('만나기 좋은 때', place.bestTime);
-    row('탐험 팁', place.tip);
-    if (visited) {
-      row('내가 발견한 친구', found.size ? [...found].join(', ') : '아직 없어요. 다시 가볼까요?');
+    el.thumb.className = 'mh-card-thumb mh-card-thumb--signal';
+    if (found.length) {
+      const img = document.createElement('img');
+      img.src = found[found.length - 1].src;
+      img.alt = '';
+      el.thumb.appendChild(img);
+    } else {
+      el.thumb.textContent = '?';
     }
 
-    show();
-    focusMarker(marker);
-  }
+    el.eyebrow.textContent = found.length ? '탐험한 신호' : (s.isNew ? '새로운 신호' : '생태 신호');
+    el.title.textContent = s.label;
+    el.meta.textContent = `${s.distance}m · ${s.direction} · 걸어서 약 ${s.walk}분`;
 
-  // 카드에 가려지지 않게 마커를 화면 위쪽으로
-  function focusMarker(marker) {
-    if (!map || !marker) return;
-    const vp = map.viewport.getBoundingClientRect();
-    const r = marker.getBoundingClientRect();
-    const sx = r.left + r.width / 2 - vp.left;
-    const sy = r.top + r.height / 2 - vp.top;
-    const cardTop = vp.height - card.offsetHeight - 128;
-    if (sy < cardTop - 40) return;            // 이미 잘 보이면 그대로
-    const w = map.screenToWorld(sx, sy);
-    const targetY = vp.height / 2 + (sy - cardTop + 80);
-    map.focus(w.x, w.y + (targetY - vp.height / 2) / map.scale);
+    if (found.length) {
+      const names = [...new Set(found.map((f) => f.name).filter(Boolean))];
+      el.text.textContent = names.length
+        ? `여기서 ${names.join(', ')}${eul(names[names.length - 1])} 만났어요! 또 다른 친구가 있을지도 몰라요.`
+        : '여기서 만난 친구가 들판에 살고 있어요.';
+      chip('탐험 완료', 'found');
+    } else {
+      el.text.textContent = s.hint;
+    }
+    (s.clues || []).forEach((c) => chip(c));
+
+    row('어떤 친구일까?', s.guess);
+    row('관찰 팁', s.tip);
+
+    el.go.hidden = false;
+    el.go.textContent = found.length ? '다시 찾으러 가기' : '찾으러 가기';
+    el.go.onclick = () => {
+      document.dispatchEvent(new CustomEvent('pico:go', { detail: { id: s.id } }));
+    };
+    show();
   }
 
   // ---------- 피코(곤충) 카드 ----------
@@ -151,13 +152,20 @@
 
     const name = bug.name || '이름 없는 피코';
     const info = data.insects[bug.name];
-    el.eyebrow.textContent = '내 피코';
+    el.eyebrow.textContent = bug.sample ? '예시 피코' : '내 피코';
     el.title.textContent = name;
-    el.meta.textContent = [bug.place, formatDate(bug.date)].filter(Boolean).join(' · ');
-    el.text.textContent = bug.note ? `“${bug.note}”` : '내가 발견하고 그린 피코예요. 톡 건드리면 멈춰서 인사해요.';
+
+    if (bug.sample) {
+      el.meta.textContent = '아이가 그린 그림 예시';
+      el.text.textContent = '관찰하고 직접 그린 친구는 이렇게 들판에서 살아 움직여요. 레이더로 주변 신호를 찾아볼까요?';
+    } else {
+      const signal = (window.PicoData?.signals || []).find((s) => s.id === bug.signal);
+      el.meta.textContent = [signal?.label || bug.place, formatDate(bug.date)].filter(Boolean).join(' · ');
+      el.text.textContent = bug.note ? `“${bug.note}”` : '내가 발견하고 그린 피코예요. 톡 건드리면 멈춰서 인사해요.';
+    }
 
     if (bug.lens) chip(bug.lens, 'lens');
-    if (info) chip('도감에 있어요', 'found');
+    if (info && !bug.sample) chip('도감에 있어요', 'found');
 
     row('어떤 친구일까?', info ? info.facts : '아직 도감 정보가 없어요. 이름을 붙여주면 알려줄게요!');
     if (bug.lens) row('관찰 렌즈', LENS[bug.lens] || bug.lens);
@@ -166,19 +174,22 @@
   }
 
   // ---------- 이벤트 ----------
-  document.querySelectorAll('[data-place]').forEach((marker) => {
-    marker.addEventListener('click', () => openPlace(marker.dataset.place, marker));
-  });
-
+  document.addEventListener('pico:signal', (e) => openSignal(e.detail));
   document.addEventListener('pico:select', (e) => openBug(e.detail));
+  document.addEventListener('pico:radar-close', hide);
+  document.addEventListener('pico:arriving', hide);
 
   el.toggle.addEventListener('click', () => setExpanded(el.more.hidden));
   el.close.addEventListener('click', hide);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hide(); });
 
-  // 지도 빈 곳을 탭하면 닫기 (드래그 후 손 뗀 건 home-map.js 가 클릭을 막아줌)
-  map?.viewport.addEventListener('click', (e) => {
-    if (e.target.closest('[data-place], .mh-bug')) return;
+  // 빈 들판 / 레이더 빈 곳을 탭하면 카드 닫기
+  document.getElementById('field')?.addEventListener('click', (e) => {
+    if (e.target.closest('.mh-bug')) return;
     hide();
   });
+  document.getElementById('radar')?.addEventListener('click', (e) => {
+    if (e.target.closest('.pr-signal')) return;
+    if (card.classList.contains('is-open')) { e.stopImmediatePropagation(); hide(); }
+  }, true);
 })();

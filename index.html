@@ -12,77 +12,35 @@
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="home-map.css" />
+<link rel="stylesheet" href="home-field.css" />
 </head>
 <body>
 
-  <!-- Figma: 1. 디융프 - visual / home (53:5125) · 393x852 -->
-  <div class="mh-phone" id="screen-home-map">
+  <!-- PICO 홈 = Living Paper Field + Nearby Radar
+       · 종이로 만든 들판(디오라마) 위를 내가 관찰하고 그린 피코들이 돌아다녀요.
+       · PICO Radar 를 누르면 주변의 '생태 신호'가 방향·거리·힌트로만 나타나요. (종 이름은 비밀) -->
+  <div class="mh-phone" id="screen-home">
 
-    <!-- 드래그·확대 가능한 지도 (Figma: image 3206 [Vectorized]) -->
-    <div class="mh-viewport" id="map-viewport">
-      <div class="mh-world" id="map-world" data-map-width="393" data-map-height="852" data-screen-x="0" data-screen-y="0">
-        <img class="mh-map" src="assets/home-map/map.png" alt="" draggable="false" onerror="this.hidden=true" />
+    <!-- ① 종이 들판 -->
+    <div class="pf-field" id="field">
+      <svg class="pf-scene pf-scene--back" id="field-back" viewBox="0 0 393 852" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
 
-        <!-- 지도 위 오버레이 (좌표는 Figma 화면 기준) -->
-        <div class="mh-overlays" aria-label="관찰 지도">
-      <!-- 관찰 핀 (발견할 수 있는 곳) -->
-      <button class="mh-pin" data-place="riverside-grass" style="left:329.95px; top:255.04px" aria-label="발견할 수 있는 곳: 중랑천 둑길 풀숲"></button>
-      <button class="mh-pin" data-place="flower-bed" style="left:67.98px;  top:517.02px" aria-label="발견할 수 있는 곳: 후문 꽃밭"></button>
-      <button class="mh-pin" data-place="playground-tree" style="left:151.86px; top:560.1px"  aria-label="발견할 수 있는 곳: 놀이터 느티나무"></button>
-      <button class="mh-pin" data-place="alley-garden" style="left:200.88px; top:628.09px" aria-label="발견할 수 있는 곳: 골목 텃밭"></button>
+      <!-- 내 피코들 (관찰 → 그리기 → 저장한 그림) -->
+      <div class="mh-bugs" id="field-bugs" aria-label="내 들판의 피코들"></div>
 
-      <!-- 깃발 마커 (탐험한 곳) -->
-      <button class="mh-flag" data-place="forest-pond" style="left:130.04px; top:263px" aria-label="탐험한 곳: 숲속 작은 연못"></button>
-      <button class="mh-flag" data-place="shade-path" style="left:165.08px; top:330.22px" aria-label="탐험한 곳: 그늘 산책길"></button>
-      <button class="mh-flag" data-place="rock-garden" style="left:301.65px; top:445.74px" aria-label="탐험한 곳: 돌 정원"></button>
-      <button class="mh-flag" data-place="flower-bed" style="left:56.35px;  top:520.35px" aria-label="탐험한 곳: 후문 꽃밭"></button>
-
-      <!-- 발견 생물 뱃지 -->
-      <button class="mh-critter" data-place="forest-pond" style="left:138.98px; top:241px" aria-label="숲속 작은 연못에서 발견한 달팽이">🐌</button>
-      <button class="mh-critter" data-place="rock-garden" style="left:308.87px; top:424.94px" aria-label="돌 정원에서 발견한 달팽이">🐌</button>
-
-      <!-- 관찰 중인 친구 수: 지금 map.png 에 이 라벨이 찍혀 있어 숨겨둠.
-           라벨을 숨기고 지도를 다시 내보내면 hidden 을 지워주세요. -->
-      <span class="mh-watching" style="left:76px; top:497.01px" hidden>5명 관찰중</span>
-
-      <!-- 지명 -->
-      <span class="mh-place" style="left:210.9px; top:295.9px">서울 어린이 대공원</span>
-      <span class="mh-place mh-place--river" style="left:336px; top:577px">중랑천</span>
-        </div>
-
-        <!-- 내 서식지: 카메라로 발견하고 그린 피코들이 사는 곳 -->
-        <div class="mh-bugs" id="map-bugs" aria-label="내 피코들"></div>
-      </div>
+      <svg class="pf-scene pf-scene--front" id="field-front" viewBox="0 0 393 852" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
     </div>
 
-    <!-- 지도 컨트롤 -->
-    <div class="mh-map-controls">
-      <button class="mh-ctrl" id="map-locate" aria-label="처음 위치로">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <rect x="3.2" y="3.1" width="13.6" height="13.8" stroke="currentColor" stroke-width="2.4" transform="rotate(-2 10 10)"/>
-          <rect x="8.6" y="8.5" width="2.9" height="2.9" fill="currentColor" transform="rotate(8 10 10)"/>
-          <rect x="8.8" y="0" width="2.4" height="3.6" fill="currentColor"/>
-          <rect x="8.8" y="16.4" width="2.4" height="3.6" fill="currentColor"/>
-          <rect x="0" y="8.8" width="3.6" height="2.4" fill="currentColor"/>
-          <rect x="16.4" y="8.8" width="3.6" height="2.4" fill="currentColor"/>
-        </svg>
-      </button>
-      <div class="mh-ctrl-group">
-        <button class="mh-ctrl" id="map-zoom-in" aria-label="확대">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <rect x="0.6" y="6.7" width="14.8" height="2.6" fill="currentColor" transform="rotate(-2 8 8)"/>
-            <rect x="6.7" y="0.6" width="2.6" height="14.8" fill="currentColor" transform="rotate(3 8 8)"/>
-          </svg>
-        </button>
-        <button class="mh-ctrl" id="map-zoom-out" aria-label="축소">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <rect x="0.6" y="6.7" width="14.8" height="2.6" fill="currentColor" transform="rotate(-2 8 8)"/>
-          </svg>
-        </button>
-      </div>
+    <!-- ② PICO Radar: 주변 생태 신호 -->
+    <div class="pr-radar" id="radar" hidden>
+      <div class="pr-wash" aria-hidden="true"></div>
+      <svg class="pr-rings" id="radar-rings" viewBox="0 0 393 852" aria-hidden="true"></svg>
+      <div class="pr-me" id="radar-me" aria-hidden="true"><span>나</span></div>
+      <ul class="pr-signals" id="radar-signals" aria-label="주변 생태 신호"></ul>
+      <p class="pr-caption" id="radar-caption" role="status"></p>
     </div>
 
     <!-- 상단: 상태바 + GNB + 들판 이름 -->
@@ -106,7 +64,32 @@
         <span class="mh-field-title-bg"><img src="assets/home-map/banner-paper.png" alt="" onerror="this.parentNode.classList.add('is-missing'); this.hidden=true" /></span>
         <h1>새싹 탐험가의 들판</h1>
       </div>
+      <p class="pf-count" id="field-count" aria-live="polite"></p>
     </header>
+
+    <!-- 레이더 알림: 근처에 새로운 신호 -->
+    <button class="pr-toast" id="radar-toast" hidden>
+      <span class="pr-toast-dot" aria-hidden="true"></span>
+      <span>근처에서 새로운 신호가 발견됐어요.</span>
+    </button>
+
+    <!-- 새 친구 도착 배너 -->
+    <div class="pf-arrive" id="arrive-banner" role="status" hidden>
+      <p class="pf-arrive-title">새로운 친구가 들판에 도착했어요!</p>
+      <p class="pf-arrive-sub" id="arrive-sub"></p>
+    </div>
+
+    <!-- PICO Radar 버튼 -->
+    <button class="pr-btn" id="radar-btn" aria-pressed="false" aria-controls="radar">
+      <span class="pr-btn-pulse" aria-hidden="true"></span>
+      <svg class="pr-btn-icon" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <circle cx="13" cy="13" r="2.6" fill="currentColor"/>
+        <path d="M8.2 17.8a6.8 6.8 0 0 1 0-9.6M17.8 8.2a6.8 6.8 0 0 1 0 9.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+        <path d="M4.6 21.4a11.9 11.9 0 0 1 0-16.8M21.4 4.6a11.9 11.9 0 0 1 0 16.8" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" opacity=".55"/>
+      </svg>
+      <span class="pr-btn-label">RADAR</span>
+      <span class="pr-btn-badge" id="radar-badge" aria-hidden="true"></span>
+    </button>
 
     <!-- 하단 탭바 (찢긴 종이) -->
     <nav class="mh-tabbar">
@@ -118,7 +101,7 @@
       </div>
     </nav>
 
-    <!-- 정보 카드: 마커(장소) / 피코(곤충) -->
+    <!-- 정보 카드: 생태 신호 / 내 피코 -->
     <section class="mh-card" id="info-card" role="dialog" aria-modal="false" aria-labelledby="info-title" hidden>
       <button class="mh-card-close" id="info-close" aria-label="닫기">
         <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -137,15 +120,19 @@
       <p class="mh-card-text" id="info-text"></p>
       <ul class="mh-card-chips" id="info-chips"></ul>
       <div class="mh-card-more" id="info-more" hidden></div>
-      <button class="mh-card-toggle" id="info-toggle" aria-expanded="false" aria-controls="info-more">자세히 보기</button>
+      <div class="mh-card-actions">
+        <button class="mh-card-toggle" id="info-toggle" aria-expanded="false" aria-controls="info-more">자세히 보기</button>
+        <a class="mh-card-go" id="info-go" href="discover.html" hidden>찾으러 가기</a>
+      </div>
     </section>
 
   </div>
 
-  <script src="home-map.js"></script>
-  <script src="home-map-habitat.js"></script>
-  <script src="home-map-data.js"></script>
-  <script src="home-map-info.js"></script>
+  <script src="home-field-data.js"></script>
+  <script src="home-field.js"></script>
+  <script src="home-field-habitat.js"></script>
+  <script src="home-radar.js"></script>
+  <script src="home-field-info.js"></script>
   <script>
     // PWA: 홈 화면에 추가 지원
     if ('serviceWorker' in navigator) {

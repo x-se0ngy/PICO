@@ -1,0 +1,578 @@
+/* =========================================================
+   PICO · 홈 = Living Paper Field + Nearby Radar
+   ========================================================= */
+
+:root {
+  --pf-paper: #F6F1E4;
+  --pf-cream: #FBF8F0;
+  --pf-gold: #C9A15A;
+  --pf-shadow: 0 2px 0 rgba(34, 27, 23, 0.18), 0 6px 14px rgba(34, 27, 23, 0.14);
+}
+
+.mh-phone { background: #F3EEDF; }
+
+/* 층 순서 */
+.pf-field     { z-index: 0; }
+.pr-radar     { z-index: 1; }
+.mh-header    { z-index: 3; }
+.mh-tabbar    { z-index: 3; }
+.pr-btn,
+.pr-toast,
+.pf-arrive    { z-index: 4; }
+.mh-card      { z-index: 6; }
+
+/* =========================================================
+   ① 종이 들판
+   ========================================================= */
+.pf-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pf-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* 풀·꽃이 바람에 살랑 */
+.pf-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pf-sway 3.6s ease-in-out infinite alternate;
+}
+.pf-sway--soft { animation-duration: 4.8s; }
+@keyframes pf-sway {
+  from { transform: rotate(-3deg); }
+  to   { transform: rotate(3deg); }
+}
+
+/* 구름이 천천히 흘러감 */
+.pf-cloud { animation: pf-cloud 36s ease-in-out infinite alternate; }
+@keyframes pf-cloud {
+  from { transform: translateX(-14px); }
+  to   { transform: translateX(22px); }
+}
+
+.pf-sun {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: pf-sun 60s linear infinite;
+}
+@keyframes pf-sun { to { transform: rotate(360deg); } }
+
+/* 들판 이름 아래 한 줄 */
+.pf-count {
+  margin-top: -2px;
+  padding: 2px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 16px;
+  color: rgba(34, 27, 23, 0.62);
+  background: rgba(251, 248, 240, 0.7);
+}
+.pf-count:empty { display: none; }
+
+/* =========================================================
+   내 피코 = 종이로 오린 그림 (흰 테두리 + 그림자)
+   ========================================================= */
+.mh-bugs { will-change: transform; }
+
+.mh-bug {
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  filter:
+    drop-shadow(1.6px 0 0 #FBF8F0)
+    drop-shadow(-1.6px 0 0 #FBF8F0)
+    drop-shadow(0 1.6px 0 #FBF8F0)
+    drop-shadow(0 -1.6px 0 #FBF8F0)
+    drop-shadow(0 3px 1.5px rgba(34, 27, 23, 0.3));
+}
+
+/* 걸어 다니는 느낌: 좌우로 뒤뚱 */
+.mh-bug img { animation: pf-waddle 0.9s ease-in-out infinite alternate; }
+@keyframes pf-waddle {
+  from { rotate: -4deg; }
+  to   { rotate: 4deg; }
+}
+.mh-bug.is-flier img { animation: pf-flap 0.35s ease-in-out infinite alternate; }
+@keyframes pf-flap {
+  from { scale: 1 1; }
+  to   { scale: 0.82 1; }
+}
+
+.mh-bug.is-selected img { animation: pf-hi 0.55s ease; }
+@keyframes pf-hi {
+  30% { translate: 0 -10px; scale: 1.1; }
+}
+
+/* 들판에 착지한 순간 */
+.mh-bug.is-landed img { animation: pf-land 0.7s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes pf-land {
+  0%   { scale: 1.25 0.72; }
+  45%  { scale: 0.9 1.12; translate: 0 -8px; }
+  100% { scale: 1 1; translate: 0 0; }
+}
+
+.mh-dust {
+  width: 5px;
+  height: 4px;
+  margin: -2px 0 0 -2.5px;
+  border-radius: 1px;
+  box-shadow: 0 1px 0 rgba(34, 27, 23, 0.2);
+  z-index: 999;
+}
+
+/* 날아 들어오는 그림 */
+.pf-flyer {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  z-index: 998;
+  pointer-events: none;
+  filter:
+    drop-shadow(1.6px 0 0 #FBF8F0)
+    drop-shadow(-1.6px 0 0 #FBF8F0)
+    drop-shadow(0 1.6px 0 #FBF8F0)
+    drop-shadow(0 -1.6px 0 #FBF8F0)
+    drop-shadow(0 8px 6px rgba(34, 27, 23, 0.28));
+}
+.pf-flyer img { width: 100%; height: 100%; display: block; }
+
+.pf-land-shadow {
+  position: absolute;
+  width: 44px;
+  height: 10px;
+  margin-left: -22px;
+  border-radius: 50%;
+  background: rgba(34, 27, 23, 0.9);
+  filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* =========================================================
+   새 친구 도착 배너
+   ========================================================= */
+.pf-arrive {
+  position: absolute;
+  left: 50%;
+  top: 214px;
+  width: 300px;
+  margin-left: -150px;
+  padding: 12px 16px 11px;
+  text-align: center;
+  background: var(--mh-ink);
+  color: var(--pf-paper);
+  border: 0.3px solid #000;
+  box-shadow: 3px 3px 0 rgba(34, 27, 23, 0.25);
+  transform: rotate(-1.5deg);
+  pointer-events: none;
+}
+/* 종이 리본 끝 */
+.pf-arrive::before,
+.pf-arrive::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  width: 16px;
+  height: 100%;
+  background: #3A302A;
+  z-index: -1;
+}
+.pf-arrive::before { left: -10px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 45% 50%); }
+.pf-arrive::after  { right: -10px; clip-path: polygon(0 0, 100% 0, 55% 50%, 100% 100%, 0 100%); }
+
+.pf-arrive-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+  color: var(--mh-sprout);
+}
+.pf-arrive-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(246, 241, 228, 0.75);
+}
+
+.pf-arrive.is-in  { animation: pf-arrive-in 0.55s cubic-bezier(.2, 1.4, .4, 1) both; }
+.pf-arrive.is-out { animation: pf-arrive-out 0.35s ease-in both; }
+@keyframes pf-arrive-in {
+  from { transform: translateY(-24px) rotate(-8deg) scale(0.8); opacity: 0; }
+  to   { transform: rotate(-1.5deg); opacity: 1; }
+}
+@keyframes pf-arrive-out {
+  to { transform: translateY(-16px) rotate(2deg) scale(0.9); opacity: 0; }
+}
+
+/* =========================================================
+   ② PICO Radar 버튼
+   ========================================================= */
+.pr-btn {
+  position: absolute;
+  right: 16px;
+  bottom: 138px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--mh-leaf);
+  background: var(--mh-ink);
+  border: 0.3px solid #000;
+  box-shadow: 3px 3px 0 rgba(34, 27, 23, 0.25);
+  transform: rotate(2deg);
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+}
+.pr-btn:active { transform: rotate(2deg) scale(0.93); }
+.pr-btn:focus-visible { outline: 2px solid var(--mh-leaf); outline-offset: 3px; }
+
+.pr-btn-label {
+  font-family: var(--mh-font-ui);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 11px;
+}
+
+.pr-btn-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mh-font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mh-ink);
+  background: var(--pf-gold);
+  border: 0.3px solid #000;
+  transform: rotate(-6deg);
+}
+.pr-btn.has-count .pr-btn-badge { display: flex; }
+
+/* 화면 가장자리의 작은 파동 (신호가 있을 때) */
+.pr-btn-pulse {
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--mh-leaf);
+  opacity: 0;
+  pointer-events: none;
+}
+.pr-btn.has-signal .pr-btn-pulse { animation: pr-pulse 2.2s ease-out infinite; }
+@keyframes pr-pulse {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+.pr-btn.has-signal .pr-btn-icon { animation: pr-icon 2.2s ease-in-out infinite; }
+@keyframes pr-icon {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.pr-btn.is-on {
+  color: var(--mh-ink);
+  background: var(--mh-leaf);
+}
+.pr-btn.is-on .pr-btn-pulse,
+.pr-btn.is-on .pr-btn-icon { animation: none; }
+
+/* =========================================================
+   레이더 알림 토스트
+   ========================================================= */
+.pr-toast {
+  position: absolute;
+  left: 50%;
+  top: 218px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px 9px 12px;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--mh-ink);
+  background: var(--pf-cream);
+  border: 0.3px solid #000;
+  box-shadow: 3px 3px 0 rgba(34, 27, 23, 0.2);
+  transform: translate(-50%, -12px) rotate(-1deg);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(.2, 1.3, .4, 1), opacity 0.25s ease;
+}
+.pr-toast.is-in { transform: translate(-50%, 0) rotate(-1deg); opacity: 1; }
+.pr-toast:focus-visible { outline: 2px solid var(--mh-ink); outline-offset: 2px; }
+
+.pr-toast-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6BAA66;
+}
+.pr-toast-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid #6BAA66;
+  animation: pr-pulse 1.6s ease-out infinite;
+}
+
+/* =========================================================
+   레이더 화면 (종이 들판 위에 펼쳐짐)
+   ========================================================= */
+.pr-radar {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.pr-radar.is-open { opacity: 1; }
+
+.pr-wash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 55%, rgba(34, 27, 23, 0.18), rgba(34, 27, 23, 0.46) 70%);
+}
+
+.pr-rings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pr-ring {
+  fill: none;
+  stroke: var(--pf-cream);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 5;
+  opacity: 0.8;
+}
+.pr-radar.is-open .pr-ring {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: pr-ring-in 0.6s cubic-bezier(.2, 1.2, .4, 1) both;
+}
+@keyframes pr-ring-in { from { transform: scale(0.2); opacity: 0; } }
+
+.pr-ring-label,
+.pr-north {
+  font-family: var(--mh-font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  fill: var(--pf-cream);
+  opacity: 0.85;
+}
+.pr-north { font-size: 11px; fill: var(--mh-sprout); opacity: 1; }
+
+.pr-wave {
+  fill: none;
+  stroke: var(--mh-sprout);
+  stroke-width: 2.5;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: pr-wave 2.7s cubic-bezier(.2, .6, .4, 1) infinite;
+  opacity: 0;
+}
+@keyframes pr-wave {
+  0%   { transform: scale(0.05); opacity: 0.9; stroke-width: 5; }
+  100% { transform: scale(1.02); opacity: 0; stroke-width: 1; }
+}
+
+/* 내 위치 */
+.pr-me {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mh-sprout);
+  border: 0.3px solid #000;
+  box-shadow: 2px 2px 0 rgba(34, 27, 23, 0.3);
+  transform: rotate(-4deg);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mh-ink);
+}
+
+/* 생태 신호 */
+.pr-signals { list-style: none; }
+
+.pr-signal {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+.pr-radar.is-open .pr-signal { animation: pr-signal-in 0.5s cubic-bezier(.2, 1.6, .4, 1) both; }
+@keyframes pr-signal-in {
+  from { opacity: 0; transform: scale(0.3); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.pr-signal-btn {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  display: block;
+}
+.pr-signal-btn:focus-visible { outline: 2px solid var(--mh-sprout); outline-offset: 2px; }
+
+.pr-signal-mark {
+  position: absolute;
+  inset: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mh-font-ui);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--mh-ink);
+  background: var(--pf-cream);
+  border: 0.3px solid #000;
+  border-radius: 50%;
+  box-shadow: 2px 2px 0 rgba(34, 27, 23, 0.3);
+  transition: transform 0.15s ease;
+}
+.pr-signal-mark::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--pf-cream);
+  opacity: 0;
+  animation: pr-pulse 2.4s ease-out infinite;
+  animation-delay: inherit;
+}
+.pr-signal.is-new .pr-signal-mark { background: var(--pf-gold); }
+.pr-signal.is-new .pr-signal-mark::after { border-color: var(--pf-gold); }
+
+.pr-signal.is-explored .pr-signal-mark {
+  background: var(--mh-sprout);
+  border-radius: 0;
+  transform: rotate(-5deg);
+}
+.pr-signal.is-explored .pr-signal-mark::after { display: none; }
+.pr-signal-mark img { width: 30px; height: 30px; object-fit: contain; }
+
+.pr-signal.is-selected .pr-signal-mark { transform: scale(1.18); }
+.pr-signal.is-explored.is-selected .pr-signal-mark { transform: rotate(-5deg) scale(1.18); }
+
+.pr-signal-label {
+  position: absolute;
+  left: 50%;
+  top: 44px;
+  transform: translateX(-50%);
+  padding: 3px 7px;
+  white-space: nowrap;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 15px;
+  color: var(--mh-sprout);
+  background: var(--mh-ink);
+  border: 0.3px solid #000;
+}
+.pr-signal-label.is-above { top: auto; bottom: 44px; }
+.pr-signal-label.is-left  { left: auto; right: -4px; transform: none; }
+.pr-signal-label.is-right { left: -4px; transform: none; }
+
+.pr-caption {
+  position: absolute;
+  left: 50%;
+  top: 226px;
+  transform: translateX(-50%) rotate(-1deg);
+  padding: 7px 12px;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--mh-ink);
+  background: var(--pf-cream);
+  border: 0.3px solid #000;
+  box-shadow: 3px 3px 0 rgba(34, 27, 23, 0.2);
+}
+.pr-caption:empty { display: none; }
+
+/* 레이더가 켜지면 들판 이름 아래 문구는 잠시 숨김 */
+.radar-on .pf-count { opacity: 0; }
+.pf-count { transition: opacity 0.2s ease; }
+
+/* =========================================================
+   정보 카드 추가 요소
+   ========================================================= */
+.has-card .pr-btn { opacity: 0; pointer-events: none; }
+.pr-btn { transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, opacity 0.2s ease; }
+
+.mh-card-thumb--signal {
+  font-family: var(--mh-font-ui);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--mh-ink);
+  border-radius: 50%;
+  transform: none;
+}
+.mh-card-thumb--signal img { width: 44px; height: 44px; object-fit: contain; }
+.mh-card-thumb--signal:has(img) { border-radius: 0; transform: rotate(-2deg); background: var(--mh-sprout); }
+
+.mh-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.mh-card-actions .mh-card-toggle { margin-top: 0; flex: 1; }
+
+.mh-card-go {
+  flex: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mh-ink);
+  background: var(--mh-leaf);
+  border: 0.3px solid #000;
+  text-decoration: none;
+  transition: transform 0.12s ease;
+}
+.mh-card-go::after { content: '→'; font-family: var(--mh-font-ui); }
+.mh-card-go:active { transform: scale(0.98); }
+.mh-card-go[hidden] { display: none; }
+.mh-card-go:focus-visible { outline: 2px solid var(--mh-leaf); outline-offset: 2px; }
+
+/* 이동하기 버튼이 있을 땐 '자세히 보기'는 보조 버튼으로 */
+.mh-card-actions:has(.mh-card-go:not([hidden])) .mh-card-toggle {
+  color: var(--mh-leaf);
+  background: transparent;
+  border-color: rgba(157, 222, 151, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-sway, .pf-cloud, .pf-sun, .mh-bug img, .pr-wave,
+  .pr-btn-pulse, .pr-signal-mark::after, .pr-toast-dot::after { animation: none !important; }
+}
