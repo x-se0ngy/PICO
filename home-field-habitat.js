@@ -222,10 +222,16 @@
     } catch (e) { /* 저장 불가 환경이면 그냥 넘어감 */ }
   }
 
+  // 피코는 아이가 그린 그림(PNG)만. 예전에 사진(JPEG)이 대신 저장된 건 정리해요.
+  const isPhoto = (src) => typeof src === 'string' && src.startsWith('data:image/jpeg');
+
   function load() {
     try {
       const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      if (Array.isArray(data)) data.slice(-MAX_BUGS).forEach((g) => g && g.src && addBug(g));
+      if (!Array.isArray(data)) return;
+      const clean = data.filter((g) => g && g.src && !isPhoto(g.src));
+      if (clean.length !== data.length) localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+      clean.slice(-MAX_BUGS).forEach((g) => addBug(g));
     } catch (e) { /* 무시 */ }
   }
 
@@ -364,7 +370,7 @@
     for (const item of list) {
       const data = typeof item === 'string' ? { src: item } : item || {};
       const { src, ...info } = data;
-      if (!src) continue;
+      if (!src || isPhoto(src)) continue;
       if (target && !info.signal) info.signal = target;
       await arrive(src, info);
       await wait(700);
