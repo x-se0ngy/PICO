@@ -20,18 +20,7 @@
       '생각보다 작았어요. 그 날개로 꽃 사이를 계속 바쁘게 몸에 난',
       '촘촘한 털에 꽃가루를 묻혀 다른 꽃으로 옮기고 있었어요.',
     ],
-    flier: true,
-    // 아이가 그리지 않고 넘어갔을 때 들판에 보낼 기본 피코 (들판 예시 그림과 같은 크레파스 그림체)
-    doodle: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><g fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M62 62C44 30 16 38 26 58c6 12 24 12 38 8ZM98 62c18-32 46-24 36-4-6 12-24 12-38 8Z" fill="#F4EDDD" stroke="#8C7B70" stroke-width="4.5"/>
-      <path d="M58 116 48 132M80 120v16M102 116l10 16" stroke="#221B17" stroke-width="5"/>
-      <ellipse cx="80" cy="92" rx="38" ry="32" fill="#F6D34C" stroke="#D2A91D" stroke-width="5"/>
-      <path d="M50 84q30 10 60 0M48 104q32 10 64 0" stroke="#221B17" stroke-width="8"/>
-      <circle cx="80" cy="58" r="16" fill="#221B17" stroke="#221B17" stroke-width="4"/>
-      <circle cx="74" cy="56" r="3" fill="#F4EDDD"/><circle cx="87" cy="56" r="3" fill="#F4EDDD"/>
-      <path d="M72 44 64 28M88 44l8-16" stroke="#221B17" stroke-width="4"/></g></svg>`,
   };
-  const doodleURI = () => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(FIND.doodle)}`;
 
   // ---------------------------------------------------------
   // STEP 1~4 (그리기). lens 는 홈 카드의 관찰 렌즈와 연결돼요.
@@ -532,13 +521,25 @@
   document.getElementById('record-next').addEventListener('click', () => go('done'));
 
   // =========================================================
-  // 관찰 완료
+  // 관찰 완료 / 관찰 실패 (STEP 1~4 에서 아무것도 안 그렸을 때)
   // =========================================================
+  let failed = false;
   function prepareDone() {
+    failed = isBlank(combinedDrawing());
+    doneScreen.classList.toggle('is-failed', failed);
+    document.getElementById('done-title').textContent = failed ? '관찰 실패…' : '관찰 완료 !';
+    document.getElementById('release-label').textContent = failed ? '다시 그리러 가기' : '들판에 놓아주기';
     document.getElementById('card-cat').textContent = `[ ${FIND.category} ]`;
     document.getElementById('card-name').textContent = FIND.name;
     document.getElementById('card-lv').textContent = FIND.level;
     const sticker = document.getElementById('card-sticker');
+    if (failed) {
+      sticker.removeAttribute('src');
+      document.getElementById('card-text').textContent = '그림이 없어서 피코가 태어나지 못했어요.';
+      document.getElementById('done-caption').textContent = `${FIND.name}을 그려야 들판에 데려갈 수 있어요.`;
+      replayCard();
+      return;
+    }
     sticker.alt = `내가 찍고 그린 ${FIND.name}`;
     sticker.classList.add('is-capture');
     doneScreen.querySelector('.dc-card').classList.add('has-capture');
@@ -546,7 +547,11 @@
     const mine = myLine.value.trim();
     document.getElementById('card-text').textContent = FIND.record.join(' ') + (mine ? ` ${mine}` : '');
     document.getElementById('done-caption').textContent = `오늘 만난 ${FIND.name}이 나의 들판에 추가됐어요!`;
-    // 카드 등장 애니메이션 다시 재생
+    replayCard();
+  }
+
+  // 카드 등장 애니메이션 다시 재생
+  function replayCard() {
     const card = doneScreen.querySelector('.dc-card');
     card.classList.remove('is-flying');
     card.style.animation = 'none';
@@ -582,9 +587,9 @@
   }
 
   document.getElementById('release-btn').addEventListener('click', () => {
-    // 그린 그림이 있으면 그 그림, 없으면 기본 크레파스 피코 (사진은 들판에 보내지 않아요)
-    const drawn = makePico();
-    const src = drawn || doodleURI();
+    // 관찰 실패: 들판에는 아무것도 보내지 않고 STEP 1 로 다시 그리러 가기
+    if (failed) { go('step1'); return; }
+    const src = makePico();
     const mine = myLine.value.trim();
     try {
       const pending = JSON.parse(localStorage.getItem('pico.habitat.pending') || '[]');
@@ -594,7 +599,6 @@
         place: FIND.place,
         note: mine || FIND.record.join(' '),
         lens: 'LOOK',
-        ...(drawn ? {} : { flier: FIND.flier }),
       });
       localStorage.setItem('pico.habitat.pending', JSON.stringify(pending));
     } catch (e) { /* 저장 불가 환경이어도 홈으로는 이동 */ }

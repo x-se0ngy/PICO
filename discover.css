@@ -657,3 +657,35 @@
 @media (prefers-reduced-motion: reduce) {
   .dc-scan-line, .dc-scan-dot, .dc-analyze-steps li.is-now { animation: none; }
 }
+
+/* =========================================================
+   관찰 실패 (그림 없이 끝냈을 때)
+   ========================================================= */
+.dc-card-empty { display: none; }
+.dc-done.is-failed .dc-card-sticker { display: none; }
+.dc-done.is-failed .dc-card-empty {
+  position: absolute;
+  left: 39px; top: 113px;
+  width: 171px; height: 171px;
+  display: flex; align-items: center; justify-content: center;
+  border: 3px dashed rgba(171, 236, 170, 0.45);
+  border-radius: 14px;
+}
+.dc-card-empty span {
+  font-family: 'Inter', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: rgba(171, 236, 170, 0.45);
+}
+.dc-done.is-failed .dc-card {
+  filter: grayscale(0.6) brightness(0.9);
+  animation: dc-card-fail 0.7s ease both;
+}
+@keyframes dc-card-fail {
+  0%   { transform: translateY(24px) scale(0.92); opacity: 0; }
+  55%  { transform: rotate(0); opacity: 1; }
+  70%  { transform: rotate(-3deg); }
+  85%  { transform: rotate(2deg); }
+  100% { transform: rotate(-1.5deg); }
+}
+.dc-done.is-failed .dc-next.is-ready { color: #F4EDDD; }

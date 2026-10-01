@@ -218,7 +218,7 @@
       </div>
     </div>
 
-    <h1 class="dc-done-title">관찰 완료 !</h1>
+    <h1 class="dc-done-title" id="done-title">관찰 완료 !</h1>
 
     <article class="dc-card" aria-labelledby="card-name">
       <img class="dc-abs" src="assets/discover/card-dark.png" style="left:0; top:0; width:265px; height:377px" alt="" />
@@ -228,6 +228,8 @@
       </div>
       <p class="dc-card-lv"><small>LV</small><span id="card-lv"></span></p>
       <img class="dc-abs dc-card-sticker" id="card-sticker" alt="" />
+      <!-- 관찰 실패: 그림이 없어 피코가 태어나지 못한 빈 자리 -->
+      <div class="dc-card-empty" aria-hidden="true"><span>?</span></div>
       <img class="dc-abs dc-card-logo" src="assets/discover/card-logo.svg" width="21" height="23" alt="" />
       <p class="dc-card-text" id="card-text"></p>
     </article>
@@ -237,7 +239,7 @@
     <div class="dc-bottom">
       <img class="dc-bottom-bg" src="assets/discover/paper-bottom-dark.png" alt="" />
       <button class="dc-next is-ready" id="release-btn">
-        <span>들판에 놓아주기</span>
+        <span id="release-label">들판에 놓아주기</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17.4523 9.96929L17.4358 9.98573L17.4523 10.0022L12.5745 16.1355L10.7616 14.3223L14.0756 11.0081L2.44664 11.9268V8.94057L14.0531 8.94057L10.7616 5.64886L12.5745 3.83596L17.4523 9.96929Z" fill="currentColor"/></svg>
       </button>
     </div>
