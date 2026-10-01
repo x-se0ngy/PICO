@@ -58,6 +58,58 @@
     </div>
   </section>
 
+  <!-- ================= 0-1. 분석 중 (사진 찍은 직후) ================= -->
+  <section class="dc-screen dc-analyze" data-screen="analyze" aria-label="사진 살펴보는 중">
+    <img class="dc-abs dc-paper-bg" src="assets/discover/paper-bg.png" alt="" />
+    <img class="dc-abs dc-photo is-capture" id="photo-analyze" alt="" />
+    <!-- 사진 위 스캔 효과 -->
+    <div class="dc-scan" aria-hidden="true">
+      <span class="dc-scan-line"></span>
+      <span class="dc-scan-corner dc-scan-corner--tl"></span>
+      <span class="dc-scan-corner dc-scan-corner--tr"></span>
+      <span class="dc-scan-corner dc-scan-corner--bl"></span>
+      <span class="dc-scan-corner dc-scan-corner--br"></span>
+      <span class="dc-scan-dot" style="left:28%; top:34%"></span>
+      <span class="dc-scan-dot" style="left:62%; top:46%; animation-delay:.5s"></span>
+      <span class="dc-scan-dot" style="left:44%; top:64%; animation-delay:1s"></span>
+      <span class="dc-scan-dot" style="left:72%; top:26%; animation-delay:1.4s"></span>
+    </div>
+    <img class="dc-abs dc-paper-top" src="assets/discover/paper-top.png" alt="" />
+
+    <div class="dc-status" aria-hidden="true">
+      <span class="dc-status-time">9:41</span>
+      <span class="dc-status-icons">
+        <img src="assets/home-map/signal.svg" width="18" height="10" alt="" />
+        <img src="assets/home-map/wifi.svg" width="16" height="11" alt="" />
+        <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+      </span>
+    </div>
+    <div class="dc-gnb">
+      <button class="dc-icon" id="analyze-cancel" aria-label="다시 찍기"><img src="assets/discover/icon-back.svg" width="22" height="22" alt="" /></button>
+    </div>
+
+    <header class="dc-step-head">
+      <div class="dc-step-row">
+        <span class="dc-badge">PICO</span>
+        <p class="dc-step-title">무엇을 만났을까?</p>
+      </div>
+      <h1 class="dc-step-q" id="analyze-q">PICO가 사진을 살펴보고 있어요</h1>
+      <p class="dc-step-hint" id="analyze-hint" role="status">잠깐만 기다려 주세요.</p>
+    </header>
+
+    <div class="dc-bottom">
+      <img class="dc-bottom-bg" src="assets/discover/paper-bottom-dark.png" alt="" />
+      <div class="dc-analyze-bar">
+        <ol class="dc-analyze-steps" aria-hidden="true">
+          <li>생김새</li>
+          <li>무늬·색</li>
+          <li>이름 찾기</li>
+        </ol>
+        <p class="dc-analyze-label" id="analyze-label">생김새를 살펴보는 중…</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ================= STEP 1 ~ 4 (그리기) : 템플릿으로 채움 ================= -->
   <template id="draw-template">
     <section class="dc-screen dc-draw" data-screen="">
@@ -93,7 +145,7 @@
 
       <div class="dc-bottom">
         <img class="dc-bottom-bg" alt="" />
-        <button class="dc-next" disabled>
+        <button class="dc-next is-ready">
           <span>다 그렸어요!</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17.4523 9.96929L17.4358 9.98573L17.4523 10.0022L12.5745 16.1355L10.7616 14.3223L14.0756 11.0081L2.44664 11.9268V8.94057L14.0531 8.94057L10.7616 5.64886L12.5745 3.83596L17.4523 9.96929Z" fill="currentColor"/></svg>
         </button>

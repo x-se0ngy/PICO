@@ -71,7 +71,7 @@
 
   // 같은 배경(사진·종이)을 쓰는 STEP 끼리는 화면을 통째로 바꾸지 않고
   // 글자와 그림만 부드럽게 바뀌게 → 깜빡임 없이 자연스럽게 이어짐
-  const PAPER_STEPS = new Set([...STEPS.map((st) => st.id), 'step5']);
+  const PAPER_STEPS = new Set(['analyze', ...STEPS.map((st) => st.id), 'step5']);
 
   function go(id) {
     const from = root.querySelector(`[data-screen="${current}"]`);
@@ -185,6 +185,7 @@
     captured = dataUrl;
     root.querySelectorAll('.dc-draw .dc-photo').forEach((img) => { img.src = dataUrl; });
     document.getElementById('photo5').src = dataUrl;
+    document.getElementById('photo-analyze').src = dataUrl;
     document.getElementById('gallery-thumb').src = dataUrl;
   }
 
@@ -202,8 +203,65 @@
     if (!dataUrl) return;
     usePhoto(dataUrl);
     stopCamera();
-    go('step1');
+    startAnalyze();
   }
+
+  // =========================================================
+  // 0-1. 분석 중 (찍은 사진을 PICO가 살펴보는 화면)
+  //  - 지금은 연출만 (약 4.5초 뒤 FIND 결과로 STEP 1 이동)
+  //  - 나중에 실제 인식 API를 붙이면 마지막 단계에서 결과를 받아 FIND 를 바꾸면 돼요.
+  // =========================================================
+  const analyzeScreen = root.querySelector('[data-screen="analyze"]');
+  const analyzeQ = document.getElementById('analyze-q');
+  const analyzeHint = document.getElementById('analyze-hint');
+  const analyzeLabel = document.getElementById('analyze-label');
+  const analyzeSteps = analyzeScreen.querySelectorAll('.dc-analyze-steps li');
+  const PHASES = [
+    '생김새를 살펴보는 중…',
+    '무늬와 색을 비교하는 중…',
+    '도감에서 이름을 찾는 중…',
+  ];
+  let analyzeTimers = [];
+
+  function clearAnalyze() {
+    analyzeTimers.forEach(clearTimeout);
+    analyzeTimers = [];
+  }
+
+  function setPhase(i) {
+    analyzeLabel.textContent = PHASES[i];
+    analyzeSteps.forEach((li, k) => {
+      li.classList.toggle('is-done', k < i);
+      li.classList.toggle('is-now', k === i);
+    });
+  }
+
+  function startAnalyze() {
+    clearAnalyze();
+    analyzeScreen.classList.remove('is-found');
+    analyzeQ.textContent = 'PICO가 사진을 살펴보고 있어요';
+    analyzeHint.textContent = '잠깐만 기다려 주세요.';
+    setPhase(0);
+    go('analyze');
+
+    const later = (ms, fn) => analyzeTimers.push(setTimeout(fn, ms));
+    later(1200, () => setPhase(1));
+    later(2400, () => setPhase(2));
+    later(3600, () => {
+      analyzeSteps.forEach((li) => { li.classList.remove('is-now'); li.classList.add('is-done'); });
+      analyzeScreen.classList.add('is-found');
+      analyzeQ.textContent = `찾았어요! ‘${FIND.name}’ 같아요`;
+      analyzeHint.textContent = `[ ${FIND.category} ] 이제 관찰한 걸 그려볼까요?`;
+      analyzeLabel.textContent = '찾았어요!';
+    });
+    later(5200, () => go('step1'));
+  }
+
+  // 분석 중 뒤로가기 → 다시 찍기
+  document.getElementById('analyze-cancel').addEventListener('click', () => {
+    clearAnalyze();
+    go('camera');
+  });
 
   const galleryInput = document.getElementById('gallery-input');
   document.getElementById('shutter').addEventListener('click', async () => {
@@ -314,7 +372,6 @@
     const scale = () => canvas.width / canvas.getBoundingClientRect().width;
     let drawing = false;
     let last = null;
-    let hasInk = false;
 
     const pos = (e) => {
       const r = canvas.getBoundingClientRect();
@@ -362,7 +419,6 @@
       last = pos(e);
       stroke(last, { x: last.x + 0.1, y: last.y });
       bubble.classList.add('is-hidden');
-      if (tool.color) setInk(true);
     });
     canvas.addEventListener('pointermove', (e) => {
       if (!drawing) return;
@@ -370,22 +426,12 @@
       stroke(last, p);
       last = p;
     });
-    const end = () => {
-      if (!drawing) return;
-      drawing = false;
-      if (!tool.color) setInk(!isBlank(canvas));
-    };
+    const end = () => { drawing = false; };
     canvas.addEventListener('pointerup', end);
     canvas.addEventListener('pointercancel', end);
 
-    function setInk(v) {
-      hasInk = v;
-      next.disabled = !v;
-      next.classList.toggle('is-ready', v);
-    }
-
+    // 그리지 않아도 다음 단계로 넘어갈 수 있어요
     next.addEventListener('click', () => {
-      if (!hasInk) return;
       go(ORDER[ORDER.indexOf(step.id) + 1]);
     });
   }

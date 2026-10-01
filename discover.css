@@ -538,3 +538,122 @@
 .dc-prev { pointer-events: none; cursor: default; }
 .dc-now { z-index: 1; }
 .dc-all { z-index: 0; }
+
+/* =========================================================
+   0-1. 분석 중 (사진 찍은 직후)
+   ========================================================= */
+.dc-analyze .dc-photo { top: 236px; width: 393px; height: 525px; }
+.dc-analyze .dc-paper-top { height: 261px; z-index: 1; }
+.dc-analyze .dc-bottom { top: 707px; height: 145px; }
+.dc-analyze .dc-bottom-bg { height: 145px; }
+
+/* 사진이 살짝 흐렸다가 찾으면 또렷해짐 */
+.dc-analyze .dc-photo { filter: saturate(0.75) brightness(0.92); transition: filter 0.6s ease; }
+.dc-analyze.is-found .dc-photo { filter: none; }
+
+/* 스캔 영역 = 종이 사이로 보이는 사진 부분 */
+.dc-scan {
+  position: absolute;
+  left: 24px; top: 268px;
+  width: 345px; height: 420px;
+  pointer-events: none;
+}
+.dc-scan-line {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 70px;
+  background: linear-gradient(180deg, rgba(188, 232, 196, 0) 0%, rgba(188, 232, 196, 0.45) 85%, rgba(171, 236, 170, 0.95) 100%);
+  border-bottom: 2px solid #ABECAA;
+  animation: dc-scan 1.8s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+}
+@keyframes dc-scan {
+  from { transform: translateY(-40px); }
+  to   { transform: translateY(390px); }
+}
+.dc-analyze.is-found .dc-scan-line { animation: none; opacity: 0; transition: opacity 0.3s ease; }
+
+.dc-scan-corner {
+  position: absolute;
+  width: 28px; height: 28px;
+  border: 3px solid #F4EDDD;
+  transition: transform 0.45s cubic-bezier(.2, 1.4, .4, 1), border-color 0.3s ease;
+}
+.dc-scan-corner--tl { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 8px; }
+.dc-scan-corner--tr { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 8px; }
+.dc-scan-corner--bl { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 8px; }
+.dc-scan-corner--br { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 8px; }
+.dc-analyze.is-found .dc-scan-corner { border-color: #ABECAA; }
+.dc-analyze.is-found .dc-scan-corner--tl { transform: translate(40px, 50px); }
+.dc-analyze.is-found .dc-scan-corner--tr { transform: translate(-40px, 50px); }
+.dc-analyze.is-found .dc-scan-corner--bl { transform: translate(40px, -50px); }
+.dc-analyze.is-found .dc-scan-corner--br { transform: translate(-40px, -50px); }
+
+/* 작은 신호(pico) 점들 */
+.dc-scan-dot {
+  position: absolute;
+  width: 10px; height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #ABECAA;
+  box-shadow: 0 0 0 0 rgba(171, 236, 170, 0.7);
+  animation: dc-ping 1.8s ease-out infinite;
+}
+@keyframes dc-ping {
+  0%   { transform: scale(0.4); opacity: 0; box-shadow: 0 0 0 0 rgba(171, 236, 170, 0.7); }
+  20%  { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(1);   opacity: 0; box-shadow: 0 0 0 18px rgba(171, 236, 170, 0); }
+}
+.dc-analyze.is-found .dc-scan-dot { animation: none; opacity: 0; }
+
+/* 찾았을 때 제목 살짝 튀어오르기 */
+.dc-analyze.is-found .dc-step-q,
+.dc-analyze.is-found .dc-step-hint { animation: dc-text-in 0.45s ease both; }
+
+/* 아래 진행 표시 */
+.dc-analyze-bar {
+  position: absolute;
+  left: 0; top: 56px;
+  width: 393px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.dc-analyze-steps {
+  display: flex;
+  gap: 6px;
+  margin: 0; padding: 0;
+  list-style: none;
+}
+.dc-analyze-steps li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(244, 237, 221, 0.25);
+  color: #8C7B70;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+.dc-analyze-steps li.is-now {
+  color: #F4EDDD;
+  border-color: #F4EDDD;
+  animation: dc-blink 1s ease-in-out infinite;
+}
+.dc-analyze-steps li.is-done {
+  color: #221B17;
+  background: #ABECAA;
+  border-color: #ABECAA;
+}
+@keyframes dc-blink { 50% { opacity: 0.55; } }
+.dc-analyze-label {
+  color: #F4EDDD;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.dc-analyze.is-found .dc-analyze-label { color: #ABECAA; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dc-scan-line, .dc-scan-dot, .dc-analyze-steps li.is-now { animation: none; }
+}
