@@ -108,7 +108,7 @@
         img.alt = '';
         mark.appendChild(img);
       } else {
-        mark.innerHTML = '<span class="pi pi-presentation" style="--pi-size:22px" aria-hidden="true"></span>';
+        mark.innerHTML = '<span class="pi pi-presentation" style="--pi-size:32px" aria-hidden="true"></span>';
       }
       const label = document.createElement('span');
       label.className = 'pr-signal-label';
