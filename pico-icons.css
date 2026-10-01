@@ -1,0 +1,55 @@
+/* =========================================================
+   PICO · 아이콘 시스템 (Figma: Iconography / Core, 32 × 32)
+   원본 SVG(assets/icons)는 그대로 두고 mask 로 색만 입혀요.
+   사용: <span class="pi pi-arrow-left" aria-hidden="true"></span>
+   색 = 부모의 color (currentColor), 크기 = --pi-size (기본 32px)
+   ========================================================= */
+.pi {
+  display: inline-block;
+  flex: none;
+  width: var(--pi-size, 32px);
+  height: var(--pi-size, 32px);
+  background-color: currentColor;
+  -webkit-mask: var(--pi-src) center / contain no-repeat;
+          mask: var(--pi-src) center / contain no-repeat;
+  vertical-align: middle;
+}
+.pi-arrow-down { --pi-src: url('assets/icons/arrow-down.svg'); }
+.pi-arrow-left { --pi-src: url('assets/icons/arrow-left.svg'); }
+.pi-arrow-right { --pi-src: url('assets/icons/arrow-right.svg'); }
+.pi-arrow-up { --pi-src: url('assets/icons/arrow-up.svg'); }
+.pi-bell { --pi-src: url('assets/icons/bell.svg'); }
+.pi-bookmark { --pi-src: url('assets/icons/bookmark.svg'); }
+.pi-calendar-check { --pi-src: url('assets/icons/calendar-check.svg'); }
+.pi-calendar { --pi-src: url('assets/icons/calendar.svg'); }
+.pi-close { --pi-src: url('assets/icons/close.svg'); }
+.pi-delete { --pi-src: url('assets/icons/delete.svg'); }
+.pi-download { --pi-src: url('assets/icons/download.svg'); }
+.pi-flag { --pi-src: url('assets/icons/flag.svg'); }
+.pi-heart { --pi-src: url('assets/icons/heart.svg'); }
+.pi-home-favorite { --pi-src: url('assets/icons/home-favorite.svg'); }
+.pi-home { --pi-src: url('assets/icons/home.svg'); }
+.pi-image { --pi-src: url('assets/icons/image.svg'); }
+.pi-list { --pi-src: url('assets/icons/list.svg'); }
+.pi-location { --pi-src: url('assets/icons/location.svg'); }
+.pi-map { --pi-src: url('assets/icons/map.svg'); }
+.pi-presentation { --pi-src: url('assets/icons/presentation.svg'); }
+.pi-radar { --pi-src: url('assets/icons/radar.svg'); }
+.pi-refresh { --pi-src: url('assets/icons/refresh.svg'); }
+.pi-search { --pi-src: url('assets/icons/search.svg'); }
+.pi-send { --pi-src: url('assets/icons/send.svg'); }
+.pi-shopping-bag { --pi-src: url('assets/icons/shopping-bag.svg'); }
+.pi-sliders { --pi-src: url('assets/icons/sliders.svg'); }
+.pi-tag { --pi-src: url('assets/icons/tag.svg'); }
+.pi-user { --pi-src: url('assets/icons/user.svg'); }
+.pi-video { --pi-src: url('assets/icons/video.svg'); }
+
+/* ---------- 화면별 아이콘 색 ---------- */
+.mh-icon-btn,
+.pg-gnb a,
+.dc-gnb .dc-icon,
+.dc-done .dc-topbar .dc-icon { color: var(--mh-ink, #221B17); }
+.dc-camera .dc-topbar .dc-icon { color: #F1E9DD; }   /* 카메라 위 */
+.mh-tab { color: var(--mh-leaf, #9DDE97); }          /* 어두운 종이 탭바 */
+.dc-next .pi { transition: transform 0.2s ease; }
+.dc-next.is-ready:active .pi { transform: translateX(4px); }

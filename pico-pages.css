@@ -64,7 +64,7 @@
   border-radius: 50%;
   background: #ABECAA;
 }
-.pg-tabbar .mh-tab:not(.is-current):not(.mh-tab--camera) img { opacity: 0.55; }
+.pg-tabbar .mh-tab:not(.is-current):not(.mh-tab--camera) .pi { opacity: 0.55; }
 
 /* 스크롤 영역 (헤더 아래 ~ 탭바 위) */
 .pg-scroll {
@@ -327,3 +327,17 @@
 .rk-me .rk-rank { color: #221B17; }
 .rk-me .rk-tag { color: #2F4F2C; }
 .rk-me .rk-ava { background: #F4EDDD; }
+
+/* 찜하기 (Figma Bookmark: Default / Saved) */
+.bk-save {
+  position: absolute; top: 22px; right: 18px;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  color: #1D1717;
+  transition: transform 0.15s ease;
+}
+.bk-save:active { transform: scale(0.88); }
+.bk-save-on { display: none; }
+.bk-save[aria-pressed="true"] .bk-save-off { display: none; }
+.bk-save[aria-pressed="true"] .bk-save-on { display: block; animation: bk-pop 0.35s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes bk-pop { from { transform: scale(0.5); } }

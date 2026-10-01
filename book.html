@@ -10,6 +10,7 @@
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="home-map.css" />
+<link rel="stylesheet" href="pico-icons.css" />
 <link rel="stylesheet" href="pico-pages.css" />
 </head>
 <body>
@@ -25,7 +26,7 @@
     </span>
   </div>
   <div class="pg-gnb">
-    <a href="index.html" aria-label="들판으로 돌아가기"><img src="assets/discover/icon-back.svg" width="22" height="22" alt="" /></a>
+    <a href="index.html" aria-label="들판으로 돌아가기"><span class="pi pi-arrow-left" style="--pi-size:26px" aria-hidden="true"></span></a>
   </div>
 
   <header class="pg-head">
@@ -44,9 +45,9 @@
   <nav class="pg-tabbar">
     <img class="pg-tabbar-bg" src="assets/discover/paper-bottom-dark.png" alt="" />
     <div class="mh-tabs">
-      <a class="mh-tab is-current" href="book.html" aria-label="도감" aria-current="page"><img src="assets/home-map/tab-folder.svg" width="23" height="20" alt="" /></a>
-      <a class="mh-tab mh-tab--camera" href="discover.html" aria-label="카메라로 발견하기"><img src="assets/home-map/tab-camera.svg" width="31" height="24" alt="" /></a>
-      <a class="mh-tab" href="ranking.html" aria-label="랭킹"><img src="assets/home-map/tab-trophy.svg" width="21" height="22" alt="" /></a>
+      <a class="mh-tab is-current" href="book.html" aria-label="도감" aria-current="page"><span class="pi pi-tag" aria-hidden="true"></span></a>
+      <a class="mh-tab mh-tab--camera" href="discover.html" aria-label="카메라로 발견하기"><span class="pi pi-home-favorite" aria-hidden="true"></span></a>
+      <a class="mh-tab" href="ranking.html" aria-label="랭킹"><span class="pi pi-heart" aria-hidden="true"></span></a>
     </div>
   </nav>
 
@@ -54,6 +55,10 @@
   <div class="bk-dim" id="bk-dim"></div>
   <section class="bk-sheet" id="bk-sheet" role="dialog" aria-modal="true" aria-labelledby="bk-sheet-name">
     <div class="bk-grab"></div>
+    <button class="bk-save" id="bk-save" aria-pressed="false" aria-label="찜하기">
+      <span class="pi pi-bookmark bk-save-off" aria-hidden="true"></span>
+      <img class="bk-save-on" src="assets/icons/bookmark-saved.svg" width="32" height="32" alt="" />
+    </button>
     <div class="bk-sheet-top">
       <div class="bk-sheet-pic" id="bk-sheet-pic"></div>
       <div>
@@ -141,9 +146,28 @@
       ? (s.lens < 4 ? `렌즈 ${4 - s.lens}개를 더 채우면 카드가 자라요!` : '모든 렌즈를 채웠어요. 멋진 관찰가!')
       : `힌트 · ${s.hint}`;
     document.getElementById('bk-sheet-go').textContent = s.found ? '다시 관찰하러 가기' : '찾으러 가기';
+    current = s;
+    syncSave();
     dim.classList.add('is-open');
     sheet.classList.add('is-open');
   }
+
+  // 찜하기 (Bookmark: Default ↔ Saved)
+  let current = null;
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem('pico.book.saved') || '[]'); } catch (e) { saved = []; }
+  const saveBtn = document.getElementById('bk-save');
+  function syncSave() {
+    const on = !!current && saved.includes(current.id);
+    saveBtn.setAttribute('aria-pressed', on);
+    saveBtn.setAttribute('aria-label', on ? '찜 해제하기' : '찜하기');
+  }
+  saveBtn.addEventListener('click', () => {
+    if (!current) return;
+    saved = saved.includes(current.id) ? saved.filter((x) => x !== current.id) : [...saved, current.id];
+    try { localStorage.setItem('pico.book.saved', JSON.stringify(saved)); } catch (e) { /* 무시 */ }
+    syncSave();
+  });
   function close() { dim.classList.remove('is-open'); sheet.classList.remove('is-open'); }
   dim.addEventListener('click', close);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });

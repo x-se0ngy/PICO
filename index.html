@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="home-map.css" />
+<link rel="stylesheet" href="pico-icons.css" />
 <link rel="stylesheet" href="home-field.css" />
 </head>
 <body>
@@ -55,9 +56,9 @@
       </div>
 
       <nav class="mh-gnb">
-        <button class="mh-icon-btn" aria-label="메뉴"><img src="assets/home-map/menu.svg" width="24" height="21" alt="" /></button>
+        <button class="mh-icon-btn" aria-label="메뉴"><span class="pi pi-list" aria-hidden="true"></span></button>
         <img class="mh-logo" src="assets/home-map/logo.svg" width="31" height="32" alt="PICO" />
-        <button class="mh-icon-btn" aria-label="프로필"><img src="assets/home-map/profile.svg" width="28" height="24" alt="" /></button>
+        <button class="mh-icon-btn" aria-label="프로필"><span class="pi pi-user" aria-hidden="true"></span></button>
       </nav>
 
       <div class="mh-field-title">
@@ -82,11 +83,7 @@
     <!-- PICO Radar 버튼 -->
     <button class="pr-btn" id="radar-btn" aria-pressed="false" aria-controls="radar">
       <span class="pr-btn-pulse" aria-hidden="true"></span>
-      <svg class="pr-btn-icon" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-        <circle cx="13" cy="13" r="2.6" fill="currentColor"/>
-        <path d="M8.2 17.8a6.8 6.8 0 0 1 0-9.6M17.8 8.2a6.8 6.8 0 0 1 0 9.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
-        <path d="M4.6 21.4a11.9 11.9 0 0 1 0-16.8M21.4 4.6a11.9 11.9 0 0 1 0 16.8" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" opacity=".55"/>
-      </svg>
+      <span class="pi pi-radar" style="--pi-size:28px" aria-hidden="true"></span>
       <span class="pr-btn-label">RADAR</span>
       <span class="pr-btn-badge" id="radar-badge" aria-hidden="true"></span>
     </button>
@@ -95,19 +92,15 @@
     <nav class="mh-tabbar">
       <span class="mh-tabbar-bg"><img src="assets/home-map/bottom-paper.png" alt="" onerror="this.parentNode.classList.add('is-missing'); this.hidden=true" /></span>
       <div class="mh-tabs">
-        <a class="mh-tab" href="book.html" aria-label="도감"><img src="assets/home-map/tab-folder.svg" width="23" height="20" alt="" /></a>
-        <a class="mh-tab mh-tab--camera" href="discover.html" aria-label="카메라로 발견하기"><img src="assets/home-map/tab-camera.svg" width="31" height="24" alt="" /></a>
-        <a class="mh-tab" href="ranking.html" aria-label="랭킹"><img src="assets/home-map/tab-trophy.svg" width="21" height="22" alt="" /></a>
+        <a class="mh-tab" href="book.html" aria-label="도감"><span class="pi pi-tag" aria-hidden="true"></span></a>
+        <a class="mh-tab mh-tab--camera" href="discover.html" aria-label="카메라로 발견하기"><span class="pi pi-home-favorite" aria-hidden="true"></span></a>
+        <a class="mh-tab" href="ranking.html" aria-label="랭킹"><span class="pi pi-heart" aria-hidden="true"></span></a>
       </div>
     </nav>
 
     <!-- 정보 카드: 생태 신호 / 내 피코 -->
     <section class="mh-card" id="info-card" role="dialog" aria-modal="false" aria-labelledby="info-title" hidden>
-      <button class="mh-card-close" id="info-close" aria-label="닫기">
-        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <rect x="0.5" y="5.7" width="13" height="2.6" fill="currentColor" transform="rotate(45 7 7)"/>
-          <rect x="0.5" y="5.7" width="13" height="2.6" fill="currentColor" transform="rotate(-43 7 7)"/>
-        </svg>
+      <button class="mh-card-close" id="info-close" aria-label="닫기"><span class="pi pi-close" style="--pi-size:16px" aria-hidden="true"></span>
       </button>
       <div class="mh-card-head">
         <div class="mh-card-thumb" id="info-thumb" aria-hidden="true"></div>
