@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-<title>PICO · 나의 도감</title>
+<title>PICO · 도감</title>
 <meta name="theme-color" content="#221B17" />
 <link rel="manifest" href="manifest.json" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&family=Asta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="home-map.css" />
 <link rel="stylesheet" href="pico-icons.css" />
 <link rel="stylesheet" href="pico-pages.css" />
+<link rel="stylesheet" href="pico-book.css" />
 </head>
 <body>
-<div class="mh-phone pg-phone" id="book">
-  <img class="pg-bg" src="assets/discover/paper-bg.png" alt="" />
+<!-- Figma: 도감 2302:10565 · 오늘의 PICO 백과 시트 2332:10140
+     이미지 파일은 assets/book/ (없으면 임시 텍스처로 보여요) -->
+<div class="mh-phone pg-phone bk2" id="book">
+  <img class="pg-bg" src="assets/book/paper-bg.png" onerror="this.onerror=null;this.src='assets/discover/paper-bg.png'" alt="" />
 
-  <div class="pg-status" aria-hidden="true">
+  <div class="pg-status bk2-status" aria-hidden="true">
     <span class="pg-status-time">9:41</span>
     <span class="pg-status-icons">
       <img src="assets/home-map/signal.svg" width="18" height="10" alt="" />
@@ -25,21 +28,37 @@
       <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
     </span>
   </div>
-  <div class="pg-gnb">
-    <a href="index.html" aria-label="들판으로 돌아가기"><span class="pi pi-arrow-left" style="--pi-size:26px" aria-hidden="true"></span></a>
-  </div>
-
-  <header class="pg-head">
-    <div class="pg-head-row"><span class="pg-badge">PICO BOOK</span></div>
-    <h1 class="pg-title">나의 도감</h1>
-    <p class="pg-sub" id="bk-count"></p>
-    <div class="bk-progress" aria-hidden="true"><span id="bk-bar" style="width:0"></span></div>
+  <header class="bk2-gnb">
+    <h1 class="bk2-title">도감</h1>
+    <a class="bk2-gnb-icon" href="search.html" aria-label="곤충 찾기"><span class="pi pi-search" aria-hidden="true"></span></a>
   </header>
 
-  <div class="bk-chips" id="bk-chips" role="group" aria-label="종류 고르기"></div>
+  <main class="bk2-scroll">
+    <!-- 백과 카드 배너 -->
+    <section class="bk2-banner" aria-labelledby="bk2-q">
+      <img class="bk2-banner-bg" src="assets/book/banner-green.png" onerror="this.onerror=null;this.src='assets/discover/paper-green.png'" alt="" />
+      <div class="bk2-banner-body">
+        <span class="bk2-tag-paper">백과 카드</span>
+        <p class="bk2-banner-q" id="bk2-q"></p>
+        <div class="bk2-chips" id="bk2-chips"></div>
+      </div>
+      <button class="bk2-more" id="bk2-more">
+        <img class="bk2-more-bg" src="assets/book/banner-more.png" onerror="this.remove()" alt="" />
+        <span>더 알아보기</span><span class="pi pi-arrow-right" style="--pi-size:20px" aria-hidden="true"></span>
+      </button>
+    </section>
 
-  <main class="pg-scroll bk-scroll">
-    <div class="bk-grid" id="bk-grid"></div>
+    <!-- 총 n개 · 추천순 · 필터 -->
+    <div class="bk2-bar">
+      <p class="bk2-total torn-dark" id="bk2-total"></p>
+      <div class="bk2-sort torn-dark">
+        <button id="bk2-sort">추천순<span class="pi pi-arrow-down" aria-hidden="true"></span></button>
+        <button id="bk2-filter">필터<span class="pi pi-sliders" aria-hidden="true"></span></button>
+      </div>
+    </div>
+
+    <!-- 카드 그리드 -->
+    <div class="bk2-grid" id="bk2-grid"></div>
   </main>
 
   <nav class="pg-tabbar">
@@ -51,7 +70,29 @@
     </div>
   </nav>
 
-  <!-- 상세 시트 -->
+  <!-- 오늘의 PICO 백과 (더 알아보기) -->
+  <div class="bk2-dim" id="today-dim"></div>
+  <section class="bk2-today" id="today" role="dialog" aria-modal="true" aria-labelledby="today-title">
+    <img class="bk2-today-bg" src="assets/book/sheet-green.png" onerror="this.onerror=null;this.src='assets/discover/paper-green.png'" alt="" />
+    <span class="bk2-handle" aria-hidden="true"></span>
+    <div class="bk2-today-body">
+      <h2 class="bk2-today-title" id="today-title">오늘의 PICO 백과</h2>
+      <div class="bk2-today-text">
+        <p class="bk2-today-q" id="today-q"></p>
+        <p class="bk2-today-a" id="today-a"></p>
+      </div>
+      <div class="bk2-today-tip">
+        <p><b>PICO TIP</b></p>
+        <ul><li id="today-tip"></li></ul>
+      </div>
+    </div>
+  </section>
+  <div class="bk2-today-foot" id="today-foot">
+    <img class="pg-tabbar-bg" src="assets/discover/paper-bottom-dark.png" alt="" />
+    <a class="bk2-today-go" href="discover.html">찾으러 가보기<span class="pi pi-arrow-right" style="--pi-size:20px" aria-hidden="true"></span></a>
+  </div>
+
+  <!-- 카드 상세 (렌즈 · 찜하기) -->
   <div class="bk-dim" id="bk-dim"></div>
   <section class="bk-sheet" id="bk-sheet" role="dialog" aria-modal="true" aria-labelledby="bk-sheet-name">
     <div class="bk-grab"></div>
@@ -60,7 +101,7 @@
       <img class="bk-save-on" src="assets/icons/bookmark-saved.svg" width="32" height="32" alt="" />
     </button>
     <div class="bk-sheet-top">
-      <div class="bk-sheet-pic" id="bk-sheet-pic"></div>
+      <div class="bk-sheet-pic bk2-sheet-pic" id="bk-sheet-pic"></div>
       <div>
         <p class="bk-sheet-cat" id="bk-sheet-cat"></p>
         <h2 class="bk-sheet-name" id="bk-sheet-name"></h2>
@@ -69,94 +110,80 @@
     </div>
     <ul class="bk-lenses" id="bk-lenses"></ul>
     <p class="bk-sheet-hint" id="bk-sheet-hint"></p>
-    <a class="bk-sheet-go" id="bk-sheet-go" href="discover.html"></a>
+    <a class="bk-sheet-go" href="discover.html">다시 관찰하러 가기</a>
   </section>
 </div>
 
-<script src="pico-species.js"></script>
+<script src="pico-book-data.js"></script>
 <script>
 (() => {
-  const LENSES = [
-    { key: 'LOOK', label: '생김새' },
-    { key: 'MOVE', label: '움직임' },
-    { key: 'PLACE', label: '사는 곳' },
-    { key: 'BEHAVIOR', label: '느낌' },
-  ];
-  const list = window.PicoSpecies.collection();
-  const found = list.filter((s) => s.found).length;
+  const { BOOK, TODAY, TOTAL } = window.PicoBook;
+  const $ = (id) => document.getElementById(id);
 
-  document.getElementById('bk-count').innerHTML = `${list.length}마리 중 <b>${found}마리</b>를 만났어요`;
-  requestAnimationFrame(() => {
-    document.getElementById('bk-bar').style.width = `${(found / list.length) * 100}%`;
-  });
+  // 배너 · 오늘의 백과
+  $('bk2-q').textContent = TODAY.question;
+  $('bk2-chips').innerHTML = TODAY.tags.map((t) => `<span class="bk2-tag-dark">${t}</span>`).join('');
+  $('today-q').textContent = TODAY.question;
+  $('today-a').innerHTML = TODAY.body.join('<br />');
+  $('today-tip').textContent = TODAY.tip;
+  $('bk2-total').innerHTML = `총 <b>${TOTAL}</b>개`;
 
-  // 종류 칩
-  const cats = ['전체', '만난 친구', ...new Set(list.map((s) => s.category))];
-  const chipBox = document.getElementById('bk-chips');
-  let filter = '전체';
-  cats.forEach((c) => {
-    const b = document.createElement('button');
-    b.className = 'bk-chip';
-    b.textContent = c;
-    b.setAttribute('aria-pressed', c === filter);
-    b.addEventListener('click', () => {
-      filter = c;
-      chipBox.querySelectorAll('.bk-chip').forEach((x) => x.setAttribute('aria-pressed', x === b));
-      render();
-    });
-    chipBox.appendChild(b);
-  });
-
-  // 카드 그리드
-  const grid = document.getElementById('bk-grid');
+  // 카드
+  const grid = $('bk2-grid');
+  let order = BOOK.slice();
   function render() {
-    grid.innerHTML = '';
-    list
-      .map((s, i) => ({ ...s, no: String(i + 1).padStart(3, '0') }))
-      .filter((s) => filter === '전체' || (filter === '만난 친구' ? s.found : s.category === filter))
-      .forEach((s, i) => {
-        const card = document.createElement('button');
-        card.className = 'bk-card' + (s.found ? '' : ' is-locked');
-        card.style.animationDelay = `${i * 0.04}s`;
-        card.setAttribute('aria-label', s.found ? `${s.name}, 관찰 렌즈 ${s.lens}개` : '아직 못 만난 친구');
-        card.innerHTML = `
-          <span class="bk-no">No.${s.no}</span>
-          <span class="bk-pic">${s.found && s.img ? `<img src="${s.img}" alt="" />` : '<span>?</span>'}</span>
-          <span class="bk-name">${s.found ? s.name : '???'}</span>
-          <span class="bk-lens">${LENSES.map((_, k) => `<i class="${k < s.lens ? 'on' : ''}"></i>`).join('')}</span>`;
-        card.addEventListener('click', () => open(s));
-        grid.appendChild(card);
-      });
+    grid.innerHTML = order.map((b, i) => `
+      <button class="bk2-card" data-id="${b.id}" style="animation-delay:${i * 0.03}s" aria-label="${b.cat} ${b.name}">
+        <img class="bk2-card-photo" src="${b.photo}" alt="" onerror="this.closest('.bk2-card').classList.add('no-photo');this.remove()" />
+        <span class="bk2-lv"><small>lv</small>${b.lv}</span>
+        <span class="bk2-card-text"><b>[${b.cat}]</b><span>${b.name}</span></span>
+      </button>`).join('');
   }
   render();
+  grid.addEventListener('click', (e) => {
+    const card = e.target.closest('.bk2-card');
+    if (card) openCard(BOOK.find((b) => b.id === card.dataset.id));
+  });
 
-  // 상세 시트
-  const dim = document.getElementById('bk-dim');
-  const sheet = document.getElementById('bk-sheet');
-  function open(s) {
-    document.getElementById('bk-sheet-pic').innerHTML = s.found && s.img ? `<img src="${s.img}" alt="" />` : '<span>?</span>';
-    document.getElementById('bk-sheet-cat').textContent = `[ ${s.category} ] No.${s.no}`;
-    document.getElementById('bk-sheet-name').textContent = s.found ? s.name : '아직 못 만났어요';
-    document.getElementById('bk-sheet-meta').innerHTML = s.found
-      ? `LV <b>${s.level || '01'}</b> · 관찰 기록 <b>${s.notes}개</b>`
-      : '사진을 찍고 그려서 도감을 채워봐요';
-    document.getElementById('bk-lenses').innerHTML = LENSES
-      .map((l, k) => `<li class="${k < s.lens ? 'on' : ''}"><strong>${l.key}</strong><small>${l.label}</small></li>`).join('');
-    document.getElementById('bk-sheet-hint').textContent = s.found
-      ? (s.lens < 4 ? `렌즈 ${4 - s.lens}개를 더 채우면 카드가 자라요!` : '모든 렌즈를 채웠어요. 멋진 관찰가!')
-      : `힌트 · ${s.hint}`;
-    document.getElementById('bk-sheet-go').textContent = s.found ? '다시 관찰하러 가기' : '찾으러 가기';
-    current = s;
+  // 추천순 ↔ 이름순
+  const sortBtn = $('bk2-sort');
+  sortBtn.addEventListener('click', () => {
+    const byName = sortBtn.firstChild.textContent === '추천순';
+    sortBtn.firstChild.textContent = byName ? '이름순' : '추천순';
+    order = byName ? BOOK.slice().sort((a, b) => a.name.localeCompare(b.name, 'ko')) : BOOK.slice();
+    render();
+  });
+
+  // 오늘의 PICO 백과 시트
+  const book = $('book');
+  const setToday = (on) => book.classList.toggle('is-today', on);
+  $('bk2-more').addEventListener('click', () => setToday(true));
+  $('today-dim').addEventListener('click', () => setToday(false));
+
+  // 카드 상세
+  const LENSES = [['LOOK', '생김새'], ['MOVE', '움직임'], ['PLACE', '사는 곳'], ['BEHAVIOR', '느낌']];
+  const dim = $('bk-dim');
+  const sheet = $('bk-sheet');
+  let current = null;
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem('pico.book.saved') || '[]'); } catch (e) { saved = []; }
+  function openCard(b) {
+    current = b;
+    $('bk-sheet-pic').innerHTML = `<img src="${b.photo}" alt="" onerror="this.remove()" />`;
+    $('bk-sheet-cat').textContent = `[ ${b.cat} ]`;
+    $('bk-sheet-name').textContent = b.name;
+    $('bk-sheet-meta').innerHTML = `LV <b>${b.lv}</b> · 관찰 렌즈 <b>${b.lens}/4</b>`;
+    $('bk-lenses').innerHTML = LENSES.map(([k, l], i) => `<li class="${i < b.lens ? 'on' : ''}"><strong>${k}</strong><small>${l}</small></li>`).join('');
+    $('bk-sheet-hint').textContent = b.lens < 4 ? `힌트 · ${b.hint}` : '모든 렌즈를 채웠어요. 멋진 관찰가!';
     syncSave();
     dim.classList.add('is-open');
     sheet.classList.add('is-open');
   }
+  const closeCard = () => { dim.classList.remove('is-open'); sheet.classList.remove('is-open'); };
+  dim.addEventListener('click', closeCard);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCard(); setToday(false); } });
 
-  // 찜하기 (Bookmark: Default ↔ Saved)
-  let current = null;
-  let saved = [];
-  try { saved = JSON.parse(localStorage.getItem('pico.book.saved') || '[]'); } catch (e) { saved = []; }
-  const saveBtn = document.getElementById('bk-save');
+  const saveBtn = $('bk-save');
   function syncSave() {
     const on = !!current && saved.includes(current.id);
     saveBtn.setAttribute('aria-pressed', on);
@@ -168,9 +195,10 @@
     try { localStorage.setItem('pico.book.saved', JSON.stringify(saved)); } catch (e) { /* 무시 */ }
     syncSave();
   });
-  function close() { dim.classList.remove('is-open'); sheet.classList.remove('is-open'); }
-  dim.addEventListener('click', close);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+  // 검색에서 넘어온 경우: book.html?open=c01
+  const openId = new URLSearchParams(location.search).get('open');
+  if (openId) { const b = BOOK.find((x) => x.id === openId); if (b) setTimeout(() => openCard(b), 300); }
 })();
 </script>
 </body>

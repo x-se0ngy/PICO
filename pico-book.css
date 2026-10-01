@@ -1,0 +1,216 @@
+/* =========================================================
+   PICO · 도감 (Figma 2302:10565 / 2332:10140, 393 기준)
+   이미지: assets/book/*  (없으면 clip-path 찢긴 모양 + 단색으로 대신)
+   ========================================================= */
+.bk2 { background: #F8F1E7; }
+.bk2 .pg-status-time { font-weight: 500; color: #343330; }
+
+/* GNB: 도감 + 검색 */
+.bk2-gnb {
+  position: absolute; left: 0; top: 60px;
+  width: 393px; height: 44px;
+  padding: 6px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 5;
+}
+.bk2-title {
+  font-family: 'Asta Sans', 'Pretendard', sans-serif;
+  font-size: 20px; font-weight: 700; line-height: 24px;
+  color: #424345;
+}
+.bk2-gnb-icon { display: flex; color: #424345; }
+
+/* 스크롤 (GNB 아래 ~ 탭바 위) */
+.bk2-scroll {
+  position: absolute; left: 0; right: 0; top: 104px; bottom: 110px;
+  padding: 30px 20px 40px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  z-index: 1;
+}
+.bk2-scroll::-webkit-scrollbar { display: none; }
+
+/* 찢긴 종이 모양 (이미지가 없을 때) */
+.torn-dark {
+  background: url('assets/book/bar-dark.png') center / 100% 100% no-repeat, #221B17;
+  clip-path: polygon(0 6%, 18% 0, 46% 8%, 74% 1%, 100% 7%, 99% 52%, 100% 95%, 70% 100%, 41% 93%, 14% 100%, 1% 92%, 0 48%);
+}
+
+/* ---------- 백과 카드 배너 ---------- */
+.bk2-banner { position: relative; width: 353px; }
+.bk2-banner-bg {
+  position: absolute; left: 0; top: 0;
+  width: 353px; height: 179px;
+  object-fit: cover; object-position: top;
+  pointer-events: none;
+}
+.bk2-banner-body {
+  position: relative;
+  height: 117px;
+  padding: 14px 0 0 19px;
+  display: flex; flex-direction: column; gap: 4px; align-items: flex-start;
+}
+.bk2-tag-paper {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 90px; height: 36px; padding-top: 1px;
+  background: url('assets/book/tag-paper.svg') center / 100% 100% no-repeat, #F4EDDD;
+  clip-path: polygon(3% 10%, 40% 0, 97% 6%, 100% 50%, 96% 94%, 55% 100%, 4% 92%, 0 50%);
+  font-size: 14px; font-weight: 600; letter-spacing: -0.56px; line-height: 14.76px;
+  color: #262628;
+}
+.bk2-banner-q {
+  padding: 6px 12px 0;
+  font-size: 16px; font-weight: 600; line-height: 24px;
+  color: #262628;
+}
+.bk2-chips { display: flex; gap: 4px; padding: 0 12px; }
+.bk2-tag-dark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 72px; height: 24px;
+  background: url('assets/book/tag-dark.svg') center / 100% 100% no-repeat, #221B17;
+  clip-path: polygon(2% 12%, 50% 0, 98% 10%, 100% 55%, 97% 92%, 45% 100%, 3% 90%, 0 45%);
+  font-size: 12px; font-weight: 500; letter-spacing: -0.48px; line-height: 14.76px;
+  color: #F4EDDD;
+}
+.bk2-more {
+  position: relative;
+  width: 353px; height: 62px;
+  display: flex; align-items: flex-start; justify-content: center; gap: 6px;
+  padding-top: 12px;
+  font-size: 16px; font-weight: 600; line-height: 24px;
+  color: #262628;
+}
+.bk2-more-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: bottom; pointer-events: none; }
+.bk2-more > span { position: relative; }
+.bk2-more .pi { margin-top: 2px; }
+.bk2-more:active .pi { transform: translateX(3px); }
+
+/* ---------- 총 n개 · 추천순 · 필터 ---------- */
+.bk2-bar {
+  display: flex; justify-content: space-between;
+  margin-top: 17px;
+}
+.bk2-total {
+  width: 85px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Asta Sans', 'Pretendard', sans-serif;
+  font-size: 16px; line-height: 24px; color: #fff;
+}
+.bk2-total b { font-weight: 600; margin: 0 1px 0 4px; }
+.bk2-sort {
+  width: 163px; height: 40px;
+  padding: 4px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.bk2-sort button {
+  display: flex; align-items: center; gap: 2px;
+  font-family: 'Asta Sans', 'Pretendard', sans-serif;
+  font-size: 16px; line-height: 24px; color: #fff;
+}
+
+/* ---------- 카드 그리드 ---------- */
+.bk2-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 172px);
+  gap: 6px 9px;
+  margin-top: 12px;
+}
+.bk2-card {
+  position: relative;
+  height: 134px;
+  padding: 14px 11px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;
+  text-align: left;
+  overflow: hidden;
+  animation: bk-in 0.4s cubic-bezier(.2, 1.2, .4, 1) both;
+  transition: transform 0.15s ease;
+}
+.bk2-card:nth-child(even) { padding: 14px 8px; }
+.bk2-card:active { transform: scale(0.96); }
+.bk2-card-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+/* 사진 파일이 아직 없을 때 */
+.bk2-card.no-photo {
+  background: linear-gradient(180deg, #4A4038 0%, #221B17 100%);
+  clip-path: polygon(1% 4%, 30% 0, 64% 3%, 99% 0, 100% 40%, 98% 96%, 70% 100%, 35% 97%, 2% 100%, 0 55%);
+}
+.bk2-lv {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 1px;
+  width: 43px; height: 24px;
+  background: url('assets/book/tag-lv.svg') center / 100% 100% no-repeat, #F4EDDD;
+  clip-path: polygon(4% 10%, 50% 0, 96% 8%, 100% 55%, 95% 94%, 48% 100%, 5% 92%, 0 45%);
+  font-size: 12px; font-weight: 600; letter-spacing: -0.48px; line-height: 14.76px;
+  color: #221B17;
+}
+.bk2-lv small { font-size: 8px; letter-spacing: -0.32px; margin-top: 4px; }
+.bk2-card-text {
+  position: relative;
+  display: flex; flex-direction: column; gap: 4px;
+  max-width: 100%;
+  padding: 0 4px;
+  font-size: 14px; line-height: 14px; color: #fff;
+}
+.bk2-card-text > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bk2-card-text b { font-weight: 600; }
+.bk2-card:nth-child(even) .bk2-card-text { color: #EFEFEF; }
+
+/* 카드 상세: 사진 */
+.bk2-sheet-pic { overflow: hidden; }
+.bk2-sheet-pic img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- 오늘의 PICO 백과 시트 ---------- */
+.bk2-dim {
+  position: absolute; inset: 0;
+  background: rgba(35, 35, 35, 0.67);
+  -webkit-backdrop-filter: blur(13.2px);
+          backdrop-filter: blur(13.2px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+.bk2-today {
+  position: absolute; left: 0; top: 416px;
+  width: 393px; height: 567px;
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(.2, .9, .3, 1);
+  z-index: 11;
+}
+.bk2-today-bg { position: absolute; left: 0; top: 0; width: 401px; height: 567px; object-fit: cover; pointer-events: none; }
+.bk2-handle {
+  position: absolute; left: 50%; top: 64px;
+  width: 56px; height: 4px; margin-left: -28px;
+  border-radius: 2px; background: #000;
+}
+.bk2-today-body {
+  position: absolute; left: 22px; top: 100px;
+  width: 348px;
+  display: flex; flex-direction: column; gap: 14px;
+  color: #262628;
+}
+.bk2-today-title { font-size: 20px; font-weight: 600; line-height: 28px; margin-bottom: -8px; }
+.bk2-today-text { display: flex; flex-direction: column; gap: 4px; padding: 0 15px; }
+.bk2-today-q { font-size: 16px; font-weight: 600; line-height: 20px; }
+.bk2-today-a { font-size: 14px; font-weight: 500; line-height: 18px; }
+.bk2-today-tip { padding: 0 15px; font-size: 14px; line-height: 16px; display: flex; flex-direction: column; gap: 2px; }
+.bk2-today-tip b { font-weight: 700; }
+.bk2-today-tip ul { margin-left: 21px; }
+.bk2-today-foot {
+  position: absolute; left: 0; top: 707px;
+  width: 393px; height: 145px;
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(.2, .9, .3, 1) 0.05s;
+  z-index: 12;
+}
+.bk2-today-go {
+  position: absolute; left: 50%; top: 74px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 6px;
+  font-size: 18px; font-weight: 600; line-height: 24px;
+  color: #fff; text-decoration: none; white-space: nowrap;
+}
+.bk2.is-today .bk2-dim { opacity: 1; pointer-events: auto; }
+.bk2.is-today .bk2-today,
+.bk2.is-today .bk2-today-foot { transform: none; }
+.bk2-sort button, .bk2-total { white-space: nowrap; }
+.bk2-sort .pi { --pi-size: 28px; }
+.bk2-today-text, .bk2-today-tip { white-space: nowrap; }
+.sr-box input::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }

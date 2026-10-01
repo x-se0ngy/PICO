@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>PICO · 곤충 찾기</title>
+<meta name="theme-color" content="#221B17" />
+<link rel="manifest" href="manifest.json" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="home-map.css" />
+<link rel="stylesheet" href="pico-icons.css" />
+<link rel="stylesheet" href="pico-pages.css" />
+<link rel="stylesheet" href="pico-book.css" />
+<style>
+  /* Figma: 검색 2293:8830 */
+  .sr { background: #EFEFEF; }
+  .sr .pg-status-time { font-weight: 500; color: #424345; }
+  .sr-top {
+    position: absolute; left: 0; top: 60px;
+    width: 393px; padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 3;
+  }
+  .sr-back { display: flex; color: #424345; }
+  .sr-box { position: relative; width: 300px; height: 51px; }
+  .sr-box form {
+    position: absolute; left: 0; top: 9px; width: 300px;
+    padding: 0 12px 0 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .sr-box input {
+    flex: 1; min-width: 0;
+    background: none; border: 0; outline: 0;
+    font: 500 14px/1 'Pretendard', sans-serif;
+    color: #F4EDDD;
+  }
+  .sr-box input::placeholder { color: #EEDFD5; }
+  .sr-box button { display: flex; color: #F4EDDD; }
+  .sr-head {
+    position: absolute; left: 0; top: 120px;
+    width: 393px; padding: 15px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 16px; font-weight: 600; color: #424345;
+    z-index: 2;
+  }
+  .sr-head h1 { font-size: 16px; font-weight: 600; line-height: 20px; }
+  .sr-head button { font-size: 16px; font-weight: 600; line-height: 1; color: #424345; }
+  .sr-list { position: absolute; left: 0; right: 0; top: 171px; bottom: 34px; overflow-y: auto; z-index: 2; }
+  .sr-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 20px;
+    font-size: 16px; font-weight: 500; letter-spacing: -0.3px; color: #58595B;
+  }
+  .sr-row a { flex: 1; color: inherit; text-decoration: none; padding: 6px 0; }
+  .sr-row button { display: flex; color: #58595B; }
+  .sr-row small { margin-left: 6px; font-size: 13px; color: #8C8D90; }
+  .sr-row mark { background: none; color: #221B17; font-weight: 700; }
+  .sr-empty { padding: 12px 20px; font-size: 15px; color: #8C8D90; }
+</style>
+</head>
+<body>
+<div class="mh-phone pg-phone sr">
+  <img class="pg-bg" src="assets/book/paper-bg.png" onerror="this.onerror=null;this.src='assets/discover/paper-bg.png'" alt="" />
+
+  <div class="pg-status" aria-hidden="true">
+    <span class="pg-status-time">9:41</span>
+    <span class="pg-status-icons">
+      <img src="assets/home-map/signal.svg" width="18" height="10" alt="" />
+      <img src="assets/home-map/wifi.svg" width="16" height="11" alt="" />
+      <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+    </span>
+  </div>
+
+  <div class="sr-top">
+    <a class="sr-back" href="book.html" aria-label="도감으로 돌아가기"><span class="pi pi-arrow-left" aria-hidden="true"></span></a>
+    <div class="sr-box torn-dark">
+      <form id="sr-form" role="search">
+        <input id="sr-input" type="search" placeholder="어떤 곤충을 찾고 있나요?" autocomplete="off" aria-label="곤충 이름" />
+        <button type="submit" aria-label="찾기"><span class="pi pi-search" aria-hidden="true"></span></button>
+      </form>
+    </div>
+  </div>
+
+  <div class="sr-head">
+    <h1 id="sr-title">최근 검색어</h1>
+    <button id="sr-clear">전체 삭제</button>
+  </div>
+  <div class="sr-list" id="sr-list" aria-live="polite"></div>
+</div>
+
+<script src="pico-book-data.js"></script>
+<script>
+(() => {
+  const { BOOK } = window.PicoBook;
+  const KEY = 'pico.search.recent';
+  const input = document.getElementById('sr-input');
+  const list = document.getElementById('sr-list');
+  const title = document.getElementById('sr-title');
+  const clearBtn = document.getElementById('sr-clear');
+
+  let recent = ['칠성 무당 벌레'];
+  try { const r = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(r)) recent = r; } catch (e) { /* 기본값 */ }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(recent)); } catch (e) { /* 무시 */ } };
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const norm = (s) => s.replace(/\s+/g, '');
+
+  // 이름이 맞는 도감 카드 찾기 (띄어쓰기 무시)
+  const find = (q) => BOOK.filter((b) => norm(b.name + b.cat).includes(norm(q)));
+  const link = (q) => { const hit = find(q)[0]; return hit ? `book.html?open=${hit.id}` : '#'; };
+
+  function showRecent() {
+    title.textContent = '최근 검색어';
+    clearBtn.hidden = !recent.length;
+    list.innerHTML = recent.length
+      ? recent.map((q, i) => `
+        <div class="sr-row">
+          <a href="${link(q)}" data-q="${esc(q)}">${esc(q)}</a>
+          <button data-del="${i}" aria-label="${esc(q)} 지우기"><span class="pi pi-close" aria-hidden="true"></span></button>
+        </div>`).join('')
+      : '<p class="sr-empty">최근 검색어가 없어요.</p>';
+  }
+
+  function showResults(q) {
+    const hits = find(q);
+    title.textContent = `찾은 곤충 ${hits.length}`;
+    clearBtn.hidden = true;
+    list.innerHTML = hits.length
+      ? hits.map((b) => {
+          const name = esc(b.name).replace(esc(q.trim()), (m) => `<mark>${m}</mark>`);
+          return `<div class="sr-row"><a href="book.html?open=${b.id}" data-q="${esc(b.name)}">${name}<small>${b.cat}</small></a>
+            <span class="pi pi-arrow-right" style="--pi-size:22px" aria-hidden="true"></span></div>`;
+        }).join('')
+      : `<p class="sr-empty">‘${esc(q)}’ 친구는 아직 도감에 없어요. 찾으러 가볼까요?</p>`;
+  }
+
+  function remember(q) {
+    q = q.trim();
+    if (!q) return;
+    recent = [q, ...recent.filter((x) => x !== q)].slice(0, 10);
+    save();
+  }
+
+  input.addEventListener('input', () => (input.value.trim() ? showResults(input.value) : showRecent()));
+  document.getElementById('sr-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (!q) return;
+    remember(q);
+    const hit = find(q)[0];
+    if (hit) location.href = `book.html?open=${hit.id}`; else showResults(q);
+  });
+  list.addEventListener('click', (e) => {
+    const del = e.target.closest('[data-del]');
+    if (del) { recent.splice(+del.dataset.del, 1); save(); showRecent(); return; }
+    const a = e.target.closest('a[data-q]');
+    if (a) {
+      remember(a.dataset.q);
+      if (a.getAttribute('href') === '#') { e.preventDefault(); input.value = a.dataset.q; showResults(a.dataset.q); }
+    }
+  });
+  clearBtn.addEventListener('click', () => { recent = []; save(); showRecent(); });
+
+  showRecent();
+  input.focus();
+})();
+</script>
+</body>
+</html>
