@@ -4,7 +4,7 @@
    종이 들판 위에 파동이 퍼지면서 '관찰할 만한 곳의 신호'만 보여줘요.
    - 처음부터 종 이름은 알려주지 않아요 → "뭐가 있지?"
    - 신호를 누르면 방향 · 거리 · 관찰 힌트 → '찾으러 가기'(카메라)
-   - 탐험을 마친 신호는 '?' 대신 내가 그린 그림으로 바뀌어요.
+   - 탐험을 마친 신호는 표지판 아이콘 대신 내가 그린 그림으로 바뀌어요.
    ========================================================= */
 (() => {
   const data = window.PicoData || { signals: [] };
@@ -108,7 +108,7 @@
         img.alt = '';
         mark.appendChild(img);
       } else {
-        mark.textContent = '?';
+        mark.innerHTML = '<span class="pi pi-presentation" style="--pi-size:22px" aria-hidden="true"></span>';
       }
       const label = document.createElement('span');
       label.className = 'pr-signal-label';
@@ -116,7 +116,7 @@
       // 화면 밖으로 넘치지 않게 라벨 위치 조정
       if (x > 300) label.classList.add('is-left');
       else if (x < 93) label.classList.add('is-right');
-      // 내 위치보다 위쪽 신호는 라벨을 위에 (가운데 '나'를 가리지 않게)
+      // 내 위치보다 위쪽 신호는 라벨을 위에 (가운데 내 위치 점을 가리지 않게)
       if (y < CY) label.classList.add('is-above');
       b.append(mark, label);
       b.addEventListener('click', (e) => {

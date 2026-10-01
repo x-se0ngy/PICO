@@ -402,19 +402,23 @@
 /* 내 위치 */
 .pr-me {
   position: absolute;
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--mh-sprout);
-  border: 0.3px solid #000;
-  box-shadow: 2px 2px 0 rgba(34, 27, 23, 0.3);
-  transform: rotate(-4deg);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--mh-ink);
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--mh-ink);
+  border: 3px solid var(--mh-sprout);
+  box-shadow: 0 0 0 1px var(--mh-ink);
+}
+/* 내 위치 점: 잔잔하게 퍼지는 링 */
+.pr-me::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid var(--mh-ink);
+  opacity: 0;
+  animation: pr-pulse 2.4s ease-out infinite;
 }
 
 /* 생태 신호 */
@@ -574,5 +578,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pf-sway, .pf-cloud, .pf-sun, .mh-bug img, .pr-wave,
-  .pr-btn-pulse, .pr-signal-mark::after, .pr-toast-dot::after { animation: none !important; }
+  .pr-btn-pulse, .pr-signal-mark::after, .pr-toast-dot::after, .pr-me::after { animation: none !important; }
 }

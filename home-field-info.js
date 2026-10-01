@@ -110,7 +110,7 @@
       img.alt = '';
       el.thumb.appendChild(img);
     } else {
-      el.thumb.textContent = '?';
+      el.thumb.innerHTML = '<span class="pi pi-presentation" style="--pi-size:30px" aria-hidden="true"></span>';
     }
 
     el.eyebrow.textContent = found.length ? '탐험한 신호' : (s.isNew ? '새로운 신호' : '생태 신호');
