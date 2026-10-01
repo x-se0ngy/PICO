@@ -397,26 +397,11 @@
   function rand(lo, hi) { return lo + Math.random() * (hi - lo); }
   function wait(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
-  // ▶ 지금은 들판에 곤충 그림을 띄우지 않아요 (SHOW_PICOS = true 로 바꾸면 다시 나타나요)
-  //   그리기 루트에서 보낸 피코는 버리지 않고 저장만 해 둬요.
-  const SHOW_PICOS = false;
-  if (!SHOW_PICOS) {
-    try {
-      const pending = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
-      if (Array.isArray(pending) && pending.length) {
-        const kept = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        const add = pending.map((p) => (typeof p === 'string' ? { src: p } : p)).filter((p) => p && p.src);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([...(Array.isArray(kept) ? kept : []), ...add].slice(-MAX_BUGS)));
-      }
-      localStorage.removeItem(PENDING_KEY);
-    } catch (e) { /* 저장 불가 환경이면 그냥 넘어감 */ }
-    if (countEl) countEl.hidden = true;
-    window.PicoHabitat.ready = Promise.resolve(false);
-    return;
-  }
-
+  // ▶ 예시 그림(무당벌레·달팽이·나비)은 들판에 띄우지 않아요.
+  //   아이가 직접 그려서 놓아준 피코만 보여요. (SHOW_SAMPLES = true 로 바꾸면 예시도 나와요)
+  const SHOW_SAMPLES = false;
   load();
-  if (!real().length) SAMPLES.forEach((s) => addBug({ ...s }));
+  if (SHOW_SAMPLES && !real().length) SAMPLES.forEach((s) => addBug({ ...s }));
   updateCount();
   requestAnimationFrame(tick);
   window.PicoHabitat.ready = takePending();
