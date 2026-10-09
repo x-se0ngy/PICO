@@ -30,7 +30,7 @@
   .flip, .flip img { width: 32px; height: 32px; }
 
   /* sheets */
-  .dim.scrim { background: rgba(44, 44, 44, .57); }
+  .dim.scrim { background: var(--overlay-scrim); }
   .csheet { top: 357px; height: 455px; border: 1px dashed var(--ink); }
   .home-ind { z-index: 45; }
   .csheet .x { position: absolute; left: 323px; top: 17.47px; width: 32px; height: 32px; }
@@ -40,7 +40,7 @@
 
   .rules { position: absolute; left: 20px; top: 143px; width: 335px; display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
   .rule { width: 335px; height: 55px; padding: 0 10px; border: 1px dashed var(--ink); background: var(--bg); display: flex; align-items: center; gap: 10px; text-align: left; }
-  .rule .box { position: relative; flex: none; width: 35px; height: 35px; background: #fff; border: 1px dashed var(--ink); }
+  .rule .box { position: relative; flex: none; width: 35px; height: 35px; background: var(--neutral-0); border: var(--line-dashed); }
   .rule .box img { position: absolute; left: .5px; top: .5px; width: 32px; height: 32px; display: none; }
   .rule[aria-checked="true"] { background: var(--surface); border-style: solid; }
   .rule[aria-checked="true"] .box { border-style: solid; }

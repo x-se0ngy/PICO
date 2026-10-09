@@ -57,7 +57,7 @@
   .grid2 { left: 20.12px; top: 1241.32px; grid-template-columns: repeat(3, 93.244px); column-gap: 27.64px; }
 
   /* PICO TIP */
-  .tip { left: 0; top: 1117.18px; width: 375px; height: 115px; background: #00b7ff; border: 1px dashed var(--ink); }
+  .tip { left: 0; top: 1117.18px; width: 375px; height: 115px; background: var(--feedback-info); border: var(--line-dashed); }
   .burst { left: 220px; top: 1085.36px; width: 155.38px; height: 86.39px; }
   .burst img { width: 100%; height: 100%; }
   .burst span { position: absolute; left: 54.4px; top: 34.92px; font-size: 14px; white-space: nowrap; }
@@ -68,7 +68,7 @@
 
   /* ---------- overlays: fixed to the viewport, centred on the 375 column ---------- */
   .ov { position: fixed; top: 0; bottom: 0; left: 50%; width: 375px; margin-left: -187.5px; z-index: 50; }
-  .ov .dim { position: absolute; inset: 0; z-index: 0; background: rgba(44, 44, 44, .57); }
+  .ov .dim { position: absolute; inset: 0; z-index: 0; background: var(--overlay-scrim); }
   .bsheet, .bmodal { z-index: 1; }
   .x { position: absolute; width: 32px; height: 32px; z-index: 2; }
   .x img { width: 32px; height: 32px; }
@@ -78,7 +78,7 @@
   .bsheet .scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; }
   .bsheet .inner { position: relative; height: 600px; }
   .bsheet .x { left: 323px; top: 9.87px; }
-  .chip { display: inline-flex; align-items: center; justify-content: center; width: 55px; height: 25px; background: #fff; border: 1px dashed var(--ink); font-size: 16px; white-space: nowrap; }
+  .chip { display: inline-flex; align-items: center; justify-content: center; width: 55px; height: 25px; background: var(--neutral-0); border: var(--line-dashed); font-size: 16px; white-space: nowrap; }
   .bsheet .chip { position: absolute; left: 20.97px; top: 9.87px; }
   .bsheet .date { position: absolute; left: 63.47px; top: 51.85px; transform: translate(-50%, -50%); font-size: 14px; white-space: nowrap; }
   .bsheet .name { position: absolute; left: 0; right: 0; top: 92.41px; text-align: center; font-size: 20px; }

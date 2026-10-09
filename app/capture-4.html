@@ -48,11 +48,14 @@
 </div>
 <script src="shared.js"></script>
 <script>
+  // Crayon colors = design-system primitives (tokens.css). Read at runtime so Figma ↔ code stay in one place.
+  var TOKENS = getComputedStyle(document.documentElement);
+  function tok(name) { return TOKENS.getPropertyValue(name).trim(); }
   var PALETTE = [
-    { name: 'red', label: '빨강', c: '#e32d3d' }, { name: 'orange', label: '주황', c: '#fca436' },
-    { name: 'yellow', label: '노랑', c: '#f4d159' }, { name: 'leaf', label: '연두', c: '#a7c049' },
-    { name: 'teal', label: '청록', c: '#48b2bb' }, { name: 'blue', label: '파랑', c: '#2c70d1' },
-    { name: 'purple', label: '보라', c: '#6b4eac' }, { name: 'gray', label: '회색', c: '#4e4e4e' }
+    { name: 'red', label: '빨강', c: tok('--red-500') }, { name: 'orange', label: '주황', c: tok('--orange-400') },
+    { name: 'yellow', label: '노랑', c: tok('--yellow-400') }, { name: 'leaf', label: '연두', c: tok('--leaf-500') },
+    { name: 'teal', label: '청록', c: tok('--teal-400') }, { name: 'blue', label: '파랑', c: tok('--blue-600') },
+    { name: 'purple', label: '보라', c: tok('--purple-600') }, { name: 'gray', label: '회색', c: tok('--neutral-700') }
   ];
   var color = PALETTE[0].c, box = document.getElementById('crayons');
   function renderCrayons() {

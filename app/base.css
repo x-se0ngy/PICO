@@ -1,5 +1,8 @@
-/* PICO app (Figma "1. 디융프 - visual") — shared tokens + components
+/* PICO app (Figma "1. 디융프 - visual") — shared components
+   Colors, lines, shadows and fonts come from tokens.css (= Figma PICO design system).
    Every screen is a 375px-wide phone frame. Pages link to each other to form a clickable prototype. */
+
+@import url('tokens.css');
 
 @font-face {
   font-family: 'Allimjang';
@@ -16,23 +19,24 @@
        url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimAllimjangTTF-B.woff2') format('woff2');
 }
 
+/* Short aliases used across the screens → design-system semantic tokens */
 :root {
-  --bg: #fdf4b1;            /* background/default */
-  --surface: #fffad7;       /* surface/default */
-  --brand: #b1bd35;         /* surface/brand, olive/500 */
-  --brand-soft: #c5cd71;
-  --reward: #f4d159;        /* accent/reward */
-  --ink: #000;              /* text/primary, border/strong */
-  --ink-950: #121212;
-  --dim: rgba(0, 0, 0, .45);
-  --font: 'Allimjang', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-  --font-ui: 'Inter', -apple-system, sans-serif;
+  --bg: var(--background-default);
+  --surface: var(--surface-default);
+  --brand: var(--brand-primary);
+  /* --brand-soft is defined in tokens.css (brand/soft) */
+  --reward: var(--accent-reward);
+  --ink: var(--text-primary);
+  --ink-950: var(--neutral-950);
+  --dim: var(--overlay-scrim);
+  --font: var(--font-body);
+  --font-ui: var(--font-system);
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  background: #2b2b2b;
+  background: var(--neutral-850);
   font-family: var(--font);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -85,30 +89,38 @@ img { display: block; }
 .tab-cam img { position: absolute; left: 18.15px; top: 17.75px; width: 32px; height: 32px; }
 
 /* ---------- primary CTA (330x54 + offset black shadow) ---------- */
+/* Figma: 큰 버튼 — 활성버튼 / 노랑 / 비활성 */
 .cta { position: absolute; left: 20px; width: 330px; height: 54px; display: block; }
-.cta::before { content: ''; position: absolute; left: 5px; top: 8.6px; width: 330px; height: 54px; background: var(--ink); border: 1px solid var(--ink); }
-.cta-face { position: absolute; inset: 0; background: var(--brand); border: 1px dashed var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 16px; }
+.cta::before { content: ''; position: absolute; left: 5px; top: 8.6px; width: 330px; height: 54px; background: var(--shadow-hard); border: var(--line); }
+.cta-face { position: absolute; inset: 0; background: var(--action-primary); color: var(--text-on-brand); border: var(--line-dashed); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 16px; }
 .cta-face img { width: 24px; height: 24px; }
-.cta--yellow .cta-face { background: var(--reward); }
-.cta[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.cta--yellow .cta-face { background: var(--accent-reward); }
+/* 비활성: action/disabled + text/disabled + border/disabled (색과 윤곽선을 함께 바꿈) */
+.cta[aria-disabled="true"] { pointer-events: none; }  /* .is-off stays clickable so the screen can show a hint toast */
+.cta[aria-disabled="true"]::before, .cta.is-off::before { background: var(--border-disabled); border-color: var(--border-disabled); }
+.cta[aria-disabled="true"] .cta-face, .cta.is-off .cta-face { background: var(--action-disabled); border-color: var(--border-disabled); color: var(--text-disabled); }
+.cta[aria-disabled="true"] .cta-face img, .cta.is-off .cta-face img { opacity: .5; }
 
 /* ---------- step progress + step title ---------- */
 .progress { position: absolute; left: 20px; top: 129px; width: 335px; display: flex; gap: 7px; }
-.progress span { flex: 1; height: 10px; background: var(--bg); border: 1px dashed var(--ink); }
-.progress span.on { background: var(--brand); }
+.progress span { flex: 1; height: 10px; background: var(--background-default); border: var(--line-dashed); }
+.progress span.on { background: var(--brand-primary); }
 
 .step-title { position: absolute; left: 20px; top: 161.4px; width: 335px; display: flex; flex-direction: column; gap: 4px; }
 .step-title .q { display: flex; gap: 14px; font-weight: 700; font-size: 18px; }
 .step-title .sub { font-size: 14px; }
 
 /* ---------- overlays ---------- */
-.dim { position: absolute; inset: 0; background: var(--dim); z-index: 40; }
-.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px dashed var(--ink); z-index: 41; }
-.sheet-handle { width: 80px; height: 5px; border-radius: 3px; background: var(--ink); margin: 14px auto 0; }
-.modal { position: absolute; left: 37.5px; width: 300px; background: var(--bg); border: 1px solid var(--ink); z-index: 41; }
-.toast { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; align-items: center; padding: 10px 16px; background: var(--ink); color: #fff; font-size: 14px; white-space: nowrap; z-index: 42; }
+.dim { position: absolute; inset: 0; background: var(--overlay-scrim); z-index: 40; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--background-default); border-top: var(--line-dashed); z-index: 41; }
+.sheet-handle { width: 80px; height: 5px; border-radius: 3px; background: var(--border-strong); margin: 14px auto 0; }
+.modal { position: absolute; left: 37.5px; width: 300px; background: var(--background-default); border: var(--line); z-index: 41; }
+/* black toast: 검정 위에는 text/on-inverse(버터) */
+.toast { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; align-items: center; padding: 10px 16px; background: var(--surface-inverse); color: var(--text-on-inverse); font-size: 14px; white-space: nowrap; z-index: 42; }
+/* info toast (Figma: 텍스트 알림) */
+.toast--info { background: var(--feedback-info); color: var(--text-primary); border: var(--line); box-shadow: var(--shadow-toast); }
 [hidden] { display: none !important; }
 
 /* ---------- prototype helper: screen index link ---------- */
-.proto-index { position: fixed; right: 12px; bottom: 12px; z-index: 100; font: 12px/1 var(--font-ui); background: #fff; color: #000; padding: 8px 10px; border-radius: 6px; opacity: .7; }
+.proto-index { position: fixed; right: 12px; bottom: 12px; z-index: 100; font: 12px/1 var(--font-ui); background: var(--neutral-0); color: var(--text-primary); padding: 8px 10px; border-radius: 6px; opacity: .7; }
 @media (max-width: 499px) { .proto-index { display: none; } }

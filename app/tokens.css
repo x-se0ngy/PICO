@@ -1,0 +1,78 @@
+/* PICO Design System tokens
+   Source of truth: Figma "1. 디융프 - Warm-Up" › J. design systeam › PICO 컬러 시스템 가이드
+   (Color Primitives / Base 24 + Color Semantic / Light 24).
+   Names mirror the Figma variables: "olive/500" → --olive-500, "brand/primary" → --brand-primary.
+   Screens should use the SEMANTIC tokens; primitives are here only so semantics can alias them. */
+
+:root {
+  /* ---------- Color primitives (Figma: PICO · Color Primitives / Base) ---------- */
+  --butter-200: #fdf4b1;
+  --butter-50: #fffad7;
+  --olive-500: #b1bd35;
+  --olive-300: #c5cd71;
+  --olive-accent: #b4bf38;
+  --lime-400: #c1ff30;
+  --cyan-500: #00b7ff;
+  --cyan-50: #e4f8fd;
+
+  --neutral-0: #ffffff;
+  --neutral-190: #dbdbdb;
+  --neutral-200: #dadada;
+  --neutral-400: #979797;
+  --neutral-600: #676767;
+  --neutral-700: #4e4e4e;
+  --neutral-850: #2c2c2c;
+  --neutral-950: #121212;
+  --neutral-1000: #000000;
+
+  --red-500: #e32d3d;
+  --orange-400: #fca436;
+  --yellow-400: #f4d159;
+  --leaf-500: #a7c049;
+  --teal-400: #48b2bb;
+  --blue-600: #2c70d1;
+  --purple-600: #6b4eac;
+
+  /* ---------- Color semantic (Figma: PICO · Color Semantic / Light) ---------- */
+  /* brand · background · surface */
+  --brand-primary: var(--olive-500);
+  --brand-soft: var(--olive-300);
+  --background-default: var(--butter-200);
+  --surface-default: var(--butter-50);
+  --surface-brand: var(--olive-500);
+  --surface-subtle: var(--olive-300);
+  --surface-inverse: var(--neutral-1000);
+
+  /* text · icon · border */
+  --text-primary: var(--neutral-1000);
+  --text-secondary: var(--neutral-600);
+  --text-disabled: var(--neutral-600);
+  --text-on-brand: var(--neutral-1000);
+  --text-on-inverse: var(--butter-200);
+  --icon-primary: var(--neutral-1000);
+  --border-strong: var(--neutral-1000);
+  --border-disabled: var(--neutral-600);
+
+  /* action · feedback · accent · depth */
+  --action-primary: var(--olive-500);
+  --action-selected: var(--olive-500);
+  --action-disabled: var(--neutral-190);
+  --feedback-info: var(--cyan-500);
+  --feedback-info-subtle: var(--cyan-50);
+  --accent-highlight: var(--lime-400);   /* 장식 강조 전용 · CTA에 쓰지 않음 */
+  --accent-reward: var(--yellow-400);
+  --shadow-hard: var(--neutral-1000);
+  --overlay-scrim: rgba(44, 44, 44, .57); /* #2C2C2C · α 57% (리터럴, 별칭 없음) */
+
+  /* ---------- Shape · line · depth (from the component library) ---------- */
+  --line: 1px solid var(--border-strong);          /* 단단한 윤곽선 */
+  --line-dashed: 1px dashed var(--border-strong);  /* 종이 접힘 점선 */
+  --shadow-cta: 5px 8.6px 0 var(--shadow-hard);    /* 큰 버튼 */
+  --shadow-card: 9px 10.4px 0 var(--shadow-hard);  /* 카드 */
+  --shadow-toast: 5.3px 5px 0 var(--shadow-hard);  /* 텍스트 알림 */
+  --shadow-modal: 10px 11.5px 0 var(--shadow-hard);/* 팝업 */
+
+  /* ---------- Type ---------- */
+  --font-body: 'Allimjang', 'Pretendard', 'Apple SD Gothic Neo', sans-serif; /* 학교안심 알림장 */
+  --font-system: 'Inter', -apple-system, sans-serif;                         /* 상태바 시간 */
+}
