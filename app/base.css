@@ -45,17 +45,25 @@ p, h1, h2, h3 { margin: 0; font-weight: inherit; }
 img { display: block; }
 .b { font-weight: 700; }
 
-/* ---------- phone frame ---------- */
+/* ---------- phone frame ----------
+   Every screen is a fixed 375 x 812 frame (Figma base size). Pages taller than 812
+   (--h) scroll inside the frame: shared.js moves the content into .scroll > .canvas,
+   while fixed layers (tab bar, home indicator, overlays, [data-fixed]) stay put. */
 .phone {
   position: relative;
+  flex: none;
   width: 375px;
-  min-height: var(--h, 812px);
-  height: var(--h, 812px);
+  height: 812px;
   background: var(--bg);
   overflow: hidden;
   transform-origin: top center;
 }
+.phone > .scroll { position: absolute; inset: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.phone > .scroll::-webkit-scrollbar { display: none; }
+.phone > .scroll > .canvas { position: relative; width: 375px; height: var(--h, 812px); }
+.phone > .top[data-fixed] { z-index: 15; }
 @media (min-width: 500px) { body { padding: 24px 0; } .phone { box-shadow: 0 10px 40px rgba(0,0,0,.4); } }
+@media (max-width: 499px) { body { overflow: hidden; height: 100vh; height: 100dvh; } }
 
 /* ---------- status bar + top nav ---------- */
 .top { position: absolute; left: 0; top: 0; width: 375px; z-index: 5; }

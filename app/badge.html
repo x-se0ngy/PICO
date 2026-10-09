@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="base.css">
 <style>
   :root { --font-hand: 'SejongGeulggot', var(--font); }
-  .tabbar, .phone > .home-ind { position: fixed; left: 50%; margin-left: -187.5px; bottom: 0; }
   @media (min-width: 500px) { body { padding-bottom: 0; } }
   .abs { position: absolute; }
   .nw { white-space: nowrap; }
@@ -66,8 +65,8 @@
   .tip-body .h img { width: 32px; height: 32px; }
   .tip-body .d { display: flex; flex-direction: column; gap: 4px; font-size: 14px; white-space: nowrap; }
 
-  /* ---------- overlays: fixed to the viewport, centred on the 375 column ---------- */
-  .ov { position: fixed; top: 0; bottom: 0; left: 50%; width: 375px; margin-left: -187.5px; z-index: 50; }
+  /* ---------- overlays: cover the 375x812 frame ---------- */
+  .ov { position: absolute; inset: 0; z-index: 50; }
   .ov .dim { position: absolute; inset: 0; z-index: 0; background: rgba(44, 44, 44, .57); }
   .bsheet, .bmodal { z-index: 1; }
   .x { position: absolute; width: 32px; height: 32px; z-index: 2; }

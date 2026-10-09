@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="base.css">
 <style>
   /* long frame scrolls in the browser; tab bar + home indicator stick to the viewport bottom */
-  .tabbar, .phone > .home-ind { position: fixed; left: 50%; margin-left: -187.5px; bottom: 0; }
   @media (min-width: 500px) { body { padding-bottom: 0; } }
   .abs { position: absolute; }
 
@@ -81,7 +80,7 @@
 </head><body>
 <div class="phone" style="--h:1974px">
 
-  <div class="top">
+  <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
