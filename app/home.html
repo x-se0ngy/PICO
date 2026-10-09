@@ -52,10 +52,9 @@
   .pin:active i { filter: brightness(.92); }
   @keyframes pin-found { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
   @keyframes pin-ping { 0% { transform: scale(1); } 4% { transform: scale(1.14); } 12%, 100% { transform: scale(1); } }
-  @media (prefers-reduced-motion: reduce) { .sweep, .pulse { animation: none; } .pulse { display: none; } .pin { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .sweep, .pulse { animation: none; display: none; } .pin { animation: none; } }
 
   .rec[hidden] { display: none; }
-  .rec-card .thumb.photo { border: 1px solid var(--ink); object-fit: cover; }
 
   .rec-h { position: absolute; left: 19.94px; top: 577.25px; font-size: 16px; line-height: 20px; white-space: nowrap; }
   .rec-card { position: absolute; left: 19.85px; top: 601.94px; width: 330px; height: 70px; text-align: left; }
@@ -86,11 +85,18 @@
   /* ---- place sheet ---- */
   .dim.scrim { background: rgba(44, 44, 44, .57); }
   .place { top: 357px; height: 455px; }
+  /* place sheet: slides up from the bottom edge, slides back down on close */
+  .phone > .sheet.place { animation: sheet-up .3s cubic-bezier(.32, .72, 0, 1) both; }
+  .phone > .sheet.place.is-closing { animation: sheet-down .3s cubic-bezier(.4, 0, .7, .2) both; }
+  .phone > .dim.scrim.is-closing { animation: scrim-out .3s cubic-bezier(.25, .6, .07, 1) both; }
+  @keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes sheet-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+  @keyframes scrim-out { from { opacity: 1; } to { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .phone > .sheet.place, .phone > .sheet.place.is-closing, .phone > .dim.scrim.is-closing { animation: none; } }
   .home-ind { z-index: 45; }
   .place .sheet-handle { position: absolute; left: 147.5px; top: 17px; margin: 0; }
   .place-row { position: absolute; left: 20.7px; top: 53.92px; display: flex; align-items: center; gap: 15px; }
   .place-row .thumb { width: 71.786px; height: 50px; }
-  .place-row .thumb.photo { border: 1px solid var(--ink); object-fit: cover; }
   .place-row div { width: 200px; height: 50px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
   .place-row h2 { font-size: 22px; line-height: 20px; }
   .place-row p { font-size: 14px; line-height: 12px; white-space: nowrap; }
@@ -127,7 +133,7 @@
       <p class="rec-h">내 근처 탐험 추천</p>
       <button class="rec-card" type="button" id="recCard" data-open-sheet>
         <span class="rec-face">
-          <img class="thumb" id="recThumb" src="assets/home/place-thumb.png" alt="">
+          <img class="thumb" id="recThumb" src="assets/home/place-thumb-park.png" alt="">
           <span class="rec-body">
             <span class="rec-txt"><b id="recName">햇살 근린 공원</b><span id="recSub">걸어서 5분 · 지금 방아깨비가 많아요</span></span>
             <img class="chev" src="assets/common/arrow-alt-down.png" alt="">
@@ -168,7 +174,7 @@
   <div class="sheet place" id="sheet" role="dialog" aria-modal="true" aria-labelledby="placeName" hidden>
     <div class="sheet-handle"></div>
     <div class="place-row">
-      <img class="thumb" id="sheetThumb" src="assets/home/place-thumb-sheet.png" alt="">
+      <img class="thumb" id="sheetThumb" src="assets/home/place-thumb-park.png" alt="">
       <div><h2 id="placeName">햇살 근린 공원</h2><p id="placeSub">걸어서 5분 · 지금 방아깨비가 많아요</p></div>
     </div>
     <img class="place-map" id="placeMap" src="assets/home/place-map.png" alt="햇살 근린 공원 주변 지도">
@@ -187,14 +193,15 @@
   // nearby places = radar pins. x/y: bounding box of the rotated 34px square; a: angle (deg, clockwise from up)
   // from the radar centre, so each pin lights up when the sweep passes it.
   // Only 햇살 근린 공원 is designed in Figma; the other two reuse its map and use insect photos as thumbnails.
+  // Figma 2.1.2 홈 ×3 + 2.2.1–2.2.3 홈 팝업: pin positions = "map" instance + 3.63 (rotated-square bounds)
+  var ALL_BUGS = [['grasshopper', '방아깨비'], ['ladybug', '무당벌레'], ['butterfly', '호랑나비'], ['dragonfly', '고추잠자리']];
   var places = [
-    { x: 206.05, y: 244.37, a: 23.9,  name: '햇살 근린 공원', sub: '걸어서 5분 · 지금 방아깨비가 많아요',
-      thumb: 'assets/home/place-thumb.png', sheetThumb: 'assets/home/place-thumb-sheet.png',
-      bugs: [['grasshopper', '방아깨비'], ['ladybug', '무당벌레'], ['butterfly', '호랑나비'], ['dragonfly', '고추잠자리']] },
-    { x: 48.43,  y: 381.95, a: 250.2, name: '물빛 개울 산책로', sub: '걸어서 6분 · 고추잠자리가 자주 보여요',
-      photo: 'assets/tabs/card-dragonfly.png', bugs: [['dragonfly', '고추잠자리'], ['butterfly', '호랑나비']] },
-    { x: 190.93, y: 471,    a: 168.1, name: '학교 뒤 텃밭', sub: '걸어서 7분 · 잎 위에 무당벌레가 있어요',
-      photo: 'assets/tabs/card-ladybug.png', bugs: [['ladybug', '무당벌레'], ['grasshopper', '방아깨비'], ['butterfly', '호랑나비']] }
+    { x: 94.63,  y: 455.63, a: 210.9, name: '햇살 근린 공원', sub: '걸어서 5분 · 지금 방아깨비가 많아요',
+      thumb: 'assets/home/place-thumb-park.png', map: 'assets/home/place-map.png', bugs: ALL_BUGS },
+    { x: 128.63, y: 257.63, a: 337.2, name: '물빛 개울 산책로', sub: '걸어서 6분 · 고추잠자리가 자주 보여요',
+      thumb: 'assets/home/place-thumb-stream.png', map: 'assets/home/place-map-stream.png', bugs: [['dragonfly', '고추잠자리']] },
+    { x: 268.63, y: 400.63, a: 119.8, name: '학교 뒤 텃밭', sub: '걸어서 7분 · 잎 위에 무당벌레가 있어요',
+      thumb: 'assets/home/place-thumb-garden.png', map: 'assets/home/place-map-garden.png', bugs: ALL_BUGS }
   ];
   var pinsEl = document.getElementById('radarPins');
   pinsEl.innerHTML = places.map(function (p, i) {
@@ -204,10 +211,7 @@
 
   // selection: yellow = not selected, green = selected → 내 근처 탐험 추천 appears
   var selected = -1, rec = document.getElementById('rec'), recTimer;
-  function setThumb(img, p, sheet) {
-    img.src = p.photo || (sheet ? p.sheetThumb : p.thumb);
-    img.classList.toggle('photo', !!p.photo);
-  }
+  function setThumb(img, p) { img.src = p.thumb; }
   function select(i) {
     if (i === selected) return;
     selected = i;
@@ -220,7 +224,7 @@
     var p = places[i];
     document.getElementById('recName').textContent = p.name;
     document.getElementById('recSub').textContent = p.sub;
-    setThumb(document.getElementById('recThumb'), p, false);
+    setThumb(document.getElementById('recThumb'), p);
     document.getElementById('recCard').setAttribute('aria-label', p.name + ' 자세히 보기');
     rec.hidden = true; void rec.offsetWidth; rec.hidden = false;   // replay the dissolve for each new pick
   }
@@ -261,8 +265,9 @@
   function fillSheet(p) {
     document.getElementById('placeName').textContent = p.name;
     document.getElementById('placeSub').textContent = p.sub;
-    document.getElementById('placeMap').alt = p.name + ' 주변 지도';
-    setThumb(document.getElementById('sheetThumb'), p, true);
+    var map = document.getElementById('placeMap');
+    map.src = p.map; map.alt = p.name + ' 주변 지도';
+    setThumb(document.getElementById('sheetThumb'), p);
     document.getElementById('bugs').innerHTML = p.bugs.map(function (b) {
       return '<div class="bug"><img src="assets/home/insect-' + b[0] + '.png" alt=""><span>' + b[1] + '</span></div>';
     }).join('');
@@ -282,11 +287,25 @@
 
   // sheet
   var sheet = document.getElementById('sheet'), dim = document.getElementById('sheetDim');
-  function openSheet() { fillSheet(places[selected >= 0 && phone.getAttribute('data-mode') === 'radar' ? selected : 0]); sheet.hidden = false; dim.hidden = false; }
-  function closeSheet() { sheet.hidden = true; dim.hidden = true; }
+  // bottom sheet slides up from below (300ms, Slow); the scrim dissolves with it
+  var closeTimer;
+  function openSheet() {
+    clearTimeout(closeTimer);
+    fillSheet(places[selected >= 0 && phone.getAttribute('data-mode') === 'radar' ? selected : 0]);
+    sheet.classList.remove('is-closing'); dim.classList.remove('is-closing');
+    sheet.hidden = false; dim.hidden = false;
+  }
+  function closeSheet() {
+    if (sheet.hidden) return;
+    sheet.classList.add('is-closing'); dim.classList.add('is-closing');
+    closeTimer = setTimeout(function () {
+      sheet.hidden = true; dim.hidden = true;
+      sheet.classList.remove('is-closing'); dim.classList.remove('is-closing');
+    }, 300);
+  }
   document.addEventListener('click', function (e) { if (e.target.closest('[data-open-sheet]')) openSheet(); });
-  dim.addEventListener('click', function () { window.picoSwap(closeSheet); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) window.picoSwap(closeSheet); });
+  dim.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
 
   var st = document.documentElement.dataset.state;
   if (st === 'field') setMode('field');
