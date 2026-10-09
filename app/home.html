@@ -54,7 +54,14 @@
   @keyframes pin-ping { 0% { transform: scale(1); } 4% { transform: scale(1.14); } 12%, 100% { transform: scale(1); } }
   @media (prefers-reduced-motion: reduce) { .sweep, .pulse { animation: none; display: none; } .pin { animation: none; } }
 
-  .rec[hidden] { display: none; }
+  .rec-card[hidden] { display: none; }
+  /* empty state (Figma 2.1.2 홈-내 근처-0): no pin selected yet */
+  .rec-empty { cursor: default; }
+  .rec-empty .rec-face { gap: 10px; }
+  .rec-empty .slot { position: relative; flex: none; width: 71.786px; height: 50px; border: 1px solid var(--ink); }
+  .rec-empty .slot img { position: absolute; left: 19px; top: 7px; width: 32px; height: 32px; }
+  .rec-empty .rec-txt { width: 190px; gap: 2px; }
+  .rec-empty .rec-txt span { white-space: nowrap; }
 
   .rec-h { position: absolute; left: 19.94px; top: 577.25px; font-size: 16px; line-height: 20px; white-space: nowrap; }
   .rec-card { position: absolute; left: 19.85px; top: 601.94px; width: 330px; height: 70px; text-align: left; }
@@ -84,7 +91,7 @@
 
   /* ---- place sheet ---- */
   .dim.scrim { background: rgba(44, 44, 44, .57); }
-  .place { top: 357px; height: 455px; }
+  .place { top: 357px; height: 455px; border-top: 0; }
   /* place sheet: slides up from the bottom edge, slides back down on close */
   .phone > .sheet.place { animation: sheet-up .3s cubic-bezier(.32, .72, 0, 1) both; }
   .phone > .sheet.place.is-closing { animation: sheet-down .3s cubic-bezier(.4, 0, .7, .2) both; }
@@ -95,19 +102,20 @@
   @media (prefers-reduced-motion: reduce) { .phone > .sheet.place, .phone > .sheet.place.is-closing, .phone > .dim.scrim.is-closing { animation: none; } }
   .home-ind { z-index: 45; }
   .place .sheet-handle { position: absolute; left: 147.5px; top: 17px; margin: 0; }
-  .place-row { position: absolute; left: 20.7px; top: 53.92px; display: flex; align-items: center; gap: 15px; }
+  .place-row { position: absolute; left: 19.03px; top: 54px; display: flex; align-items: center; gap: 15px; }
   .place-row .thumb { width: 71.786px; height: 50px; }
   .place-row div { width: 200px; height: 50px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
   .place-row h2 { font-size: 22px; line-height: 20px; }
   .place-row p { font-size: 14px; line-height: 12px; white-space: nowrap; }
-  .place-map { position: absolute; left: 20.2px; top: 115.56px; width: 336px; height: 111px; }
-  .meet { position: absolute; left: 20.7px; top: 238.75px; font-size: 14px; line-height: 12px; white-space: nowrap; }
-  .bugs { position: absolute; left: 20px; top: 258px; width: 335px; padding: 0 20px; display: flex; gap: 20px; }
+  .place-map { position: absolute; left: 18.53px; top: 113.5px; width: 337px; height: 111px; }
+  .meet { position: absolute; left: 19.03px; top: 234px; font-size: 14px; line-height: 12px; white-space: nowrap; }
+  .bugs { position: absolute; left: 19.03px; top: 254px; width: 335px; padding: 0 20px; display: flex; gap: 20px; }
   .bug { width: 60px; height: 82px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
   .bug img { width: 60px; height: 60px; }
   .bug span { font-size: 12px; line-height: 12px; white-space: nowrap; }
-  .place .cta { left: 20.7px; top: 351.03px; }
-  .place .cta::before { left: 3.98px; top: 5.11px; }
+  /* Figma 2.2.x 큰 버튼: face 330x54 at (19.17, 345), shadow +5.42 / +9.5 */
+  .place .cta { left: 19.17px; top: 345px; }
+  .place .cta::before { left: 5.42px; top: 9.5px; }
 </style>
 </head><body>
 <div class="phone" id="phone" data-mode="radar" style="--h:812px">
@@ -129,9 +137,15 @@
     <div id="radarPins"></div>
 
     <!-- 내 근처 탐험 추천: shown only while a pin is selected (green) -->
-    <div class="rec" id="rec" hidden data-dissolve aria-live="polite">
+    <div class="rec" id="rec" aria-live="polite">
       <p class="rec-h">내 근처 탐험 추천</p>
-      <button class="rec-card" type="button" id="recCard" data-open-sheet>
+      <div class="rec-card rec-empty" id="recEmpty" data-dissolve>
+        <span class="rec-face">
+          <span class="slot"><img src="assets/home/icon-map-outline.png" alt=""></span>
+          <span class="rec-txt"><b>어디로 탐험을 떠나볼까요?</b><span>지도에서 탐험지를 선택하면<br>만날 수 있는 친구들을 미리 볼 수 있어요.</span></span>
+        </span>
+      </div>
+      <button class="rec-card" type="button" id="recCard" data-open-sheet data-dissolve hidden>
         <span class="rec-face">
           <img class="thumb" id="recThumb" src="assets/home/place-thumb-park.png" alt="">
           <span class="rec-body">
@@ -210,7 +224,7 @@
   }).join('');
 
   // selection: yellow = not selected, green = selected → 내 근처 탐험 추천 appears
-  var selected = -1, rec = document.getElementById('rec'), recTimer;
+  var selected = -1, recEmpty = document.getElementById('recEmpty'), recCard = document.getElementById('recCard');
   function setThumb(img, p) { img.src = p.thumb; }
   function select(i) {
     if (i === selected) return;
@@ -219,14 +233,15 @@
       var on = +b.dataset.pin === i;
       b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
-    clearTimeout(recTimer);
-    if (i < 0) { rec.hidden = true; return; }
+    // swap the card (empty ↔ place) and replay its 300ms dissolve
+    var show = i < 0 ? recEmpty : recCard, hide = i < 0 ? recCard : recEmpty;
+    hide.hidden = true; show.hidden = true; void show.offsetWidth; show.hidden = false;
+    if (i < 0) return;
     var p = places[i];
     document.getElementById('recName').textContent = p.name;
     document.getElementById('recSub').textContent = p.sub;
     setThumb(document.getElementById('recThumb'), p);
-    document.getElementById('recCard').setAttribute('aria-label', p.name + ' 자세히 보기');
-    rec.hidden = true; void rec.offsetWidth; rec.hidden = false;   // replay the dissolve for each new pick
+    recCard.setAttribute('aria-label', p.name + ' 자세히 보기');
   }
   pinsEl.addEventListener('click', function (e) {
     var b = e.target.closest('.pin'); if (b) select(+b.dataset.pin);
