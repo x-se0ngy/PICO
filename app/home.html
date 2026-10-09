@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 홈</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  /* surface panel behind radar / field */
+  .panel { position: absolute; left: 0; top: 118px; width: 375px; height: 448.56px; background: var(--surface); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+  .phone[data-mode="field"] .panel { height: 608.29px; }
+
+  .greet { position: absolute; left: 19.56px; top: 141.47px; display: flex; flex-direction: column; gap: 5px; z-index: 3; }
+  .greet h1 { font-weight: 700; font-size: 22px; line-height: 25.25px; height: 25.25px; white-space: nowrap; }
+  .greet p { font-size: 16px; line-height: 15.25px; height: 15.25px; white-space: nowrap; }
+
+  /* ---- radar mode ---- */
+  .radar, .field { position: absolute; inset: 0; }
+  .phone[data-mode="field"] .radar, .phone[data-mode="radar"] .field { display: none; }
+  .abs { position: absolute; display: block; }
+  .ring-lbl { position: absolute; top: 354.37px; font-size: 10px; line-height: 20px; white-space: nowrap; }
+  .pin { position: absolute; width: 47.852px; height: 47.852px; }
+  .pin i { position: absolute; left: 6.93px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); border: 1px dashed var(--ink); background: var(--reward); }
+  .pin img { position: absolute; left: 15.43px; top: 14.43px; width: 18px; height: 18px; }
+  .pin--hot i { background: var(--brand); border-style: solid; }
+  .pin--hot::before { content: ''; position: absolute; left: 9.79px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); background: var(--ink-950); border: 1px solid var(--ink); }
+  .pin:active i { filter: brightness(.92); }
+
+  .rec-h { position: absolute; left: 21.44px; top: 580px; font-size: 16px; line-height: 20px; white-space: nowrap; }
+  .rec-s { position: absolute; left: 21.44px; top: 600px; font-size: 12px; line-height: 20px; white-space: nowrap; }
+  .rec-card { position: absolute; left: 19.56px; top: 623px; width: 330px; height: 70px; text-align: left; }
+  .rec-card::before { content: ''; position: absolute; left: 5px; top: 6.85px; width: 330px; height: 70px; background: var(--ink); border: 1px solid var(--ink); }
+  .rec-face { position: absolute; inset: 0; background: var(--surface); border: 1px solid var(--ink); padding: 10px 1px 10px 14px; display: flex; align-items: center; gap: 9px; }
+  .rec-face .thumb { width: 71.786px; height: 50px; }
+  .rec-body { display: flex; align-items: flex-end; gap: 31px; }
+  .rec-txt { width: 171.09px; display: flex; flex-direction: column; gap: 2px; }
+  .rec-txt b { font-weight: 400; font-size: 14px; line-height: 20px; white-space: nowrap; }
+  .rec-txt span { font-size: 10px; line-height: 12px; }
+  .rec-body .chev { width: 32px; height: 32px; transform: rotate(-90deg); }
+
+  /* ---- mode toggle ---- */
+  .modes { position: absolute; left: 283.07px; top: 490.33px; width: 73px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; z-index: 4; }
+  .phone[data-mode="field"] .modes { left: 282.5px; top: 653px; }
+  .mode { position: relative; width: 72px; height: 25px; border: 1px dashed var(--ink); display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 10px; line-height: 10.27px; }
+  .mode img { width: 18px; height: 18px; }
+  .mode span { width: 29px; white-space: nowrap; }
+  .mode.on { width: 70px; border: 1px solid var(--ink); background: var(--brand-soft); margin-right: 3px; }
+  .mode.on::before { content: ''; position: absolute; left: 2px; top: .4px; width: 70px; height: 25px; background: var(--ink); border: 1px solid var(--ink); z-index: -1; }
+
+  /* ---- field mode (exported illustration layers) ---- */
+  .fpin { position: absolute; width: 20px; height: 20px; }
+  .fpin img { position: absolute; }
+  .fpin .o { inset: 0; width: 20px; height: 20px; }
+  .fpin .i { left: 5px; top: 5px; width: 10px; height: 10px; }
+
+  /* ---- place sheet ---- */
+  .dim.scrim { background: rgba(44, 44, 44, .57); }
+  .place { top: 357px; height: 455px; }
+  .home-ind { z-index: 45; }
+  .place .sheet-handle { position: absolute; left: 147.5px; top: 17px; margin: 0; }
+  .place-row { position: absolute; left: 20.7px; top: 53.92px; display: flex; align-items: center; gap: 15px; }
+  .place-row .thumb { width: 71.786px; height: 50px; }
+  .place-row div { width: 200px; height: 50px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+  .place-row h2 { font-size: 22px; line-height: 20px; }
+  .place-row p { font-size: 14px; line-height: 12px; white-space: nowrap; }
+  .place-map { position: absolute; left: 20.2px; top: 115.56px; width: 336px; height: 111px; }
+  .meet { position: absolute; left: 20.7px; top: 238.75px; font-size: 14px; line-height: 12px; white-space: nowrap; }
+  .bugs { position: absolute; left: 20px; top: 258px; width: 335px; padding: 0 20px; display: flex; gap: 20px; }
+  .bug { width: 60px; height: 82px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .bug img { width: 60px; height: 60px; }
+  .bug span { font-size: 12px; line-height: 12px; white-space: nowrap; }
+  .place .cta { left: 20.7px; top: 351.03px; }
+  .place .cta::before { left: 3.98px; top: 5.11px; }
+</style>
+</head><body>
+<div class="phone" id="phone" data-mode="radar" style="--h:812px">
+
+  <div class="panel"></div>
+
+  <!-- ========== 내 근처 (radar) ========== -->
+  <section class="radar" aria-label="내 근처">
+    <img class="abs" src="assets/home/radar-ring-300.png" alt="" style="left:36.85px;top:213.87px;width:301px;height:301px">
+    <img class="abs" src="assets/home/radar-ring-200.png" alt="" style="left:86.85px;top:263.87px;width:201px;height:201px">
+    <img class="abs" src="assets/home/radar-ring-100.png" alt="" style="left:136.85px;top:313.87px;width:101px;height:101px">
+    <img class="abs" src="assets/home/radar-me-outer.png" alt="" style="left:177.35px;top:354.37px;width:20px;height:20px">
+    <img class="abs" src="assets/home/radar-me-inner.png" alt="내 위치" style="left:182.35px;top:359.37px;width:10px;height:10px">
+    <span class="ring-lbl" style="left:207.85px">100m</span>
+    <span class="ring-lbl" style="left:254.03px">200m</span>
+    <span class="ring-lbl" style="left:303.99px">300m</span>
+    <div id="radarPins"></div>
+
+    <p class="rec-h">내 근처 탐험 추천</p>
+    <p class="rec-s">내 위치는 저장하지 않아요. · 핀을 눌러 보세요.</p>
+    <button class="rec-card" type="button" data-open-sheet aria-label="햇살 근린 공원 자세히 보기">
+      <span class="rec-face">
+        <img class="thumb" src="assets/home/place-thumb.png" alt="">
+        <span class="rec-body">
+          <span class="rec-txt"><b>햇살 근린 공원</b><span>걸어서 5분 · 지금 방아깨비가 많아요</span></span>
+          <img class="chev" src="assets/common/arrow-alt-down.png" alt="">
+        </span>
+      </span>
+    </button>
+  </section>
+
+  <!-- ========== 내 들판 (field) ========== -->
+  <section class="field" aria-label="내 들판" id="field"></section>
+
+  <div class="greet"><h1>초고속 탐험가 선우,</h1><p>오늘은 어떤 친구를 만나 볼까요?</p></div>
+
+  <!-- mode toggle -->
+  <div class="modes" role="tablist" aria-label="보기 모드">
+    <button class="mode on" type="button" role="tab" data-mode="radar" aria-selected="true"><img src="assets/home/icon-radar-filled.png" alt=""><span>내 근처</span></button>
+    <button class="mode" type="button" role="tab" data-mode="field" aria-selected="false"><img src="assets/home/icon-map-outline.png" alt=""><span>내 들판</span></button>
+  </div>
+
+  <!-- top: status + nav -->
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"><span class="nav-weather"><span>☀︎</span><span>맑음 · 오후 3시</span></span></div>
+  </div>
+
+  <!-- tab bar -->
+  <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
+    <div class="tabbar-row">
+      <div class="tabbar-group"><a href="home.html" aria-label="홈" aria-current="page"><img src="assets/common/tab-home-filled.png" alt=""></a><a href="dogam.html" aria-label="도감"><img src="assets/common/tab-tag-outline.png" alt=""></a></div>
+      <a class="tab-cam" href="capture-1.html" aria-label="촬영"><img src="assets/common/tab-camera.png" alt=""></a>
+      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/common/tab-bookmark.png" alt=""></a><a href="my.html" aria-label="마이"><img src="assets/common/tab-user.png" alt=""></a></div>
+    </div></nav>
+
+  <!-- ========== place bottom sheet ========== -->
+  <div class="dim scrim" id="sheetDim" hidden></div>
+  <div class="sheet place" id="sheet" role="dialog" aria-modal="true" aria-labelledby="placeName" hidden>
+    <div class="sheet-handle"></div>
+    <div class="place-row">
+      <img class="thumb" src="assets/home/place-thumb-sheet.png" alt="">
+      <div><h2 id="placeName">햇살 근린 공원</h2><p>걸어서 5분 · 지금 방아깨비가 많아요</p></div>
+    </div>
+    <img class="place-map" src="assets/home/place-map.png" alt="햇살 근린 공원 주변 지도">
+    <p class="meet">여기서 지금 만날 수 있어요.</p>
+    <div class="bugs" id="bugs"></div>
+    <a class="cta cta--yellow" href="capture-1.html"><span class="cta-face">탐험 시작하기 <img src="assets/common/arrow-right.png" alt=""></span></a>
+  </div>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+(function () {
+  var phone = document.getElementById('phone');
+
+  // radar pins (bounding box of the rotated 34px square, from Figma)
+  var pins = [
+    { x: 206.05, y: 244.37, hot: true,  name: '햇살 근린 공원' },
+    { x: 48.43,  y: 381.95, name: '근처 탐험 장소' },
+    { x: 190.93, y: 471,    name: '근처 탐험 장소' }
+  ];
+  document.getElementById('radarPins').innerHTML = pins.map(function (p) {
+    return '<button type="button" class="pin' + (p.hot ? ' pin--hot' : '') + '" data-open-sheet style="left:' + p.x + 'px;top:' + p.y + 'px" aria-label="' + p.name + '"><i></i><img src="assets/home/icon-location.png" alt=""></button>';
+  }).join('');
+
+  // field illustration: exported layers, Figma render bounds, in Figma z-order
+  var F = 'assets/home/field/';
+  var layers = [
+    ['sun', 199.89, 217.64, 175.11, 225.17],
+    ['hill-back', 0, 344.36, 375, 208.83],
+    ['hill-front', 0, 450.11, 375, 277.96],
+    ['pond-outer', 19.56, 609.91, 166.3, 56.04],
+    ['bush-patch', 216.39, 494.99, 101.3, 34.13],
+    ['pond-inner', 22.49, 623.75, 84.15, 28.35],
+    ['pin:pink', 177.94, 569.48], ['pin:pink', 94.32, 470.51], ['pin:purple', 85.99, 682.36], ['pin:yellow', 277.39, 488.77],
+    ['grass-a', 251.77, 464.31, 10.2, 17.24], ['grass-b', 126.29, 580.18, 10.2, 17.24], ['grass-b', 131.43, 394.93, 10.2, 17.24], ['grass-b', 213.35, 523.13, 10.2, 17.24],
+    ['tuft-a', 330.05, 580.96, 27.41, 21.77], ['tuft-b', 339.79, 366.31, 27.41, 21.77], ['tuft-a', 112.99, 445.25, 27.41, 21.77],
+    ['grass-b', 321.7, 442.91, 10.2, 17.24], ['grass-a', 19.13, 444.62, 10.2, 17.24],
+    ['tree-tall', 45.11, 459.12, 42.55, 84.78], ['tree-mid', 24.56, 495.78, 42.55, 66.69],
+    ['tree-a', 293.79, 381.45, 30.42, 47.67], ['tree-b', 265, 359.2, 25.67, 40.23], ['tree-c', 65.75, 354.45, 25.67, 39.84],
+    ['path', 204.04, 542.39, 170.96, 184.9]
+  ];
+  document.getElementById('field').innerHTML = layers.map(function (l) {
+    if (l[0].indexOf('pin:') === 0) {
+      var c = l[0].slice(4);
+      return '<button type="button" class="fpin" data-open-sheet style="left:' + l[1] + 'px;top:' + l[2] + 'px" aria-label="곤충 친구 보기"><img class="o" src="' + F + 'pin-' + c + '-outer.png" alt=""><img class="i" src="' + F + 'pin-' + c + '-inner.png" alt=""></button>';
+    }
+    return '<img class="abs" src="' + F + l[0] + '.png" alt="" style="left:' + l[1] + 'px;top:' + l[2] + 'px;width:' + l[3] + 'px;height:' + l[4] + 'px">';
+  }).join('');
+
+  // insects you can meet here
+  var bugs = [['grasshopper', '방아깨비'], ['ladybug', '무당벌레'], ['butterfly', '호랑나비'], ['dragonfly', '고추잠자리']];
+  document.getElementById('bugs').innerHTML = bugs.map(function (b) {
+    return '<div class="bug"><img src="assets/home/insect-' + b[0] + '.png" alt=""><span>' + b[1] + '</span></div>';
+  }).join('');
+
+  // mode toggle
+  var modeBtns = document.querySelectorAll('.mode');
+  function setMode(m) {
+    phone.setAttribute('data-mode', m);
+    modeBtns.forEach(function (b) {
+      var on = b.getAttribute('data-mode') === m;
+      b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }
+  modeBtns.forEach(function (b) { b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); }); });
+
+  // sheet
+  var sheet = document.getElementById('sheet'), dim = document.getElementById('sheetDim');
+  function openSheet() { sheet.hidden = false; dim.hidden = false; }
+  function closeSheet() { sheet.hidden = true; dim.hidden = true; }
+  document.addEventListener('click', function (e) { if (e.target.closest('[data-open-sheet]')) openSheet(); });
+  dim.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+
+  var st = document.documentElement.dataset.state;
+  if (st === 'field') setMode('field');
+  if (st === 'sheet') { setMode('field'); openSheet(); }
+})();
+</script>
+</body></html>

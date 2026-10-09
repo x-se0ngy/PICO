@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 도감</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  /* long frame scrolls in the browser; tab bar + home indicator stick to the viewport bottom */
+  .tabbar, .phone > .home-ind { position: fixed; left: 50%; margin-left: -187.5px; bottom: 0; }
+  @media (min-width: 500px) { body { padding-bottom: 0; } }
+  .abs { position: absolute; }
+
+  /* summary card */
+  .card-shadow { left: 30px; top: 143.65px; width: 325px; height: 215px; background: var(--ink); border: 1px solid var(--ink); }
+  .card-face { left: 21px; top: 133.21px; width: 325px; height: 215px; background: var(--brand); border: 1px dashed var(--ink); }
+  .card-inner { left: 28.5px; top: 215.63px; width: 310px; height: 125px; background: var(--brand-soft); }
+  .summary { left: 31.49px; top: 149.3px; white-space: nowrap; display: flex; flex-direction: column; gap: 5px; }
+  .summary .t { font-size: 20px; }
+  .summary .n { display: flex; gap: 4px; align-items: center; }
+  .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
+
+  /* collection bin illustration (pieces exported from Figma, placed at their render bounds) */
+  .bin img { position: absolute; }
+  .bin .cnt { position: absolute; top: 160.17px; left: 251.69px; font-weight: 700; font-size: 16px; line-height: 15px; }
+  .bin .of { position: absolute; white-space: nowrap; top: 162.17px; left: 276.76px; font-size: 10px; line-height: 15px; }
+  .bin .band { position: absolute; left: 223.71px; top: 129.58px; width: 110.56px; height: 8.88px; background: #b4bf38; border: 1px solid var(--ink); }
+  .bin .win { position: absolute; left: 263.71px; top: 105.14px; width: 30.31px; height: 6.48px; background: #e4f8fd; border: 1px solid var(--ink); }
+
+  .weekly { left: 36px; top: 224.3px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
+  .weekly > p { font-size: 14px; line-height: 19px; }
+  .weekly-row { display: flex; gap: 15px; justify-content: center; padding: 0 5px; }
+  .weekly-row a { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 10px; line-height: 12px; white-space: nowrap; }
+  .weekly-row img { width: 60px; height: 60px; }
+
+  /* search + list header */
+  .search { left: 20px; top: 386.2px; width: 335px; height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; gap: 15px; padding: 0 10px; }
+  .search img { width: 32px; height: 32px; flex: none; }
+  .search input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--ink); outline: none; padding: 0; }
+  .search input::placeholder { color: var(--ink); opacity: 1; }
+  .list-head { left: 20px; top: 441.2px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .list-head p { font-size: 16px; }
+  .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+  .sort img { width: 18px; height: 18px; transition: transform .15s; }
+  .sort[aria-pressed="true"] img { transform: rotate(180deg); }
+
+  /* insect cards */
+  .cards { left: 20px; top: 480px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 15px; row-gap: 14.6px; }
+  .icard { position: relative; width: 160px; height: 138px; display: block; }
+  .icard .photo { position: absolute; left: -0.5px; top: -0.5px; width: 161px; height: 139px; }
+  .icard .band { position: absolute; left: 0; top: 0.68px; width: 160px; height: 49px; background: #b1bd35; display: flex; }
+  .icard .band i { height: 50px; border: 1px dashed var(--ink); }
+  .icard .band i:first-child { width: 125px; } .icard .band i:last-child { width: 35px; }
+  .icard .meta { position: absolute; left: 0; top: 7.68px; width: 160px; padding: 0 5px 0 10px; display: flex; justify-content: space-between; align-items: center; }
+  .icard .meta b { display: block; font-weight: 400; font-size: 16px; white-space: nowrap; }
+  .icard .meta span { display: block; font-size: 12px; margin-top: 2px; }
+  .icard .bm { width: 24px; height: 24px; flex: none; }
+  .icard .bm img { width: 24px; height: 24px; }
+  .empty { left: 20px; top: 540px; width: 335px; text-align: center; font-size: 14px; }
+
+  /* PICO TIP banner */
+  .tip { left: 0; top: 813.27px; width: 375px; height: 115px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); }
+  .burst { left: 191.4px; top: 781.44px; width: 155.38px; height: 86.39px; }
+  .burst img { width: 100%; height: 100%; }
+  .burst span { position: absolute; left: 54.4px; top: 34.93px; font-size: 14px; white-space: nowrap; }
+  .tip-body { left: 15.85px; top: 829.77px; width: 260.15px; display: flex; flex-direction: column; gap: 12px; }
+  .tip-body .h { display: flex; gap: 10px; align-items: center; font-weight: 700; font-size: 20px; }
+  .tip-body .h img { width: 32px; height: 32px; }
+  .tip-body .d { display: flex; flex-direction: column; gap: 4px; font-size: 14px; white-space: nowrap; }
+
+  /* not-yet-met tiles */
+  .unknown { left: 21px; top: 958.61px; width: 335px; display: grid; grid-template-columns: 160px 160px; column-gap: 15px; row-gap: 14px; }
+  .utile { position: relative; height: 138.41px; background: var(--brand-soft); border: 1px dashed var(--ink); font-size: 14px; }
+  .utile img { position: absolute; left: 62.85px; top: 39.12px; width: 32px; height: 32.1px; }
+  .utile .no { position: absolute; left: 0; right: 0; top: 86.08px; text-align: center; }
+  .utile .msg { position: absolute; left: 0; right: 0; top: 110.15px; text-align: center; }
+</style>
+</head><body>
+<div class="phone" style="--h:1422px">
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
+  </div>
+
+  <!-- 나의 수집 현황 -->
+  <div class="abs card-shadow"></div>
+  <div class="abs card-face"></div>
+  <div class="abs card-inner"></div>
+  <div class="abs bin" aria-hidden="true">
+    <img src="assets/tabs/bin-body.png" alt="" style="left:228.89px;top:137.96px;width:99.96px;height:63.43px">
+    <img src="assets/tabs/bin-base.png" alt="" style="left:232.41px;top:179.74px;width:92.96px;height:21.64px">
+    <span class="cnt">24</span><span class="of">/ 80종</span>
+    <span class="band"></span><span class="win"></span>
+    <img src="assets/tabs/bin-handle.png" alt="" style="left:255.15px;top:93.61px;width:47.68px;height:18.51px">
+    <img src="assets/tabs/bin-lid.png" alt="" style="left:228.77px;top:111.12px;width:100.16px;height:18.96px">
+    <img src="assets/tabs/bin-vents.png" alt="" style="left:258.37px;top:116.37px;width:41px;height:8.46px">
+    <img src="assets/tabs/bin-leg-a.png" alt="" style="left:236.81px;top:144.26px;width:6.47px;height:20.46px">
+    <img src="assets/tabs/bin-leg-b.png" alt="" style="left:243.35px;top:141.93px;width:6.02px;height:15.83px">
+  </div>
+  <div class="abs summary">
+    <p class="t">나의 수집 현황</p>
+    <div class="n"><b>24종</b><span>/ 80종</span></div>
+  </div>
+  <div class="abs weekly">
+    <p>이번주 새로 만난 곤충</p>
+    <div class="weekly-row" id="weekly"></div>
+  </div>
+
+  <!-- 검색 + 목록 -->
+  <label class="abs search"><img src="assets/tabs/icon-search.png" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
+  <div class="abs list-head"><p>곤충 목록</p>
+    <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/tabs/icon-arrow-down-new.png" alt=""></button></div>
+  <div class="abs cards" id="cards"></div>
+  <p class="abs empty" id="empty" hidden>찾는 곤충이 없어요.</p>
+
+  <!-- PICO TIP -->
+  <div class="abs tip"></div>
+  <a class="abs burst" href="home.html"><img src="assets/tabs/tip-burst.png" alt=""><span>탐험하기</span></a>
+  <div class="abs tip-body">
+    <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP !</div>
+    <div class="d"><p>잎 뒷면도 살펴보세요!</p><p>작은 곤충은 잎 아래에 숨어 있는 경우가 많아요.</p></div>
+  </div>
+
+  <div class="abs unknown" id="unknown"></div>
+
+  <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
+    <div class="tabbar-row">
+      <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/tabs/tab-home-outline.png" alt=""></a><a href="dogam.html" aria-label="도감" aria-current="page"><img src="assets/tabs/tab-tag-filled.png" alt=""></a></div>
+      <a class="tab-cam" href="capture-1.html" aria-label="촬영"><img src="assets/common/tab-camera.png" alt=""></a>
+      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/common/tab-bookmark.png" alt=""></a><a href="my.html" aria-label="마이"><img src="assets/common/tab-user.png" alt=""></a></div>
+    </div></nav>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+(function () {
+  var weekly = [
+    { name: '칠성무당벌레', img: 'new-ladybug' },
+    { name: '고추잠자리', img: 'new-dragonfly' },
+    { name: '방아깨비', img: 'new-grasshopper' },
+    { name: '배추흰나비', img: 'new-butterfly' }
+  ];
+  document.getElementById('weekly').innerHTML = weekly.map(function (w) {
+    return '<a href="dogam-detail.html"><img src="assets/tabs/' + w.img + '.png" alt=""><span>' + w.name + '</span></a>';
+  }).join('');
+
+  // newest first (Figma order)
+  var insects = [
+    { name: '방아깨비', date: '2027.11.22', img: 'card-grasshopper' },
+    { name: '배추흰나비', date: '2027.11.17', img: 'card-butterfly' },
+    { name: '칠성무당벌레', date: '2027.11.01', img: 'card-ladybug' },
+    { name: '고추 잠자리', date: '2027.10.29', img: 'card-dragonfly' }
+  ];
+  var cards = document.getElementById('cards');
+  cards.innerHTML = insects.map(function (it) {
+    return '<a class="icard" href="dogam-detail.html" data-name="' + it.name + '">' +
+      '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
+      '<span class="band"><i></i><i></i></span>' +
+      '<span class="meta"><span><b>' + it.name + '</b><span>' + it.date + '</span></span>' +
+      '<span class="bm" role="button" tabindex="0" aria-pressed="false" aria-label="저장"><img src="assets/common/tab-bookmark.png" alt=""></span></span></a>';
+  }).join('');
+
+  // bookmark toggle (does not open the card)
+  cards.addEventListener('click', function (e) {
+    var b = e.target.closest('.bm'); if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    var on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', on);
+    b.querySelector('img').src = on ? 'assets/tabs/tab-bookmark-saved.png' : 'assets/common/tab-bookmark.png';
+  });
+
+  // search: filter visible card names
+  var q = document.getElementById('q'), empty = document.getElementById('empty');
+  q.addEventListener('input', function () {
+    var v = q.value.replace(/\s+/g, ''), shown = 0;
+    cards.querySelectorAll('.icard').forEach(function (c) {
+      var hit = !v || c.dataset.name.replace(/\s+/g, '').indexOf(v) !== -1;
+      c.hidden = !hit; if (hit) shown++;
+    });
+    empty.hidden = shown > 0;
+  });
+
+  // sort: 최근순 <-> 오래된순
+  var sort = document.getElementById('sort');
+  sort.addEventListener('click', function () {
+    var old = sort.getAttribute('aria-pressed') !== 'true';
+    sort.setAttribute('aria-pressed', old);
+    sort.querySelector('span').textContent = old ? '오래된순' : '최근순';
+    Array.prototype.slice.call(cards.children).reverse().forEach(function (c) { cards.appendChild(c); });
+  });
+
+  document.getElementById('unknown').innerHTML = [25, 26, 27, 28].map(function (n) {
+    return '<div class="utile"><img src="assets/tabs/icon-question.png" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
+  }).join('');
+})();
+</script>
+</body></html>

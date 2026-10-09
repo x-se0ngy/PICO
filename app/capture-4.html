@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 촬영 4 그림 그리기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .board { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 335px; background: var(--surface); border: 1px solid var(--ink); z-index: 2; }
+  .board canvas { display: block; width: 333px; height: 333px; touch-action: none; cursor: crosshair; }
+  .refresh { position: absolute; left: 315.5px; top: 574px; width: 32px; height: 32px; z-index: 2; }
+  .refresh img { width: 32px; height: 32px; transition: transform .3s; }
+  .refresh:active img { transform: rotate(-90deg); }
+  /* crayons sit behind the CTA like in the frame */
+  .crayons { position: absolute; left: 37.11px; top: 622.05px; display: flex; gap: 2px; z-index: 0; }
+  .crayon { width: 35.722px; height: 100.75px; position: relative; transition: transform .15s ease-out; }
+  .crayon img { position: absolute; left: -.5px; top: 0; width: 37px; height: 101.33px; max-width: none; }
+  .crayon[aria-pressed="true"] { transform: translateY(-14px); }
+  .cta { z-index: 1; }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav">
+      <a href="capture-3.html" aria-label="뒤로"><img class="icon" src="assets/capture/s2-icon-back.png" alt=""></a>
+      <a href="home.html" aria-label="닫기"><img class="icon" src="assets/capture/s2-icon-close.png" alt=""></a>
+    </div>
+  </div>
+
+  <div class="progress" aria-label="5단계 중 4단계"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+
+  <div class="step-title">
+    <p class="q"><span>04.</span><span>기억나는 모습을 그려보세요.</span></p>
+    <p class="sub">자유롭게 그려 보세요. 똑같지 않아도 괜찮아요.</p>
+  </div>
+
+  <div class="board"><canvas id="pad" width="333" height="333" aria-label="그림판"></canvas></div>
+  <button class="refresh" id="clear" aria-label="모두 지우기"><img src="assets/capture/s4-icon-refresh.png" alt=""></button>
+
+  <div class="crayons" id="crayons" role="radiogroup" aria-label="색연필"></div>
+
+  <a class="cta" href="capture-5.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+  var PALETTE = [
+    { name: 'red', label: '빨강', c: '#e32d3d' }, { name: 'orange', label: '주황', c: '#fca436' },
+    { name: 'yellow', label: '노랑', c: '#f4d159' }, { name: 'leaf', label: '연두', c: '#a7c049' },
+    { name: 'teal', label: '청록', c: '#48b2bb' }, { name: 'blue', label: '파랑', c: '#2c70d1' },
+    { name: 'purple', label: '보라', c: '#6b4eac' }, { name: 'gray', label: '회색', c: '#4e4e4e' }
+  ];
+  var color = PALETTE[0].c, box = document.getElementById('crayons');
+  function renderCrayons() {
+    box.innerHTML = PALETTE.map(function (p) {
+      return '<button class="crayon" role="radio" data-c="' + p.c + '" aria-pressed="' + (p.c === color) + '" aria-checked="' + (p.c === color) + '" aria-label="' + p.label + '">' +
+        '<img src="assets/capture/s4-crayon-' + p.name + '.png" alt=""></button>';
+    }).join('');
+  }
+  box.addEventListener('click', function (e) { var b = e.target.closest('.crayon'); if (b) { color = b.dataset.c; renderCrayons(); } });
+  renderCrayons();
+
+  // Drawing pad (pointer events, HiDPI)
+  var cv = document.getElementById('pad'), ctx = cv.getContext('2d'), dpr = window.devicePixelRatio || 1;
+  cv.width = 333 * dpr; cv.height = 333 * dpr; ctx.scale(dpr, dpr);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5;
+  var drawing = false, last = null;
+  function pt(e) {
+    var r = cv.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * 333 / r.width, y: (e.clientY - r.top) * 333 / r.height };
+  }
+  cv.addEventListener('pointerdown', function (e) {
+    drawing = true; last = pt(e); cv.setPointerCapture(e.pointerId);
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(last.x, last.y, ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill();
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (!drawing) return;
+    var p = pt(e); ctx.strokeStyle = color;
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p;
+  });
+  function end() { drawing = false; }
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  document.getElementById('clear').addEventListener('click', function () { ctx.clearRect(0, 0, 333, 333); });
+</script>
+</body></html>

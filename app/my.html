@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 마이</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  :root { --font-hand: 'SejongGeulggot', var(--font); }
+  .tabbar, .phone > .home-ind { position: fixed; left: 50%; margin-left: -187.5px; bottom: 0; }
+  @media (min-width: 500px) { body { padding-bottom: 0; } }
+  .abs { position: absolute; }
+
+  .card-shadow { left: 30px; top: 143.65px; width: 325px; height: 280px; background: var(--ink); border: 1px solid var(--ink); }
+  .card-face { left: 21px; top: 133.21px; width: 325px; height: 280px; background: var(--brand); border: 1px dashed var(--ink); }
+  .card-inner { left: 28.5px; top: 215.63px; width: 310px; height: 190px; background: var(--brand-soft); }
+  .deco { left: 221.73px; top: 90.31px; width: 110px; height: 110px; }
+  .me { left: 31.49px; top: 149.3px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
+  .me .t { font-size: 20px; } .me .s { font-size: 16px; }
+
+  .week { left: 36px; top: 224.3px; width: 295px; display: flex; flex-direction: column; gap: 20px; }
+  .week-h { display: flex; justify-content: space-between; align-items: flex-start; }
+  .week-h > p { font-size: 14px; line-height: 19px; }
+  .week-nav { display: flex; gap: 4px; align-items: center; font-size: 12px; white-space: nowrap; }
+  .week-nav button img { width: 18px; height: 18px; }
+  .week-nav .prev img { transform: scaleX(-1); }
+  .days-wrap { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+  .days { display: flex; justify-content: space-between; width: 295px; }
+  .day { width: 30px; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
+  .day .dl { position: relative; width: 30px; height: 21.39px; }
+  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.89px; width: 30px; border-top: 1px solid var(--ink); }
+  .day .num { position: relative; width: 30px; height: 17px; line-height: 17px; }
+  .day .dot { position: absolute; left: 22.54px; top: 0.68px; width: 6.9px; height: 6.9px; }
+  .day.sel { gap: 11px; }
+  .day.sel .num { height: 30px; line-height: 30px; border: 1px solid var(--ink); }
+  .day .bubble { display: none; position: absolute; left: 2.05px; top: 2.45px; width: 25.9px; height: 25.1px; }
+  .day.sel .bubble { display: block; left: 1.05px; top: 1.45px; }
+  .day .num span { position: relative; }
+  .week hr { margin: 0; width: 295px; border: 0; border-top: 1px dashed var(--ink); }
+  .daylog { left: 35.28px; top: 354.7px; width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
+  .daylog p:last-child { font-family: var(--font-hand); }
+
+  .sec-h { left: 20.09px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
+  .sec-h img { width: 18px; height: 18px; }
+  .saved { left: 20px; top: 492.65px; display: flex; gap: 14.09px; }
+  .saved a { position: relative; width: 110.61px; height: 120px; display: block; flex: none; }
+  .saved img { position: absolute; left: -0.5px; top: -0.5px; width: 111.6px; height: 91px; }
+  .saved .band { position: absolute; left: 0; top: 90px; width: 110.61px; height: 30px; background: var(--brand); border: 1px solid var(--ink); }
+  .saved .nm { position: absolute; left: 6.12px; top: 96.5px; font-size: 14px; white-space: nowrap; }
+  .badges { left: 20.5px; top: 681.95px; display: flex; gap: 14.09px; }
+  .badges a { width: 110.61px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 15px; font-size: 16px; white-space: nowrap; }
+  .badges img { width: 110px; height: 110px; }
+  .friends { left: 20px; top: 895.37px; display: flex; gap: 15px; }
+  .friends a { width: 60px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 12px; line-height: 19px; white-space: nowrap; }
+  .friends img { width: 60px; height: 60px; }
+  .friends .add img { width: 55px; align-self: flex-start; }
+
+  .tip { left: 0.5px; top: 999.37px; width: 375px; height: 100px; background: #00b7ff; border: 1px dashed var(--ink); }
+  .tip-body { left: 16.35px; top: 1018.87px; width: 260.15px; display: flex; flex-direction: column; gap: 12px; }
+  .tip-body .h { display: flex; gap: 10px; align-items: center; font-weight: 700; font-size: 20px; }
+  .tip-body .h img { width: 32px; height: 32px; }
+  .tip-body .d { font-size: 14px; white-space: nowrap; }
+
+  .settings { left: 20px; top: 1126.37px; width: 335px; display: flex; flex-direction: column; gap: 15px; }
+  .settings > p { font-size: 20px; }
+  .settings ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .settings button { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 14px; text-align: left; }
+  .settings button img { width: 32px; height: 32px; }
+</style>
+</head><body>
+<div class="phone" style="--h:1422px">
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
+  </div>
+
+  <div class="abs card-shadow"></div>
+  <div class="abs card-face"></div>
+  <div class="abs card-inner"></div>
+  <img class="abs deco" src="assets/tabs/profile-circle.png" alt="">
+  <div class="abs me"><p class="t">김선우</p><p class="s">초등학교 5학년 ∙ 새싹 탐험가</p></div>
+
+  <div class="abs week">
+    <div class="week-h"><p>나의 탐험</p>
+      <div class="week-nav"><button class="prev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span>10월 셋째 주</span><button aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
+    <div class="days-wrap"><div class="days" id="days"></div><hr></div>
+  </div>
+  <div class="abs daylog"><p>10월 8일 탐험</p><p>곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div>
+
+  <a class="abs sec-h" href="dogam.html" style="top:453.65px"><span>내가 저장한 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
+  <div class="abs saved">
+    <a href="dogam-detail.html"><img src="assets/tabs/my-waterstrider.png" alt=""><span class="band"></span><span class="nm">소금쟁이</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/my-divingbeetle.png" alt=""><span class="band"></span><span class="nm">물방개</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/my-rhinobeetle.png" alt="" style="width:106.1px"><span class="band"></span><span class="nm">장수풍뎅이</span></a>
+  </div>
+
+  <a class="abs sec-h" href="badge.html" style="top:642.95px"><span>내가 획득한 배지</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
+  <div class="abs badges">
+    <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>첫 관찰</span></a>
+    <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>10종 그림</span></a>
+    <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>함께 발견</span></a>
+  </div>
+
+  <!-- Figma copy bug: this header repeats "내가 획득한 배지"; corrected to "내 친구" -->
+  <div class="abs sec-h" style="top:856.37px"><span>내 친구</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
+  <div class="abs friends">
+    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>유선규</span></a>
+    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>민사온</span></a>
+    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>정하람</span></a>
+    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>정하람</span></a>
+    <a class="add" href="badge.html?state=qr"><img src="assets/tabs/qr-add.png" alt=""><span>QR로 추가</span></a>
+  </div>
+
+  <div class="abs tip"></div>
+  <div class="abs tip-body">
+    <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP !</div>
+    <p class="d">친구랑 같이 관찰하면 '함께 발견' 배지를 받아요.</p>
+  </div>
+
+  <div class="abs settings"><p>앱 설정</p><ul id="settings"></ul></div>
+
+  <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
+    <div class="tabbar-row">
+      <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/tabs/tab-home-outline.png" alt=""></a><a href="dogam.html" aria-label="도감"><img src="assets/common/tab-tag-outline.png" alt=""></a></div>
+      <a class="tab-cam" href="capture-1.html" aria-label="촬영"><img src="assets/common/tab-camera.png" alt=""></a>
+      <!-- no filled User icon exists in the Figma file: active 마이 tab keeps the default icon -->
+      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/common/tab-bookmark.png" alt=""></a><a href="my.html" aria-label="마이" aria-current="page"><img src="assets/common/tab-user.png" alt=""></a></div>
+    </div></nav>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+(function () {
+  var days = [['월', 4, true], ['화', 5], ['수', 6, true], ['목', 7], ['금', 8], ['토', 9], ['일', 10]];
+  var sel = 4;
+  var el = document.getElementById('days');
+  function render() {
+    el.innerHTML = days.map(function (d, i) {
+      return '<button class="day' + (i === sel ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + (i === sel) + '">' +
+        '<span class="dl">' + d[0] + '</span><span class="num"><img class="bubble" src="assets/tabs/day-selected.png" alt="">' +
+        (d[2] ? '<img class="dot" src="assets/tabs/day-dot.png" alt="">' : '') + '<span>' + d[1] + '</span></span></button>';
+    }).join('');
+  }
+  render();
+  el.addEventListener('click', function (e) { var b = e.target.closest('.day'); if (b) { sel = +b.dataset.i; render(); } });
+
+  var settings = ['알림 관리', '공지사항', '고객센터', '보호자 설정', '위치 정보 설정', '서비스 이용 약관', '개인정보 처리방침'];
+  document.getElementById('settings').innerHTML = settings.map(function (s) {
+    return '<li><button type="button"><span>' + s + '</span><img src="assets/tabs/chevron-right-32.png" alt=""></button></li>';
+  }).join('');
+})();
+</script>
+</body></html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 친구 프로필</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .abs { position: absolute; }
+  .nav a img, .nav button img { width: 32px; height: 32px; }
+
+  .p-shadow { left: 30.44px; top: 154.78px; width: 325px; height: 135px; background: var(--ink); border: 1px solid var(--ink); }
+  .p-face { left: 21.44px; top: 144.34px; width: 325px; height: 135px; background: var(--brand); border: 1px dashed var(--ink); }
+  .avatar { left: 29.54px; top: 118px; width: 91.1px; height: 91.1px; }
+  .bubble { left: 32.58px; top: 212.22px; width: 303.7px; height: 58.3px; }
+  .who { left: 133.44px; top: 163.1px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
+  .who .n { font-weight: 700; font-size: 20px; } .who .n small { font-size: 14px; } .who .n span { font-weight: 400; font-size: 14px; }
+  .who p:last-child { font-size: 14px; }
+  .status-msg { left: 45.86px; top: 237.3px; font-size: 16px; white-space: nowrap; }
+
+  .sec-h { left: 19.84px; top: 312.05px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
+  .sec-h img { width: 18px; height: 18px; }
+  .recent { left: 20.13px; top: 346.05px; display: flex; gap: 14.09px; }
+  .recent a { position: relative; width: 110.61px; height: 120px; display: block; flex: none; }
+  .recent img { position: absolute; left: -0.5px; top: -0.5px; width: 111.6px; height: 91px; }
+  .recent .band { position: absolute; left: 0; top: 90px; width: 110.61px; height: 30px; background: var(--brand); border: 1px solid var(--ink); }
+  .recent .nm { position: absolute; left: 6.12px; top: 96.5px; font-size: 14px; white-space: nowrap; }
+
+  .together-h { left: 19.25px; top: 496.25px; font-size: 16px; }
+  .box { left: 19.4px; top: 529.81px; width: 335px; height: 240px; background: var(--surface); border: 1px solid var(--ink); }
+  .count { left: 32.06px; top: 537.29px; font-size: 16px; line-height: 36px; white-space: nowrap; }
+  .count b { font-weight: 400; font-size: 32px; }
+  .thumbs { left: 19.84px; top: 617.81px; width: 335px; padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .thumbs a { width: 75px; display: flex; flex-direction: column; gap: 2px; font-size: 14px; white-space: nowrap; }
+  .thumbs img { width: 76.3px; height: 61.3px; margin: -0.65px; }
+  .thumbs .more { width: 75px; height: 60px; background: var(--surface); border: 1.26px solid var(--ink); font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .go { left: 29.4px; top: 710.33px; width: 315px; height: 45px; background: var(--bg); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 14px; }
+  .go img { width: 24px; height: 24px; }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav">
+      <a href="my.html" aria-label="뒤로"><img src="assets/tabs/icon-arrow-left.png" alt=""></a>
+      <button aria-label="더보기"><img src="assets/tabs/icon-more.png" alt=""></button>
+    </div>
+  </div>
+
+  <div class="abs p-shadow"></div>
+  <div class="abs p-face"></div>
+  <img class="abs avatar" src="assets/tabs/friend-profile.png" alt="">
+  <img class="abs bubble" src="assets/tabs/friend-bubble.png" alt="">
+  <div class="abs who"><p class="n">민지혁 <small>• </small><span>새싹 탐험가</span></p><p>친구가 된 지 25일 째</p></div>
+  <p class="abs status-msg">요즘 잠자리를 찾아다니는 중!</p>
+
+  <div class="abs sec-h"><span>지혁이가 최근에 만난 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
+  <div class="abs recent">
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-longhorn.png" alt=""><span class="band"></span><span class="nm">하늘소</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-firefly.png" alt=""><span class="band"></span><span class="nm">반딧불이</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-molecricket.png" alt="" style="width:106px"><span class="band"></span><span class="nm">땅강아지</span></a>
+  </div>
+
+  <p class="abs together-h">함께 발견한 친구들</p>
+  <div class="abs box"></div>
+  <div class="abs count"><p>우리가 함께 발견한 곤충은</p><p>모두 <b>8종</b>이에요.</p></div>
+  <div class="abs thumbs">
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-sm-longhorn.png" alt=""><span>하늘소</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-sm-rhino.png" alt=""><span>장수풍뎅이</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-sm-firefly.png" alt=""><span>반딧불이</span></a>
+    <button class="more" type="button">+ 5</button>
+  </div>
+  <a class="abs go" href="home.html">더 찾으러 가기 <img src="assets/common/arrow-right.png" alt=""></a>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+</body></html>

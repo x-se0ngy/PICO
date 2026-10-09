@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 학년 설정</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .grade-grid { position: absolute; left: 20px; top: 231.85px; width: 335px; display: grid;
+    grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 8.97px; }
+  .grade-chip { height: 74px; background: var(--surface); border: .938px solid var(--ink); text-align: left;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 15.95px 0 15.01px 13.14px; }
+  .grade-chip[aria-checked="true"] { background: var(--brand); }
+  .grade-chip .k { font-size: 14px; line-height: 12.19px; height: 12.19px; }
+  .grade-chip .v { font-size: 20px; line-height: 28.15px; white-space: nowrap; }
+  .info-bar { position: absolute; left: 20px; top: 628.64px; width: 335px; height: 55px; background: var(--bg); border: 1px dashed var(--ink);
+    display: flex; align-items: center; gap: 8px; padding-left: 11px; font-size: 14px; line-height: 16px; white-space: nowrap; }
+  .info-bar img { width: 18px; height: 18px; }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav nav--center"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
+  </div>
+
+  <div class="progress" aria-label="3단계 중 2단계"><span class="on"></span><span class="on"></span><span></span></div>
+
+  <div class="step-title" style="top:162px">
+    <p class="q"><span>02.</span><span>몇 학년 탐험가인가요?</span></p>
+    <p class="sub">학년에 맞춰 탐험 질문과 설명을 조금씩 다르게 보여 줄게요.</p>
+  </div>
+
+  <div class="grade-grid" id="grades" role="radiogroup" aria-label="학년"></div>
+
+  <div class="info-bar"><img src="assets/onboarding/icon-lock.png" alt=""><span>학년은 나만 볼 수 있어요. 친구에게는 보이지 않아요.</span></div>
+
+  <a class="cta" id="next" href="setup-explore.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+(function () {
+  var GRADES = ['1학년 이하', '1학년', '2학년', '3학년', '4학년', '5학년', '6학년', '6학년 이상'];
+  var selected = 3; // Figma default: 3학년
+  var grid = document.getElementById('grades');
+  grid.innerHTML = GRADES.map(function (g, i) {
+    return '<button type="button" class="grade-chip" role="radio" data-i="' + i + '"><span class="k">초등학교</span><span class="v">' + g + '</span></button>';
+  }).join('');
+  function render() {
+    grid.querySelectorAll('.grade-chip').forEach(function (b) { b.setAttribute('aria-checked', String(+b.dataset.i === selected)); });
+  }
+  grid.addEventListener('click', function (e) {
+    var b = e.target.closest('.grade-chip'); if (!b) return;
+    selected = +b.dataset.i; render();
+  });
+  document.getElementById('next').addEventListener('click', function () {
+    try { localStorage.setItem('pico.grade', GRADES[selected]); } catch (e) {}
+  });
+  render();
+})();
+</script>
+</body></html>

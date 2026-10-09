@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 온보딩 3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  /* olive visual area (empty in the Figma frame) */
+  .ob-visual { position: absolute; left: -0.5px; top: 0; width: 375px; height: 421.6px; background: var(--brand); border: 1px dashed var(--ink); }
+  .ob-skip { position: absolute; left: 308.6px; top: 443.83px; font-size: 12px; line-height: normal; text-decoration: underline; }
+  .ob-title { position: absolute; left: 17.5px; top: 478.68px; font-size: 24px; line-height: normal; white-space: nowrap; }
+  .ob-body { position: absolute; left: 17.5px; top: 549.91px; font-size: 16px; line-height: 20px; white-space: nowrap; }
+  .ob-dots { position: absolute; left: 17.5px; top: 655px; display: flex; gap: 14px; align-items: center; }
+  .ob-dots a { display: block; width: 10px; height: 10px; background: var(--bg); border: 1px solid var(--ink); }
+  .ob-dots a.on { width: 30px; background: var(--brand); }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+  <div class="ob-visual"></div>
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav nav--center"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
+  </div>
+
+  <a class="ob-skip" href="setup-name.html">건너뛰기</a>
+  <p class="ob-title">하나씩 발견하고<br>나만의 도감을 채워가요.</p>
+  <p class="ob-body">관찰한 생물을 기록하고 배지를 모으며<br>나만의 탐험 이야기를 만들어 보세요.</p>
+  <nav class="ob-dots" aria-label="온보딩 단계"><a href="onboard-1.html" class="" aria-label="1 / 3"></a><a href="onboard-2.html" class="" aria-label="2 / 3"></a><a href="onboard-3.html" class="on" aria-label="3 / 3"></a></nav>
+
+  <a class="cta" href="setup-name.html" style="top:699.5px"><span class="cta-face">PICO 시작하기 <img src="assets/common/arrow-right.png" alt=""></span></a>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+</body></html>

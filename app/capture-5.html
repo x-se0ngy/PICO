@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 촬영 5 관찰 일기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .photo { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); }
+  .lens { position: absolute; width: 45px; height: 45px; }
+  .label { position: absolute; left: 20px; top: 451.52px; font-size: 16px; white-space: nowrap; }
+  .chips { position: absolute; left: 20px; top: 481.18px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 10.67px; row-gap: 10.67px; }
+  .chip { height: 35px; display: flex; align-items: center; justify-content: center; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; white-space: nowrap; }
+  .chip.used { background: var(--bg); border-style: dashed; }
+  /* diary input — not drawn in the frame; styled like the card's diary box */
+  .diary { position: absolute; left: 20px; top: 575px; width: 335px; height: 110px; padding: 12px 14px; resize: none; background: var(--surface); border: 1px solid var(--ink); border-radius: 0; font: 14px/20px var(--font); color: var(--ink); outline: none; }
+  .diary:focus { border-style: dashed; }
+  .diary::placeholder { color: rgba(0,0,0,.4); }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav">
+      <a href="capture-4.html" aria-label="뒤로"><img class="icon" src="assets/capture/s2-icon-back.png" alt=""></a>
+      <a href="home.html" aria-label="닫기"><img class="icon" src="assets/capture/s2-icon-close.png" alt=""></a>
+    </div>
+  </div>
+
+  <div class="progress" aria-label="5단계 중 5단계"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+
+  <div class="step-title">
+    <p class="q"><span>05.</span><span>관찰 일기를 써 볼까요?</span></p>
+    <p class="sub">본 것을 나의 글로 적어보세요.</p>
+  </div>
+
+  <div class="photo" aria-label="촬영한 사진"></div>
+  <div id="lensLayer"></div>
+
+  <p class="label">내가 관찰한 단어들을 문장에 넣어 보세요</p>
+  <div class="chips" id="chips" role="group" aria-label="관찰 단어"></div>
+
+  <textarea class="diary" id="diary" aria-label="관찰 일기" placeholder="여기에 관찰 일기를 적어보세요."></textarea>
+
+  <a class="cta" href="capture-card.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+  // Lens stickers from step 2 (first one highlighted as in the frame)
+  var SLOTS = [{ x: 63, y: 273.9 }, { x: 210, y: 361 }, { x: 280.53, y: 261.26 }];
+  var slots = [0, 1, 2];
+  try { var s = JSON.parse(sessionStorage.getItem('pico.capture.stickers') || 'null'); if (Array.isArray(s) && s.some(function (v) { return v !== null; })) slots = s; } catch (e) {}
+  var first = true;
+  document.getElementById('lensLayer').innerHTML = slots.map(function (v, i) {
+    if (v === null) return '';
+    var src = first ? 's3-sticker-active.png' : 's3-sticker.png'; first = false;
+    return '<img class="lens" src="assets/capture/' + src + '" alt="" style="left:' + SLOTS[i].x + 'px;top:' + SLOTS[i].y + 'px">';
+  }).join('');
+
+  // Word chips (order + widths from the frame; the dashed chip = already used in the diary)
+  var WORDS = [{ t: '팔랑팔랑', w: 96.127 }, { t: '꽃에서 쉬어요.', w: 120, used: true }, { t: '날개에 줄무늬', w: 120.357 }];
+  var diary = document.getElementById('diary'), chips = document.getElementById('chips');
+  var KEY = 'pico.capture.diary';
+  var stored = null; try { stored = sessionStorage.getItem(KEY); } catch (e) {}
+  diary.value = stored !== null ? stored : '꽃에서 쉬어요.';
+  function renderChips() {
+    chips.innerHTML = WORDS.map(function (w, i) {
+      var used = diary.value.indexOf(w.t) > -1;
+      return '<button class="chip' + (used ? ' used' : '') + '" data-i="' + i + '" style="width:' + w.w + 'px">' + w.t + '</button>';
+    }).join('');
+  }
+  function save() { try { sessionStorage.setItem(KEY, diary.value); } catch (e) {} }
+  chips.addEventListener('mousedown', function (e) { e.preventDefault(); }); // keep caret in the textarea
+  chips.addEventListener('click', function (e) {
+    var b = e.target.closest('.chip'); if (!b) return;
+    var word = WORDS[+b.dataset.i].t, v = diary.value;
+    var start = document.activeElement === diary ? diary.selectionStart : v.length;
+    var end = document.activeElement === diary ? diary.selectionEnd : v.length;
+    var before = v.slice(0, start), after = v.slice(end);
+    var ins = (before && !/\s$/.test(before) ? ' ' : '') + word + (after && !/^\s/.test(after) ? ' ' : '');
+    diary.value = before + ins + after;
+    var caret = (before + ins).length;
+    diary.focus(); diary.setSelectionRange(caret, caret);
+    save(); renderChips();
+  });
+  diary.addEventListener('input', function () { save(); renderChips(); });
+  renderChips();
+</script>
+</body></html>

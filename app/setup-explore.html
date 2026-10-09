@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 탐험 취향</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .nav-quit { display: block; padding: 0; }
+  .explore-grid { position: absolute; left: 20px; top: 231.85px; width: 335px; display: grid;
+    grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 8.97px; }
+  .explore-card { height: 74px; background: var(--surface); border: .938px solid var(--ink); text-align: left;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; padding: 15.95px 0 15.01px 13.14px; }
+  .explore-card[aria-pressed="true"] { background: var(--brand); }
+  .explore-card .t { font-weight: 700; font-size: 20px; line-height: 23.8px; white-space: nowrap; }
+  .explore-card .s { font-size: 12px; line-height: 14px; white-space: nowrap; }
+
+  /* disabled CTA look (1.3.1). Still clickable so the toast can explain why. */
+  .cta.is-off::before { background: #676767; border-color: #676767; }
+  .cta.is-off .cta-face { background: #dbdbdb; border-color: #676767; color: #676767; }
+
+  /* info toast (1.3.3) — blue card with offset shadow, not the base black pill */
+  .toast.toast--info { left: 39.83px; top: 640.68px; transform: none; width: 290px; height: 45px; padding: 0 0 0 13.17px;
+    gap: 10px; background: #00b7ff; color: var(--ink); border: 1px solid var(--ink); box-shadow: 5.34px 4.99px 0 var(--ink); }
+  .toast--info img { width: 24px; height: 24px; }
+
+  /* quit dialog (1.3.2) */
+  .dim.dim--quit { background: rgba(44, 44, 44, .57); }
+  .modal.quit { top: 331px; height: 150px; padding: 36px 23px 29px; box-shadow: 10px 11.5px 0 var(--ink);
+    display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .quit-title { font-size: 22px; line-height: normal; text-align: center; width: 100%; }
+  .quit-btns { display: flex; gap: 14px; width: 100%; }
+  .quit-btns button, .quit-btns a { width: 120px; height: 45px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; border: 1px solid var(--ink); }
+  .quit-no { background: var(--surface); }
+  .quit-yes { background: var(--ink); color: var(--bg); }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <!-- no back button in the frame: the logo area opens the quit dialog -->
+    <div class="nav nav--center"><button type="button" class="nav-quit" id="quitBtn" aria-label="프로필 설정 중단"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></button></div>
+  </div>
+
+  <div class="progress" aria-label="3단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+
+  <div class="step-title" style="top:162px">
+    <p class="q"><span>03.</span><span>어떤 탐험을 좋아하나요?</span></p>
+    <p class="sub">좋아하는 탐험을 골라주면 미션과 발견을 추천해 줄게요.</p>
+  </div>
+
+  <div class="explore-grid" id="cards" aria-label="좋아하는 탐험 (여러 개 선택 가능)"></div>
+
+  <div class="toast toast--info" id="toast" role="status" hidden><img src="assets/onboarding/toast-alert.png" alt=""><span>답변을 선택해주세요.</span></div>
+
+  <button type="button" class="cta" id="next" style="top:699.5px"><span class="cta-face">다음 <img id="nextArrow" src="assets/common/arrow-right.png" alt=""></span></button>
+
+  <div class="dim dim--quit" id="quitDim" hidden></div>
+  <div class="modal quit" id="quit" role="dialog" aria-modal="true" aria-labelledby="quitTitle" hidden>
+    <p class="quit-title" id="quitTitle">프로필 설정을 중단할까요?</p>
+    <div class="quit-btns">
+      <button type="button" class="quit-no" id="quitNo">취소</button>
+      <a class="quit-yes" href="home.html">네</a>
+    </div>
+  </div>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+(function () {
+  var CARDS = [
+    ['꽃밭 탐험', '나비 • 꿀벌'], ['풀숲 탐험', '메뚜기 • 방아깨비'],
+    ['물가 탐험', '잠자리 • 소금쟁이'], ['나무 탐험', '매미 • 사슴벌레'],
+    ['비 온 뒤 탐험', '지렁이 • 달팽이'], ['해 질 녘 탐험', '나방 • 반딧불이']
+  ];
+  var state = document.documentElement.dataset.state;
+  var picked = (state === 'none' || state === 'toast') ? [] : [3]; // Figma default: 나무 탐험
+  var grid = document.getElementById('cards'), next = document.getElementById('next'),
+      arrow = document.getElementById('nextArrow'), toast = document.getElementById('toast'),
+      quit = document.getElementById('quit'), quitDim = document.getElementById('quitDim'), toastTimer;
+
+  grid.innerHTML = CARDS.map(function (c, i) {
+    return '<button type="button" class="explore-card" data-i="' + i + '"><span class="t">' + c[0] + '</span><span class="s">' + c[1] + '</span></button>';
+  }).join('');
+
+  function render() {
+    grid.querySelectorAll('.explore-card').forEach(function (b) { b.setAttribute('aria-pressed', String(picked.indexOf(+b.dataset.i) > -1)); });
+    var off = picked.length === 0;
+    next.classList.toggle('is-off', off);
+    arrow.src = off ? 'assets/onboarding/arrow-right-disabled.png' : 'assets/common/arrow-right.png';
+    if (!off) toast.hidden = true;
+  }
+  function showToast(sticky) {
+    toast.hidden = false; clearTimeout(toastTimer);
+    if (!sticky) toastTimer = setTimeout(function () { toast.hidden = true; }, 2000);
+  }
+  function openQuit(on) { quit.hidden = quitDim.hidden = !on; if (on) document.getElementById('quitNo').focus(); }
+
+  grid.addEventListener('click', function (e) {
+    var b = e.target.closest('.explore-card'); if (!b) return;
+    var i = +b.dataset.i, k = picked.indexOf(i);
+    if (k > -1) picked.splice(k, 1); else picked.push(i);
+    render();
+  });
+  next.addEventListener('click', function () {
+    if (!picked.length) { showToast(false); return; }
+    try { localStorage.setItem('pico.explore', JSON.stringify(picked.map(function (i) { return CARDS[i][0]; }))); } catch (e) {}
+    location.href = 'setup-done.html';
+  });
+
+  document.getElementById('quitBtn').addEventListener('click', function () { openQuit(true); });
+  document.getElementById('quitNo').addEventListener('click', function () { openQuit(false); });
+  quitDim.addEventListener('click', function () { openQuit(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') openQuit(quit.hidden); });
+  // browser back → ask before leaving
+  try {
+    history.pushState({ guard: 1 }, '');
+    window.addEventListener('popstate', function () { history.pushState({ guard: 1 }, ''); openQuit(true); });
+  } catch (e) {}
+
+  render();
+  if (state === 'toast') showToast(true);
+  if (state === 'quit') openQuit(true);
+})();
+</script>
+</body></html>

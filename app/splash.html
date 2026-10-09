@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 스플래쉬</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .splash { cursor: pointer; }
+  /* Union (dotted olive blob) — exported with its stroke, so it sits slightly outside the 264x280 node box */
+  .splash-union { position: absolute; left: 53.66px; top: 180.68px; width: 267.69px; height: 284.13px; }
+  .splash-logo  { position: absolute; left: 68.69px; top: 205.27px; width: 235.7px; height: 247.63px; }
+  .splash-copy { position: absolute; left: 0; width: 375px; text-align: center; font-size: 14px; line-height: normal; }
+  .splash-copy--quote { top: 487.3px; }
+  .splash-copy--tag { top: 750.88px; }
+</style>
+</head><body>
+<div class="phone splash" style="--h:812px" data-go="onboard-1.html" role="link" aria-label="시작하기">
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+  </div>
+
+  <img class="splash-union" src="assets/onboarding/splash-union.png" alt="">
+  <img class="splash-logo" src="assets/onboarding/splash-logo.png" alt="PICO">
+
+  <p class="splash-copy splash-copy--quote">“Now, pick your PICO”<br>there’s more waiting outside</p>
+  <p class="splash-copy splash-copy--tag">작은 발견에서 시작되는 나만의 탐험</p>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+  setTimeout(function () { location.href = 'onboard-1.html'; }, 1500);
+</script>
+</body></html>

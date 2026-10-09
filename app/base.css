@@ -1,0 +1,114 @@
+/* PICO app (Figma "1. 디융프 - visual") — shared tokens + components
+   Every screen is a 375px-wide phone frame. Pages link to each other to form a clickable prototype. */
+
+@font-face {
+  font-family: 'Allimjang';
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/HakgyoansimAllimjangTTF-R.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimAllimjangTTF-R.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Allimjang';
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/HakgyoansimAllimjangTTF-B.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimAllimjangTTF-B.woff2') format('woff2');
+}
+
+:root {
+  --bg: #fdf4b1;            /* background/default */
+  --surface: #fffad7;       /* surface/default */
+  --brand: #b1bd35;         /* surface/brand, olive/500 */
+  --brand-soft: #c5cd71;
+  --reward: #f4d159;        /* accent/reward */
+  --ink: #000;              /* text/primary, border/strong */
+  --ink-950: #121212;
+  --dim: rgba(0, 0, 0, .45);
+  --font: 'Allimjang', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  --font-ui: 'Inter', -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: #2b2b2b;
+  font-family: var(--font);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  display: flex; justify-content: center;
+  min-height: 100vh;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+p, h1, h2, h3 { margin: 0; font-weight: inherit; }
+img { display: block; }
+.b { font-weight: 700; }
+
+/* ---------- phone frame ---------- */
+.phone {
+  position: relative;
+  width: 375px;
+  min-height: var(--h, 812px);
+  height: var(--h, 812px);
+  background: var(--bg);
+  overflow: hidden;
+  transform-origin: top center;
+}
+@media (min-width: 500px) { body { padding: 24px 0; } .phone { box-shadow: 0 10px 40px rgba(0,0,0,.4); } }
+
+/* ---------- status bar + top nav ---------- */
+.top { position: absolute; left: 0; top: 0; width: 375px; z-index: 5; }
+.status { position: relative; height: 60px; }
+.status-time { position: absolute; left: 51px; top: 21px; font-family: var(--font-ui); font-weight: 500; font-size: 16px; line-height: 16px; }
+.status-icons { position: absolute; left: 290px; top: 23px; display: flex; gap: 5px; align-items: center; }
+.status-icons .sig { width: 18px; height: 10px; }
+.status-icons .wifi { width: 15.27px; height: 10.97px; }
+.status-icons .bat { width: 26.98px; height: 13px; }
+
+.nav { position: relative; height: 58px; padding: 0 20px 5px; display: flex; align-items: center; justify-content: space-between; }
+.nav--center { justify-content: center; padding: 0 24px 5px; }
+.nav .logo { width: 24px; height: 24px; }
+.nav .icon { width: 32px; height: 32px; }
+.nav-weather { display: flex; gap: 8px; align-items: center; font-size: 14px; line-height: 20px; }
+
+.home-ind { position: absolute; left: 0; bottom: 0; width: 375px; height: 34px; z-index: 30; pointer-events: none; }
+
+/* ---------- bottom tab bar ---------- */
+.tabbar { position: absolute; left: 0; bottom: 0; width: 375px; height: 85px; z-index: 20; }
+.tabbar-bg { position: absolute; inset: 0; background: var(--reward); border-top: 1px dashed var(--ink); }
+.tabbar-row { position: absolute; left: 21.5px; top: -17.2px; width: 332px; display: flex; align-items: flex-end; justify-content: space-between; }
+.tabbar-group { display: flex; gap: 40px; align-items: center; height: 32px; }
+.tabbar-group img { width: 32px; height: 32px; }
+.tab-cam { position: relative; width: 68.3px; height: 68.3px; display: block; }
+.tab-cam::before { content: ''; position: absolute; left: 9.15px; top: 9.15px; width: 50px; height: 50px; background: var(--reward); border: 1px dashed var(--ink); transform: rotate(60deg); }
+.tab-cam img { position: absolute; left: 18.15px; top: 17.75px; width: 32px; height: 32px; }
+
+/* ---------- primary CTA (330x54 + offset black shadow) ---------- */
+.cta { position: absolute; left: 20px; width: 330px; height: 54px; display: block; }
+.cta::before { content: ''; position: absolute; left: 5px; top: 8.6px; width: 330px; height: 54px; background: var(--ink); border: 1px solid var(--ink); }
+.cta-face { position: absolute; inset: 0; background: var(--brand); border: 1px dashed var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 16px; }
+.cta-face img { width: 24px; height: 24px; }
+.cta--yellow .cta-face { background: var(--reward); }
+.cta[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+
+/* ---------- step progress + step title ---------- */
+.progress { position: absolute; left: 20px; top: 129px; width: 335px; display: flex; gap: 7px; }
+.progress span { flex: 1; height: 10px; background: var(--bg); border: 1px dashed var(--ink); }
+.progress span.on { background: var(--brand); }
+
+.step-title { position: absolute; left: 20px; top: 161.4px; width: 335px; display: flex; flex-direction: column; gap: 4px; }
+.step-title .q { display: flex; gap: 14px; font-weight: 700; font-size: 18px; }
+.step-title .sub { font-size: 14px; }
+
+/* ---------- overlays ---------- */
+.dim { position: absolute; inset: 0; background: var(--dim); z-index: 40; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px dashed var(--ink); z-index: 41; }
+.sheet-handle { width: 80px; height: 5px; border-radius: 3px; background: var(--ink); margin: 14px auto 0; }
+.modal { position: absolute; left: 37.5px; width: 300px; background: var(--bg); border: 1px solid var(--ink); z-index: 41; }
+.toast { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; align-items: center; padding: 10px 16px; background: var(--ink); color: #fff; font-size: 14px; white-space: nowrap; z-index: 42; }
+[hidden] { display: none !important; }
+
+/* ---------- prototype helper: screen index link ---------- */
+.proto-index { position: fixed; right: 12px; bottom: 12px; z-index: 100; font: 12px/1 var(--font-ui); background: #fff; color: #000; padding: 8px 10px; border-radius: 6px; opacity: .7; }
+@media (max-width: 499px) { .proto-index { display: none; } }

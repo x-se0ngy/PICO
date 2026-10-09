@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 촬영 3 특징 고르기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .step-title .sub { white-space: nowrap; }
+  .photo { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); }
+  .lens { position: absolute; width: 45px; height: 45px; z-index: 2; }
+  .lens img { width: 45px; height: 45px; }
+  .label { position: absolute; left: 20px; top: 451.52px; font-size: 16px; white-space: nowrap; }
+  .options { position: absolute; left: 20px; top: 481.18px; width: 335px; display: grid; grid-template-columns: 162px 162px; column-gap: 11px; row-gap: 10.67px; }
+  .opt { height: 65px; display: flex; align-items: center; justify-content: center; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 16px; white-space: nowrap; transition: background .15s; }
+  .opt[aria-pressed="true"] { background: var(--brand); border-style: dashed; font-weight: 700; }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav">
+      <a href="capture-2.html" aria-label="뒤로"><img class="icon" src="assets/capture/s2-icon-back.png" alt=""></a>
+      <a href="home.html" aria-label="닫기"><img class="icon" src="assets/capture/s2-icon-close.png" alt=""></a>
+    </div>
+  </div>
+
+  <div class="progress" aria-label="5단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+
+  <div class="step-title">
+    <p class="q"><span>03.</span><span>자세히 보니 어땠나요?</span></p>
+    <p class="sub">내가 표시한 곳마다 하나씩 골라보세요. 정답은 없어요.</p>
+  </div>
+
+  <div class="photo" aria-label="촬영한 사진"></div>
+  <div id="lensLayer"></div>
+
+  <p class="label">내가 관찰한 특징들을 표현 해봐요.</p>
+  <div class="options" id="options" role="group" aria-label="특징 고르기"></div>
+
+  <a class="cta" href="capture-4.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+  // Lens stickers placed on step 2 (same slot positions); one answer per sticker (single-select per sticker)
+  var SLOTS = [{ x: 63, y: 273.9 }, { x: 210, y: 361 }, { x: 280.53, y: 261.26 }];
+  var OPTIONS = ['줄무늬가 있어요.', '점무늬가 있어요.', '한가지 색이에요.', '반짝이고 있어요.'];
+  var slots = [0, 1, 2];
+  try { var s = JSON.parse(sessionStorage.getItem('pico.capture.stickers') || 'null'); if (Array.isArray(s) && s.some(function (v) { return v !== null; })) slots = s; } catch (e) {}
+  var present = slots.map(function (v, i) { return v === null ? -1 : i; }).filter(function (i) { return i > -1; });
+  var answers = {}; try { answers = JSON.parse(sessionStorage.getItem('pico.capture.answers') || '{}') || {}; } catch (e) {}
+  var active = present[0];
+
+  var layer = document.getElementById('lensLayer'), opts = document.getElementById('options');
+  function render() {
+    layer.innerHTML = present.map(function (i) {
+      return '<button class="lens" data-slot="' + i + '" style="left:' + SLOTS[i].x + 'px;top:' + SLOTS[i].y + 'px" aria-pressed="' + (i === active) + '" aria-label="' + (present.indexOf(i) + 1) + '번 렌즈">' +
+        '<img src="assets/capture/' + (i === active ? 's3-sticker-active.png' : 's3-sticker.png') + '" alt=""></button>';
+    }).join('');
+    opts.innerHTML = OPTIONS.map(function (o, k) {
+      return '<button class="opt" data-opt="' + k + '" aria-pressed="' + (answers[active] === k) + '">' + o + '</button>';
+    }).join('');
+  }
+  layer.addEventListener('click', function (e) { var b = e.target.closest('.lens'); if (b) { active = +b.dataset.slot; render(); } });
+  opts.addEventListener('click', function (e) {
+    var b = e.target.closest('.opt'); if (!b) return;
+    var k = +b.dataset.opt;
+    answers[active] = answers[active] === k ? undefined : k;
+    try { sessionStorage.setItem('pico.capture.answers', JSON.stringify(answers)); } catch (err) {}
+    render();
+    // move on to the next sticker that has no answer yet
+    if (answers[active] !== undefined) {
+      var next = present.filter(function (i) { return answers[i] === undefined; })[0];
+      if (next !== undefined) setTimeout(function () { active = next; render(); }, 350);
+    }
+  });
+  render();
+</script>
+</body></html>

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PICO · 촬영 1</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .nav a, .nav button { display: block; width: 32px; height: 32px; }
+  .step-title .q, .step-title .sub { white-space: nowrap; }
+
+  /* viewfinder */
+  .finder { position: absolute; left: 0; top: 231.85px; width: 375px; height: 430px; background: var(--bg); border: 1px dashed var(--ink); overflow: hidden; }
+  .finder video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s, transform .2s; }
+  .finder video.live { opacity: 1; }
+
+  .zoom { position: absolute; left: 50%; top: 601px; transform: translateX(-50%); display: flex; gap: 15px; }
+  .chip { position: relative; width: 40px; height: 40px; font-size: 12px; text-align: center; }
+  .chip img { position: absolute; left: -.5px; top: -.5px; width: 41px; height: 41px; }
+  .chip .on { display: none; }
+  .chip[aria-pressed="true"] .on { display: block; }
+  .chip[aria-pressed="true"] .off { display: none; }
+  .chip span { position: relative; line-height: 40px; }
+
+  .controls { position: absolute; left: 58.5px; top: 682.14px; display: flex; align-items: center; gap: 57px; }
+  .gallery { width: 32px; height: 32px; background: var(--brand); border: 1px solid var(--ink); }
+  .shutter { position: relative; display: block; width: 80px; height: 80px; }
+  .shutter img { position: absolute; left: -.5px; top: -.5px; width: 81px; height: 81px; }
+  .shutter:active img { transform: scale(.96); }
+  .flip, .flip img { width: 32px; height: 32px; }
+
+  /* sheets */
+  .dim.scrim { background: rgba(44, 44, 44, .57); }
+  .csheet { top: 357px; height: 455px; border: 1px dashed var(--ink); }
+  .home-ind { z-index: 45; }
+  .csheet .x { position: absolute; left: 323px; top: 17.47px; width: 32px; height: 32px; }
+  .csheet .x img { width: 32px; height: 32px; }
+  .csheet h2 { position: absolute; left: 0; right: 1.66px; top: 66.9px; text-align: center; font-size: 22px; line-height: normal; }
+  .csheet .lead { position: absolute; left: 0; right: 1.66px; top: 99.1px; text-align: center; font-size: 14px; line-height: 16px; }
+
+  .rules { position: absolute; left: 20px; top: 143px; width: 335px; display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+  .rule { width: 335px; height: 55px; padding: 0 10px; border: 1px dashed var(--ink); background: var(--bg); display: flex; align-items: center; gap: 10px; text-align: left; }
+  .rule .box { position: relative; flex: none; width: 35px; height: 35px; background: #fff; border: 1px dashed var(--ink); }
+  .rule .box img { position: absolute; left: .5px; top: .5px; width: 32px; height: 32px; display: none; }
+  .rule[aria-checked="true"] { background: var(--surface); border-style: solid; }
+  .rule[aria-checked="true"] .box { border-style: solid; }
+  .rule[aria-checked="true"] .box img { display: block; }
+  .rule .t { display: flex; flex-direction: column; justify-content: center; height: 38px; }
+  .rule b { font-weight: 700; font-size: 14px; line-height: 22px; white-space: nowrap; }
+  .rule small { font-size: 12px; line-height: 12px; white-space: nowrap; }
+
+  .csheet .cta { left: 19.5px; }
+  .csheet .cta::before { left: 3.5px; top: 8.64px; }
+  .csheet button.cta { padding: 0; }
+
+  .tips { position: absolute; left: 20px; top: 143px; display: flex; gap: 25px; }
+  .tip { width: 95px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .tip .box { width: 95px; height: 95px; background: var(--surface); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+  .tip .box img { width: 32px; height: 32px; }
+  .tip p { font-size: 14px; line-height: 17px; text-align: center; white-space: nowrap; }
+  .use-photo { position: absolute; left: 0; right: 0; top: 396.14px; text-align: center; font-size: 12px; text-decoration: underline; }
+</style>
+</head><body>
+<div class="phone" style="--h:812px">
+
+  <div class="top">
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav">
+      <a href="home.html" aria-label="뒤로"><img class="icon" src="assets/capture/icon-arrow-left.png" alt=""></a>
+      <a href="home.html" aria-label="닫기"><img class="icon" src="assets/capture/icon-close.png" alt=""></a>
+    </div>
+  </div>
+
+  <div class="progress" aria-label="5단계 중 1단계"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+  <div class="step-title">
+    <div class="q"><span>01.</span><span>무엇을 발견 했나요?</span></div>
+    <p class="sub">곤충을 만지지 말고, 화면을 키워서 찍어보세요.</p>
+  </div>
+
+  <div class="finder"><video id="cam" autoplay muted playsinline></video></div>
+
+  <div class="zoom" role="group" aria-label="확대">
+    <button class="chip" type="button" data-zoom="0.5" aria-pressed="false"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>0.5X</span></button>
+    <button class="chip" type="button" data-zoom="1" aria-pressed="true"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>1X</span></button>
+    <button class="chip" type="button" data-zoom="2" aria-pressed="false"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>2X</span></button>
+  </div>
+
+  <div class="controls">
+    <span class="gallery" aria-label="최근 사진"></span>
+    <a class="shutter" href="capture-2.html" aria-label="촬영하기"><img src="assets/capture/shutter.png" alt=""></a>
+    <button class="flip" type="button" id="flip" aria-label="카메라 전환"><img src="assets/capture/icon-flip.png" alt=""></button>
+  </div>
+
+  <!-- ===== first-time safety sheet (3.2.3 / 3.2.4) ===== -->
+  <div class="dim scrim" id="dim" hidden></div>
+  <div class="sheet csheet" id="safety" role="dialog" aria-modal="true" aria-labelledby="safetyTitle" hidden>
+    <button class="x" type="button" data-close aria-label="닫기"><img src="assets/capture/icon-close-sheet.png" alt=""></button>
+    <h2 id="safetyTitle">탐험 전에 약속해요</h2>
+    <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
+    <ul class="rules" id="rules"></ul>
+    <button class="cta cta--yellow" type="button" id="promise" style="top:347.5px" aria-disabled="true"><span class="cta-face">약속 했어요! <img src="assets/common/arrow-right.png" alt=""></span></button>
+  </div>
+
+  <!-- ===== photo error sheet (3.2.2) ===== -->
+  <div class="sheet csheet" id="error" role="dialog" aria-modal="true" aria-labelledby="errorTitle" hidden>
+    <button class="x" type="button" data-close aria-label="닫기"><img src="assets/capture/icon-close-sheet.png" alt=""></button>
+    <h2 id="errorTitle">앗, 곤충이 잘 안 보여요</h2>
+    <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
+    <div class="tips" id="tips"></div>
+    <button class="cta cta--yellow" type="button" data-close style="top:318.5px"><span class="cta-face">다시 찍어 볼래요</span></button>
+    <a class="use-photo" href="capture-2.html">이 곤충이 맞아요! 이 사진으로 할래요</a>
+  </div>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+(function () {
+  var KEY = 'pico.safetyAccepted';
+  var dim = document.getElementById('dim');
+  var safety = document.getElementById('safety'), error = document.getElementById('error');
+  var promise = document.getElementById('promise');
+
+  // safety checklist (3.2.4 copy)
+  var rules = [
+    ['가까이서 보고, 손대지 않기', '생물은 눈으로 천천히 관찰해요.'],
+    ['발견한 자리는 그대로 두기', '생물이 있던 환경을 그대로 남겨요.'],
+    ['안전한 곳에서 탐험하기', '길이나 위험한 곳에서는 멈추고, 주변을 살핀 뒤 촬영해요.']
+  ];
+  var list = document.getElementById('rules');
+  list.innerHTML = rules.map(function (r) {
+    return '<li><button type="button" class="rule" role="checkbox" aria-checked="false"><span class="box"><img src="assets/capture/icon-check.png" alt=""></span><span class="t"><b>' + r[0] + '</b><small>' + r[1] + '</small></span></button></li>';
+  }).join('');
+  var rows = list.querySelectorAll('.rule');
+  function sync() {
+    var all = Array.prototype.every.call(rows, function (r) { return r.getAttribute('aria-checked') === 'true'; });
+    promise.setAttribute('aria-disabled', all ? 'false' : 'true');
+  }
+  function setChecked(n) { rows.forEach(function (r, i) { r.setAttribute('aria-checked', i < n ? 'true' : 'false'); }); sync(); }
+  rows.forEach(function (r) {
+    r.addEventListener('click', function () { r.setAttribute('aria-checked', r.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); sync(); });
+  });
+
+  // error tips
+  var tips = [['icon-video', '확대해서<br>크게 보기'], ['icon-steady', '흔들리지<br>않게 잡기'], ['icon-refresh', '밝은 곳에서<br>찍기']];
+  document.getElementById('tips').innerHTML = tips.map(function (t) {
+    return '<div class="tip"><span class="box"><img src="assets/capture/' + t[0] + '.png" alt=""></span><p>' + t[1] + '</p></div>';
+  }).join('');
+
+  function open(s) { dim.hidden = false; s.hidden = false; }
+  function closeAll() { dim.hidden = true; safety.hidden = true; error.hidden = true; }
+  document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', closeAll); });
+
+  promise.addEventListener('click', function () {
+    if (promise.getAttribute('aria-disabled') === 'true') return;
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    closeAll();
+  });
+
+  // zoom chips
+  var video = document.getElementById('cam'), stream = null, facing = 'environment';
+  var chips = document.querySelectorAll('.chip');
+  function applyZoom(z) {
+    var track = stream && stream.getVideoTracks()[0], caps = track && track.getCapabilities ? track.getCapabilities() : {};
+    if (caps.zoom) {
+      var v = Math.min(caps.zoom.max, Math.max(caps.zoom.min, z));
+      track.applyConstraints({ advanced: [{ zoom: v }] }).catch(function () {});
+      video.style.transform = '';
+    } else {
+      video.style.transform = 'scale(' + Math.max(1, z) + ')';
+    }
+  }
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      chips.forEach(function (o) { o.setAttribute('aria-pressed', o === c ? 'true' : 'false'); });
+      applyZoom(parseFloat(c.getAttribute('data-zoom')));
+    });
+  });
+
+  // optional live camera preview (fails silently)
+  function startCam() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: facing }, audio: false }).then(function (s) {
+      stream = s; video.srcObject = s; video.classList.add('live');
+    }).catch(function () {});
+  }
+  document.getElementById('flip').addEventListener('click', function () {
+    facing = facing === 'environment' ? 'user' : 'environment'; startCam();
+  });
+
+  // states
+  var st = document.documentElement.dataset.state;
+  if (st === 'safety') { setChecked(1); open(safety); }
+  else if (st === 'safety-checked') { setChecked(2); open(safety); }
+  else if (st === 'error') { open(error); }
+  else {
+    var accepted = false;
+    try { accepted = localStorage.getItem(KEY) === '1'; } catch (e) {}
+    if (!accepted) { setChecked(0); open(safety); }
+  }
+  if (!st) startCam();
+})();
+</script>
+</body></html>
