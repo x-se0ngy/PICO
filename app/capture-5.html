@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="base.css">
 <style>
   .photo { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); }
+  .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
   .lens { position: absolute; width: 45px; height: 45px; }
   .label { position: absolute; left: 20px; top: 451.52px; font-size: 16px; white-space: nowrap; }
   .chips { position: absolute; left: 20px; top: 481.18px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 10.67px; row-gap: 10.67px; }
@@ -36,7 +37,7 @@
     <p class="sub">본 것을 나의 글로 적어보세요.</p>
   </div>
 
-  <div class="photo" aria-label="촬영한 사진"></div>
+  <div class="photo" data-photo aria-label="촬영한 사진"></div>
   <div id="lensLayer"></div>
 
   <p class="label">내가 관찰한 단어들을 문장에 넣어 보세요</p>
@@ -49,6 +50,7 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script src="photo.js"></script>
 <script>
   // Lens stickers from step 2 (first one highlighted as in the frame)
   var SLOTS = [{ x: 63, y: 273.9 }, { x: 210, y: 361 }, { x: 280.53, y: 261.26 }];
