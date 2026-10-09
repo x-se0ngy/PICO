@@ -88,6 +88,15 @@ img { display: block; }
 .tab-cam::before { content: ''; position: absolute; left: 9.15px; top: 9.15px; width: 50px; height: 50px; background: var(--reward); border: 1px dashed var(--ink); transform: rotate(60deg); }
 .tab-cam img { position: absolute; left: 18.15px; top: 17.75px; width: 32px; height: 32px; }
 
+/* labeled tab bar (Figma: 하단바 — icon + label, 120px incl. home indicator) */
+.tabbar--labeled { height: 120px; }
+.tabbar--labeled .tabbar-bg { top: 20px; }
+.tabbar--labeled .tabbar-row { top: 0; height: 82px; align-items: flex-end; }
+.tabbar--labeled .tabbar-group { height: auto; align-items: flex-end; }
+.tabbar--labeled .tabbar-group a { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 32px; }
+.tabbar--labeled .tabbar-group span { font-size: 14px; line-height: 14px; color: var(--text-primary); white-space: nowrap; }
+.tabbar--labeled .tab-cam { align-self: flex-start; }
+
 /* ---------- primary CTA (330x54 + offset black shadow) ---------- */
 /* Figma: 큰 버튼 — 활성버튼 / 노랑 / 비활성 */
 .cta { position: absolute; left: 20px; width: 330px; height: 54px; display: block; }
