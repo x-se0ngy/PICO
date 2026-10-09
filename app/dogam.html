@@ -12,71 +12,74 @@
   .abs { position: absolute; }
 
   /* summary card */
-  .card-shadow { left: 30px; top: 143.65px; width: 325px; height: 215px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 21px; top: 133.21px; width: 325px; height: 215px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-inner { left: 28.5px; top: 215.63px; width: 310px; height: 125px; background: var(--brand-soft); }
-  .summary { left: 31.49px; top: 149.3px; white-space: nowrap; display: flex; flex-direction: column; gap: 5px; }
+  .card-shadow { left: 29.5px; top: 167.54px; width: 325px; height: 215px; background: var(--ink); border: 1px solid var(--ink); }
+  .card-face { left: 20.5px; top: 157.1px; width: 325px; height: 215px; background: var(--brand); border: 1px dashed var(--ink); }
+  .card-inner { left: 28px; top: 239.19px; width: 310px; height: 125px; background: var(--brand-soft); }
+  .summary { left: 28px; top: 173.19px; white-space: nowrap; display: flex; flex-direction: column; gap: 5px; }
   .summary .t { font-size: 20px; }
   .summary .n { display: flex; gap: 4px; align-items: center; }
   .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
 
   /* collection bin illustration (pieces exported from Figma, placed at their render bounds) */
+  .bin { left: 0; top: 0; transform: translate(-0.5px, 23.89px); }
   .bin img { position: absolute; }
   .bin .cnt { position: absolute; top: 160.17px; left: 251.69px; font-weight: 700; font-size: 16px; line-height: 15px; }
   .bin .of { position: absolute; white-space: nowrap; top: 162.17px; left: 276.76px; font-size: 10px; line-height: 15px; }
   .bin .band { position: absolute; left: 223.71px; top: 129.58px; width: 110.56px; height: 8.88px; background: #b4bf38; border: 1px solid var(--ink); }
   .bin .win { position: absolute; left: 263.71px; top: 105.14px; width: 30.31px; height: 6.48px; background: #e4f8fd; border: 1px solid var(--ink); }
 
-  .weekly { left: 36px; top: 224.3px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
+  .weekly { left: 36px; top: 248.19px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
   .weekly > p { font-size: 14px; line-height: 19px; }
   .weekly-row { display: flex; gap: 15px; justify-content: center; padding: 0 5px; }
   .weekly-row a { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 10px; line-height: 12px; white-space: nowrap; }
-  .weekly-row img { width: 60px; height: 60px; }
+  /* Figma now draws these with a solid 1px stroke: clip the old dashed rim off the 3x photo and draw the stroke in CSS */
+  .weekly-row .ph { position: relative; width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--ink); overflow: hidden; }
+  .weekly-row .ph img { position: absolute; left: -1px; top: -1px; width: 60px; height: 60px; }
 
-  /* search + list header */
-  .search { left: 20px; top: 386.2px; width: 335px; height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; gap: 15px; padding: 0 10px; }
+  /* list section: one flowing column, matches Figma auto-layout (Frame 2147203380) */
+  .list { left: 0; top: 407.54px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  .search { width: 335px; height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; gap: 15px; padding: 0 10px; }
   .search img { width: 32px; height: 32px; flex: none; }
   .search input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--ink); outline: none; padding: 0; }
   .search input::placeholder { color: var(--ink); opacity: 1; }
-  .list-head { left: 20px; top: 441.2px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; }
-  .list-head p { font-size: 16px; }
+  .list-head { margin-top: 10px; width: 335px; height: 19px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .list-head p { font-size: 16px; line-height: 19px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
   .sort img { width: 18px; height: 18px; transition: transform .15s; }
   .sort[aria-pressed="true"] img { transform: rotate(180deg); }
 
   /* insect cards */
-  .cards { left: 20px; top: 480px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 15px; row-gap: 14.6px; }
-  .icard { position: relative; width: 160px; height: 138px; display: block; }
-  .icard .photo { position: absolute; left: -0.5px; top: -0.5px; width: 161px; height: 139px; }
-  .icard .band { position: absolute; left: 0; top: 0.68px; width: 160px; height: 49px; background: #b1bd35; display: flex; }
-  .icard .band i { height: 50px; border: 1px dashed var(--ink); }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; column-gap: 15px; }
+  .cards--top { margin-top: 20px; width: 335px; row-gap: 15px; }
+  .cards--rest { margin-top: 25px; width: 336px; row-gap: 14px; }
+  .cards:empty { display: none; }
+  .icard { position: relative; height: 138.3px; display: block; }
+  .icard .photo { position: absolute; left: -0.5px; top: -0.5px; width: calc(100% + 1px); height: 139px; }
+  .icard .band { position: absolute; left: 0; top: 0.68px; width: 100%; height: 49.1px; background: #b1bd35; display: flex; }
+  .icard .band i { height: 50px; margin-top: -0.45px; border: 1px dashed var(--ink); }
   .icard .band i:first-child { width: 125px; } .icard .band i:last-child { width: 35px; }
-  .icard .meta { position: absolute; left: 0; top: 7.68px; width: 160px; padding: 0 5px 0 10px; display: flex; justify-content: space-between; align-items: center; }
-  .icard .meta b { display: block; font-weight: 400; font-size: 16px; white-space: nowrap; }
-  .icard .meta span { display: block; font-size: 12px; margin-top: 2px; }
+  .icard .meta { position: absolute; left: 0; top: 7.7px; width: 100%; height: 35.08px; padding: 0 5px 0 10px; display: flex; justify-content: space-between; align-items: center; }
+  .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: 19px; white-space: nowrap; }
+  .icard .meta span span { display: block; font-size: 12px; line-height: 14px; margin-top: 2px; white-space: nowrap; }
   .icard .bm { width: 24px; height: 24px; flex: none; }
   .icard .bm img { width: 24px; height: 24px; }
-  .empty { left: 20px; top: 540px; width: 335px; text-align: center; font-size: 14px; }
+  .empty { margin-top: 30px; width: 335px; text-align: center; font-size: 14px; }
 
-  /* PICO TIP banner */
-  .tip { left: 0; top: 813.27px; width: 375px; height: 115px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); }
-  .burst { left: 191.4px; top: 781.44px; width: 155.38px; height: 86.39px; }
-  .burst img { width: 100%; height: 100%; }
-  .burst span { position: absolute; left: 54.4px; top: 34.93px; font-size: 14px; white-space: nowrap; }
-  .tip-body { left: 15.85px; top: 829.77px; width: 260.15px; display: flex; flex-direction: column; gap: 12px; }
-  .tip-body .h { display: flex; gap: 10px; align-items: center; font-weight: 700; font-size: 20px; }
-  .tip-body .h img { width: 32px; height: 32px; }
-  .tip-body .d { display: flex; flex-direction: column; gap: 4px; font-size: 14px; white-space: nowrap; }
+  /* PICO TIP banner (Figma "TIP 배너") */
+  .tip { margin-top: 25px; width: 375px; height: 110px; padding: 16px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+  .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; white-space: nowrap; }
+  .tip .h img { width: 32px; height: 32px; }
+  .tip .d { font-size: 14px; line-height: 1.3; white-space: nowrap; }
 
   /* not-yet-met tiles */
-  .unknown { left: 21px; top: 958.61px; width: 335px; display: grid; grid-template-columns: 160px 160px; column-gap: 15px; row-gap: 14px; }
-  .utile { position: relative; height: 138.41px; background: var(--brand-soft); border: 1px dashed var(--ink); font-size: 14px; }
-  .utile img { position: absolute; left: 62.85px; top: 39.12px; width: 32px; height: 32.1px; }
-  .utile .no { position: absolute; left: 0; right: 0; top: 86.08px; text-align: center; }
-  .utile .msg { position: absolute; left: 0; right: 0; top: 110.15px; text-align: center; }
+  .utile { position: relative; height: 138.3px; background: var(--brand-soft); border: 1px dashed var(--ink); font-size: 14px; }
+  .utile img { position: absolute; left: 62.05px; top: 38.08px; width: 32px; height: 32.1px; }
+  .utile .no { position: absolute; left: 0; right: 0; top: 85.01px; text-align: center; }
+  .utile .msg { position: absolute; left: 0; right: 0; top: 109.06px; text-align: center; }
+  .unknown-last { margin-top: 15px; width: 336px; row-gap: 14px; }
 </style>
 </head><body>
-<div class="phone" style="--h:1422px">
+<div class="phone" style="--h:1974px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -108,22 +111,22 @@
     <div class="weekly-row" id="weekly"></div>
   </div>
 
-  <!-- 검색 + 목록 -->
-  <label class="abs search"><img src="assets/tabs/icon-search.png" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
-  <div class="abs list-head"><p>곤충 목록</p>
-    <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/tabs/icon-arrow-down-new.png" alt=""></button></div>
-  <div class="abs cards" id="cards"></div>
-  <p class="abs empty" id="empty" hidden>찾는 곤충이 없어요.</p>
+  <!-- 검색 + 목록 + TIP + 나머지 곤충 -->
+  <div class="abs list" id="list">
+    <label class="search"><img src="assets/tabs/icon-search.png" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
+    <div class="list-head"><p>곤충 목록</p>
+      <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/tabs/icon-arrow-down-new.png" alt=""></button></div>
+    <div class="cards cards--top" id="cards"></div>
+    <p class="empty" id="empty" hidden>찾는 곤충이 없어요.</p>
 
-  <!-- PICO TIP -->
-  <div class="abs tip"></div>
-  <a class="abs burst" href="home.html"><img src="assets/tabs/tip-burst.png" alt=""><span>탐험하기</span></a>
-  <div class="abs tip-body">
-    <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP !</div>
-    <div class="d"><p>잎 뒷면도 살펴보세요!</p><p>작은 곤충은 잎 아래에 숨어 있는 경우가 많아요.</p></div>
+    <div class="tip">
+      <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP</div>
+      <div class="d"><p>잎 뒷면도 살펴보세요!</p><p>작은 알이 숨어 있을지도 몰라요.</p></div>
+    </div>
+
+    <div class="cards cards--rest" id="cards2"></div>
+    <div class="cards unknown-last" id="unknown2"></div>
   </div>
-
-  <div class="abs unknown" id="unknown"></div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
@@ -144,57 +147,74 @@
     { name: '배추흰나비', img: 'new-butterfly' }
   ];
   document.getElementById('weekly').innerHTML = weekly.map(function (w) {
-    return '<a href="dogam-detail.html"><img src="assets/tabs/' + w.img + '.png" alt=""><span>' + w.name + '</span></a>';
+    return '<a href="dogam-detail.html"><span class="ph"><img src="assets/tabs/' + w.img + '.png" alt=""></span><span>' + w.name + '</span></a>';
   }).join('');
 
-  // newest first (Figma order)
+  // newest first (Figma order). First 4 sit above the TIP banner, the rest below it.
   var insects = [
     { name: '방아깨비', date: '2027.11.22', img: 'card-grasshopper' },
     { name: '배추흰나비', date: '2027.11.17', img: 'card-butterfly' },
     { name: '칠성무당벌레', date: '2027.11.01', img: 'card-ladybug' },
-    { name: '고추 잠자리', date: '2027.10.29', img: 'card-dragonfly' }
+    { name: '고추 잠자리', date: '2027.10.29', img: 'card-dragonfly' },
+    { name: '소금쟁이', date: '2027.10.18', img: 'card-waterstrider' },
+    { name: '물방개', date: '2027.10.11', img: 'card-divingbeetle' },
+    { name: '흰줄숲모기', date: '2027.10.12', img: 'card-mosquito' },
+    { name: '갈색 여치', date: '2027.10.08', img: 'card-katydid' },
+    { name: '긴수염대벌레', date: '2027.10.08', img: 'card-stickinsect' },
+    { name: '큰자루긴수염나방', date: '2027.10.05', img: 'card-moth' },
+    { name: '붉은점모시나비', date: '2027.09.23', img: 'card-apollo' },
+    { name: '상제나비', date: '2027.09.23', img: 'card-blackveined' }
   ];
-  var cards = document.getElementById('cards');
-  cards.innerHTML = insects.map(function (it) {
+  var saved = {};
+  function cardHTML(it) {
+    var on = !!saved[it.name];
     return '<a class="icard" href="dogam-detail.html" data-name="' + it.name + '">' +
       '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
       '<span class="band"><i></i><i></i></span>' +
       '<span class="meta"><span><b>' + it.name + '</b><span>' + it.date + '</span></span>' +
-      '<span class="bm" role="button" tabindex="0" aria-pressed="false" aria-label="저장"><img src="assets/common/tab-bookmark.png" alt=""></span></span></a>';
-  }).join('');
+      '<span class="bm" role="button" tabindex="0" aria-pressed="' + on + '" aria-label="저장"><img src="' +
+      (on ? 'assets/tabs/tab-bookmark-saved.png' : 'assets/common/tab-bookmark.png') + '" alt=""></span></span></a>';
+  }
+  function utile(n) {
+    return '<div class="utile"><img src="assets/tabs/icon-question.png" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
+  }
+  var cards = document.getElementById('cards'), cards2 = document.getElementById('cards2');
+  var q = document.getElementById('q'), empty = document.getElementById('empty');
+  var oldest = false, phone = document.querySelector('.phone'), list = document.getElementById('list');
+  function render() {
+    var v = q.value.replace(/\s+/g, '');
+    var shown = insects.filter(function (it) { return !v || it.name.replace(/\s+/g, '').indexOf(v) !== -1; });
+    if (oldest) shown = shown.slice().reverse();
+    cards.innerHTML = shown.slice(0, 4).map(cardHTML).join('');
+    // Figma order of the unmet tiles: No.25, No.27 in the last card grid, then No.26, No.28
+    cards2.innerHTML = shown.slice(4).map(cardHTML).join('') + (v ? '' : utile(25) + utile(27));
+    document.getElementById('unknown2').innerHTML = v ? '' : utile(26) + utile(28);
+    empty.hidden = shown.length > 0;
+    // page grows with the list; keep 20px above the tab bar's yellow band
+    phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 120)) + 'px');
+  }
+  render();
 
   // bookmark toggle (does not open the card)
-  cards.addEventListener('click', function (e) {
+  document.getElementById('list').addEventListener('click', function (e) {
     var b = e.target.closest('.bm'); if (!b) return;
     e.preventDefault(); e.stopPropagation();
-    var on = b.getAttribute('aria-pressed') !== 'true';
-    b.setAttribute('aria-pressed', on);
-    b.querySelector('img').src = on ? 'assets/tabs/tab-bookmark-saved.png' : 'assets/common/tab-bookmark.png';
+    var name = b.closest('.icard').dataset.name;
+    saved[name] = !saved[name];
+    b.setAttribute('aria-pressed', saved[name]);
+    b.querySelector('img').src = saved[name] ? 'assets/tabs/tab-bookmark-saved.png' : 'assets/common/tab-bookmark.png';
   });
 
-  // search: filter visible card names
-  var q = document.getElementById('q'), empty = document.getElementById('empty');
-  q.addEventListener('input', function () {
-    var v = q.value.replace(/\s+/g, ''), shown = 0;
-    cards.querySelectorAll('.icard').forEach(function (c) {
-      var hit = !v || c.dataset.name.replace(/\s+/g, '').indexOf(v) !== -1;
-      c.hidden = !hit; if (hit) shown++;
-    });
-    empty.hidden = shown > 0;
-  });
+  q.addEventListener('input', render);
 
   // sort: 최근순 <-> 오래된순
   var sort = document.getElementById('sort');
   sort.addEventListener('click', function () {
-    var old = sort.getAttribute('aria-pressed') !== 'true';
-    sort.setAttribute('aria-pressed', old);
-    sort.querySelector('span').textContent = old ? '오래된순' : '최근순';
-    Array.prototype.slice.call(cards.children).reverse().forEach(function (c) { cards.appendChild(c); });
+    oldest = !oldest;
+    sort.setAttribute('aria-pressed', oldest);
+    sort.querySelector('span').textContent = oldest ? '오래된순' : '최근순';
+    render();
   });
-
-  document.getElementById('unknown').innerHTML = [25, 26, 27, 28].map(function (n) {
-    return '<div class="utile"><img src="assets/tabs/icon-question.png" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
-  }).join('');
 })();
 </script>
 </body></html>
