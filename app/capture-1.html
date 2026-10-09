@@ -150,7 +150,7 @@
 
   function open(s) { dim.hidden = false; s.hidden = false; }
   function closeAll() { dim.hidden = true; safety.hidden = true; error.hidden = true; }
-  document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', closeAll); });
+  document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', function () { window.picoSwap(closeAll); }); });
 
   promise.addEventListener('click', function () {
     if (promise.getAttribute('aria-disabled') === 'true') return;

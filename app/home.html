@@ -197,15 +197,15 @@
       b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
   }
-  modeBtns.forEach(function (b) { b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); }); });
+  modeBtns.forEach(function (b) { b.addEventListener('click', function () { var m = b.getAttribute('data-mode'); window.picoSwap(function () { setMode(m); }); }); });
 
   // sheet
   var sheet = document.getElementById('sheet'), dim = document.getElementById('sheetDim');
   function openSheet() { sheet.hidden = false; dim.hidden = false; }
   function closeSheet() { sheet.hidden = true; dim.hidden = true; }
   document.addEventListener('click', function (e) { if (e.target.closest('[data-open-sheet]')) openSheet(); });
-  dim.addEventListener('click', closeSheet);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+  dim.addEventListener('click', function () { window.picoSwap(closeSheet); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) window.picoSwap(closeSheet); });
 
   var st = document.documentElement.dataset.state;
   if (st === 'field') setMode('field');

@@ -25,10 +25,18 @@
   document.addEventListener('click', function (e) {
     var el = e.target.closest('[data-go]'); if (el) { location.href = el.getAttribute('data-go'); }
   });
+  // Dissolve an in-page state change (Figma "Dissolve · Slow · 300ms") where the browser supports it.
+  window.picoSwap = function (fn) {
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !reduce) document.startViewTransition(fn); else fn();
+  };
   // [data-show="#id"] / [data-hide="#id"] → toggle overlays
   document.addEventListener('click', function (e) {
-    var s = e.target.closest('[data-show]'); if (s) { document.querySelectorAll(s.getAttribute('data-show')).forEach(function (n) { n.hidden = false; }); }
-    var h = e.target.closest('[data-hide]'); if (h) { document.querySelectorAll(h.getAttribute('data-hide')).forEach(function (n) { n.hidden = true; }); }
+    var s = e.target.closest('[data-show]'), h = e.target.closest('[data-hide]');
+    if (!s && !h) return;
+    // showing: the overlay's own CSS dissolve plays; hiding: crossfade the change
+    if (s) document.querySelectorAll(s.getAttribute('data-show')).forEach(function (n) { n.hidden = false; });
+    if (h) window.picoSwap(function () { document.querySelectorAll(h.getAttribute('data-hide')).forEach(function (n) { n.hidden = true; }); });
   });
   // ?state=xxx → body[data-state] so a page can open in a specific Figma-frame state
   var st = new URLSearchParams(location.search).get('state'); if (st) document.documentElement.setAttribute('data-state', st);

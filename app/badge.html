@@ -299,13 +299,14 @@
 
   // overlays
   var names = ['earned', 'locked', 'new', 'qr'];
-  function close() {
+  function hideAll() {
     names.forEach(function (n) { document.getElementById('ov-' + n).hidden = true; });
     document.body.style.overflow = '';
   }
+  function close() { window.picoSwap(hideAll); }
   function open(n) {
     if (names.indexOf(n) === -1) return;
-    close();
+    hideAll();
     document.getElementById('ov-' + n).hidden = false;
     document.body.style.overflow = 'hidden';
   }
