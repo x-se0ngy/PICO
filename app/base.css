@@ -75,12 +75,16 @@ img { display: block; }
 .home-ind { position: absolute; left: 0; bottom: 0; width: 375px; height: 34px; z-index: 30; pointer-events: none; }
 
 /* ---------- bottom tab bar ---------- */
-.tabbar { position: absolute; left: 0; bottom: 0; width: 375px; height: 85px; z-index: 20; }
-.tabbar-bg { position: absolute; inset: 0; background: var(--reward); border-top: 1px dashed var(--ink); }
-.tabbar-row { position: absolute; left: 21.5px; top: -17.2px; width: 332px; display: flex; align-items: flex-end; justify-content: space-between; }
-.tabbar-group { display: flex; gap: 40px; align-items: center; height: 32px; }
+/* Figma "하단바" (120px instance): yellow bar from y=20, icon + label tabs, rotated camera button */
+.tabbar { position: absolute; left: 0; bottom: 0; width: 375px; height: 120px; z-index: 20; pointer-events: none; }
+.tabbar-bg { position: absolute; left: 0; right: 0; top: 20px; bottom: 0; background: var(--reward); border-top: 1px dashed var(--ink); }
+.tabbar-row { position: absolute; left: 21.5px; top: 0; width: 332px; height: 82px; display: flex; align-items: flex-end; justify-content: space-between; }
+.tabbar-row a { pointer-events: auto; }
+.tabbar-group { display: flex; gap: 40px; align-items: center; }
+.tabbar-group a { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 32px; }
 .tabbar-group img { width: 32px; height: 32px; }
-.tab-cam { position: relative; width: 68.3px; height: 68.3px; display: block; }
+.tabbar-group span { font-size: 14px; line-height: 14px; white-space: nowrap; }
+.tab-cam { position: relative; width: 68.3px; height: 68.3px; display: block; align-self: flex-start; }
 .tab-cam::before { content: ''; position: absolute; left: 9.15px; top: 9.15px; width: 50px; height: 50px; background: var(--reward); border: 1px dashed var(--ink); transform: rotate(60deg); }
 .tab-cam img { position: absolute; left: 18.15px; top: 17.75px; width: 32px; height: 32px; }
 

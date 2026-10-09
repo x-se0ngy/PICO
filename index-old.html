@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>PICO · 새싹 탐험가의 들판</title>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#221B17" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="home-map.css" />
+<link rel="stylesheet" href="pico-icons.css" />
+<link rel="stylesheet" href="home-field.css" />
+</head>
+<body>
+
+  <!-- PICO 홈 = Living Paper Field + Nearby Radar
+       · 종이로 만든 들판(디오라마) 위를 내가 관찰하고 그린 피코들이 돌아다녀요.
+       · PICO Radar 를 누르면 주변의 '생태 신호'가 방향·거리·힌트로만 나타나요. (종 이름은 비밀) -->
+  <div class="mh-phone" id="screen-home">
+
+    <!-- ① 종이 들판 -->
+    <div class="pf-field" id="field">
+      <svg class="pf-scene pf-scene--back" id="field-back" viewBox="0 0 393 852" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+
+      <!-- 내 피코들 (관찰 → 그리기 → 저장한 그림) -->
+      <div class="mh-bugs" id="field-bugs" aria-label="내 들판의 피코들"></div>
+
+      <svg class="pf-scene pf-scene--front" id="field-front" viewBox="0 0 393 852" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    </div>
+
+    <!-- ② PICO Radar: 주변 생태 신호 -->
+    <div class="pr-radar" id="radar" hidden>
+      <div class="pr-wash" aria-hidden="true"></div>
+      <svg class="pr-rings" id="radar-rings" viewBox="0 0 393 852" aria-hidden="true"></svg>
+      <div class="pr-me" id="radar-me" aria-hidden="true"></div>
+      <ul class="pr-signals" id="radar-signals" aria-label="주변 생태 신호"></ul>
+      <p class="pr-caption" id="radar-caption" role="status"></p>
+    </div>
+
+    <!-- 상단: 상태바 + GNB + 들판 이름 -->
+    <header class="mh-header">
+      <div class="mh-status">
+        <span class="mh-status-time">9:41</span>
+        <span class="mh-status-icons">
+          <img src="assets/home-map/signal.svg"  width="18" height="10" alt="" />
+          <img src="assets/home-map/wifi.svg"    width="16" height="11" alt="" />
+          <img src="assets/home-map/battery.svg" width="27" height="13" alt="" />
+        </span>
+      </div>
+
+      <nav class="mh-gnb">
+        <button class="mh-icon-btn" aria-label="메뉴"><span class="pi pi-list" aria-hidden="true"></span></button>
+        <img class="mh-logo" src="assets/home-map/logo.svg" width="31" height="32" alt="PICO" />
+        <button class="mh-icon-btn" aria-label="프로필"><span class="pi pi-user" aria-hidden="true"></span></button>
+      </nav>
+
+      <div class="mh-field-title">
+        <span class="mh-field-title-bg"><img src="assets/home-map/banner-paper.png" alt="" onerror="this.parentNode.classList.add('is-missing'); this.hidden=true" /></span>
+        <h1>새싹 탐험가의 들판</h1>
+      </div>
+      <p class="pf-count" id="field-count" aria-live="polite"></p>
+    </header>
+
+    <!-- 레이더 알림: 근처에 새로운 신호 -->
+    <button class="pr-toast" id="radar-toast" hidden>
+      <span class="pr-toast-dot" aria-hidden="true"></span>
+      <span>근처에서 새로운 신호가 발견됐어요.</span>
+    </button>
+
+    <!-- 새 친구 도착 배너 -->
+    <div class="pf-arrive" id="arrive-banner" role="status" hidden>
+      <p class="pf-arrive-title">새로운 친구가 들판에 도착했어요!</p>
+      <p class="pf-arrive-sub" id="arrive-sub"></p>
+    </div>
+
+    <!-- PICO Radar 버튼 -->
+    <button class="pr-btn" id="radar-btn" aria-pressed="false" aria-controls="radar">
+      <span class="pr-btn-pulse" aria-hidden="true"></span>
+      <span class="pi pi-radar pr-btn-icon" style="--pi-size:28px" aria-hidden="true"></span>
+      <span class="pr-btn-label">RADAR</span>
+      <span class="pr-btn-badge" id="radar-badge" aria-hidden="true"></span>
+    </button>
+
+    <!-- 하단 탭바 (찢긴 종이) -->
+    <nav class="mh-tabbar">
+      <span class="mh-tabbar-bg"><img src="assets/home-map/bottom-paper.png" alt="" onerror="this.parentNode.classList.add('is-missing'); this.hidden=true" /></span>
+      <div class="mh-tabs">
+        <a class="mh-tab" href="book.html" aria-label="도감"><span class="pi pi-tag" aria-hidden="true"></span></a>
+        <a class="mh-tab mh-tab--camera" href="discover.html" aria-label="카메라로 발견하기"><span class="pi pi-home-favorite" aria-hidden="true"></span></a>
+        <a class="mh-tab" href="ranking.html" aria-label="랭킹"><span class="pi pi-heart" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+
+    <!-- 정보 카드: 생태 신호 / 내 피코 -->
+    <section class="mh-card" id="info-card" role="dialog" aria-modal="false" aria-labelledby="info-title" hidden>
+      <button class="mh-card-close" id="info-close" aria-label="닫기"><span class="pi pi-close" style="--pi-size:16px" aria-hidden="true"></span>
+      </button>
+      <div class="mh-card-head">
+        <div class="mh-card-thumb" id="info-thumb" aria-hidden="true"></div>
+        <div class="mh-card-titles">
+          <p class="mh-card-eyebrow" id="info-eyebrow"></p>
+          <h2 class="mh-card-title" id="info-title"></h2>
+          <p class="mh-card-meta" id="info-meta"></p>
+        </div>
+      </div>
+      <p class="mh-card-text" id="info-text"></p>
+      <ul class="mh-card-chips" id="info-chips"></ul>
+      <div class="mh-card-more" id="info-more" hidden></div>
+      <div class="mh-card-actions">
+        <button class="mh-card-toggle" id="info-toggle" aria-expanded="false" aria-controls="info-more">자세히 보기</button>
+        <a class="mh-card-go" id="info-go" href="discover.html" hidden>찾으러 가기</a>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="home-field-data.js"></script>
+  <script src="home-field.js"></script>
+  <script src="home-field-habitat.js"></script>
+  <script src="home-radar.js"></script>
+  <script src="home-field-info.js"></script>
+  <script>
+    // PWA: 홈 화면에 추가 지원
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>

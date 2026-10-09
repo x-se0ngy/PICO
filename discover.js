@@ -103,7 +103,7 @@
 
   function prev() {
     const i = ORDER.indexOf(current);
-    if (i <= 0) { location.href = 'index.html'; return; }
+    if (i <= 0) { location.href = 'index-old.html'; return; }
     go(ORDER[i - 1]);
   }
 
@@ -604,7 +604,7 @@
     } catch (e) { /* 저장 불가 환경이어도 홈으로는 이동 */ }
 
     doneScreen.querySelector('.dc-card').classList.add('is-flying');
-    setTimeout(() => { location.href = 'index.html'; }, 650);
+    setTimeout(() => { location.href = 'index-old.html'; }, 650);
   });
 
   // 공유 (지원하는 기기에서만)

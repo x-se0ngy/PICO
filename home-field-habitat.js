@@ -11,14 +11,14 @@
          note: '아이가 남긴 관찰 메모',
          lens: 'LOOK',
        }]));
-       location.href = 'index.html';
+       location.href = 'index-old.html';
      → 홈에 오면 "새로운 친구가 들판에 도착했어요!" 와 함께
        그 그림이 들판으로 날아 들어와요.
 
    ▶ 레이더에서 '찾으러 가기'를 누르면 그 신호 id 가 저장되고,
      그 뒤 도착한 피코는 그 신호에서 만난 친구로 기록돼요.
 
-   ▶ 시연용: index.html?demo=arrive  → 예시 그림으로 도착 모션 재생
+   ▶ 시연용: index-old.html?demo=arrive  → 예시 그림으로 도착 모션 재생
    ========================================================= */
 (() => {
   const field = window.PicoField;
