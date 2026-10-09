@@ -18,13 +18,44 @@
   .radar, .field { position: absolute; inset: 0; }
   .phone[data-mode="field"] .radar, .phone[data-mode="radar"] .field { display: none; }
   .abs { position: absolute; display: block; }
-  .ring-lbl { position: absolute; top: 354.37px; font-size: 10px; line-height: 20px; white-space: nowrap; }
-  .pin { position: absolute; width: 47.852px; height: 47.852px; }
-  .pin i { position: absolute; left: 6.93px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); border: 1px dashed var(--ink); background: var(--reward); }
+  .ring-lbl { position: absolute; top: 354.37px; font-size: 10px; line-height: 20px; white-space: nowrap; z-index: 1; }
+  /* radar scope (Figma 2.1.2: dashed rings 300 / 200 / 100, centre at 187.35, 364.37) */
+  .scope { position: absolute; left: 37.35px; top: 214.37px; width: 300px; height: 300px; }
+  .ring { position: absolute; border: 1px dashed var(--ink); border-radius: 50%; }
+  .ring--300 { left: 0; top: 0; width: 300px; height: 300px; }
+  .ring--200 { left: 50px; top: 50px; width: 200px; height: 200px; }
+  .ring--100 { left: 100px; top: 100px; width: 100px; height: 100px; }
+  /* sweep: one turn every 4s, olive wedge trailing a thin leading line */
+  .sweep { position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+    background: conic-gradient(from 0deg, rgba(177, 189, 53, 0) 0deg, rgba(177, 189, 53, 0) 290deg, rgba(177, 189, 53, .5) 360deg);
+    animation: radar-sweep var(--sweep) linear infinite; }
+  .sweep::after { content: ''; position: absolute; left: 149.25px; top: 0; width: 1.5px; height: 150px; background: #7d8622; }
+  /* sonar pulse from my position */
+  .pulse { position: absolute; left: 0; top: 0; width: 300px; height: 300px; border-radius: 50%; border: 1.5px solid var(--brand); opacity: 0;
+    animation: radar-pulse var(--sweep) cubic-bezier(.25, .6, .07, 1) infinite; }
+  .pulse + .pulse { animation-delay: calc(var(--sweep) / 2); }
+  :root { --sweep: 4s; }
+  @keyframes radar-sweep { to { transform: rotate(360deg); } }
+  @keyframes radar-pulse { 0% { transform: scale(.07); opacity: .9; } 100% { transform: scale(1); opacity: 0; } }
+
+  /* pins: yellow = not selected, green = selected. Each pin is "found" when the sweep passes it (--a = its angle). */
+  .pin { position: absolute; width: 47.852px; height: 47.852px; z-index: 2;
+    animation: pin-found .3s cubic-bezier(.25, .6, .07, 1) both, pin-ping var(--sweep) linear infinite;
+    animation-delay: calc(var(--sweep) * var(--a) / 360), calc(var(--sweep) * var(--a) / 360); }
+  .pin i { position: absolute; left: 6.93px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); border: 1px dashed var(--ink); background: var(--reward);
+    transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
   .pin img { position: absolute; left: 15.43px; top: 14.43px; width: 18px; height: 18px; }
-  .pin--hot i { background: var(--brand); border-style: solid; }
-  .pin--hot::before { content: ''; position: absolute; left: 9.79px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); background: var(--ink-950); border: 1px solid var(--ink); }
+  .pin::before { content: ''; position: absolute; left: 9.79px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); background: var(--ink-950); border: 1px solid var(--ink);
+    opacity: 0; transition: opacity .3s cubic-bezier(.25, .6, .07, 1); }
+  .pin.on i { background: var(--brand); border-style: solid; }
+  .pin.on::before { opacity: 1; }
   .pin:active i { filter: brightness(.92); }
+  @keyframes pin-found { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+  @keyframes pin-ping { 0% { transform: scale(1); } 4% { transform: scale(1.14); } 12%, 100% { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .sweep, .pulse { animation: none; } .pulse { display: none; } .pin { animation: none; } }
+
+  .rec[hidden] { display: none; }
+  .rec-card .thumb.photo { border: 1px solid var(--ink); object-fit: cover; }
 
   .rec-h { position: absolute; left: 19.94px; top: 577.25px; font-size: 16px; line-height: 20px; white-space: nowrap; }
   .rec-card { position: absolute; left: 19.85px; top: 601.94px; width: 330px; height: 70px; text-align: left; }
@@ -59,6 +90,7 @@
   .place .sheet-handle { position: absolute; left: 147.5px; top: 17px; margin: 0; }
   .place-row { position: absolute; left: 20.7px; top: 53.92px; display: flex; align-items: center; gap: 15px; }
   .place-row .thumb { width: 71.786px; height: 50px; }
+  .place-row .thumb.photo { border: 1px solid var(--ink); object-fit: cover; }
   .place-row div { width: 200px; height: 50px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
   .place-row h2 { font-size: 22px; line-height: 20px; }
   .place-row p { font-size: 14px; line-height: 12px; white-space: nowrap; }
@@ -78,9 +110,11 @@
 
   <!-- ========== 내 근처 (radar) ========== -->
   <section class="radar" aria-label="내 근처">
-    <img class="abs" src="assets/home/radar-ring-300.png" alt="" style="left:36.85px;top:213.87px;width:301px;height:301px">
-    <img class="abs" src="assets/home/radar-ring-200.png" alt="" style="left:86.85px;top:263.87px;width:201px;height:201px">
-    <img class="abs" src="assets/home/radar-ring-100.png" alt="" style="left:136.85px;top:313.87px;width:101px;height:101px">
+    <div class="scope" aria-hidden="true">
+      <div class="sweep"></div>
+      <div class="pulse"></div><div class="pulse"></div>
+      <div class="ring ring--300"></div><div class="ring ring--200"></div><div class="ring ring--100"></div>
+    </div>
     <img class="abs" src="assets/home/radar-me-outer.png" alt="" style="left:177.35px;top:354.37px;width:20px;height:20px">
     <img class="abs" src="assets/home/radar-me-inner.png" alt="내 위치" style="left:182.35px;top:359.37px;width:10px;height:10px">
     <span class="ring-lbl" style="left:207.85px">100m</span>
@@ -88,16 +122,19 @@
     <span class="ring-lbl" style="left:303.99px">300m</span>
     <div id="radarPins"></div>
 
-    <p class="rec-h">내 근처 탐험 추천</p>
-    <button class="rec-card" type="button" data-open-sheet aria-label="햇살 근린 공원 자세히 보기">
-      <span class="rec-face">
-        <img class="thumb" src="assets/home/place-thumb.png" alt="">
-        <span class="rec-body">
-          <span class="rec-txt"><b>햇살 근린 공원</b><span>걸어서 5분 · 지금 방아깨비가 많아요</span></span>
-          <img class="chev" src="assets/common/arrow-alt-down.png" alt="">
+    <!-- 내 근처 탐험 추천: shown only while a pin is selected (green) -->
+    <div class="rec" id="rec" hidden data-dissolve aria-live="polite">
+      <p class="rec-h">내 근처 탐험 추천</p>
+      <button class="rec-card" type="button" id="recCard" data-open-sheet>
+        <span class="rec-face">
+          <img class="thumb" id="recThumb" src="assets/home/place-thumb.png" alt="">
+          <span class="rec-body">
+            <span class="rec-txt"><b id="recName">햇살 근린 공원</b><span id="recSub">걸어서 5분 · 지금 방아깨비가 많아요</span></span>
+            <img class="chev" src="assets/common/arrow-alt-down.png" alt="">
+          </span>
         </span>
-      </span>
-    </button>
+      </button>
+    </div>
   </section>
 
   <!-- ========== 내 들판 (field) ========== -->
@@ -131,10 +168,10 @@
   <div class="sheet place" id="sheet" role="dialog" aria-modal="true" aria-labelledby="placeName" hidden>
     <div class="sheet-handle"></div>
     <div class="place-row">
-      <img class="thumb" src="assets/home/place-thumb-sheet.png" alt="">
-      <div><h2 id="placeName">햇살 근린 공원</h2><p>걸어서 5분 · 지금 방아깨비가 많아요</p></div>
+      <img class="thumb" id="sheetThumb" src="assets/home/place-thumb-sheet.png" alt="">
+      <div><h2 id="placeName">햇살 근린 공원</h2><p id="placeSub">걸어서 5분 · 지금 방아깨비가 많아요</p></div>
     </div>
-    <img class="place-map" src="assets/home/place-map.png" alt="햇살 근린 공원 주변 지도">
+    <img class="place-map" id="placeMap" src="assets/home/place-map.png" alt="햇살 근린 공원 주변 지도">
     <p class="meet">여기서 지금 만날 수 있어요.</p>
     <div class="bugs" id="bugs"></div>
     <a class="cta cta--yellow" href="capture-1.html"><span class="cta-face">탐험 시작하기 <img src="assets/common/arrow-right.png" alt=""></span></a>
@@ -147,15 +184,53 @@
 (function () {
   var phone = document.getElementById('phone');
 
-  // radar pins (bounding box of the rotated 34px square, from Figma)
-  var pins = [
-    { x: 206.05, y: 244.37, hot: true,  name: '햇살 근린 공원' },
-    { x: 48.43,  y: 381.95, name: '근처 탐험 장소' },
-    { x: 190.93, y: 471,    name: '근처 탐험 장소' }
+  // nearby places = radar pins. x/y: bounding box of the rotated 34px square; a: angle (deg, clockwise from up)
+  // from the radar centre, so each pin lights up when the sweep passes it.
+  // Only 햇살 근린 공원 is designed in Figma; the other two reuse its map and use insect photos as thumbnails.
+  var places = [
+    { x: 206.05, y: 244.37, a: 23.9,  name: '햇살 근린 공원', sub: '걸어서 5분 · 지금 방아깨비가 많아요',
+      thumb: 'assets/home/place-thumb.png', sheetThumb: 'assets/home/place-thumb-sheet.png',
+      bugs: [['grasshopper', '방아깨비'], ['ladybug', '무당벌레'], ['butterfly', '호랑나비'], ['dragonfly', '고추잠자리']] },
+    { x: 48.43,  y: 381.95, a: 250.2, name: '물빛 개울 산책로', sub: '걸어서 6분 · 고추잠자리가 자주 보여요',
+      photo: 'assets/tabs/card-dragonfly.png', bugs: [['dragonfly', '고추잠자리'], ['butterfly', '호랑나비']] },
+    { x: 190.93, y: 471,    a: 168.1, name: '학교 뒤 텃밭', sub: '걸어서 7분 · 잎 위에 무당벌레가 있어요',
+      photo: 'assets/tabs/card-ladybug.png', bugs: [['ladybug', '무당벌레'], ['grasshopper', '방아깨비'], ['butterfly', '호랑나비']] }
   ];
-  document.getElementById('radarPins').innerHTML = pins.map(function (p) {
-    return '<button type="button" class="pin' + (p.hot ? ' pin--hot' : '') + '" data-open-sheet style="left:' + p.x + 'px;top:' + p.y + 'px" aria-label="' + p.name + '"><i></i><img src="assets/home/icon-location.png" alt=""></button>';
+  var pinsEl = document.getElementById('radarPins');
+  pinsEl.innerHTML = places.map(function (p, i) {
+    return '<button type="button" class="pin" data-pin="' + i + '" aria-pressed="false" style="left:' + p.x + 'px;top:' + p.y + 'px;--a:' + p.a +
+      '" aria-label="' + p.name + '"><i></i><img src="assets/home/icon-location.png" alt=""></button>';
   }).join('');
+
+  // selection: yellow = not selected, green = selected → 내 근처 탐험 추천 appears
+  var selected = -1, rec = document.getElementById('rec'), recTimer;
+  function setThumb(img, p, sheet) {
+    img.src = p.photo || (sheet ? p.sheetThumb : p.thumb);
+    img.classList.toggle('photo', !!p.photo);
+  }
+  function select(i) {
+    if (i === selected) return;
+    selected = i;
+    pinsEl.querySelectorAll('.pin').forEach(function (b) {
+      var on = +b.dataset.pin === i;
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    clearTimeout(recTimer);
+    if (i < 0) { rec.hidden = true; return; }
+    var p = places[i];
+    document.getElementById('recName').textContent = p.name;
+    document.getElementById('recSub').textContent = p.sub;
+    setThumb(document.getElementById('recThumb'), p, false);
+    document.getElementById('recCard').setAttribute('aria-label', p.name + ' 자세히 보기');
+    rec.hidden = true; void rec.offsetWidth; rec.hidden = false;   // replay the dissolve for each new pick
+  }
+  pinsEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.pin'); if (b) select(+b.dataset.pin);
+  });
+  // tapping empty radar space clears the selection
+  document.querySelector('.radar').addEventListener('click', function (e) {
+    if (!e.target.closest('.pin, .rec, button, a')) select(-1);
+  });
 
   // field illustration: exported layers, Figma render bounds, in Figma z-order
   var F = 'assets/home/field/';
@@ -182,11 +257,17 @@
     return '<img class="abs" src="' + F + l[0] + '.png" alt="" style="left:' + l[1] + 'px;top:' + l[2] + 'px;width:' + l[3] + 'px;height:' + l[4] + 'px">';
   }).join('');
 
-  // insects you can meet here
-  var bugs = [['grasshopper', '방아깨비'], ['ladybug', '무당벌레'], ['butterfly', '호랑나비'], ['dragonfly', '고추잠자리']];
-  document.getElementById('bugs').innerHTML = bugs.map(function (b) {
-    return '<div class="bug"><img src="assets/home/insect-' + b[0] + '.png" alt=""><span>' + b[1] + '</span></div>';
-  }).join('');
+  // place sheet content follows the selected place (field pins open 햇살 근린 공원)
+  function fillSheet(p) {
+    document.getElementById('placeName').textContent = p.name;
+    document.getElementById('placeSub').textContent = p.sub;
+    document.getElementById('placeMap').alt = p.name + ' 주변 지도';
+    setThumb(document.getElementById('sheetThumb'), p, true);
+    document.getElementById('bugs').innerHTML = p.bugs.map(function (b) {
+      return '<div class="bug"><img src="assets/home/insect-' + b[0] + '.png" alt=""><span>' + b[1] + '</span></div>';
+    }).join('');
+  }
+  fillSheet(places[0]);
 
   // mode toggle
   var modeBtns = document.querySelectorAll('.mode');
@@ -201,7 +282,7 @@
 
   // sheet
   var sheet = document.getElementById('sheet'), dim = document.getElementById('sheetDim');
-  function openSheet() { sheet.hidden = false; dim.hidden = false; }
+  function openSheet() { fillSheet(places[selected >= 0 && phone.getAttribute('data-mode') === 'radar' ? selected : 0]); sheet.hidden = false; dim.hidden = false; }
   function closeSheet() { sheet.hidden = true; dim.hidden = true; }
   document.addEventListener('click', function (e) { if (e.target.closest('[data-open-sheet]')) openSheet(); });
   dim.addEventListener('click', function () { window.picoSwap(closeSheet); });
@@ -209,6 +290,7 @@
 
   var st = document.documentElement.dataset.state;
   if (st === 'field') setMode('field');
+  if (st === 'picked') select(0);
   if (st === 'sheet') { setMode('field'); openSheet(); }
 })();
 </script>
