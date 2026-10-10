@@ -5,18 +5,18 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
+<style>.done { cursor: pointer; }</style>
 </head><body>
-<!-- 1.2.4 완료 (341:7799): the Figma frame is a placeholder — only the logo nav and the CTA are designed. -->
-<div class="phone" style="--h:812px">
+<!-- 1.2.4 완료 (2847:3583): only the status bar + logo nav; the whole frame is a button. Auto-advances to home after 1.5s. -->
+<div class="phone done" style="--h:812px" data-go="home.html" role="link" aria-label="홈으로 이동">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav nav--center"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
   </div>
-
-  <a class="cta" href="home.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
-
-  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script>
+  setTimeout(function () { location.href = 'home.html'; }, 1500);
+</script>
 </body></html>

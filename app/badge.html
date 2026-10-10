@@ -11,39 +11,40 @@
   .abs { position: absolute; }
   .nw { white-space: nowrap; }
 
-  /* 내가 획득한 배지 card */
-  .card-shadow { left: 29.59px; top: 143.37px; width: 325px; height: 215px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 20.59px; top: 132.93px; width: 325px; height: 215px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-inner { left: 20.59px; top: 208.52px; width: 325px; height: 140px; background: var(--brand-soft); border: 1px dashed var(--ink); }
-  .deco { left: 221.35px; top: 90.61px; width: 110px; height: 110px; }
-  .summary { left: 31.08px; top: 149.02px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
+  /* 내가 획득한 배지 card (Figma 5.1.1, 2847:3795) */
+  .card-shadow { left: 29.59px; top: 138.77px; width: 325px; height: 215px; background: var(--ink); border: 1px solid var(--ink); }
+  .card-face { left: 20.59px; top: 128.32px; width: 325px; height: 215px; background: var(--brand); border: 1px dashed var(--ink); }
+  .deco { left: 221.35px; top: 86px; width: 110px; height: 110px; z-index: 1; }
+  .card-col { left: 20.59px; top: 144.42px; width: 325px; display: flex; flex-direction: column; gap: 12px; }
+  .summary { padding: 0 20px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
   .summary .t { font-size: 20px; }
   .summary .n { display: flex; gap: 4px; align-items: center; } .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
-  .reco { left: 35.78px; top: 222.35px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
+  .card-inner { height: 140px; background: var(--brand-soft); border: 1px dashed var(--ink); padding: 8px 16px 14px 14px; }
+  .reco { width: 295px; display: flex; flex-direction: column; gap: 8px; }
   .reco > p { font-size: 14px; line-height: 19px; }
   .reco-list { display: flex; flex-direction: column; gap: 8px; }
-  .reco-row { display: flex; flex-direction: column; gap: 7px; }
+  .reco-row { display: flex; flex-direction: column; gap: 7px; width: 295px; cursor: pointer; }
   .reco-row .r { display: flex; justify-content: space-between; align-items: flex-end; white-space: nowrap; }
+  .reco-row:first-child .r { align-items: center; }
   .reco-row .l { display: flex; gap: 14px; align-items: flex-end; }
-  .reco-row .chk { width: 16px; height: 16px; background: var(--bg); border: 1px dashed var(--ink); flex: none; }
+  .reco-row .chk { width: 16px; height: 16px; background: var(--bg); border: 1px dashed var(--ink); flex: none; cursor: pointer; }
   .reco-row .chk[aria-checked="true"] { background: var(--ink); }
-  .reco-row .lab { display: flex; gap: 7px; font-size: 12px; line-height: 19px; height: 16px; align-items: center; }
-  .reco-row .lab span:first-child { width: 21px; }
-  .reco-row .s, .reco-row .c { font-size: 10px; }
-  .reco-row hr { margin: 0; width: 295px; border: 0; border-top: 1px dashed var(--ink); }
+  .reco-row .lab { font-size: 12px; line-height: 19px; height: 16px; width: 55px; display: flex; align-items: center; }
+  .reco-row .s { font-size: 10px; }
+  .reco-row .line { width: 295px; height: 2px; margin-top: -1px; }
 
   /* friends feed */
-  .sec-h { left: 19.72px; top: 383.7px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
+  .sec-h { left: 19.72px; top: 373.77px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
   .chev { width: 18px; height: 18px; }
-  .feed { left: 19.72px; top: 422.7px; width: 335px; display: flex; flex-direction: column; gap: 10px; }
+  .feed { left: 19.72px; top: 403.77px; width: 335px; display: flex; flex-direction: column; gap: 10px; }
   .feed a { height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; white-space: nowrap; }
   .feed .l { display: flex; gap: 5px; align-items: center; font-size: 12px; line-height: 19px; }
   .feed .l img { width: 35px; height: 35px; }
   .feed .l b { font-size: 14px; }
 
-  /* badge list */
-  .list { left: 20.59px; top: 557.88px; width: 335px; display: flex; flex-direction: column; gap: 20px; }
-  .list-h { display: flex; justify-content: space-between; align-items: flex-start; }
+  /* badge list → TIP banner → more badges (Figma column 2847:3863, gap 10) */
+  .list { left: 0; top: 523.77px; width: 375px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .list-h { width: 335px; display: flex; justify-content: space-between; align-items: flex-start; }
   .list-h p { font-size: 16px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
   .sort img { width: 18px; height: 18px; transition: transform .15s; }
@@ -53,17 +54,13 @@
   .bdg img { width: 90px; height: 90px; }
   .bdg b { display: block; font-weight: 400; font-size: 16px; line-height: 19px; }
   .bdg span { display: block; font-size: 12px; line-height: 19px; }
-  .grid2 { left: 20.12px; top: 1241.32px; grid-template-columns: repeat(3, 93.244px); column-gap: 27.64px; }
+  .grid2 { grid-template-columns: repeat(3, 93.244px); column-gap: 27.64px; }
 
-  /* PICO TIP */
-  .tip { left: 0; top: 1117.18px; width: 375px; height: 115px; background: #00b7ff; border: 1px dashed var(--ink); }
-  .burst { left: 220px; top: 1085.36px; width: 155.38px; height: 86.39px; }
-  .burst img { width: 100%; height: 100%; }
-  .burst span { position: absolute; left: 54.4px; top: 34.92px; font-size: 14px; white-space: nowrap; }
-  .tip-body { left: 15.85px; top: 1133.68px; width: 260.15px; display: flex; flex-direction: column; gap: 12px; }
-  .tip-body .h { display: flex; gap: 10px; align-items: center; font-weight: 700; font-size: 20px; }
-  .tip-body .h img { width: 32px; height: 32px; }
-  .tip-body .d { display: flex; flex-direction: column; gap: 4px; font-size: 14px; white-space: nowrap; }
+  /* PICO TIP banner (Figma "TIP 배너"); tapping it opens 친구 추가 QR */
+  .tip { position: relative; width: 375px; height: 110px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 5px; text-align: left; }
+  .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; white-space: nowrap; }
+  .tip .h img { width: 32px; height: 32px; }
+  .tip .d { display: flex; flex-direction: column; font-size: 14px; line-height: 1.3; white-space: nowrap; }
 
   /* ---------- overlays: cover the 375x812 frame ---------- */
   .ov { position: absolute; inset: 0; z-index: 50; }
@@ -76,18 +73,23 @@
   .bsheet .hero { position: absolute; left: 132px; top: -57.6px; width: 130px; height: 130px; z-index: 2; }
   .bsheet .scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; }
   .bsheet .inner { position: relative; height: 600px; }
-  .bsheet .x { left: 323px; top: 9.87px; }
-  .chip { display: inline-flex; align-items: center; justify-content: center; width: 55px; height: 25px; background: #fff; border: 1px dashed var(--ink); font-size: 16px; white-space: nowrap; }
-  .bsheet .chip { position: absolute; left: 20.97px; top: 9.87px; }
-  .bsheet .date { position: absolute; left: 63.47px; top: 51.85px; transform: translate(-50%, -50%); font-size: 14px; white-space: nowrap; }
-  .bsheet .name { position: absolute; left: 0; right: 0; top: 92.41px; text-align: center; font-size: 20px; }
-  .bsheet .sub { position: absolute; left: 0; right: 0; top: 122.21px; text-align: center; font-size: 14px; line-height: 16px; white-space: nowrap; }
-  .bsheet .rule { position: absolute; left: 20px; width: 335px; border-top: 1px dashed var(--ink); }
-  .bsec { position: absolute; left: 19.8px; width: 335.4px; display: flex; flex-direction: column; gap: 16px; }
+  /* sheet body: Figma column anchored 74px above the sheet bottom (34 home indicator + 40 gap) */
+  .bcol { position: absolute; left: 20px; bottom: 74px; width: 335.2px; display: flex; flex-direction: column; gap: 62px; }
+  .bhead { display: flex; align-items: center; justify-content: space-between; height: 32px; }
+  .bhead.end { justify-content: flex-end; }
+  .bhead .date { font-size: 14px; white-space: nowrap; }
+  .bhead .x { position: relative; }
+  .bbody { display: flex; flex-direction: column; gap: 15px; }
+  .btitle { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .btitle .tt { width: 229px; display: flex; flex-direction: column; gap: 4px; text-align: center; }
+  .btitle .name { font-size: 20px; }
+  .btitle .sub { font-size: 14px; line-height: 16px; white-space: nowrap; }
+  .rule { width: 335px; border-top: 1px dashed var(--ink); }
+  .bsec { width: 335px; display: flex; flex-direction: column; gap: 16px; }
+  .bsec.tight { gap: 10px; }
   .bsec > p { font-size: 16px; white-space: nowrap; }
   .how { display: flex; flex-direction: column; gap: 10px; font-size: 14px; white-space: nowrap; }
   .how li { display: flex; justify-content: space-between; list-style: none; }
-  .how li span:first-child span { margin-right: 10px; }
   .how ul, ul.how { margin: 0; padding: 0; }
   .finds { display: flex; justify-content: space-between; width: 335px; }
   .finds a, .finds div { position: relative; width: 75px; display: flex; flex-direction: column; align-items: center; gap: 15px; font-size: 14px; white-space: nowrap; }
@@ -98,20 +100,20 @@
   .owners img { width: 86px; height: 41px; margin: -0.5px; }
 
   .bmodal { position: absolute; left: 37.5px; top: 50%; margin-top: -250px; width: 300px; height: 500px; background: var(--bg); border: 1px solid var(--ink); }
-  .bmodal .x { left: 258.37px; top: 15.52px; }
+  .bmodal .x { left: 253px; top: 9px; }
   .bmodal .hand { position: absolute; font-family: var(--font-hand); font-size: 16px; line-height: 20px; white-space: nowrap; }
-  .new-badge { position: absolute; left: 55px; top: 47.52px; width: 190px; height: 190px; }
-  .new-row { position: absolute; left: 0; right: 0; top: 312.08px; display: flex; gap: 15px; align-items: center; justify-content: center; font-size: 20px; white-space: nowrap; }
-  .new-desc { position: absolute; left: 4.97px; right: -4.97px; top: 342.32px; text-align: center; font-size: 12px; line-height: 16px; white-space: nowrap; }
-  .btn-shadow { position: absolute; left: 25.59px; top: 386.35px; width: 265px; height: 45px; background: var(--ink); }
-  .btn-main { position: absolute; left: 20.42px; top: 380.85px; width: 265px; height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 14px; }
+  .new-badge { position: absolute; left: 55px; top: 65px; width: 190px; height: 190px; }
+  .new-row { position: absolute; left: 0; right: 0; top: 320px; display: flex; gap: 15px; align-items: center; justify-content: center; font-size: 20px; white-space: nowrap; }
+  .new-desc { position: absolute; left: 0; right: 0; top: 348.5px; text-align: center; font-size: 12px; line-height: 16px; white-space: nowrap; }
+  .btn-shadow { position: absolute; left: 25.59px; top: 381.35px; width: 265px; height: 45px; background: var(--ink); }
+  .btn-main { position: absolute; left: 20.42px; top: 375.85px; width: 265px; height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 14px; }
   .btn-main img { width: 24px; height: 24px; }
-  .btn-sub { position: absolute; left: 18.09px; top: 440.88px; width: 270px; height: 45px; background: var(--bg); border: 1px solid var(--ink); font-weight: 700; font-size: 14px; }
+  .btn-sub { position: absolute; left: 18.09px; top: 435.88px; width: 270px; height: 45px; background: var(--bg); border: 1px solid var(--ink); font-weight: 700; font-size: 14px; }
 
   .qr-shadow { position: absolute; left: 69.92px; top: 78.39px; width: 170.219px; height: 170.219px; background: var(--ink); }
   .qr-face { position: absolute; left: 59.86px; top: 68.43px; width: 170.219px; height: 170.219px; background: var(--brand); border: 1.261px dashed var(--ink); }
   .qr-code { position: absolute; left: 78.3px; top: 89.06px; width: 133.3px; height: 124.5px; }
-  .qr-who { position: absolute; left: 58.37px; top: 302.7px; width: 185px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .qr-who { position: absolute; left: 57px; top: 311.7px; width: 185px; display: flex; flex-direction: column; gap: 0; align-items: center; }
   .qr-who .p { display: flex; gap: 5px; align-items: center; font-size: 16px; white-space: nowrap; }
   .qr-who .p img { width: 25px; height: 25px; }
   .qr-who .code { font-weight: 700; font-size: 22px; white-space: nowrap; }
@@ -121,7 +123,7 @@
   .qr-info img { width: 18px; height: 18px; }
 </style>
 </head><body>
-<div class="phone" style="--h:1889px">
+<div class="phone" style="--h:1740px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -131,10 +133,11 @@
 
   <div class="abs card-shadow"></div>
   <div class="abs card-face"></div>
-  <div class="abs card-inner"></div>
+  <div class="abs card-col">
+    <div class="summary"><p class="t">내가 획득한 배지</p><div class="n"><b>07개</b><span>/ 36개</span></div></div>
+    <div class="card-inner"><div class="reco"><p>다음 탐험 추천</p><div class="reco-list" id="reco"></div></div></div>
+  </div>
   <img class="abs deco" src="assets/tabs/profile-circle.png" alt="">
-  <div class="abs summary"><p class="t">내가 획득한 배지</p><div class="n"><b>07개</b><span>/ 36개</span></div></div>
-  <div class="abs reco"><p>다음 탐험 추천</p><div class="reco-list" id="reco"></div></div>
 
   <div class="abs sec-h"><p>친구들은 어떤 탐험을 했을까요?</p><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></div>
   <div class="abs feed">
@@ -146,16 +149,13 @@
     <div class="list-h"><p>배지 목록</p>
       <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/tabs/icon-arrow-down-new.png" alt=""></button></div>
     <div class="grid" id="grid1"></div>
+    <!-- Figma TIP 배너 has no "QR 찍기" burst any more: the whole banner opens the QR popup instead -->
+    <button class="tip" type="button" data-open="qr" aria-label="PICO TIP · 친구 QR 찍기">
+      <span class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP</span>
+      <span class="d"><span>친구와 직접 만나서 QR을 찍어 보세요.</span><span>친구랑 같이 관찰하면 '함께 발견' 배지를 받아요.</span></span>
+    </button>
+    <div class="grid grid2" id="grid2"></div>
   </div>
-
-  <div class="abs tip"></div>
-  <button class="abs burst" data-open="qr"><img src="assets/tabs/tip-burst.png" alt=""><span>QR 찍기</span></button>
-  <div class="abs tip-body">
-    <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP !</div>
-    <div class="d"><p>친구와 직접 만나서 QR을 찍어 보세요.</p><p>친구랑 같이 관찰하면 '함께 발견' 배지를 받아요.</p></div>
-  </div>
-
-  <div class="abs grid grid2" id="grid2"></div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
@@ -171,28 +171,26 @@
     <div class="dim" data-close></div>
     <div class="bsheet">
       <img class="hero" src="assets/tabs/badge-earned-lg.png" alt="">
-      <div class="scroll"><div class="inner">
-        <button class="x" data-close aria-label="닫기"><img src="assets/tabs/icon-close.png" alt=""></button>
-        <span class="chip">날씨</span>
-        <p class="date">2027.09.28</p>
-        <p class="name">물가 탐험가</p>
-        <p class="sub">비가 그친 뒤 나온 작은 곤충을 만나 보세요</p>
-        <div class="rule" style="top:156.61px"></div>
-        <div class="bsec" style="top:171.61px"><p>이렇게 얻었어요.</p>
-          <ul class="how"><li><span><span>장소</span>비 그친 다음 날 곤충 3마리 발견하기</span><span>1/3</span></li>
-            <li><span><span>장소</span>연못 근처 에서 곤충 발견하기</span><span>1/3</span></li></ul></div>
-        <div class="rule" style="top:267.38px;left:20.2px"></div>
-        <div class="bsec" style="top:282.38px;left:20px"><p>이 배지와 함께 발견했어요</p>
-          <div class="finds">
-            <a href="dogam-detail.html"><img class="c" src="assets/tabs/sheet-ladybug.png" alt=""><span>칠성무당벌레</span></a>
-            <a href="dogam-detail.html"><img class="c" src="assets/tabs/sheet-waterstrider.png" alt=""><span>소금쟁이</span></a>
-            <a href="dogam-detail.html"><img class="c" src="assets/tabs/sheet-dragonfly.png" alt=""><span>고추잠자리</span></a>
-            <a href="home.html"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/tabs/icon-question.png" alt=""><span>더 관찰하기</span></a>
-          </div></div>
-        <div class="rule" style="top:444.78px"></div>
-        <div class="bsec" style="top:459.78px"><p>이 배지를 얻은 친구</p>
-          <div class="owners"><img src="assets/tabs/friends-stack.png" alt=""><span>서아, 지우도 이 배지를 가지고 있어요.</span></div></div>
-      </div></div>
+      <div class="scroll"><div class="inner"><div class="bcol">
+        <div class="bhead"><p class="date">2027.09.28</p><button class="x" data-close aria-label="닫기"><img src="assets/tabs/icon-close.png" alt=""></button></div>
+        <div class="bbody">
+          <div class="btitle"><div class="tt"><p class="name">물가 탐험가</p><p class="sub">비가 그친 뒤 나온 작은 곤충을 만나 보세요</p></div><div class="rule"></div></div>
+          <div class="bsec tight"><p>이렇게 얻었어요.</p>
+            <ul class="how"><li><span>비 그친 다음 날 곤충 3마리 발견하기</span><span>1/3</span></li>
+              <li><span>연못 근처에서 곤충 발견하기</span><span>1/3</span></li></ul></div>
+          <div class="rule"></div>
+          <div class="bsec"><p>이 배지와 함께 발견했어요</p>
+            <div class="finds">
+              <a href="dogam-detail.html"><img class="c" src="assets/tabs/sheet-ladybug.png" alt=""><span>칠성무당벌레</span></a>
+              <a href="dogam-detail.html"><img class="c" src="assets/tabs/sheet-waterstrider.png" alt=""><span>소금쟁이</span></a>
+              <a href="dogam-detail.html"><img class="c" src="assets/tabs/sheet-dragonfly.png" alt=""><span>고추잠자리</span></a>
+              <a href="home.html"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/tabs/icon-question.png" alt=""><span>더 관찰하기</span></a>
+            </div></div>
+          <div class="rule"></div>
+          <div class="bsec"><p>이 배지를 얻은 친구</p>
+            <div class="owners"><img src="assets/tabs/friends-stack.png" alt=""><span>서아, 지우도 이 배지를 가지고 있어요.</span></div></div>
+        </div>
+      </div></div></div>
     </div>
   </div>
 
@@ -201,27 +199,26 @@
     <div class="dim" data-close></div>
     <div class="bsheet">
       <img class="hero" src="assets/tabs/badge-locked-lg.png" alt="" style="left:131.8px;top:-57.99px">
-      <div class="scroll"><div class="inner">
-        <button class="x" data-close aria-label="닫기"><img src="assets/tabs/icon-close.png" alt=""></button>
-        <span class="chip">날씨</span>
-        <p class="name">물가 탐험가</p>
-        <p class="sub">비가 그친 뒤 나온 작은 곤충을 만나 보세요</p>
-        <div class="rule" style="top:156.61px"></div>
-        <div class="bsec" style="top:171.61px"><p>어떻게 얻나요?</p>
-          <ul class="how"><li><span><span>장소</span>비 그친 다음 날 곤충 3마리 발견하기</span></li>
-            <li><span><span>장소</span>연못 근처 에서 곤충 발견하기</span></li></ul></div>
-        <div class="rule" style="top:267.38px;left:20.2px"></div>
-        <div class="bsec" style="top:282.38px;left:20px"><p>이 배지와 함께 발견 할 수 있어요.</p>
-          <div class="finds">
-            <div><img class="c" src="assets/tabs/sil-circle.png" alt=""><img class="sil" src="assets/tabs/sil-dragonfly.png" alt=""><span>고추잠자리</span></div>
-            <div><img class="c" src="assets/tabs/sil-ladybug.png" alt=""><span>무당벌레</span></div>
-            <div><img class="c" src="assets/tabs/sil-butterfly.png" alt=""><span>호랑나비</span></div>
-            <a href="home.html"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/tabs/icon-question.png" alt="" style="top:23.61px"><span>더 관찰하기</span></a>
-          </div></div>
-        <div class="rule" style="top:444.78px"></div>
-        <div class="bsec" style="top:459.78px"><p>이 배지를 얻은 친구</p>
-          <div class="owners"><img src="assets/tabs/friends-stack.png" alt=""><span>서아, 지우도 이 배지를 가지고 있어요.</span></div></div>
-      </div></div>
+      <div class="scroll"><div class="inner"><div class="bcol" style="width:335.4px">
+        <div class="bhead end"><button class="x" data-close aria-label="닫기"><img src="assets/tabs/icon-close.png" alt=""></button></div>
+        <div class="bbody">
+          <div class="btitle"><div class="tt"><p class="name">물가 탐험가</p><p class="sub">비가 그친 뒤 나온 작은 곤충을 만나 보세요</p></div><div class="rule"></div></div>
+          <div class="bsec tight"><p>어떻게 얻나요?</p>
+            <ul class="how"><li><span>비 그친 다음 날 곤충 3마리 발견하기</span></li>
+              <li><span>연못 근처에서 곤충 발견하기</span></li></ul></div>
+          <div class="rule"></div>
+          <div class="bsec"><p>이 배지와 함께 발견할 수 있어요.</p>
+            <div class="finds">
+              <div><img class="c" src="assets/tabs/sil-circle.png" alt=""><img class="sil" src="assets/tabs/sil-dragonfly.png" alt=""><span>고추잠자리</span></div>
+              <div><img class="c" src="assets/tabs/sil-ladybug.png" alt=""><span>무당벌레</span></div>
+              <div><img class="c" src="assets/tabs/sil-butterfly.png" alt=""><span>호랑나비</span></div>
+              <a href="home.html"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/tabs/icon-question.png" alt="" style="top:23.61px"><span>더 관찰하기</span></a>
+            </div></div>
+          <div class="rule"></div>
+          <div class="bsec"><p>이 배지를 얻은 친구</p>
+            <div class="owners"><img src="assets/tabs/friends-stack.png" alt=""><span>서아, 지우도 이 배지를 가지고 있어요.</span></div></div>
+        </div>
+      </div></div></div>
     </div>
   </div>
 
@@ -231,8 +228,8 @@
     <div class="bmodal">
       <button class="x" data-close aria-label="닫기"><img src="assets/tabs/icon-close.png" alt=""></button>
       <img class="new-badge" src="assets/tabs/badge-new.png" alt="">
-      <p class="hand" style="left:90.5px;top:278.7px">새 배지를 받았어요! </p>
-      <div class="new-row"><span class="chip">날씨</span><span>물가 탐험가</span></div>
+      <p class="hand" style="left:0;right:0;top:285px;text-align:center">새 배지를 받았어요!</p>
+      <div class="new-row"><span>물가 탐험가</span></div>
       <p class="new-desc">연못이나 개울 근처에서 곤충을 발견했어요</p>
       <span class="btn-shadow"></span>
       <button class="btn-main" data-close>배지북에 붙이기 <img src="assets/common/arrow-right.png" alt=""></button>
@@ -244,15 +241,15 @@
   <div class="ov" id="ov-qr" hidden role="dialog" aria-modal="true" aria-label="친구 추가">
     <div class="dim" data-close></div>
     <div class="bmodal">
-      <button class="x" data-close aria-label="닫기"><img src="assets/tabs/icon-close.png" alt=""></button>
+      <button class="x" data-close aria-label="닫기" style="top:10.5px"><img src="assets/tabs/icon-close.png" alt=""></button>
       <span class="qr-shadow"></span><span class="qr-face"></span>
       <img class="qr-code" src="assets/tabs/qr-code.png" alt="내 QR 코드">
-      <p class="hand" style="left:83px;top:273.75px">친구를 추가 해보세요!</p>
+      <p class="hand" style="left:0;right:0;top:276.7px;text-align:center">친구를 추가해 보세요!</p>
       <div class="qr-who"><p class="p"><img src="assets/tabs/qr-avatar.png" alt=""><span>민지혁 <b>•</b> 새싹 탐험가</span></p><p class="code">PICO • 4 3 9 1</p></div>
       <a class="qr-btn" href="capture-1.html" style="left:18.09px;background:var(--brand)"><img src="assets/common/tab-camera.png" alt="">QR 찍기</a>
       <button class="qr-btn" style="left:158.09px">코드 입력하기</button>
-      <div class="qr-info"><img src="assets/tabs/icon-presentation.png" alt=""><span>QR 코드를 보여주고 탐험할 친구를 만나보세요!
-서로의 기록을 확인하고  탐험을 할 수 있어요.</span></div>
+      <div class="qr-info"><img src="assets/tabs/icon-presentation.png" alt=""><span>QR 코드를 보여주고 탐험할 친구를 만나 보세요!
+서로의 기록을 확인하고 탐험을 할 수 있어요.</span></div>
     </div>
   </div>
 </div>
@@ -260,16 +257,18 @@
 <script>
 (function () {
   var reco = [
-    { cat: '장소', name: '나비 박사', desc: '나비류 10종 만 더', n: '2/3' },
-    { cat: '관찰', name: '렌즈 마스터', desc: '한 장소에서 5종', n: '3/5' },
-    { cat: '시간', name: '공원 탐험가', desc: '새로운 공원 3곳 더', n: '3/5' }
+    { name: '나비 박사', desc: '나비류 10종 만 더', line: 1, w: 45 },
+    { name: '렌즈 마스터', desc: '한 장소에서 5종', line: 2, w: 55 },
+    { name: '공원 탐험가', desc: '새로운 공원 3곳 더', line: 1, w: 55 }
   ];
   document.getElementById('reco').innerHTML = reco.map(function (r) {
-    return '<div class="reco-row"><div class="r"><div class="l"><span class="chk" role="checkbox" tabindex="0" aria-checked="false" aria-label="' + r.name + '"></span>' +
-      '<span class="lab"><span>' + r.cat + '</span><span>' + r.name + '</span></span><span class="s">' + r.desc + '</span></div><span class="c">' + r.n + '</span></div><hr></div>';
+    return '<div class="reco-row" data-open="locked"><div class="r"><div class="l"><span class="chk" role="checkbox" tabindex="0" aria-checked="false" aria-label="' + r.name + '"></span>' +
+      '<span class="lab" style="width:' + r.w + 'px">' + r.name + '</span><span class="s">' + r.desc + '</span></div><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></div>' +
+      '<img class="line" src="assets/tabs/reco-line-' + r.line + '.png" alt=""></div>';
   }).join('');
   document.getElementById('reco').addEventListener('click', function (e) {
-    var c = e.target.closest('.chk'); if (c) c.setAttribute('aria-checked', c.getAttribute('aria-checked') !== 'true');
+    var c = e.target.closest('.chk'); if (!c) return;
+    e.stopPropagation(); c.setAttribute('aria-checked', c.getAttribute('aria-checked') !== 'true');
   });
 
   var earned = [['첫 발견', '2027.09.12'], ['10종 탐험가', '2027.09.19'], ['LOOK 관찰자', '2027.09.20'], ['첫 그림', '2027.09.21'],

@@ -38,10 +38,11 @@
   @keyframes radar-sweep { to { transform: rotate(360deg); } }
   @keyframes radar-pulse { 0% { transform: scale(.07); opacity: .9; } 100% { transform: scale(1); opacity: 0; } }
 
-  /* pins: yellow = not selected, green = selected. Each pin is "found" when the sweep passes it (--a = its angle). */
+  /* pins: yellow = not selected, green = selected. All pins show right away on load;
+     each one pings when the sweep passes it (--a = its angle). */
   .pin { position: absolute; width: 47.852px; height: 47.852px; z-index: 2;
     animation: pin-found .3s cubic-bezier(.25, .6, .07, 1) both, pin-ping var(--sweep) linear infinite;
-    animation-delay: calc(var(--sweep) * var(--a) / 360), calc(var(--sweep) * var(--a) / 360); }
+    animation-delay: 0s, calc(var(--sweep) * var(--a) / 360); }
   .pin i { position: absolute; left: 6.93px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); border: 1px dashed var(--ink); background: var(--reward);
     transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
   .pin img { position: absolute; left: 15.43px; top: 14.43px; width: 18px; height: 18px; }
@@ -242,7 +243,7 @@
     { x: 128.63, y: 257.63, a: 337.2, name: '물빛 개울 산책로', sub: '걸어서 6분 · 고추잠자리가 자주 보여요',
       thumb: 'assets/home/place-thumb-stream.png', map: 'assets/home/place-map-stream.png', bugs: [['dragonfly', '고추잠자리']] },
     { x: 268.63, y: 400.63, a: 119.8, name: '학교 뒤 텃밭', sub: '걸어서 7분 · 잎 위에 무당벌레가 있어요',
-      thumb: 'assets/home/place-thumb-garden.png', map: 'assets/home/place-map-garden.png', bugs: ALL_BUGS }
+      thumb: 'assets/home/place-thumb-garden.png', map: 'assets/home/place-map-garden.png', bugs: [['ladybug', '무당벌레'], ['butterfly', '호랑나비']] }
   ];
   var pinsEl = document.getElementById('radarPins');
   pinsEl.innerHTML = places.map(function (p, i) {

@@ -6,13 +6,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  .name-field { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 48px; }
-  .name-field::before { content: ''; position: absolute; left: 5.5px; top: 7px; width: 335px; height: 48px; background: var(--ink); border: 1px solid var(--ink); }
+  .name-field { position: absolute; left: 20.37px; top: 232px; width: 330px; height: 48px; }
+  .name-field::before { content: ''; position: absolute; left: 5px; top: 7px; width: 330px; height: 48px; background: var(--ink); border: 1px solid var(--ink); }
   .name-face { position: absolute; inset: 0; background: var(--surface); border: 1px solid var(--ink);
-    display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 9.5px 0 15.25px; }
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 10px; }
   .name-input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; padding: 0;
     font: 400 20px/normal var(--font); color: var(--ink); caret-color: var(--ink); }
   .name-count { font-size: 12px; line-height: normal; white-space: nowrap; }
+  /* 건너뛰기 (Figma 2847:1561): 12px underlined, x 313.61 / y 669.64 */
+  .setup-skip { position: absolute; left: 313.61px; top: 669.64px; font-size: 12px; line-height: normal; text-decoration: underline; white-space: nowrap; }
   .name-error { position: absolute; left: 20.38px; top: 296.85px; font-size: 14px; line-height: normal; color: #e32d3d; }
   .is-error .name-face { border-color: #e32d3d; }
   .is-error .name-count { color: #e32d3d; }
@@ -40,6 +42,8 @@
   </div>
   <p class="name-error" id="nameErr" role="alert" hidden>이름을 입력해주세요.</p>
 
+  <a class="setup-skip" href="setup-grade.html">건너뛰기</a>
+
   <button type="button" class="cta" id="next" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></button>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
@@ -48,12 +52,12 @@
 <script>
 (function () {
   var input = document.getElementById('name'), count = document.getElementById('count'),
-      field = document.getElementById('field'), err = document.getElementById('nameErr');
+      field = document.getElementById('field'), err = document.getElementById('nameErr'), next = document.getElementById('next');
   function len() { return Array.from(input.value).length; }
-  function update() { count.textContent = len() + ' / 10'; }
+  function update() { count.textContent = len() + ' / 10'; next.classList.toggle('is-off', !input.value.trim()); }
   function setError(on) { field.classList.toggle('is-error', on); err.hidden = !on; input.setAttribute('aria-invalid', on); }
   input.addEventListener('input', function () { update(); if (input.value.trim()) setError(false); });
-  document.getElementById('next').addEventListener('click', function () {
+  next.addEventListener('click', function () {
     var v = input.value.trim();
     if (!v) { setError(true); input.focus(); return; }
     try { localStorage.setItem('pico.name', v); } catch (e) {}

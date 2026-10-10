@@ -39,34 +39,36 @@
 
   /* sheets */
   .dim.scrim { background: rgba(44, 44, 44, .57); }
-  .csheet { top: 357px; height: 455px; border: 1px dashed var(--ink); }
+  .csheet { top: 357px; height: 455px; }
   .home-ind { z-index: 45; }
-  .csheet .x { position: absolute; left: 323px; top: 17.47px; width: 32px; height: 32px; }
-  .csheet .x img { width: 32px; height: 32px; }
-  .csheet h2 { position: absolute; left: 0; right: 1.66px; top: 66.9px; text-align: center; font-size: 22px; line-height: normal; }
-  .csheet .lead { position: absolute; left: 0; right: 1.66px; top: 99.1px; text-align: center; font-size: 14px; line-height: 16px; }
+  /* Figma 3.2.2 / 3.2.3: drag handle (80x5) in a 34px strip at the top instead of an X */
+  .csheet .sheet-handle { position: absolute; left: 147.5px; top: 17px; margin: 0; }
+  .csheet h2 { position: absolute; left: 0; right: 0; top: 68px; text-align: center; font-size: 22px; line-height: normal; }
+  .csheet .lead { position: absolute; left: 0; right: 0; top: 100px; text-align: center; font-size: 14px; line-height: 16px; }
+  #error h2 { top: 90px; }
+  #error .lead { top: 122px; }
 
-  .rules { position: absolute; left: 20px; top: 143px; width: 335px; display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+  .rules { position: absolute; left: 20px; top: 141px; width: 335px; display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
   .rule { width: 335px; height: 55px; padding: 0 10px; border: 1px dashed var(--ink); background: var(--bg); display: flex; align-items: center; gap: 10px; text-align: left; }
   .rule .box { position: relative; flex: none; width: 35px; height: 35px; background: #fff; border: 1px dashed var(--ink); }
   .rule .box img { position: absolute; left: .5px; top: .5px; width: 32px; height: 32px; display: none; }
   .rule[aria-checked="true"] { background: var(--surface); border-style: solid; }
   .rule[aria-checked="true"] .box { border-style: solid; }
   .rule[aria-checked="true"] .box img { display: block; }
-  .rule .t { display: flex; flex-direction: column; justify-content: center; height: 38px; }
-  .rule b { font-weight: 700; font-size: 14px; line-height: 22px; white-space: nowrap; }
-  .rule small { font-size: 12px; line-height: 12px; white-space: nowrap; }
+  .rule .t { display: flex; flex-direction: column; justify-content: center; height: 33px; }
+  .rule b { font-weight: 700; font-size: 14px; line-height: 19px; white-space: nowrap; }
+  .rule small { font-size: 12px; line-height: 19px; white-space: nowrap; }
 
   .csheet .cta { left: 19.5px; }
   .csheet .cta::before { left: 3.5px; top: 8.64px; }
   .csheet button.cta { padding: 0; }
 
-  .tips { position: absolute; left: 20px; top: 143px; display: flex; gap: 25px; }
+  .tips { position: absolute; left: 30px; top: 163px; display: flex; gap: 15px; }
   .tip { width: 95px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .tip .box { width: 95px; height: 95px; background: var(--surface); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; }
   .tip .box img { width: 32px; height: 32px; }
-  .tip p { font-size: 14px; line-height: 17px; text-align: center; white-space: nowrap; }
-  .use-photo { position: absolute; left: 0; right: 0; top: 396.14px; text-align: center; font-size: 12px; text-decoration: underline; }
+  .tip p { font-size: 14px; line-height: normal; text-align: center; white-space: nowrap; }
+  .use-photo { position: absolute; left: 0; right: 0; top: 407.5px; text-align: center; font-size: 12px; text-decoration: underline; }
 </style>
 </head><body>
 <div class="phone" style="--h:812px">
@@ -82,7 +84,7 @@
 
   <div class="progress" aria-label="5단계 중 1단계"><span class="on"></span><span></span><span></span><span></span><span></span></div>
   <div class="step-title">
-    <div class="q"><span>01.</span><span>무엇을 발견 했나요?</span></div>
+    <div class="q"><span>01.</span><span>무엇을 발견했나요?</span></div>
     <p class="sub">곤충을 만지지 말고, 화면을 키워서 찍어보세요.</p>
   </div>
 
@@ -109,20 +111,20 @@
   <!-- ===== first-time safety sheet (3.2.3 / 3.2.4) ===== -->
   <div class="dim scrim" id="dim" hidden></div>
   <div class="sheet csheet" id="safety" role="dialog" aria-modal="true" aria-labelledby="safetyTitle" hidden>
-    <button class="x" type="button" data-close aria-label="닫기"><img src="assets/capture/icon-close-sheet.png" alt=""></button>
-    <h2 id="safetyTitle">탐험 전에 약속해요</h2>
-    <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
+    <span class="sheet-handle" aria-hidden="true"></span>
+    <h2 id="safetyTitle">곤충 친구들을 만나기 전에</h2>
+    <p class="lead">세 가지만 약속해요!</p>
     <ul class="rules" id="rules"></ul>
-    <button class="cta cta--yellow" type="button" id="promise" style="top:347.5px" aria-disabled="true"><span class="cta-face">약속 했어요! <img src="assets/common/arrow-right.png" alt=""></span></button>
+    <button class="cta cta--yellow" type="button" id="promise" style="top:346px" aria-disabled="true"><span class="cta-face">약속했어요! <img src="assets/common/arrow-right.png" alt=""></span></button>
   </div>
 
   <!-- ===== photo error sheet (3.2.2) ===== -->
   <div class="sheet csheet" id="error" role="dialog" aria-modal="true" aria-labelledby="errorTitle" hidden>
-    <button class="x" type="button" data-close aria-label="닫기"><img src="assets/capture/icon-close-sheet.png" alt=""></button>
+    <span class="sheet-handle" aria-hidden="true"></span>
     <h2 id="errorTitle">앗, 곤충이 잘 안 보여요</h2>
     <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
     <div class="tips" id="tips"></div>
-    <button class="cta cta--yellow" type="button" data-close style="top:318.5px"><span class="cta-face">다시 찍어 볼래요</span></button>
+    <button class="cta cta--yellow" type="button" data-close style="top:334px"><span class="cta-face">다시 시작하기 <img src="assets/common/arrow-right.png" alt=""></span></button>
     <a class="use-photo" href="capture-2.html">이 곤충이 맞아요! 이 사진으로 할래요</a>
   </div>
 
@@ -141,7 +143,7 @@
   var rules = [
     ['가까이서 보고, 손대지 않기', '생물은 눈으로 천천히 관찰해요.'],
     ['발견한 자리는 그대로 두기', '생물이 있던 환경을 그대로 남겨요.'],
-    ['안전한 곳에서 탐험하기', '길이나 위험한 곳에서는 멈추고, 주변을 살핀 뒤 촬영해요.']
+    ['안전한 곳에서 탐험하기', '위험한 곳에선 멈추고, 주변을 살핀 뒤 촬영해요.']
   ];
   var list = document.getElementById('rules');
   list.innerHTML = rules.map(function (r) {

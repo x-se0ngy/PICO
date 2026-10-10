@@ -10,20 +10,23 @@
   @media (min-width: 500px) { body { padding-bottom: 0; } }
   .abs { position: absolute; }
 
-  .card-shadow { left: 30px; top: 143.65px; width: 325px; height: 280px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 21px; top: 133.21px; width: 325px; height: 280px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-inner { left: 28.5px; top: 215.63px; width: 310px; height: 190px; background: var(--brand-soft); }
-  .deco { left: 221.73px; top: 90.31px; width: 110px; height: 110px; }
-  .me { left: 31.49px; top: 149.3px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
-  .me .t { font-size: 20px; } .me .s { font-size: 16px; }
+  /* profile card (Figma 6.1.1, 2847:4004) */
+  .card-shadow { left: 29.5px; top: 139.34px; width: 325px; height: 280px; background: var(--ink); border: 1px solid var(--ink); }
+  .card-face { left: 20.5px; top: 128.9px; width: 325px; height: 280px; background: var(--brand); border: 1px dashed var(--ink); }
+  .deco { left: 221.23px; top: 86px; width: 110px; height: 110px; z-index: 1; }
+  .card-col { left: 28.5px; top: 144.69px; width: 310px; display: flex; flex-direction: column; gap: 10px; }
+  .me { padding: 0 10px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
+  .me .t { font-weight: 700; font-size: 20px; } .me .t small { font-size: 14px; } .me .t span { font-weight: 400; font-size: 14px; }
+  .me .s { font-size: 14px; }
+  .card-inner { width: 310px; height: 190px; background: var(--brand-soft); padding: 10px 7.5px; }
 
-  .week { left: 36px; top: 224.3px; width: 295px; display: flex; flex-direction: column; gap: 20px; }
-  .week-h { display: flex; justify-content: space-between; align-items: flex-start; }
+  .week { width: 295px; display: flex; flex-direction: column; gap: 10px; }
+  .week-h { padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-start; }
   .week-h > p { font-size: 14px; line-height: 19px; }
   .week-nav { display: flex; gap: 4px; align-items: center; font-size: 12px; white-space: nowrap; }
   .week-nav button img { width: 18px; height: 18px; }
   .week-nav .prev img { transform: scaleX(-1); }
-  .days-wrap { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+  .cal { display: flex; flex-direction: column; gap: 15px; }
   .days { display: flex; justify-content: space-between; width: 295px; }
   .day { width: 30px; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
   .day .dl { position: relative; width: 30px; height: 21.39px; }
@@ -35,39 +38,46 @@
   .day .bubble { display: none; position: absolute; left: 2.05px; top: 2.45px; width: 25.9px; height: 25.1px; }
   .day.sel .bubble { display: block; left: 1.05px; top: 1.45px; }
   .day .num span { position: relative; }
-  .week hr { margin: 0; width: 295px; border: 0; border-top: 1px dashed var(--ink); }
-  .daylog { left: 35.28px; top: 354.7px; width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
+  .cal hr { margin: 0; width: 295px; border: 0; border-top: 1px dashed var(--ink); }
+  .daylog { width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
   .daylog p:last-child { font-family: var(--font-hand); }
 
-  .sec-h { left: 20.09px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
+  /* sections below the card: Figma column gap 20 */
+  .stack { left: 0; top: 439.34px; width: 375px; display: flex; flex-direction: column; gap: 20px; }
+  .sec { display: flex; flex-direction: column; gap: 10px; }
+  .sec-h { padding: 0 20px; width: 375px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
   .sec-h img { width: 18px; height: 18px; }
-  .saved { left: 20px; top: 492.65px; display: flex; gap: 14.09px; }
+  .saved { padding: 0 20px; display: flex; gap: 14.09px; }
   .saved a { position: relative; width: 110.61px; height: 120px; display: block; flex: none; }
   .saved img { position: absolute; left: -0.5px; top: -0.5px; width: 111.6px; height: 91px; }
   .saved .band { position: absolute; left: 0; top: 90px; width: 110.61px; height: 30px; background: var(--brand); border: 1px solid var(--ink); }
   .saved .nm { position: absolute; left: 6.12px; top: 96.5px; font-size: 14px; white-space: nowrap; }
-  .badges { left: 20.5px; top: 681.95px; display: flex; gap: 14.09px; }
-  .badges a { width: 110.61px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 15px; font-size: 16px; white-space: nowrap; }
-  .badges img { width: 110px; height: 110px; }
-  .friends { left: 20px; top: 895.37px; display: flex; gap: 15px; }
-  .friends a { width: 60px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 12px; line-height: 19px; white-space: nowrap; }
+  /* badge row scrolls sideways; the 4th badge peeks past the edge */
+  .badges { display: flex; gap: 15px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .badges::-webkit-scrollbar { display: none; }
+  .badges a { flex: none; display: flex; flex-direction: column; align-items: center; gap: 15px; font-size: 14px; white-space: nowrap; }
+  .badges a:last-child { margin-right: 20px; }
+  .badges img { width: 90px; height: 90px; }
+  .friends { padding: 0 20px; display: flex; gap: 15px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .friends::-webkit-scrollbar { display: none; }
+  .friends a:last-child { margin-right: 20px; }
+  .friends a { min-width: 60px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; line-height: 19px; white-space: nowrap; }
   .friends img { width: 60px; height: 60px; }
   .friends .add img { width: 55px; align-self: flex-start; }
 
-  .tip { left: 0.5px; top: 999.37px; width: 375px; height: 100px; background: #00b7ff; border: 1px dashed var(--ink); }
-  .tip-body { left: 16.35px; top: 1018.87px; width: 260.15px; display: flex; flex-direction: column; gap: 12px; }
-  .tip-body .h { display: flex; gap: 10px; align-items: center; font-weight: 700; font-size: 20px; }
-  .tip-body .h img { width: 32px; height: 32px; }
-  .tip-body .d { font-size: 14px; white-space: nowrap; }
+  .tip { width: 375px; height: 110px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); padding: 16px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+  .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; }
+  .tip .h img { width: 32px; height: 32px; }
+  .tip .d { font-size: 14px; line-height: 1.3; white-space: nowrap; }
 
-  .settings { left: 20px; top: 1126.37px; width: 335px; display: flex; flex-direction: column; gap: 15px; }
+  .settings { padding: 0 20px; width: 375px; display: flex; flex-direction: column; gap: 10px; }
   .settings > p { font-size: 20px; }
   .settings ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
   .settings button { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 14px; text-align: left; }
   .settings button img { width: 32px; height: 32px; }
 </style>
 </head><body>
-<div class="phone" style="--h:1422px">
+<div class="phone" style="--h:1445px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -77,55 +87,62 @@
 
   <div class="abs card-shadow"></div>
   <div class="abs card-face"></div>
-  <div class="abs card-inner"></div>
   <img class="abs deco" src="assets/tabs/profile-circle.png" alt="">
-  <div class="abs me"><p class="t">김선우</p><p class="s">초등학교 5학년 ∙ 새싹 탐험가</p></div>
-
-  <div class="abs week">
-    <div class="week-h"><p>나의 탐험</p>
-      <div class="week-nav"><button class="prev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span>10월 셋째 주</span><button aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
-    <div class="days-wrap"><div class="days" id="days"></div><hr></div>
-  </div>
-  <div class="abs daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p>곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div>
-
-  <a class="abs sec-h" href="dogam.html" style="top:453.65px"><span>내가 저장한 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
-  <div class="abs saved">
-    <a href="dogam-detail.html"><img src="assets/tabs/my-waterstrider.png" alt=""><span class="band"></span><span class="nm">소금쟁이</span></a>
-    <a href="dogam-detail.html"><img src="assets/tabs/my-divingbeetle.png" alt=""><span class="band"></span><span class="nm">물방개</span></a>
-    <a href="dogam-detail.html"><img src="assets/tabs/my-rhinobeetle.png" alt="" style="width:106.1px"><span class="band"></span><span class="nm">장수풍뎅이</span></a>
+  <div class="abs card-col">
+    <div class="me"><p class="t">김선우 <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
+    <div class="card-inner"><div class="week">
+      <div class="week-h"><p>나의 탐험</p>
+        <div class="week-nav"><button class="prev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span>10월 셋째 주</span><button aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
+      <div class="cal"><div class="days" id="days"></div><hr>
+        <div class="daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p>곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div></div>
+    </div></div>
   </div>
 
-  <a class="abs sec-h" href="badge.html" style="top:642.95px"><span>내가 획득한 배지</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
-  <div class="abs badges">
-    <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>첫 관찰</span></a>
-    <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>10종 그림</span></a>
-    <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>함께 발견</span></a>
-  </div>
+  <div class="abs stack">
+    <div class="sec">
+      <a class="sec-h" href="dogam.html"><span>내가 저장한 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
+      <div class="saved">
+        <a href="dogam-detail.html"><img src="assets/tabs/my-waterstrider.png" alt=""><span class="band"></span><span class="nm">소금쟁이</span></a>
+        <a href="dogam-detail.html"><img src="assets/tabs/my-divingbeetle.png" alt=""><span class="band"></span><span class="nm">물방개</span></a>
+        <a href="dogam-detail.html"><img src="assets/tabs/my-rhinobeetle.png" alt="" style="width:106.1px"><span class="band"></span><span class="nm">장수풍뎅이</span></a>
+      </div>
+    </div>
 
-  <!-- Figma copy bug: this header repeats "내가 획득한 배지"; corrected to "내 친구" -->
-  <div class="abs sec-h" style="top:856.37px"><span>내 친구</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
-  <div class="abs friends">
-    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>유선규</span></a>
-    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>민사온</span></a>
-    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>정하람</span></a>
-    <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>정하람</span></a>
-    <a class="add" href="badge.html?state=qr"><img src="assets/tabs/qr-add.png" alt=""><span>QR로 추가</span></a>
-  </div>
+    <div class="sec">
+      <a class="sec-h" href="badge.html" style="height:17px"><span>내가 획득한 배지</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
+      <div class="badges">
+        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>첫 관찰</span></a>
+        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>10종 그림</span></a>
+        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>함께 발견</span></a>
+        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>첫 그림</span></a>
+      </div>
+    </div>
 
-  <div class="abs tip"></div>
-  <div class="abs tip-body">
-    <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP !</div>
-    <p class="d">친구랑 같이 관찰하면 '함께 발견' 배지를 받아요.</p>
-  </div>
+    <!-- Figma copy bug: this header repeats "내가 획득한 배지"; corrected to "내 친구" -->
+    <div class="sec">
+      <div class="sec-h"><span>내 친구</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
+      <div class="friends">
+        <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>유선규</span></a>
+        <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>민사온</span></a>
+        <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>정하람</span></a>
+        <a href="friend.html"><img src="assets/tabs/friend-avatar.png" alt=""><span>정하람</span></a>
+        <a class="add" href="badge.html?state=qr"><img src="assets/tabs/qr-add.png" alt=""><span>QR로 추가</span></a>
+      </div>
+    </div>
 
-  <div class="abs settings"><p>앱 설정</p><ul id="settings"></ul></div>
+    <div class="tip">
+      <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP</div>
+      <div class="d"><p>잎 뒷면도 살펴보세요!</p><p>작은 알이 숨어 있을지도 몰라요.</p></div>
+    </div>
+
+    <div class="settings"><p>앱 설정</p><ul id="settings"></ul></div>
+  </div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
       <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/tabs/tab-home-outline.png" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감"><img src="assets/common/tab-tag-outline.png" alt=""><span>도감</span></a></div>
       <a class="tab-cam" href="capture-1.html" aria-label="촬영"><img src="assets/common/tab-camera.png" alt=""></a>
-      <!-- no filled User icon exists in the Figma file: active 마이 tab keeps the default icon -->
-      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/common/tab-bookmark.png" alt=""><span>배지</span></a><a href="my.html" aria-label="마이" aria-current="page"><img src="assets/common/tab-user.png" alt=""><span>마이</span></a></div>
+      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/common/tab-bookmark.png" alt=""><span>배지</span></a><a href="my.html" aria-label="마이" aria-current="page"><img src="assets/tabs/tab-user-filled.png" alt=""><span>마이</span></a></div>
     </div></nav>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">

@@ -9,12 +9,13 @@
   .photo { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); }
   .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
   .label { position: absolute; left: 20px; top: 451.52px; font-size: 16px; white-space: nowrap; }
-  .chips { position: absolute; left: 20px; top: 481.18px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 10.67px; row-gap: 10.67px; }
+  .chips { position: absolute; left: 20px; top: 481.18px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 10.67px; row-gap: 9.67px; }
+  /* filled = not used yet · dashed = already in the diary */
   .chip { height: 35px; display: flex; align-items: center; justify-content: center; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; white-space: nowrap; }
   .chip.used { background: var(--bg); border-style: dashed; }
-  /* diary input — not drawn in the frame; styled like the card's diary box */
-  .diary { position: absolute; left: 20px; top: 575px; width: 335px; height: 110px; padding: 12px 14px; resize: none; background: var(--surface); border: 1px solid var(--ink); border-radius: 0; font: 14px/20px var(--font); color: var(--ink); outline: none; }
-  .diary:focus { border-style: dashed; }
+  /* diary input — Figma 2847:3299: 335x117 surface box with a dashed border at y 572 */
+  .diary { position: absolute; left: 20px; top: 572px; width: 335px; height: 117px; padding: 12px 14px; resize: none; background: var(--surface); border: 1px dashed var(--ink); border-radius: 0; font: 14px/20px var(--font); color: var(--ink); outline: none; }
+  .diary:focus { border-style: solid; }
   .diary::placeholder { color: rgba(0,0,0,.4); }
 </style>
 </head><body>
@@ -43,7 +44,7 @@
 
   <textarea class="diary" id="diary" aria-label="관찰 일기" placeholder="여기에 관찰 일기를 적어보세요."></textarea>
 
-  <a class="cta" href="capture-card.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+  <a class="cta step" href="capture-card.html"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>

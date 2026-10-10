@@ -13,8 +13,9 @@
   .grade-chip[aria-checked="true"] { background: var(--brand); }
   .grade-chip .k { font-size: 14px; line-height: 12.19px; height: 12.19px; }
   .grade-chip .v { font-size: 20px; line-height: 28.15px; white-space: nowrap; }
-  .info-bar { position: absolute; left: 20px; top: 628.64px; width: 335px; height: 55px; background: var(--bg); border: 1px dashed var(--ink);
+  .info-bar { position: absolute; left: 20px; top: 565.71px; width: 335px; height: 55px; background: var(--bg); border: 1px dashed var(--ink);
     display: flex; align-items: center; gap: 8px; padding-left: 11px; font-size: 14px; line-height: 16px; white-space: nowrap; }
+  .setup-skip { position: absolute; left: 313.61px; top: 669.64px; font-size: 12px; line-height: normal; text-decoration: underline; white-space: nowrap; }
   .info-bar img { width: 18px; height: 18px; }
 </style>
 </head><body>
@@ -35,6 +36,8 @@
   <div class="grade-grid" id="grades" role="radiogroup" aria-label="학년"></div>
 
   <div class="info-bar"><img src="assets/onboarding/icon-lock.png" alt=""><span>학년은 나만 볼 수 있어요. 친구에게는 보이지 않아요.</span></div>
+
+  <a class="setup-skip" href="setup-explore.html">건너뛰기</a>
 
   <a class="cta" id="next" aria-disabled="true" href="setup-explore.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
 

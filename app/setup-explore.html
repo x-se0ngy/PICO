@@ -23,24 +23,16 @@
     gap: 10px; background: #00b7ff; color: var(--ink); border: 1px solid var(--ink); box-shadow: 5.34px 4.99px 0 var(--ink); }
   .toast--info img { width: 24px; height: 24px; }
 
-  /* quit dialog (1.3.2) */
-  .dim.dim--quit { background: rgba(44, 44, 44, .57); }
-  .modal.quit { top: 331px; height: 150px; padding: 36px 23px 29px; box-shadow: 10px 11.5px 0 var(--ink);
-    display: flex; flex-direction: column; align-items: center; gap: 14px; }
-  .quit-title { font-size: 22px; line-height: normal; text-align: center; width: 100%; }
-  .quit-btns { display: flex; gap: 14px; width: 100%; }
-  .quit-btns button, .quit-btns a { width: 120px; height: 45px; display: flex; align-items: center; justify-content: center;
-    font-size: 20px; border: 1px solid var(--ink); }
-  .quit-no { background: var(--surface); }
-  .quit-yes { background: var(--ink); color: var(--bg); }
+  /* 건너뛰기 (Figma 2847:3580): 12px underlined, x 313.61 / y 669.64 */
+  .setup-skip { position: absolute; left: 313.61px; top: 669.64px; font-size: 12px; line-height: normal; text-decoration: underline; white-space: nowrap; }
 </style>
 </head><body>
 <div class="phone" style="--h:812px">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
-    <!-- no back button in the frame: the logo area opens the quit dialog -->
-    <div class="nav nav--center"><button type="button" class="nav-quit" id="quitBtn" aria-label="프로필 설정 중단"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></button></div>
+    <!-- no back button in the frame: the logo area asks to quit (shared .ox팝업 via data-confirm) -->
+    <div class="nav nav--center"><a class="nav-quit" href="home.html" data-confirm="프로필 설정을 중단할까요?" aria-label="프로필 설정 중단"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></a></div>
   </div>
 
   <div class="progress" aria-label="3단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span></div>
@@ -54,16 +46,9 @@
 
   <div class="toast toast--info" id="toast" role="status" hidden><img src="assets/onboarding/toast-alert.png" alt=""><span>답변을 선택해주세요.</span></div>
 
-  <button type="button" class="cta" id="next" style="top:699.5px"><span class="cta-face">다음 <img id="nextArrow" src="assets/common/arrow-right.png" alt=""></span></button>
+  <a class="setup-skip" href="setup-done.html">건너뛰기</a>
 
-  <div class="dim dim--quit" id="quitDim" hidden></div>
-  <div class="modal quit" id="quit" role="dialog" aria-modal="true" aria-labelledby="quitTitle" hidden>
-    <p class="quit-title" id="quitTitle">프로필 설정을 중단할까요?</p>
-    <div class="quit-btns">
-      <button type="button" class="quit-no" id="quitNo">취소</button>
-      <a class="quit-yes" href="home.html">네</a>
-    </div>
-  </div>
+  <button type="button" class="cta" id="next" style="top:699.5px"><span class="cta-face">다음 <img id="nextArrow" src="assets/common/arrow-right.png" alt=""></span></button>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
@@ -78,8 +63,9 @@
   var state = document.documentElement.dataset.state;
   var picked = state === 'picked' ? [3] : []; // nothing picked until the child chooses → grey CTA
   var grid = document.getElementById('cards'), next = document.getElementById('next'),
-      arrow = document.getElementById('nextArrow'), toast = document.getElementById('toast'),
-      quit = document.getElementById('quit'), quitDim = document.getElementById('quitDim'), toastTimer;
+      arrow = document.getElementById('nextArrow'), toast = document.getElementById('toast'), toastTimer;
+  var QUIT = '프로필 설정을 중단할까요?';
+  function openQuit() { if (!document.querySelector('.phone > .ox')) window.picoConfirm(QUIT, 'home.html'); }
 
   grid.innerHTML = CARDS.map(function (c, i) {
     return '<button type="button" class="explore-card" data-i="' + i + '"><span class="t">' + c[0] + '</span><span class="s">' + c[1] + '</span></button>';
@@ -95,7 +81,6 @@
     toast.hidden = false; clearTimeout(toastTimer);
     if (!sticky) toastTimer = setTimeout(function () { toast.hidden = true; }, 2000);
   }
-  function openQuit(on) { quit.hidden = quitDim.hidden = !on; if (on) document.getElementById('quitNo').focus(); }
 
   grid.addEventListener('click', function (e) {
     var b = e.target.closest('.explore-card'); if (!b) return;
@@ -109,19 +94,19 @@
     location.href = 'setup-done.html';
   });
 
-  document.getElementById('quitBtn').addEventListener('click', function () { openQuit(true); });
-  document.getElementById('quitNo').addEventListener('click', function () { openQuit(false); });
-  quitDim.addEventListener('click', function () { openQuit(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') openQuit(quit.hidden); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var no = document.querySelector('.phone > .ox .ox-no'); if (no) no.click(); else openQuit();
+  });
   // browser back → ask before leaving
   try {
     history.pushState({ guard: 1 }, '');
-    window.addEventListener('popstate', function () { history.pushState({ guard: 1 }, ''); openQuit(true); });
+    window.addEventListener('popstate', function () { history.pushState({ guard: 1 }, ''); openQuit(); });
   } catch (e) {}
 
   render();
   if (state === 'toast') showToast(true);
-  if (state === 'quit') openQuit(true);
+  if (state === 'quit') openQuit();
 })();
 </script>
 </body></html>

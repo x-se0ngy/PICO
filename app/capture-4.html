@@ -10,19 +10,19 @@
   /* the photo stays under the drawing (faded, like tracing paper); only the strokes are saved */
   .board .ref { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .4; transition: opacity .2s; pointer-events: none; }
   .board.hide-ref .ref { opacity: 0; }
-  .ref-toggle { position: absolute; left: 20px; top: 574px; height: 32px; padding: 0 10px; display: flex; align-items: center; gap: 6px;
-    font-size: 13px; border: 1px dashed var(--ink); background: var(--surface); z-index: 2; }
-  .ref-toggle[aria-pressed="true"] { background: var(--brand); border-style: solid; }
   .board canvas { position: relative; display: block; width: 333px; height: 333px; touch-action: none; cursor: crosshair; }
-  .refresh { position: absolute; left: 315.5px; top: 574px; width: 32px; height: 32px; z-index: 2; }
-  .refresh img { width: 32px; height: 32px; transition: transform .3s; }
+  /* Figma 3.1.4: 8 crayons (32.685 wide, gap 4) from (23.29, 619.32), then a column of two icons
+     (사진 보기 · 모두 지우기) 10px to the right. The crayon bodies are cut 2px above the CTA so they never sit under it. */
+  .crayons { position: absolute; left: 23.29px; top: 619.32px; height: 80.68px; display: flex; gap: 4px; clip-path: inset(-20px -4px 0 -4px); }
+  .crayon { width: 32.685px; height: 92.18px; position: relative; flex: none; transition: transform .15s ease-out; }
+  .crayon img { position: absolute; left: -.2px; top: 0; width: 33.6px; height: auto; max-width: none; }
+  .crayon[aria-pressed="true"] { transform: translateY(-12px); }
+  .tools { position: absolute; left: 322.84px; top: 619.32px; display: flex; flex-direction: column; gap: 10px; }
+  .tools button, .tools img { display: block; width: 32px; height: 32px; }
+  .ref-toggle img { transition: opacity .2s; }
+  .ref-toggle[aria-pressed="false"] img { opacity: .35; }
+  .refresh img { transition: transform .3s; }
   .refresh:active img { transform: rotate(-90deg); }
-  /* crayons sit behind the CTA like in the frame */
-  .crayons { position: absolute; left: 37.11px; top: 622.05px; display: flex; gap: 2px; z-index: 0; }
-  .crayon { width: 35.722px; height: 100.75px; position: relative; transition: transform .15s ease-out; }
-  .crayon img { position: absolute; left: -.5px; top: 0; width: 37px; height: 101.33px; max-width: none; }
-  .crayon[aria-pressed="true"] { transform: translateY(-14px); }
-  .cta { z-index: 1; }
 </style>
 </head><body>
 <div class="phone" style="--h:812px">
@@ -44,12 +44,14 @@
   </div>
 
   <div class="board" id="board"><div class="ref" data-photo></div><canvas id="pad" width="333" height="333" aria-label="그림판"></canvas></div>
-  <button class="ref-toggle" id="refToggle" type="button" aria-pressed="true">사진 보기</button>
-  <button class="refresh" id="clear" aria-label="모두 지우기"><img src="assets/capture/s4-icon-refresh.png" alt=""></button>
 
   <div class="crayons" id="crayons" role="radiogroup" aria-label="색연필"></div>
+  <div class="tools">
+    <button class="ref-toggle" id="refToggle" type="button" aria-pressed="true" aria-label="사진 보기"><img src="assets/capture/s4-icon-photo.png" alt=""></button>
+    <button class="refresh" id="clear" type="button" aria-label="모두 지우기"><img src="assets/capture/s4-icon-refresh.png" alt=""></button>
+  </div>
 
-  <a class="cta" href="capture-5.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+  <a class="cta step" href="capture-5.html"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
