@@ -164,13 +164,11 @@ img { display: block; }
 /* ---------- lens stickers (촬영 2 · 3 · 5, Figma "스티커2" 41px) ---------- */
 .lens-layer { position: absolute; inset: 0; }
 .lens { position: absolute; width: 41px; height: 41px; padding: 0; touch-action: none; -webkit-user-select: none; user-select: none; }
-.lens img { position: absolute; left: 0; top: 0; width: 38px; height: 38px; pointer-events: none; }
-/* see-through lens: transparent centre so the photo shows through, olive ring + black keyline */
-.lens .ring { position: absolute; left: 1px; top: 1px; width: 36px; height: 36px; border-radius: 50%; pointer-events: none;
-  border: 4px solid var(--brand); box-shadow: 0 0 0 1px var(--ink), inset 0 0 0 1px var(--ink), inset 3px 3px 0 rgba(255,255,255,.35); }
-.lens.is-idle .ring { border: 2px dashed #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.55), inset 0 0 0 1px rgba(0,0,0,.55); }
-.lens.is-active .ring { border-color: var(--reward); box-shadow: 0 0 0 1px var(--ink), inset 0 0 0 1px var(--ink), 0 0 0 5px rgba(244,209,89,.45); }
-.lens .n { position: absolute; left: 31px; top: 28px; font-size: 12px; font-weight: 700; padding: 0 3px; background: var(--surface); border: 1px solid var(--ink); line-height: 14px; line-height: normal; pointer-events: none; }
+/* Figma 스티커2 (2884:5270): see-through lens drawn by stickers.js (double keyline, peeled corner),
+   number in a 13px #fdf4b1 box at (28, 28) */
+.lens .art { position: absolute; left: 0; top: 0; width: 41px; height: 41px; overflow: visible; pointer-events: none; }
+.lens .n { position: absolute; left: 28px; top: 28px; width: 13px; height: 13px; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; line-height: 1; background: var(--bg); border: 1px solid var(--ink); pointer-events: none; }
 /* step CTA (Figma 큰 버튼 in 촬영 frames): face at top 702, shadow +5.42 / +9.5 */
 .cta.step { top: 702px; }
 .cta.step::before { left: 5.42px; top: 9.5px; }

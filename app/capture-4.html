@@ -6,8 +6,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  .board { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 335px; background: var(--surface); border: 1px solid var(--ink); z-index: 2; }
-  /* the photo stays under the drawing (faded, like tracing paper); only the strokes are saved */
+  .board { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 335px; background: var(--bg); border: 1px solid var(--ink); z-index: 2; }
+  /* Figma 3.1.4: the board starts empty. The image button lays the photo under the drawing (faded, like tracing paper); only the strokes are saved */
   .board .ref { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .4; transition: opacity .2s; pointer-events: none; }
   .board.hide-ref .ref { opacity: 0; }
   .board canvas { position: relative; display: block; width: 333px; height: 333px; touch-action: none; cursor: crosshair; }
@@ -20,7 +20,7 @@
   .tools { position: absolute; left: 322.84px; top: 619.32px; display: flex; flex-direction: column; gap: 10px; }
   .tools button, .tools img { display: block; width: 32px; height: 32px; }
   .ref-toggle img { transition: opacity .2s; }
-  .ref-toggle[aria-pressed="false"] img { opacity: .35; }
+  .ref-toggle[aria-pressed="true"] { background: var(--brand-soft); outline: 1px solid var(--ink); }
   .refresh img { transition: transform .3s; }
   .refresh:active img { transform: rotate(-90deg); }
 </style>
@@ -43,11 +43,11 @@
     <p class="sub">자유롭게 그려 보세요. 똑같지 않아도 괜찮아요.</p>
   </div>
 
-  <div class="board" id="board"><div class="ref" data-photo></div><canvas id="pad" width="333" height="333" aria-label="그림판"></canvas></div>
+  <div class="board hide-ref" id="board"><div class="ref" data-photo></div><canvas id="pad" width="333" height="333" aria-label="그림판"></canvas></div>
 
   <div class="crayons" id="crayons" role="radiogroup" aria-label="색연필"></div>
   <div class="tools">
-    <button class="ref-toggle" id="refToggle" type="button" aria-pressed="true" aria-label="사진 보기"><img src="assets/capture/s4-icon-photo.png" alt=""></button>
+    <button class="ref-toggle" id="refToggle" type="button" aria-pressed="false" aria-label="사진 겹쳐 보기"><img src="assets/capture/s4-icon-photo.png" alt=""></button>
     <button class="refresh" id="clear" type="button" aria-label="모두 지우기"><img src="assets/capture/s4-icon-refresh.png" alt=""></button>
   </div>
 

@@ -11,23 +11,16 @@
   .photo { position: absolute; left: 20px; top: 232px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); overflow: hidden; }
   .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
   .photo .lens { z-index: 2; }
-  /* AI scan: a ring sweeps out from the sticker being looked at */
-  .scan { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; border: 2px solid var(--brand); pointer-events: none; opacity: 0; z-index: 1; }
-  .scan.on { animation: scan .9s ease-out infinite; }
-  @keyframes scan { 0% { transform: scale(.3); opacity: .95; } 100% { transform: scale(1.2); opacity: 0; } }
-
   .kind { position: absolute; left: 20px; top: 446px; display: flex; gap: 5px; font-weight: 700; font-size: 16px; line-height: normal; white-space: nowrap; }
   .prompt { position: absolute; left: 20px; top: 470px; font-size: 16px; line-height: normal; white-space: nowrap; }
   .options { position: absolute; left: 20px; top: 499.48px; width: 335px; display: grid; grid-template-columns: 162px 162px; column-gap: 11px; row-gap: 10px; }
   .opt { height: 65px; display: flex; align-items: center; justify-content: center; background: #fffad7; border: 1px solid var(--ink); font-size: 16px; white-space: nowrap;
     transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
   .opt[aria-pressed="true"] { background: var(--brand); }
-  .options.thinking .opt { color: transparent; pointer-events: none; background: linear-gradient(100deg, #fffad7 30%, #f3ecb6 50%, #fffad7 70%) 0 0 / 300% 100%; animation: shimmer 1s linear infinite; }
-  @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -50% 0; } }
   .options.ready .opt { animation: opt-in .3s cubic-bezier(.25, .6, .07, 1) both; }
   .options.ready .opt:nth-child(2) { animation-delay: .05s; } .options.ready .opt:nth-child(3) { animation-delay: .1s; } .options.ready .opt:nth-child(4) { animation-delay: .15s; }
   @keyframes opt-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .scan.on, .options.thinking .opt, .options.ready .opt { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .options.ready .opt { animation: none; } }
 </style>
 </head><body>
 <div class="phone" style="--h:812px">
@@ -48,7 +41,7 @@
     <p class="sub">내가 표시한 곳마다 하나씩 골라보세요. 정답은 없어요.</p>
   </div>
 
-  <div class="photo" data-photo aria-label="촬영한 사진"><div class="lens-layer" id="layer"></div><span class="scan" id="scan"></span></div>
+  <div class="photo" data-photo aria-label="촬영한 사진"><div class="lens-layer" id="layer"></div></div>
 
   <p class="kind" id="kind"><span id="kindNo">01</span><span id="kindName">생김새</span></p>
   <p class="prompt" id="prompt" aria-live="polite">내가 관찰한 특징들을 표현해 봐요.</p>
@@ -67,25 +60,24 @@
   // (프로토타입: 표현은 스티커 종류별로 정해 둔 목록이고, 살펴보는 동안 AI 분석 화면을 보여 줘요.)
   var L = PicoLens, W = 333, H = 198, R = L.R;
   var layer = document.getElementById('layer'), opts = document.getElementById('options');
-  var scan = document.getElementById('scan'), promptEl = document.getElementById('prompt');
+  var promptEl = document.getElementById('prompt');
   var lenses = L.load();
   var answers = L.answers();
-  var seen = {}, active = null, map = null, thinkTimer;
+  var active = null, map = null;
 
-  // 2단계를 거치지 않고 들어오면 Figma 프레임의 스티커 4개 위치로 보여 줘요 (칸 안 중심 좌표)
-  var DEMO = [{ k: 0, x: 257, y: 152 }, { k: 1, x: 64, y: 142 }, { k: 2, x: 101, y: 82 }, { k: 3, x: 269, y: 58 }];
+  // 2단계를 거치지 않고 들어오면 Figma 3.1.3 프레임의 스티커 4개 위치로 보여 줘요 (칸 안 중심 좌표)
+  var DEMO = [{ k: 0, x: 117, y: 111.5 }, { k: 1, x: 76, y: 50.5 }, { k: 2, x: 259, y: 153.5 }, { k: 3, x: 233, y: 70.5 }];
 
   function byKind() { return lenses.slice().sort(function (a, b) { return a.k - b.k; }); }
-  function pos(s) { var p = map.toBox(s.u, s.v); return { x: L.clamp(p.x, R, W - R), y: L.clamp(p.y, R, H - R) }; }
+  function pos(s) { var p = map.toBox(s.u, s.v); return { x: L.clamp(p.x, R, W - R + 1), y: L.clamp(p.y, R, H - R + 1) }; }
 
+  // 지금 고르는 스티커 = 올리브 띠, 나머지 = 크림 띠 (Figma 3.1.3.2 ~ 3.1.3.4)
   function renderLenses() {
     layer.innerHTML = byKind().map(function (s) {
       var p = pos(s);
-      return L.html(s.k, p.x, p.y, { active: s.k === active, dashed: s.k !== active,
+      return L.html(s.k, p.x, p.y, { on: s.k === active,
         attrs: ' aria-pressed="' + (s.k === active) + '" aria-label="' + (s.k + 1) + '. ' + L.KINDS[s.k] + (answers[s.k] != null ? ' · 골랐어요' : '') + '"' });
     }).join('');
-    var a = lenses.filter(function (s) { return s.k === active; })[0];
-    if (a) { var p = pos(a); scan.style.left = (p.x + 1) + 'px'; scan.style.top = (p.y + 1) + 'px'; }
   }
   function renderOptions(state) {
     opts.className = 'options' + (state ? ' ' + state : '');
@@ -94,22 +86,13 @@
     }).join('');
   }
   function activate(k) {
+    var changed = active !== null && active !== k;
     active = k;
     document.getElementById('kindNo').textContent = '0' + (k + 1);
     document.getElementById('kindName').textContent = L.KINDS[k];
+    promptEl.textContent = L.PROMPTS[k];
     renderLenses();
-    clearTimeout(thinkTimer);
-    if (seen[k]) { scan.classList.remove('on'); promptEl.textContent = L.PROMPTS[k]; renderOptions(''); return; }
-    // first look at this sticker: "AI가 살펴보는 중" → then the expressions appear
-    scan.classList.add('on');
-    promptEl.textContent = 'AI가 ' + (k + 1) + '번 스티커 부분을 살펴보고 있어요…';
-    renderOptions('thinking');
-    thinkTimer = setTimeout(function () {
-      seen[k] = true;
-      scan.classList.remove('on');
-      promptEl.textContent = L.PROMPTS[k];
-      renderOptions('ready');
-    }, 900);
+    renderOptions(changed ? 'ready' : '');
   }
 
   layer.addEventListener('click', function (e) { var b = e.target.closest('.lens'); if (b) activate(+b.dataset.k); });

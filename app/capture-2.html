@@ -15,29 +15,31 @@
   @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .ghost { position: absolute; z-index: 30; pointer-events: none; transform: scale(1.12); }
 
-  /* armed sticker kind (3.1.3 heading typography) */
-  .kind { position: absolute; left: 20px; top: 446px; display: flex; gap: 5px; font-weight: 700; font-size: 16px; line-height: normal; white-space: nowrap; }
-  .prompt { position: absolute; left: 20px; top: 470px; font-size: 16px; line-height: normal; white-space: nowrap; }
+  /* Figma 버튼 (2884:4619): 70px 칸 4개, 20px 여백으로 양끝 정렬 (top 449)
+     미선택 = 기본 바탕 · 클릭만(고른 스티커) = 밝은 바탕 · 완료(사진에 붙임) = 올리브 + 검은 그림자 5/5 */
+  .kinds { position: absolute; left: 0; top: 449px; width: 375px; padding: 0 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .kbtn { width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; touch-action: none; }
+  .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--bg); border: 1px solid var(--ink); transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
+  .kbtn .sq::before { content: ''; position: absolute; left: 4px; top: 4px; width: 70px; height: 70px; background: var(--ink); border: 1px solid var(--ink); z-index: -1; opacity: 0; }
+  .kbtn .idle { position: absolute; left: 8.5px; top: 8.5px; width: 47px; height: 47px; pointer-events: none; -webkit-user-drag: none; }
+  .kbtn .idle-n { position: absolute; left: 44px; top: 41px; width: 10px; font-size: 12px; line-height: normal; text-align: center; }
+  .kbtn .lens { left: 13px; top: 13px; pointer-events: none; }
+  .kbtn .lbl { font-size: 16px; line-height: normal; white-space: nowrap; }
+  .kbtn[aria-pressed="true"] .sq { background: var(--surface); }
+  .kbtn.done .sq { background: var(--brand-soft); }
+  .kbtn.done .sq::before { opacity: 1; }
+  .kbtn.done .lbl { margin-top: 4px; }
+  .kbtn:focus-visible { outline: none; }
+  .kbtn:focus-visible .sq { outline: 2px solid var(--ink); outline-offset: 3px; }
 
-  /* tray: Figma 스티커2 41px at top 503, every 61px — dashed = still on the sheet, green = picked (armed) */
-  .tray { position: absolute; left: 20.56px; top: 503px; display: flex; gap: 20px; }
-  .tray-item { position: relative; width: 41px; height: 41px; touch-action: none; transition: transform .2s cubic-bezier(.25, .6, .07, 1), opacity .2s; }
-  .tray-item img { position: absolute; pointer-events: none; -webkit-user-drag: none; }
-  .tray-item .off { left: -4.5px; top: -4.5px; width: 47px; height: 47px; }
-  .tray-item .on { left: 0; top: 0; width: 38px; height: 38px; display: none; }
-  .tray-item.armed .on { display: block; }
-  .tray-item.armed .off { display: none; }
-  .tray-item.armed { transform: translateY(-4px); }
-  .tray-item.placed { opacity: .35; }
-  .tray-item .no { position: absolute; left: 31px; top: 28px; width: 10px; font-size: 12px; line-height: normal; text-align: center; }
+  /* Figma 촬영 02 맨트 (2884:5571): 종류 · 안내, 가운데 정렬 (top 558) */
+  .say { position: absolute; left: 0; top: 558px; width: 375px; display: flex; gap: 8px; align-items: center; justify-content: center; font-size: 14px; line-height: normal; white-space: nowrap; }
+  .say .dot { width: 12px; font-size: 16px; text-align: center; }
+
+  .reset { position: absolute; left: 323px; top: 656px; width: 32px; height: 32px; }
+  .reset img { width: 32px; height: 32px; transition: transform .3s; }
+  .reset:active img { transform: rotate(-90deg); }
   .photo img { -webkit-user-drag: none; }
-
-  /* Figma 텍스트 알림 (2847:3347): blue 290x45 face + black offset shadow */
-  .notice { position: absolute; left: 39.83px; top: 631px; width: 295.334px; height: 50.989px; transition: opacity .3s; }
-  .notice::before { content: ''; position: absolute; left: 5.35px; top: 5.99px; right: 0; bottom: 0; background: var(--ink); border: 1px solid var(--ink); }
-  .notice-face { position: absolute; left: 0; top: 0; width: 290px; height: 45px; background: #00b7ff; border: 1px solid var(--ink); display: flex; align-items: center; gap: 10px; padding: 1px 0 0 14px; font-size: 14px; line-height: normal; white-space: nowrap; }
-  .notice-face img { width: 24px; height: 24px; flex: none; }
-  .notice.off { opacity: 0; pointer-events: none; }
 </style>
 </head><body>
 <div class="phone" style="--h:812px">
@@ -55,17 +57,15 @@
 
   <div class="step-title">
     <p class="q"><span>02.</span><span>어디가 궁금했나요?</span></p>
-    <p class="sub">궁금한 곳에 2~3개 정도 렌즈 스티커를 붙여보세요.</p>
+    <p class="sub">사진에서 궁금한 곳을 눌러 렌즈 스티커를 붙여요.</p>
   </div>
 
   <div class="photo" id="photo" data-photo aria-label="촬영한 사진 · 누른 곳에 스티커가 붙어요"><div class="lens-layer" id="layer"></div></div>
 
-  <p class="kind" id="kind"><span id="kindNo">01</span><span id="kindName">생김새</span></p>
-  <p class="prompt" id="prompt" aria-live="polite">모양이나 색이 궁금한 곳에 붙여요.</p>
+  <div class="kinds" id="kinds" role="group" aria-label="렌즈 스티커"></div>
+  <p class="say" id="say" aria-live="polite"><span id="sayKind">모양</span><span class="dot">·</span><span id="sayLine">어떤 생김새인지 궁금한 곳에 붙여요.</span></p>
 
-  <div class="tray" id="tray" role="group" aria-label="렌즈 스티커"></div>
-
-  <div class="notice" id="notice" role="status"><div class="notice-face"><img src="assets/capture/card-toast-icon.png" alt=""><span id="hint">궁금한 곳에 스티커를 붙여보세요.</span></div></div>
+  <button class="reset" id="reset" type="button" aria-label="스티커 모두 떼기"><img src="assets/capture/s4-icon-refresh.png" alt=""></button>
 
   <a class="cta step" id="next" href="capture-3.html" aria-disabled="true"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
 
@@ -76,58 +76,50 @@
 <script src="stickers.js"></script>
 <script>
 (function () {
-  // 스티커를 고르고(트레이) → 사진에서 궁금한 곳을 누르거나 끌어다 놓아요. 붙인 스티커는 끌어서 옮길 수 있어요.
-  var L = PicoLens, KINDS = L.KINDS, R = L.R;
+  // 버튼에서 스티커를 고르고 → 사진에서 궁금한 곳을 누르거나 끌어다 놓아요. 붙인 스티커는 끌어서 옮길 수 있어요.
+  // 붙인 스티커를 다른 곳으로 옮기려면 그 버튼을 다시 누르고 사진을 눌러요. 새로고침 버튼은 모두 떼어요.
+  var L = PicoLens, KINDS = L.KINDS, LABELS = L.LABELS, LINES = L.LINES, R = L.R;
   var photo = document.getElementById('photo'), layer = document.getElementById('layer');
-  var tray = document.getElementById('tray'), hint = document.getElementById('hint'), notice = document.getElementById('notice');
-  var next = document.getElementById('next');
+  var kinds = document.getElementById('kinds'), next = document.getElementById('next');
   var lenses = L.load();          // [{k, u, v}]
-  var armed = null, map = null, sayTimer;
+  var armed = null, focus = 0, map = null;
   var W = 333, H = 198;           // photo padding box (same as 3·5단계)
-  // heading under the photo: the sticker you're holding
-  var LINES = ['모양이나 색이 궁금한 곳에 붙여요.', '어떻게 움직이는지 궁금한 곳에 붙여요.', '어디에 사는지 궁금한 곳에 붙여요.', '주변과 어울리는 모습에 붙여요.'];
-  var BASE = '궁금한 곳에 스티커를 붙여보세요.';
 
   function placed(k) { for (var i = 0; i < lenses.length; i++) if (lenses[i].k === k) return lenses[i]; return null; }
   function firstFree() { for (var k = 0; k < 4; k++) if (!placed(k)) return k; return null; }
-  // 파란 알림: 처음엔 안내, 스티커를 2개 붙이면 사라져요. 잠깐 보여 줄 메시지도 여기에 써요.
-  function say(t) {
-    clearTimeout(sayTimer);
-    if (t) { hint.textContent = t; notice.classList.remove('off'); sayTimer = setTimeout(function () { say(''); }, 2600); return; }
-    hint.textContent = BASE; notice.classList.toggle('off', lenses.length >= 2);
-  }
-  function renderHead() {
-    var k = armed;
-    document.getElementById('kindNo').textContent = k === null ? '' : '0' + (k + 1);
-    document.getElementById('kindName').textContent = k === null ? '스티커를 다 붙였어요' : KINDS[k];
-    document.getElementById('prompt').textContent = k === null ? '붙인 스티커는 끌어서 옮길 수 있어요.' : LINES[k];
-  }
 
-  function renderTray() {
-    tray.innerHTML = KINDS.map(function (name, k) {
-      // Figma 스티커2: 화이트 선 (dashed) = on the sheet, 그린 = picked; already on the photo = faded slot
-      var cls = 'tray-item' + (armed === k ? ' armed' : '') + (placed(k) && armed !== k ? ' placed' : '');
-      return '<button type="button" class="' + cls + '" data-k="' + k + '" aria-pressed="' + (armed === k) + '" aria-label="' + (k + 1) + '. ' + name + (placed(k) ? ' · 붙였어요' : '') + '">' +
-        '<img class="off" src="assets/capture/s2-tray-sticker-off.png" alt=""><img class="on" src="assets/capture/s2-tray-sticker-on.png" alt="">' +
-        '<span class="no">' + (k + 1) + '</span></button>';
+  // 버튼 아래 한 줄: 지금 고른 스티커(없으면 마지막으로 붙인 스티커) 안내
+  function renderSay() {
+    document.getElementById('sayKind').textContent = LABELS[focus];
+    document.getElementById('sayLine').textContent = LINES[focus];
+  }
+  function renderKinds() {
+    kinds.innerHTML = LABELS.map(function (name, k) {
+      var done = !!placed(k), on = armed === k;
+      var face = done
+        ? '<span class="lens">' + L.inner(k, true) + '</span>'
+        : '<img class="idle" src="assets/capture/s2-tray-sticker-off.png" alt=""><span class="idle-n">' + (k + 1) + '</span>';
+      return '<button type="button" class="kbtn' + (done ? ' done' : '') + '" data-k="' + k + '" aria-pressed="' + on + '"' +
+        ' aria-label="' + (k + 1) + '. ' + name + ' 스티커' + (done ? ' · 붙였어요' : '') + '">' +
+        '<span class="sq">' + face + '</span><span class="lbl">' + name + '</span></button>';
     }).join('');
-    renderHead();
+    renderSay();
     next.setAttribute('aria-disabled', lenses.length ? 'false' : 'true');
   }
   function renderLenses() {
     if (!map) return;
     layer.innerHTML = lenses.map(function (s) {
       var p = map.toBox(s.u, s.v);
-      return L.html(s.k, p.x, p.y, { attrs: ' aria-label="' + (s.k + 1) + '. ' + KINDS[s.k] + ' 스티커 · 끌어서 옮기기"' });
+      return L.html(s.k, p.x, p.y, { on: true, attrs: ' aria-label="' + (s.k + 1) + '. ' + LABELS[s.k] + ' 스티커 · 끌어서 옮기기"' });
     }).join('');
   }
-  function render() { renderTray(); renderLenses(); }
+  function render() { renderKinds(); renderLenses(); }
   function commit() { L.save(lenses); render(); }
 
   // 칸 안 좌표 → 사진 좌표 (스티커가 칸 밖으로 나가지 않게)
   function at(clientX, clientY) {
     var r = photo.getBoundingClientRect(), sc = r.width / (W + 2);
-    var x = L.clamp((clientX - r.left) / sc - 1, R, W - R), y = L.clamp((clientY - r.top) / sc - 1, R, H - R);
+    var x = L.clamp((clientX - r.left) / sc - 1, R, W - R + 1), y = L.clamp((clientY - r.top) / sc - 1, R, H - R + 1);
     return map.toImg(x, y);
   }
   function inside(clientX, clientY) {
@@ -137,23 +129,27 @@
   function put(k, pos) {
     var s = placed(k);
     if (s) { s.u = pos.u; s.v = pos.v; } else lenses.push({ k: k, u: pos.u, v: pos.v });
+    focus = k;
     armed = firstFree();
+    if (armed !== null) focus = armed;
     commit();
-    say(lenses.length === 1 && armed !== null ? (armed + 1) + '번 ' + KINDS[armed] + ' 스티커도 붙여 볼까요?' : '');
   }
+  function arm(k) { armed = k; focus = k; render(); }
 
-  // ---- pointer: tap / drag from the tray, drag a placed sticker, tap the photo ----
+  // ---- pointer: tap / drag from a button, drag a placed sticker, tap the photo ----
   var drag = null, justDragged = false;
   function ghostAt(x, y) {
     var r = document.querySelector('.phone').getBoundingClientRect(), sc = r.width / 375;
     drag.ghost.style.left = ((x - r.left) / sc - R) + 'px'; drag.ghost.style.top = ((y - r.top) / sc - R) + 'px';
   }
-  tray.addEventListener('pointerdown', function (e) {
-    var b = e.target.closest('.tray-item'); if (!b) return;
+  kinds.addEventListener('pointerdown', function (e) {
+    var b = e.target.closest('.kbtn'); if (!b) return;
     e.preventDefault();
-    drag = { from: 'tray', k: +b.dataset.k, x: e.clientX, y: e.clientY, moved: false, ghost: null };
+    drag = { from: 'kinds', k: +b.dataset.k, x: e.clientX, y: e.clientY, moved: false, ghost: null };
     b.setPointerCapture(e.pointerId);
   });
+  // keyboard: Enter / Space on a button picks that sticker
+  kinds.addEventListener('click', function (e) { var b = e.target.closest('.kbtn'); if (b && e.detail === 0) arm(+b.dataset.k); });
   layer.addEventListener('pointerdown', function (e) {
     var b = e.target.closest('.lens'); if (!b) return;
     e.stopPropagation();
@@ -164,15 +160,15 @@
     if (!drag) return;
     if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 6) return;
     drag.moved = true;
-    if (drag.from === 'tray') {
+    if (drag.from === 'kinds') {
       if (!drag.ghost) {
         drag.ghost = document.createElement('div'); drag.ghost.className = 'lens ghost';
-        drag.ghost.innerHTML = '<span class="ring"></span><span class="n">' + (drag.k + 1) + '</span>';
+        drag.ghost.innerHTML = L.inner(drag.k, true);
         document.querySelector('.phone').appendChild(drag.ghost);
       }
       ghostAt(e.clientX, e.clientY);
     } else {
-      var p = map.toBox.apply(null, (function () { var q = at(e.clientX, e.clientY); return [q.u, q.v]; })());
+      var q = at(e.clientX, e.clientY), p = map.toBox(q.u, q.v);
       drag.el.classList.add('dragging');
       drag.el.style.left = (p.x - R) + 'px'; drag.el.style.top = (p.y - R) + 'px';
     }
@@ -181,29 +177,29 @@
     if (!drag) return;
     var d = drag; drag = null;
     if (d.ghost) d.ghost.remove();
-    if (d.from === 'tray') {
+    if (d.from === 'kinds') {
       if (d.moved) { if (inside(e.clientX, e.clientY)) put(d.k, at(e.clientX, e.clientY)); return; }
-      // tap: placed → take it off (and hold it again), not placed → hold it
-      var s = placed(d.k);
-      if (s) { lenses = lenses.filter(function (x) { return x !== s; }); armed = d.k; commit(); say('사진을 눌러 다시 붙여요.'); }
-      else { armed = d.k; render(); say(''); }
+      arm(d.k);
       return;
     }
     if (d.moved) { put(d.k, at(e.clientX, e.clientY)); justDragged = true; setTimeout(function () { justDragged = false; }, 0); }
   });
   // no native image drag (it would cancel the pointer and the sticker drag)
-  document.addEventListener('dragstart', function (e) { if (e.target.closest('.tray, .photo')) e.preventDefault(); });
+  document.addEventListener('dragstart', function (e) { if (e.target.closest('.kinds, .photo')) e.preventDefault(); });
   document.addEventListener('pointercancel', function () { if (drag && drag.ghost) drag.ghost.remove(); drag = null; render(); });
   photo.addEventListener('click', function (e) {
     if (justDragged || e.target.closest('.lens')) return;
-    if (armed === null) { armed = firstFree(); if (armed === null) { say('스티커를 끌어서 옮길 수 있어요.'); return; } }
+    if (armed === null) { armed = firstFree(); if (armed === null) return; }
     put(armed, at(e.clientX, e.clientY));
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    window.picoSwap(function () { lenses = []; armed = 0; focus = 0; commit(); });
   });
 
   // 다음 stays grey (aria-disabled) until at least one sticker is on the photo
-
   armed = firstFree();
-  renderTray(); say('');
+  focus = armed === null ? (lenses.length ? lenses[lenses.length - 1].k : 0) : armed;
+  renderKinds();
   L.photoSize(function (iw, ih) { map = L.cover(W, H, iw, ih); renderLenses(); });
 })();
 </script>
