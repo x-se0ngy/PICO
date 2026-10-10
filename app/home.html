@@ -145,7 +145,7 @@
   @keyframes pf-banner { 0% { opacity: 0; transform: translate(-50%, -12px); } 12%, 82% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -12px); } }
 </style>
 </head><body>
-<div class="phone" id="phone" data-mode="radar" style="--h:812px">
+<div class="phone" id="phone" data-mode="field" style="--h:812px">
 
   <div class="panel"></div>
 
@@ -365,7 +365,8 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
 
   var st = document.documentElement.dataset.state;
-  if (st === 'field') setMode('field');
+  // 홈은 항상 내 들판으로 열려요. 내 근처는 토글이나 ?state=radar|picked 로만.
+  if (st === 'radar' || st === 'picked') setMode('radar'); else setMode('field');
   if (st === 'picked') select(0);
   if (st === 'sheet') { setMode('field'); openSheet(); }
 })();
