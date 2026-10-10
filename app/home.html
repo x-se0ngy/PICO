@@ -168,7 +168,7 @@
       <p class="rec-h">내 근처 탐험 추천</p>
       <div class="rec-card rec-empty" id="recEmpty" data-dissolve>
         <span class="rec-face">
-          <span class="slot"><img src="assets/home/icon-map-outline.png" alt=""></span>
+          <span class="slot"><img src="assets/icons/outline/map.svg" alt=""></span>
           <span class="rec-txt"><b>어디로 탐험을 떠나볼까요?</b><span>지도에서 탐험지를 선택하면<br>만날 수 있는 친구들을 미리 볼 수 있어요.</span></span>
         </span>
       </div>
@@ -177,7 +177,7 @@
           <img class="thumb" id="recThumb" src="assets/home/place-thumb-park.png" alt="">
           <span class="rec-body">
             <span class="rec-txt"><b id="recName">햇살 근린 공원</b><span id="recSub">걸어서 5분 · 지금 방아깨비가 많아요</span></span>
-            <img class="chev" src="assets/common/arrow-alt-down.png" alt="">
+            <img class="chev" src="assets/icons/outline/arrow-alternate.svg" alt="">
           </span>
         </span>
       </button>
@@ -191,8 +191,8 @@
 
   <!-- mode toggle -->
   <div class="modes" role="tablist" aria-label="보기 모드">
-    <button class="mode on" type="button" role="tab" data-mode="radar" aria-selected="true"><img src="assets/home/icon-radar-filled.png" alt=""><span>내 근처</span></button>
-    <button class="mode" type="button" role="tab" data-mode="field" aria-selected="false"><img src="assets/home/icon-map-outline.png" alt=""><span>내 들판</span></button>
+    <button class="mode on" type="button" role="tab" data-mode="radar" aria-selected="true"><img src="assets/icons/filled/radar.svg" alt=""><span>내 근처</span></button>
+    <button class="mode" type="button" role="tab" data-mode="field" aria-selected="false"><img src="assets/icons/outline/map.svg" alt=""><span>내 들판</span></button>
   </div>
 
   <!-- top: status + nav -->
@@ -205,9 +205,9 @@
   <!-- tab bar -->
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
-      <div class="tabbar-group"><a href="home.html" aria-label="홈" aria-current="page"><img src="assets/common/tab-home-filled.png" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감"><img src="assets/common/tab-tag-outline.png" alt=""><span>도감</span></a></div>
+      <div class="tabbar-group"><a href="home.html" aria-label="홈" aria-current="page"><img src="assets/icons/filled/home.svg" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감"><img src="assets/icons/outline/tag.svg" alt=""><span>도감</span></a></div>
       <a class="tab-cam" href="capture-1.html" aria-label="촬영"><img src="assets/common/tab-camera.png" alt=""></a>
-      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/common/tab-bookmark.png" alt=""><span>배지</span></a><a href="my.html" aria-label="마이"><img src="assets/common/tab-user.png" alt=""><span>마이</span></a></div>
+      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/icons/outline/bookmark.svg" alt=""><span>배지</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
     </div></nav>
 
   <!-- ========== place bottom sheet ========== -->
@@ -221,7 +221,7 @@
     <img class="place-map" id="placeMap" src="assets/home/place-map.png" alt="햇살 근린 공원 주변 지도">
     <p class="meet">여기서 지금 만날 수 있어요.</p>
     <div class="bugs" id="bugs"></div>
-    <a class="cta cta--yellow" href="capture-1.html"><span class="cta-face">탐험 시작하기 <img src="assets/common/arrow-right.png" alt=""></span></a>
+    <a class="cta cta--yellow" href="capture-1.html"><span class="cta-face">탐험 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
   </div>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
@@ -248,7 +248,7 @@
   var pinsEl = document.getElementById('radarPins');
   pinsEl.innerHTML = places.map(function (p, i) {
     return '<button type="button" class="pin" data-pin="' + i + '" aria-pressed="false" style="left:' + p.x + 'px;top:' + p.y + 'px;--a:' + p.a +
-      '" aria-label="' + p.name + '"><i></i><img src="assets/home/icon-location.png" alt=""></button>';
+      '" aria-label="' + p.name + '"><i></i><img src="assets/icons/outline/location.svg" alt=""></button>';
   }).join('');
 
   // selection: yellow = not selected, green = selected → 내 근처 탐험 추천 appears

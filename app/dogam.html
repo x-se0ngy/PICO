@@ -88,8 +88,8 @@
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav">
       <img class="logo lg" id="logo" src="assets/common/logo-mark.png" alt="PICO">
-      <label class="nav-q" id="navQ" hidden><img src="assets/tabs/icon-search.png" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
-      <button class="nav-btn" id="searchBtn" type="button" aria-label="곤충 이름 찾기" aria-expanded="false"><img src="assets/tabs/icon-search.png" alt=""></button>
+      <label class="nav-q" id="navQ" hidden><img src="assets/icons/outline/search.svg" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
+      <button class="nav-btn" id="searchBtn" type="button" aria-label="곤충 이름 찾기" aria-expanded="false"><img src="assets/icons/outline/search.svg" alt=""></button>
     </div>
   </div>
 
@@ -120,12 +120,12 @@
   <!-- 검색 + 목록 + TIP + 나머지 곤충 -->
   <div class="abs list" id="list">
     <div class="list-head"><p>곤충 목록</p>
-      <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/tabs/icon-arrow-down-new.png" alt=""></button></div>
+      <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button></div>
     <div class="cards cards--top" id="cards"></div>
     <p class="empty" id="empty" hidden>찾는 곤충이 없어요.</p>
 
     <div class="tip">
-      <div class="h"><img src="assets/tabs/icon-presentation.png" alt="">PICO TIP</div>
+      <div class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO TIP</div>
       <div class="d"><p>잎 뒷면도 살펴보세요!</p><p>작은 알이 숨어 있을지도 몰라요.</p></div>
     </div>
 
@@ -134,9 +134,9 @@
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
-      <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/tabs/tab-home-outline.png" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감" aria-current="page"><img src="assets/tabs/tab-tag-filled.png" alt=""><span>도감</span></a></div>
+      <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/icons/outline/home.svg" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감" aria-current="page"><img src="assets/icons/filled/tag.svg" alt=""><span>도감</span></a></div>
       <a class="tab-cam" href="capture-1.html" aria-label="촬영"><img src="assets/common/tab-camera.png" alt=""></a>
-      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/common/tab-bookmark.png" alt=""><span>배지</span></a><a href="my.html" aria-label="마이"><img src="assets/common/tab-user.png" alt=""><span>마이</span></a></div>
+      <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/icons/outline/bookmark.svg" alt=""><span>배지</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
     </div></nav>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
@@ -177,10 +177,10 @@
       '<span class="band"><i></i><i></i></span>' +
       '<span class="meta"><span><b>' + it.name + '</b><span>' + it.date + '</span></span>' +
       '<span class="bm" role="button" tabindex="0" aria-pressed="' + on + '" aria-label="저장"><img src="' +
-      (on ? 'assets/tabs/tab-bookmark-saved.png' : 'assets/common/tab-bookmark.png') + '" alt=""></span></span></a>';
+      (on ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg') + '" alt=""></span></span></a>';
   }
   function utile(n) {
-    return '<div class="utile"><img src="assets/tabs/icon-question.png" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
+    return '<div class="utile"><img src="assets/icons/outline/help.svg" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
   }
   var cards = document.getElementById('cards'), cards2 = document.getElementById('cards2');
   var q = document.getElementById('q'), empty = document.getElementById('empty');
@@ -206,7 +206,7 @@
     var name = b.closest('.icard').dataset.name;
     saved[name] = !saved[name];
     b.setAttribute('aria-pressed', saved[name]);
-    b.querySelector('img').src = saved[name] ? 'assets/tabs/tab-bookmark-saved.png' : 'assets/common/tab-bookmark.png';
+    b.querySelector('img').src = saved[name] ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg';
   });
 
   q.addEventListener('input', render);
@@ -217,7 +217,7 @@
     var open = navQ.hidden;
     navQ.hidden = !open; logo.hidden = open;
     searchBtn.setAttribute('aria-expanded', open);
-    searchBtn.querySelector('img').src = open ? 'assets/tabs/icon-close.png' : 'assets/tabs/icon-search.png';
+    searchBtn.querySelector('img').src = open ? 'assets/icons/outline/close.svg' : 'assets/icons/outline/search.svg';
     searchBtn.setAttribute('aria-label', open ? '검색 닫기' : '곤충 이름 찾기');
     if (open) { q.focus(); var sc = document.querySelector('.phone > .scroll'); if (sc) sc.scrollTop = 0; }
     else if (q.value) { q.value = ''; render(); }

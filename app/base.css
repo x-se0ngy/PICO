@@ -166,7 +166,7 @@ img { display: block; }
 .lens { position: absolute; width: 41px; height: 41px; padding: 0; touch-action: none; -webkit-user-select: none; user-select: none; }
 /* Figma 스티커2 (2884:5270): see-through lens drawn by stickers.js (double keyline, peeled corner),
    number in a 13px #fdf4b1 box at (28, 28) */
-.lens .art { position: absolute; left: 0; top: 0; width: 41px; height: 41px; overflow: visible; pointer-events: none; }
+.lens .art { position: absolute; left: 0; top: 0; width: 42px; height: 42px; overflow: visible; pointer-events: none; }
 .lens .n { position: absolute; left: 28px; top: 28px; width: 13px; height: 13px; display: flex; align-items: center; justify-content: center;
   font-size: 12px; line-height: 1; background: var(--bg); border: 1px solid var(--ink); pointer-events: none; }
 /* step CTA (Figma 큰 버튼 in 촬영 frames): face at top 702, shadow +5.42 / +9.5 */

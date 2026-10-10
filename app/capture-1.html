@@ -77,8 +77,8 @@
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav">
-      <a href="home.html" aria-label="뒤로"><img class="icon" src="assets/capture/icon-arrow-left.png" alt=""></a>
-      <a href="home.html" aria-label="닫기" data-confirm="관찰을 중단할까요?"><img class="icon" src="assets/capture/icon-close.png" alt=""></a>
+      <a href="home.html" aria-label="뒤로"><img class="icon" src="assets/icons/outline/arrow-left.svg" alt=""></a>
+      <a href="home.html" aria-label="닫기" data-confirm="관찰을 중단할까요?"><img class="icon" src="assets/icons/outline/close.svg" alt=""></a>
     </div>
   </div>
 
@@ -105,7 +105,7 @@
     <button class="shutter" type="button" id="shutter" aria-label="촬영하기"><img src="assets/capture/shutter.png" alt=""></button>
     <input class="file" type="file" id="pickCam" accept="image/*" capture="environment" tabindex="-1" aria-hidden="true">
     <input class="file" type="file" id="pickAlbum" accept="image/*" tabindex="-1" aria-hidden="true">
-    <button class="flip" type="button" id="flip" aria-label="카메라 전환"><img src="assets/capture/icon-flip.png" alt=""></button>
+    <button class="flip" type="button" id="flip" aria-label="카메라 전환"><img src="assets/icons/outline/image.svg" alt=""></button>
   </div>
 
   <!-- ===== first-time safety sheet (3.2.3 / 3.2.4) ===== -->
@@ -115,7 +115,7 @@
     <h2 id="safetyTitle">곤충 친구들을 만나기 전에</h2>
     <p class="lead">세 가지만 약속해요!</p>
     <ul class="rules" id="rules"></ul>
-    <button class="cta cta--yellow" type="button" id="promise" style="top:346px" aria-disabled="true"><span class="cta-face">약속했어요! <img src="assets/common/arrow-right.png" alt=""></span></button>
+    <button class="cta cta--yellow" type="button" id="promise" style="top:346px" aria-disabled="true"><span class="cta-face">약속했어요! <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
   </div>
 
   <!-- ===== photo error sheet (3.2.2) ===== -->
@@ -124,7 +124,7 @@
     <h2 id="errorTitle">앗, 곤충이 잘 안 보여요</h2>
     <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
     <div class="tips" id="tips"></div>
-    <button class="cta cta--yellow" type="button" data-close style="top:334px"><span class="cta-face">다시 시작하기 <img src="assets/common/arrow-right.png" alt=""></span></button>
+    <button class="cta cta--yellow" type="button" data-close style="top:334px"><span class="cta-face">다시 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
     <a class="use-photo" href="capture-2.html">이 곤충이 맞아요! 이 사진으로 할래요</a>
   </div>
 
@@ -147,7 +147,7 @@
   ];
   var list = document.getElementById('rules');
   list.innerHTML = rules.map(function (r) {
-    return '<li><button type="button" class="rule" role="checkbox" aria-checked="false"><span class="box"><img src="assets/capture/icon-check.png" alt=""></span><span class="t"><b>' + r[0] + '</b><small>' + r[1] + '</small></span></button></li>';
+    return '<li><button type="button" class="rule" role="checkbox" aria-checked="false"><span class="box"><img src="assets/icons/outline/check.svg" alt=""></span><span class="t"><b>' + r[0] + '</b><small>' + r[1] + '</small></span></button></li>';
   }).join('');
   var rows = list.querySelectorAll('.rule');
   function sync() {

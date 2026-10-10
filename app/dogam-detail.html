@@ -70,10 +70,10 @@
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav">
-      <a href="dogam.html" aria-label="뒤로"><img src="assets/tabs/icon-arrow-left.png" alt=""></a>
+      <a href="dogam.html" aria-label="뒤로"><img src="assets/icons/outline/arrow-left.svg" alt=""></a>
       <div class="nav-actions">
-        <button id="bm" aria-pressed="false" aria-label="저장"><img src="assets/common/tab-bookmark.png" alt=""></button>
-        <button aria-label="다운로드"><img src="assets/tabs/icon-download.png" alt=""></button>
+        <button id="bm" aria-pressed="false" aria-label="저장"><img src="assets/icons/outline/bookmark.svg" alt=""></button>
+        <button aria-label="다운로드"><img src="assets/icons/outline/download.svg" alt=""></button>
       </div>
     </div>
   </div>
@@ -83,7 +83,7 @@
   <img class="abs photo" src="assets/tabs/detail-ladybug.png" alt="칠성무당벌레 사진">
   <div class="abs title"><div class="k"><p>NO.023</p><p>딱정벌레류</p></div><p class="nm">칠성무당벌레</p></div>
   <p class="abs met">3번 만났어요</p>
-  <button class="abs date-pick"><span>2027.11.01</span><img src="assets/tabs/icon-arrow-down-new.png" alt=""></button>
+  <button class="abs date-pick"><span>2027.11.01</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button>
 
   <div class="abs log">
     <p>발견 기록</p>
@@ -115,7 +115,7 @@
   </div>
 
   <div class="abs pico"></div>
-  <img class="abs pico-ic" src="assets/tabs/icon-presentation.png" alt="">
+  <img class="abs pico-ic" src="assets/icons/outline/presentation.svg" alt="">
   <p class="abs pico-h">PICO가 알려줘요 !</p>
   <ol class="abs pico-list">
     <li>몸길이 5~8mm 정도의 작은 딱정벌레예요.</li>
@@ -127,7 +127,7 @@
   <div class="abs rel">
     <a href="badge.html?state=earned"><img class="c" src="assets/tabs/circle-solid.png" alt=""><span>첫 딱정벌레</span></a>
     <a href="badge.html?state=earned"><img class="c" src="assets/tabs/circle-solid.png" alt=""><span>3번째 만남</span></a>
-    <a href="badge.html?state=locked"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/tabs/icon-question.png" alt=""><span>더 관찰하기</span></a>
+    <a href="badge.html?state=locked"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/icons/outline/help.svg" alt=""><span>더 관찰하기</span></a>
   </div>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
@@ -150,7 +150,7 @@
   bm.addEventListener('click', function () {
     var on = bm.getAttribute('aria-pressed') !== 'true';
     bm.setAttribute('aria-pressed', on);
-    bm.querySelector('img').src = on ? 'assets/tabs/tab-bookmark-saved.png' : 'assets/common/tab-bookmark.png';
+    bm.querySelector('img').src = on ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg';
   });
 })();
 </script>
