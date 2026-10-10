@@ -25,13 +25,13 @@
   .ring--300 { left: 0; top: 0; width: 300px; height: 300px; }
   .ring--200 { left: 50px; top: 50px; width: 200px; height: 200px; }
   .ring--100 { left: 100px; top: 100px; width: 100px; height: 100px; }
-  /* sweep: one turn every 4s, olive wedge trailing a thin leading line */
+  /* sweep: one turn every 4s, yellow (#F4D159, --reward) wedge trailing a thin leading line */
   .sweep { position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
-    background: conic-gradient(from 0deg, rgba(177, 189, 53, 0) 0deg, rgba(177, 189, 53, 0) 290deg, rgba(177, 189, 53, .5) 360deg);
+    background: conic-gradient(from 0deg, rgba(244, 209, 89, 0) 0deg, rgba(244, 209, 89, 0) 290deg, rgba(244, 209, 89, .5) 360deg);
     animation: radar-sweep var(--sweep) linear infinite; }
   .sweep::after { content: ''; position: absolute; left: 149.25px; top: 0; width: 1.5px; height: 150px; background: #7d8622; }
   /* sonar pulse from my position */
-  .pulse { position: absolute; left: 0; top: 0; width: 300px; height: 300px; border-radius: 50%; border: 1.5px solid var(--brand); opacity: 0;
+  .pulse { position: absolute; left: 0; top: 0; width: 300px; height: 300px; border-radius: 50%; border: 1.5px solid var(--reward); opacity: 0;
     animation: radar-pulse var(--sweep) cubic-bezier(.25, .6, .07, 1) infinite; }
   .pulse + .pulse { animation-delay: calc(var(--sweep) / 2); }
   :root { --sweep: 4s; }
