@@ -40,10 +40,11 @@
   function html(k, x, y, opts) {
     opts = opts || {};
     // active / placed = green sticker; not active in step 3 = dashed outline (Figma 스티커2 "화이트 선")
-    var src = opts.dashed && !opts.active ? 's2-sticker-tray-placed.png' : 's3-sticker-active.png';
-    return '<' + (opts.tag || 'button') + ' type="button" class="lens' + (opts.cls ? ' ' + opts.cls : '') + '" data-k="' + k + '"' +
+    // see-through lens: only the ring is drawn, the photo stays visible inside it
+    var cls = 'lens' + (opts.dashed && !opts.active ? ' is-idle' : '') + (opts.active ? ' is-active' : '') + (opts.cls ? ' ' + opts.cls : '');
+    return '<' + (opts.tag || 'button') + ' type="button" class="' + cls + '" data-k="' + k + '"' +
       ' style="left:' + (x - R) + 'px;top:' + (y - R) + 'px"' + (opts.attrs || '') + '>' +
-      '<img src="assets/capture/' + src + '" alt=""><span class="n">' + (k + 1) + '</span></' + (opts.tag || 'button') + '>';
+      '<span class="ring"></span><span class="n">' + (k + 1) + '</span></' + (opts.tag || 'button') + '>';
   }
 
   window.PicoLens = {

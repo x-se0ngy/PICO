@@ -134,7 +134,7 @@
     if (drag.from === 'tray') {
       if (!drag.ghost) {
         drag.ghost = document.createElement('div'); drag.ghost.className = 'lens ghost';
-        drag.ghost.innerHTML = '<img src="assets/capture/s3-sticker-active.png" alt=""><span class="n">' + (drag.k + 1) + '</span>';
+        drag.ghost.innerHTML = '<span class="ring"></span><span class="n">' + (drag.k + 1) + '</span>';
         document.querySelector('.phone').appendChild(drag.ghost);
       }
       ghostAt(e.clientX, e.clientY);
