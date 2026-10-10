@@ -29,7 +29,7 @@
   .sweep { position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
     background: conic-gradient(from 0deg, rgba(244, 209, 89, 0) 0deg, rgba(244, 209, 89, 0) 290deg, rgba(244, 209, 89, .5) 360deg);
     animation: radar-sweep var(--sweep) linear infinite; }
-  .sweep::after { content: ''; position: absolute; left: 149.25px; top: 0; width: 1.5px; height: 150px; background: #7d8622; }
+  .sweep::after { content: ''; position: absolute; left: 149.25px; top: 0; width: 1.5px; height: 150px; background: var(--reward); }
   /* sonar pulse from my position */
   .pulse { position: absolute; left: 0; top: 0; width: 300px; height: 300px; border-radius: 50%; border: 1.5px solid var(--reward); opacity: 0;
     animation: radar-pulse var(--sweep) cubic-bezier(.25, .6, .07, 1) infinite; }
