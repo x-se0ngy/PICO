@@ -8,7 +8,6 @@
 <style>
   .photo { position: absolute; left: 20px; top: 231.85px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); }
   .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
-  .lens { position: absolute; width: 45px; height: 45px; }
   .label { position: absolute; left: 20px; top: 451.52px; font-size: 16px; white-space: nowrap; }
   .chips { position: absolute; left: 20px; top: 481.18px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 10.67px; row-gap: 10.67px; }
   .chip { height: 35px; display: flex; align-items: center; justify-content: center; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; white-space: nowrap; }
@@ -37,8 +36,7 @@
     <p class="sub">본 것을 나의 글로 적어보세요.</p>
   </div>
 
-  <div class="photo" data-photo aria-label="촬영한 사진"></div>
-  <div id="lensLayer"></div>
+  <div class="photo" data-photo aria-label="촬영한 사진"><div class="lens-layer" id="lensLayer"></div></div>
 
   <p class="label">내가 관찰한 단어들을 문장에 넣어 보세요</p>
   <div class="chips" id="chips" role="group" aria-label="관찰 단어"></div>
@@ -51,28 +49,35 @@
 </div>
 <script src="shared.js"></script>
 <script src="photo.js"></script>
+<script src="stickers.js"></script>
 <script>
-  // Lens stickers from step 2 (first one highlighted as in the frame)
-  var SLOTS = [{ x: 63, y: 273.9 }, { x: 210, y: 361 }, { x: 280.53, y: 261.26 }];
-  var slots = [0, 1, 2];
-  try { var s = JSON.parse(sessionStorage.getItem('pico.capture.stickers') || 'null'); if (Array.isArray(s) && s.some(function (v) { return v !== null; })) slots = s; } catch (e) {}
-  var first = true;
-  document.getElementById('lensLayer').innerHTML = slots.map(function (v, i) {
-    if (v === null) return '';
-    var src = first ? 's3-sticker-active.png' : 's3-sticker.png'; first = false;
-    return '<img class="lens" src="assets/capture/' + src + '" alt="" style="left:' + SLOTS[i].x + 'px;top:' + SLOTS[i].y + 'px">';
-  }).join('');
+  // Lens stickers from step 2, at the same spot on the photo
+  (function () {
+    var L = PicoLens, lenses = L.load(); if (!lenses.length) return;
+    L.photoSize(function (iw, ih) {
+      var m = L.cover(333, 198, iw, ih);
+      document.getElementById('lensLayer').innerHTML = lenses.map(function (s) {
+        var p = m.toBox(s.u, s.v);
+        return L.html(s.k, L.clamp(p.x, L.R, 333 - L.R), L.clamp(p.y, L.R, 198 - L.R), { tag: 'span' });
+      }).join('');
+    });
+  })();
 
-  // Word chips (order + widths from the frame; the dashed chip = already used in the diary)
-  var WORDS = [{ t: '팔랑팔랑', w: 96.127 }, { t: '꽃에서 쉬어요.', w: 120, used: true }, { t: '날개에 줄무늬', w: 120.357 }];
+  // Word chips: the expressions picked in step 3 (Figma words when nothing was picked)
+  var WORDS = (function () {
+    var a = PicoLens.answers(), out = [];
+    Object.keys(a).sort().forEach(function (k) { var o = PicoLens.OPTIONS[+k] && PicoLens.OPTIONS[+k][a[k]]; if (o) out.push({ t: o }); });
+    return out.length ? out : [{ t: '팔랑팔랑', w: 96.127 }, { t: '꽃에서 쉬어요.', w: 120 }, { t: '날개에 줄무늬', w: 120.357 }];
+  })();
   var diary = document.getElementById('diary'), chips = document.getElementById('chips');
   var KEY = 'pico.capture.diary';
   var stored = null; try { stored = sessionStorage.getItem(KEY); } catch (e) {}
-  diary.value = stored !== null ? stored : '꽃에서 쉬어요.';
+  var picked = Object.keys(PicoLens.answers()).length > 0;
+  diary.value = stored !== null ? stored : (picked ? '' : '꽃에서 쉬어요.');
   function renderChips() {
     chips.innerHTML = WORDS.map(function (w, i) {
       var used = diary.value.indexOf(w.t) > -1;
-      return '<button class="chip' + (used ? ' used' : '') + '" data-i="' + i + '" style="width:' + w.w + 'px">' + w.t + '</button>';
+      return '<button class="chip' + (used ? ' used' : '') + '" data-i="' + i + '" style="' + (w.w ? 'width:' + w.w + 'px' : 'padding:0 14px') + '">' + w.t + '</button>';
     }).join('');
   }
   function save() { try { sessionStorage.setItem(KEY, diary.value); } catch (e) {} }

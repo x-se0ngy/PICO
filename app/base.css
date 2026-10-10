@@ -144,3 +144,12 @@ img { display: block; }
   ::view-transition-group(root), ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
   .phone > .dim, .phone > .sheet, .phone > .modal, .phone > .toast, .phone > .ov, [data-dissolve] { animation: none; }
 }
+
+/* ---------- lens stickers (촬영 2 · 3 · 5, Figma "스티커2" 41px) ---------- */
+.lens-layer { position: absolute; inset: 0; }
+.lens { position: absolute; width: 41px; height: 41px; padding: 0; touch-action: none; -webkit-user-select: none; user-select: none; }
+.lens img { position: absolute; left: 0; top: 0; width: 38px; height: 38px; pointer-events: none; }
+.lens .n { position: absolute; left: 31px; top: 28px; font-size: 12px; line-height: normal; pointer-events: none; }
+/* step CTA (Figma 큰 버튼 in 촬영 frames): face at top 702, shadow +5.42 / +9.5 */
+.cta.step { top: 702px; }
+.cta.step::before { left: 5.42px; top: 9.5px; }

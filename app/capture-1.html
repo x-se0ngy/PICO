@@ -93,8 +93,8 @@
   </div>
 
   <div class="zoom" role="group" aria-label="확대">
-    <button class="chip" type="button" data-zoom="0.5" aria-pressed="false"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>0.5X</span></button>
-    <button class="chip" type="button" data-zoom="1" aria-pressed="true"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>1X</span></button>
+    <button class="chip" type="button" data-zoom="0.5" aria-pressed="true"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>0.5X</span></button>
+    <button class="chip" type="button" data-zoom="1" aria-pressed="false"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>1X</span></button>
     <button class="chip" type="button" data-zoom="2" aria-pressed="false"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>2X</span></button>
   </div>
 
@@ -218,6 +218,8 @@
   showGallery();
   function done(url) {
     PicoPhoto.set(url); showGallery();
+    // a new photo starts a fresh observation: clear stickers, picks and diary from the last one
+    ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
     var img = new Image(); img.className = 'shot'; img.alt = ''; img.src = url;
     finder.insertBefore(img, flash);
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
