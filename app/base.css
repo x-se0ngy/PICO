@@ -16,7 +16,16 @@
        url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimAllimjangTTF-B.woff2') format('woff2');
 }
 
+/* 손글씨 (Figma SejongGeulggot): 관찰 일기 · 도감 기록 · 달력 기록 · 팝업 손글씨 제목 */
+@font-face {
+  font-family: 'SejongGeulggot';
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/SejongGeulggot.woff') format('woff');
+}
+
 :root {
+  --font-hand: 'SejongGeulggot', 'Allimjang', 'Pretendard', sans-serif;
   --bg: #fdf4b1;            /* background/default */
   --surface: #fffad7;       /* surface/default */
   --brand: #b1bd35;         /* surface/brand, olive/500 */
