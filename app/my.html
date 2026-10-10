@@ -26,24 +26,26 @@
   .week-nav { display: flex; gap: 4px; align-items: center; font-size: 12px; white-space: nowrap; }
   .week-nav button img { width: 18px; height: 18px; }
   .week-nav .prev img { transform: scaleX(-1); }
+  /* 달력 (Figma J. design systeam › 달력], 2847:11967 · Property 1 = 4…10)
+     요일 14px + 30px 점선 · 날짜 14px · 295px 점선 · 그날 기록 12/20 (제목 알림장, 내용 세종글꽃) */
   .cal { display: flex; flex-direction: column; gap: 15px; }
   .days { display: flex; justify-content: space-between; width: 295px; }
   .day { width: 30px; font-weight: 400; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
   .day .dl { position: relative; width: 30px; height: 21.39px; font-weight: 400; }
-  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.39px; width: 30px; height: 1px; background: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 4px); }
+  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.39px; width: 30px; height: 1px; background: url('assets/tabs/cal-rule-30.svg') no-repeat; }
   .day .num { position: relative; width: 30px; height: 17px; line-height: 17px; }
-  .day .dot { position: absolute; left: 22.54px; top: 0.68px; width: 6.9px; height: 6.9px; }
   .day .num span { position: relative; }
-  /* 고른 날 (Figma Group 2147203352/3): 30 네모 · 24 파란 원(검은 1px 테두리) + 오른쪽 아래 검은 원 그림자 · 14px 숫자 */
+  /* 탐험한 날 점 (Group 2147203355): 숫자 오른쪽 위 6.86px */
+  .day .dot { position: absolute; left: 22.54px; top: 0.68px; width: 6.857px; height: 6.857px; }
+  /* 고른 날: 30px 네모 + 파란 방울(Group 2147203352) · 숫자 9.05/6.5 (두 자리는 7.05) */
   .day.sel { gap: 11px; }
   .day.sel .num { width: 30px; height: 30px; }
-  .day.sel .num::before { content: ''; position: absolute; inset: 0; border: 1px solid var(--ink); }
-  .day .bubble { display: none; position: absolute; left: 2.05px; top: 2.45px; width: 24px; height: 24px; border-radius: 50%;
-    background: #00b7ff; border: 1px solid var(--ink); box-shadow: 1.9px 1.1px 0 var(--ink); }
-  .day.sel .bubble { display: block; }
-  .day.sel .num span { position: absolute; left: 9.05px; top: 6.5px; width: 10px; height: 17px; line-height: 17px; text-align: center; white-space: nowrap; display: flex; justify-content: center; }
-  .day.sel .dot { left: 18.67px; top: 3.22px; width: 6.86px; height: 6.86px; z-index: 1; }
-  .cal hr { margin: 0; width: 295px; height: 1px; border: 0; background: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 4px); }
+  .day.sel .num::after { content: ''; position: absolute; inset: 0; border: 1px solid var(--ink); }
+  .day .bubble { position: absolute; left: 1.55px; top: 1.95px; width: 26.4px; height: 25.6px; }
+  .day .bubble.has-dot { left: 2.05px; top: 2.45px; width: 25.899px; height: 25.1px; }
+  .day.sel .num span { position: absolute; left: 9.05px; top: 6.5px; height: 17px; line-height: 17px; white-space: nowrap; }
+  .day.sel .num span.two { left: 7.05px; }
+  .cal hr { margin: 0; width: 295px; height: 1px; border: 0; background: url('assets/tabs/cal-rule-295.svg') no-repeat; }
   .daylog { width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
   .daylog p:last-child { font-family: var(--font-hand); }
 
@@ -99,7 +101,7 @@
       <div class="week-h"><p>나의 탐험</p>
         <div class="week-nav"><button class="prev" id="wkPrev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span id="wkLabel">10월 셋째 주</span><button id="wkNext" aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
       <div class="cal"><div class="days" id="days"></div><hr>
-        <div class="daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p id="dayText">곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div></div>
+        <div class="daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p id="dayText">친구와 곤충 3종을 발견해 함께 탐험을 완료했어요</p></div></div>
     </div></div>
   </div>
 
@@ -155,13 +157,21 @@
 <script src="shared.js"></script>
 <script>
 (function () {
-  // Figma 달력 (Property 1 = 4…10): 고른 날은 네모 + 파란 방울, 탐험한 날은 파란 점, 아래 기록이 그날로 바뀌어요.
+  // Figma 달력 (2847:11967, Property 1 = 4…10): 고른 날은 네모 + 파란 방울, 점 찍힌 날(4·6일)은 파란 점,
+  // 아래 기록이 그날 문구로 바뀌어요. 문구는 Figma 변형마다 들어 있는 그대로예요.
   var NAMES = ['월', '화', '수', '목', '금', '토', '일'];
-  var LOG = { '10-4': '곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요',
-              '10-6': '곤충 3마리를 만났어요 · 물가 탐험가 배지를 받았어요' };
-  // 프로토타입 달력: 기준 주는 Figma처럼 10월 4~10일 · "10월 셋째 주". 화살표로 앞뒤 주를 넘겨요.
+  var LOG = { '10-4': '새로운 곤충 3종을 발견했어요 · 첫 관찰을 기록했어요',
+              '10-5': '나비 2마리를 만났어요 · 꽃밭 탐험을 완료했어요',
+              '10-6': '곤충 4마리를 관찰했어요 · 호기심 배지를 받았어요',
+              '10-7': '무당벌레를 발견했어요 · 관찰 스티커 3개를 모았어요',
+              '10-8': '친구와 곤충 3종을 발견해 함께 탐험을 완료했어요',
+              '10-9': '친구와 곤충 3종을 발견했어요 · 함께 탐험을 완료했어요',
+              '10-10': '새로운 곤충 6마리를 만났어요 · 일주일 탐험 배지를 받았어요' };
+  var DOT = { '10-4': 1, '10-6': 1 };                         // Figma에서 파란 점이 찍힌 날
+  // 프로토타입 달력: 기준 주는 Figma처럼 10월 4(월)~10(일)일 · "10월 셋째 주". 화살표로 앞뒤 주를 넘겨요.
+  // 2027년 10월 4일이 월요일이라 배지 날짜(2027.10.xx)와 요일이 맞아요.
   var WEEKS = ['첫째', '둘째', '셋째', '넷째', '다섯째'];
-  var BASE = new Date(2026, 9, 4), offset = 0, sel = 4;       // 기본: 금 8일 선택 (Figma 6.1.1)
+  var BASE = new Date(2027, 9, 4), offset = 0, sel = 4;       // 기본: 금 8일 선택 (Figma 6.1.1)
   var el = document.getElementById('days'), dayTitle = document.getElementById('dayTitle'),
       dayText = document.getElementById('dayText'), wkLabel = document.getElementById('wkLabel');
   var st = +document.documentElement.dataset.state;          // ?state=4…10 → 그날을 골라 열어요 (Figma Property 1)
@@ -170,14 +180,17 @@
   function key(d) { return (d.getMonth() + 1) + '-' + d.getDate(); }
   function render() {
     el.innerHTML = NAMES.map(function (n, i) {
-      var d = day(i), has = !!LOG[key(d)];
-      return '<button class="day' + (i === sel ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + (i === sel) + '" aria-label="' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + n + '요일' + (has ? ' · 탐험 기록 있음' : '') + '">' +
-        '<span class="dl">' + n + '</span><span class="num"><i class="bubble" aria-hidden="true"></i>' +
-        (has ? '<img class="dot" src="assets/tabs/day-dot.png" alt="">' : '') + '<span>' + d.getDate() + '</span></span></button>';
+      var d = day(i), k = key(d), on = i === sel, dot = !!DOT[k], num = d.getDate();
+      // 고른 날: 점 있는 날은 점이 그려진 방울(Figma 4·6 변형), 아니면 기본 방울
+      var mark = on ? '<img class="bubble' + (dot ? ' has-dot' : '') + '" src="assets/tabs/' + (dot ? 'cal-selected-dot' : 'cal-selected') + '.svg" alt="">'
+                    : (dot ? '<img class="dot" src="assets/tabs/cal-dot.svg" alt="">' : '');
+      return '<button class="day' + (on ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + on + '" aria-label="' + (d.getMonth() + 1) + '월 ' + num + '일 ' + n + '요일' + (LOG[k] ? ' · 탐험 기록 있음' : '') + '">' +
+        '<span class="dl">' + n + '</span><span class="num">' + mark +
+        '<span' + (num > 9 ? ' class="two"' : '') + '>' + num + '</span></span></button>';
     }).join('');
     var s = day(sel);
     dayTitle.textContent = (s.getMonth() + 1) + '월 ' + s.getDate() + '일 탐험';
-    dayText.textContent = LOG[key(s)] || (offset === 0 ? LOG['10-4'] : '이날은 탐험 기록이 없어요.');
+    dayText.textContent = LOG[key(s)] || '이날은 탐험 기록이 없어요.';
     var w = 2 + offset;                                       // 기준 주 = 10월 셋째 주
     wkLabel.textContent = (w < 0 ? '9월 ' + WEEKS[Math.max(0, 5 + w)] : w < 5 ? '10월 ' + WEEKS[w] : '11월 ' + WEEKS[Math.min(4, w - 5)]) + ' 주';
   }
