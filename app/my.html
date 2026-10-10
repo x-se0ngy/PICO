@@ -29,8 +29,8 @@
   .cal { display: flex; flex-direction: column; gap: 15px; }
   .days { display: flex; justify-content: space-between; width: 295px; }
   .day { width: 30px; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
-  .day .dl { position: relative; width: 30px; height: 21.39px; }
-  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.89px; width: 30px; border-top: 1px dashed var(--ink); }
+  .day .dl { position: relative; width: 30px; height: 21.39px; font-weight: 400; }
+  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.39px; width: 30px; height: 1px; background: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 4px); }
   .day .num { position: relative; width: 30px; height: 17px; line-height: 17px; }
   .day .dot { position: absolute; left: 22.54px; top: 0.68px; width: 6.9px; height: 6.9px; }
   .day.sel { gap: 11px; }
@@ -38,7 +38,7 @@
   .day .bubble { display: none; position: absolute; left: 2.05px; top: 2.45px; width: 25.9px; height: 25.1px; }
   .day.sel .bubble { display: block; left: 1.05px; top: 1.45px; }
   .day .num span { position: relative; }
-  .cal hr { margin: 0; width: 295px; border: 0; border-top: 1px dashed var(--ink); }
+  .cal hr { margin: 0; width: 295px; height: 1px; border: 0; background: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 4px); }
   .daylog { width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
   .daylog p:last-child { font-family: var(--font-hand); }
 
@@ -92,9 +92,9 @@
     <div class="me"><p class="t">김선우 <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
     <div class="card-inner"><div class="week">
       <div class="week-h"><p>나의 탐험</p>
-        <div class="week-nav"><button class="prev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span>10월 셋째 주</span><button aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
+        <div class="week-nav"><button class="prev" id="wkPrev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span id="wkLabel">10월 셋째 주</span><button id="wkNext" aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
       <div class="cal"><div class="days" id="days"></div><hr>
-        <div class="daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p>곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div></div>
+        <div class="daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p id="dayText">곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div></div>
     </div></div>
   </div>
 
@@ -150,24 +150,39 @@
 <script src="shared.js"></script>
 <script>
 (function () {
-  var days = [['월', 4, true], ['화', 5], ['수', 6, true], ['목', 7], ['금', 8], ['토', 9], ['일', 10]];
-  var sel = 4;
-  var el = document.getElementById('days');
+  // Figma 달력 (Property 1 = 4…10): 고른 날은 네모 + 파란 방울, 탐험한 날은 파란 점, 아래 기록이 그날로 바뀌어요.
+  var NAMES = ['월', '화', '수', '목', '금', '토', '일'];
+  var LOG = { '10-4': '곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요',
+              '10-6': '곤충 3마리를 만났어요 · 물가 탐험가 배지를 받았어요' };
+  // 프로토타입 달력: 기준 주는 Figma처럼 10월 4~10일 · "10월 셋째 주". 화살표로 앞뒤 주를 넘겨요.
+  var WEEKS = ['첫째', '둘째', '셋째', '넷째', '다섯째'];
+  var BASE = new Date(2026, 9, 4), offset = 0, sel = 4;       // 기본: 금 8일 선택 (Figma 6.1.1)
+  var el = document.getElementById('days'), dayTitle = document.getElementById('dayTitle'),
+      dayText = document.getElementById('dayText'), wkLabel = document.getElementById('wkLabel');
+  var st = +document.documentElement.dataset.state;          // ?state=4…10 → 그날을 골라 열어요 (Figma Property 1)
+  if (st >= 4 && st <= 10) sel = st - 4;
+  function day(i) { var d = new Date(BASE); d.setDate(d.getDate() + offset * 7 + i); return d; }
+  function key(d) { return (d.getMonth() + 1) + '-' + d.getDate(); }
   function render() {
-    el.innerHTML = days.map(function (d, i) {
-      return '<button class="day' + (i === sel ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + (i === sel) + '">' +
-        '<span class="dl">' + d[0] + '</span><span class="num"><img class="bubble" src="assets/tabs/day-selected.png" alt="">' +
-        (d[2] ? '<img class="dot" src="assets/tabs/day-dot.png" alt="">' : '') + '<span>' + d[1] + '</span></span></button>';
+    el.innerHTML = NAMES.map(function (n, i) {
+      var d = day(i), has = !!LOG[key(d)];
+      return '<button class="day' + (i === sel ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + (i === sel) + '" aria-label="' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + n + '요일' + (has ? ' · 탐험 기록 있음' : '') + '">' +
+        '<span class="dl">' + n + '</span><span class="num"><img class="bubble" src="assets/tabs/day-selected.png" alt="">' +
+        (has ? '<img class="dot" src="assets/tabs/day-dot.png" alt="">' : '') + '<span>' + d.getDate() + '</span></span></button>';
     }).join('');
+    var s = day(sel);
+    dayTitle.textContent = (s.getMonth() + 1) + '월 ' + s.getDate() + '일 탐험';
+    dayText.textContent = LOG[key(s)] || (offset === 0 ? LOG['10-4'] : '이날은 탐험 기록이 없어요.');
+    var w = 2 + offset;                                       // 기준 주 = 10월 셋째 주
+    wkLabel.textContent = (w < 0 ? '9월 ' + WEEKS[Math.max(0, 5 + w)] : w < 5 ? '10월 ' + WEEKS[w] : '11월 ' + WEEKS[Math.min(4, w - 5)]) + ' 주';
   }
-  render();
-  // Figma 달력 (Property 1=4…10): the picked day gets the box + bubble and the log below names that day
-  var dayTitle = document.getElementById('dayTitle');
   el.addEventListener('click', function (e) {
     var b = e.target.closest('.day'); if (!b) return;
     sel = +b.dataset.i; render();
-    dayTitle.textContent = '10월 ' + days[sel][1] + '일 탐험';
   });
+  document.getElementById('wkPrev').addEventListener('click', function () { offset--; render(); });
+  document.getElementById('wkNext').addEventListener('click', function () { offset++; render(); });
+  render();
 
   var settings = ['알림 관리', '공지사항', '고객센터', '보호자 설정', '위치 정보 설정', '서비스 이용 약관', '개인정보 처리방침'];
   document.getElementById('settings').innerHTML = settings.map(function (s) {
