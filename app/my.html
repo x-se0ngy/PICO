@@ -27,24 +27,20 @@
   .week-nav button img { width: 18px; height: 18px; }
   .week-nav .prev img { transform: scaleX(-1); }
   /* 달력 (Figma J. design systeam › 달력], 2847:11967 · Property 1 = 4…10)
-     요일 14px + 30px 점선 · 날짜 14px · 295px 점선 · 그날 기록 12/20 (제목 알림장, 내용 세종글꽃) */
+     새 스타일은 Property 1=6 기준: 요일 14px + 30px 점선 · 날짜 30px 칸 가운데 12px · 295px 점선 · 그날 기록 12/20 */
   .cal { display: flex; flex-direction: column; gap: 15px; }
   .days { display: flex; justify-content: space-between; width: 295px; }
   .day { width: 30px; font-weight: 400; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
-  .day .dl { position: relative; width: 30px; height: 21.39px; font-weight: 400; }
+  .day .dl { position: relative; width: 30px; height: 20.89px; font-weight: 400; }
   .day .dl::after { content: ''; position: absolute; left: 0; top: 20.39px; width: 30px; height: 1px; background: url('assets/tabs/cal-rule-30.svg') no-repeat; }
-  .day .num { position: relative; width: 30px; height: 17px; line-height: 17px; }
+  .day .num { position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 12px; line-height: normal; }
   .day .num span { position: relative; }
-  /* 탐험한 날 점 (Group 2147203355): 숫자 오른쪽 위 6.86px */
-  .day .dot { position: absolute; left: 22.54px; top: 0.68px; width: 6.857px; height: 6.857px; }
-  /* 고른 날: 30px 네모 + 파란 방울(Group 2147203352) · 숫자 9.05/6.5 (두 자리는 7.05) */
-  .day.sel { gap: 11px; }
-  .day.sel .num { width: 30px; height: 30px; }
+  /* 탐험한 날 점 (Group 2147203356): 30px 칸 안 20/4.22, 5px */
+  .day .dot { position: absolute; left: 20px; top: 4.22px; width: 5px; height: 5px; }
+  /* 고른 날: 30px 네모 + 파란 방울(그림자 없음, Group 2147203354) 1.75/1.22 · 숫자는 칸 가운데 */
   .day.sel .num::after { content: ''; position: absolute; inset: 0; border: 1px solid var(--ink); }
-  .day .bubble { position: absolute; left: 1.55px; top: 1.95px; width: 26.4px; height: 25.6px; }
-  .day .bubble.has-dot { left: 2.05px; top: 2.45px; width: 25.899px; height: 25.1px; }
-  .day.sel .num span { position: absolute; left: 9.05px; top: 6.5px; height: 17px; line-height: 17px; white-space: nowrap; }
-  .day.sel .num span.two { left: 7.05px; }
+  .day .bubble { position: absolute; left: 1.75px; top: 1.22px; width: 27.14px; height: 27px; }
+  .day.sel .num span { top: 0.22px; }
   .cal hr { margin: 0; width: 295px; height: 1px; border: 0; background: url('assets/tabs/cal-rule-295.svg') no-repeat; }
   .daylog { width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
   .daylog p:last-child { font-family: var(--font-hand); }
@@ -182,11 +178,11 @@
     el.innerHTML = NAMES.map(function (n, i) {
       var d = day(i), k = key(d), on = i === sel, dot = !!DOT[k], num = d.getDate();
       // 고른 날: 점 있는 날은 점이 그려진 방울(Figma 4·6 변형), 아니면 기본 방울
-      var mark = on ? '<img class="bubble' + (dot ? ' has-dot' : '') + '" src="assets/tabs/' + (dot ? 'cal-selected-dot' : 'cal-selected') + '.svg" alt="">'
+      var mark = on ? '<img class="bubble" src="assets/tabs/' + (dot ? 'cal-selected-dot' : 'cal-selected') + '.svg" alt="">'
                     : (dot ? '<img class="dot" src="assets/tabs/cal-dot.svg" alt="">' : '');
       return '<button class="day' + (on ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + on + '" aria-label="' + (d.getMonth() + 1) + '월 ' + num + '일 ' + n + '요일' + (LOG[k] ? ' · 탐험 기록 있음' : '') + '">' +
         '<span class="dl">' + n + '</span><span class="num">' + mark +
-        '<span' + (num > 9 ? ' class="two"' : '') + '>' + num + '</span></span></button>';
+        '<span>' + num + '</span></span></button>';
     }).join('');
     var s = day(sel);
     dayTitle.textContent = (s.getMonth() + 1) + '월 ' + s.getDate() + '일 탐험';
