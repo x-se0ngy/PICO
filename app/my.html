@@ -28,16 +28,21 @@
   .week-nav .prev img { transform: scaleX(-1); }
   .cal { display: flex; flex-direction: column; gap: 15px; }
   .days { display: flex; justify-content: space-between; width: 295px; }
-  .day { width: 30px; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
+  .day { width: 30px; font-weight: 400; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
   .day .dl { position: relative; width: 30px; height: 21.39px; font-weight: 400; }
   .day .dl::after { content: ''; position: absolute; left: 0; top: 20.39px; width: 30px; height: 1px; background: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 4px); }
   .day .num { position: relative; width: 30px; height: 17px; line-height: 17px; }
   .day .dot { position: absolute; left: 22.54px; top: 0.68px; width: 6.9px; height: 6.9px; }
-  .day.sel { gap: 11px; }
-  .day.sel .num { height: 30px; line-height: 30px; border: 1px solid var(--ink); }
-  .day .bubble { display: none; position: absolute; left: 2.05px; top: 2.45px; width: 25.9px; height: 25.1px; }
-  .day.sel .bubble { display: block; left: 1.05px; top: 1.45px; }
   .day .num span { position: relative; }
+  /* 고른 날 (Figma Group 2147203352/3): 30 네모 · 24 파란 원(검은 1px 테두리) + 오른쪽 아래 검은 원 그림자 · 14px 숫자 */
+  .day.sel { gap: 11px; }
+  .day.sel .num { width: 30px; height: 30px; }
+  .day.sel .num::before { content: ''; position: absolute; inset: 0; border: 1px solid var(--ink); }
+  .day .bubble { display: none; position: absolute; left: 2.05px; top: 2.45px; width: 24px; height: 24px; border-radius: 50%;
+    background: #00b7ff; border: 1px solid var(--ink); box-shadow: 1.9px 1.1px 0 var(--ink); }
+  .day.sel .bubble { display: block; }
+  .day.sel .num span { position: absolute; left: 9.05px; top: 6.5px; width: 10px; height: 17px; line-height: 17px; text-align: center; white-space: nowrap; display: flex; justify-content: center; }
+  .day.sel .dot { left: 18.67px; top: 3.22px; width: 6.86px; height: 6.86px; z-index: 1; }
   .cal hr { margin: 0; width: 295px; height: 1px; border: 0; background: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 4px); }
   .daylog { width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
   .daylog p:last-child { font-family: var(--font-hand); }
@@ -167,7 +172,7 @@
     el.innerHTML = NAMES.map(function (n, i) {
       var d = day(i), has = !!LOG[key(d)];
       return '<button class="day' + (i === sel ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + (i === sel) + '" aria-label="' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + n + '요일' + (has ? ' · 탐험 기록 있음' : '') + '">' +
-        '<span class="dl">' + n + '</span><span class="num"><img class="bubble" src="assets/tabs/day-selected.png" alt="">' +
+        '<span class="dl">' + n + '</span><span class="num"><i class="bubble" aria-hidden="true"></i>' +
         (has ? '<img class="dot" src="assets/tabs/day-dot.png" alt="">' : '') + '<span>' + d.getDate() + '</span></span></button>';
     }).join('');
     var s = day(sel);
