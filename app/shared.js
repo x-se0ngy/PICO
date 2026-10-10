@@ -8,7 +8,7 @@
     else { p.style.transform = ''; }
   }
   // Pages taller than 812 (--h) scroll inside the frame. Fixed layers stay direct children of .phone.
-  var FIXED = '.top[data-fixed], .tabbar, .home-ind, .dim, .sheet, .modal, .toast, .ov, [data-fixed], script';
+  var FIXED = '.top[data-fixed], .tabbar, .home-ind, .dim, .sheet, .modal, .toast, .ov, .ox, .ox-dim, [data-fixed], script';
   function wrap() {
     var p = document.querySelector('.phone'); if (!p || p.querySelector(':scope > .scroll')) return;
     var hv = parseFloat(getComputedStyle(p).getPropertyValue('--h')) || 812;
@@ -37,6 +37,21 @@
     // showing: the overlay's own CSS dissolve plays; hiding: crossfade the change
     if (s) document.querySelectorAll(s.getAttribute('data-show')).forEach(function (n) { n.hidden = false; });
     if (h) window.picoSwap(function () { document.querySelectorAll(h.getAttribute('data-hide')).forEach(function (n) { n.hidden = true; }); });
+  });
+  // <a data-confirm="관찰을 중단할까요?"> → 중단 확인 팝업 (Figma .ox팝업): 취소 closes, 네 follows the link
+  window.picoConfirm = function (title, href) {
+    var ph = document.querySelector('.phone'); if (!ph) { location.href = href; return; }
+    var dim = document.createElement('div'); dim.className = 'ox-dim';
+    var box = document.createElement('div'); box.className = 'ox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    box.innerHTML = '<p class="ox-title"></p><div class="ox-btns"><button type="button" class="ox-no">취소</button><a class="ox-yes">네</a></div>';
+    box.querySelector('.ox-title').textContent = title; box.querySelector('.ox-yes').href = href;
+    function close() { dim.remove(); box.remove(); }
+    dim.addEventListener('click', close); box.querySelector('.ox-no').addEventListener('click', close);
+    ph.appendChild(dim); ph.appendChild(box); box.querySelector('.ox-no').focus();
+  };
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[data-confirm]'); if (!a) return;
+    e.preventDefault(); window.picoConfirm(a.getAttribute('data-confirm'), a.getAttribute('href'));
   });
   // ?state=xxx → body[data-state] so a page can open in a specific Figma-frame state
   var st = new URLSearchParams(location.search).get('state'); if (st) document.documentElement.setAttribute('data-state', st);
