@@ -54,7 +54,7 @@
   <p class="prompt" id="prompt" aria-live="polite">내가 관찰한 특징들을 표현 해봐요.</p>
   <div class="options" id="options" role="group" aria-label="특징 고르기"></div>
 
-  <a class="cta step" href="capture-4.html"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+  <a class="cta step" id="next" href="capture-4.html" aria-disabled="true"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
@@ -119,12 +119,16 @@
     if (answers[active] === i) delete answers[active]; else answers[active] = i;
     L.saveAnswers(answers);
     opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', answers[active] === +o.dataset.i); });
-    renderLenses();
+    renderLenses(); syncNext();
     if (answers[active] == null) return;
     // move on to the next sticker without an answer
     var next = byKind().filter(function (s) { return answers[s.k] == null; })[0];
     if (next) setTimeout(function () { activate(next.k); }, 350);
   });
+
+  // grey CTA until at least one sticker question is answered
+  function syncNext() { document.getElementById('next').setAttribute('aria-disabled', Object.keys(answers).length ? 'false' : 'true'); }
+  syncNext();
 
   L.photoSize(function (iw, ih) {
     map = L.cover(W, H, iw, ih);

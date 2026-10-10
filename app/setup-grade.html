@@ -36,7 +36,7 @@
 
   <div class="info-bar"><img src="assets/onboarding/icon-lock.png" alt=""><span>학년은 나만 볼 수 있어요. 친구에게는 보이지 않아요.</span></div>
 
-  <a class="cta" id="next" href="setup-explore.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
+  <a class="cta" id="next" aria-disabled="true" href="setup-explore.html" style="top:699.5px"><span class="cta-face">다음 <img src="assets/common/arrow-right.png" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
@@ -44,19 +44,22 @@
 <script>
 (function () {
   var GRADES = ['1학년 이하', '1학년', '2학년', '3학년', '4학년', '5학년', '6학년', '6학년 이상'];
-  var selected = 3; // Figma default: 3학년
+  var selected = document.documentElement.dataset.state === 'picked' ? 3 : null; // grey CTA until a grade is picked
   var grid = document.getElementById('grades');
   grid.innerHTML = GRADES.map(function (g, i) {
     return '<button type="button" class="grade-chip" role="radio" data-i="' + i + '"><span class="k">초등학교</span><span class="v">' + g + '</span></button>';
   }).join('');
+  var next = document.getElementById('next');
   function render() {
     grid.querySelectorAll('.grade-chip').forEach(function (b) { b.setAttribute('aria-checked', String(+b.dataset.i === selected)); });
+    next.setAttribute('aria-disabled', selected == null ? 'true' : 'false');
   }
   grid.addEventListener('click', function (e) {
     var b = e.target.closest('.grade-chip'); if (!b) return;
     selected = +b.dataset.i; render();
   });
-  document.getElementById('next').addEventListener('click', function () {
+  next.addEventListener('click', function (e) {
+    if (selected == null) { e.preventDefault(); return; }
     try { localStorage.setItem('pico.grade', GRADES[selected]); } catch (e) {}
   });
   render();
