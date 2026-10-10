@@ -27,7 +27,7 @@
   .days { display: flex; justify-content: space-between; width: 295px; }
   .day { width: 30px; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
   .day .dl { position: relative; width: 30px; height: 21.39px; }
-  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.89px; width: 30px; border-top: 1px solid var(--ink); }
+  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.89px; width: 30px; border-top: 1px dashed var(--ink); }
   .day .num { position: relative; width: 30px; height: 17px; line-height: 17px; }
   .day .dot { position: absolute; left: 22.54px; top: 0.68px; width: 6.9px; height: 6.9px; }
   .day.sel { gap: 11px; }
@@ -86,7 +86,7 @@
       <div class="week-nav"><button class="prev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span>10월 셋째 주</span><button aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
     <div class="days-wrap"><div class="days" id="days"></div><hr></div>
   </div>
-  <div class="abs daylog"><p>10월 8일 탐험</p><p>곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div>
+  <div class="abs daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p>곤충 5마리를 만났어요 · 아침 탐험가 배지를 받았어요</p></div>
 
   <a class="abs sec-h" href="dogam.html" style="top:453.65px"><span>내가 저장한 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
   <div class="abs saved">
@@ -144,7 +144,13 @@
     }).join('');
   }
   render();
-  el.addEventListener('click', function (e) { var b = e.target.closest('.day'); if (b) { sel = +b.dataset.i; render(); } });
+  // Figma 달력 (Property 1=4…10): the picked day gets the box + bubble and the log below names that day
+  var dayTitle = document.getElementById('dayTitle');
+  el.addEventListener('click', function (e) {
+    var b = e.target.closest('.day'); if (!b) return;
+    sel = +b.dataset.i; render();
+    dayTitle.textContent = '10월 ' + days[sel][1] + '일 탐험';
+  });
 
   var settings = ['알림 관리', '공지사항', '고객센터', '보호자 설정', '위치 정보 설정', '서비스 이용 약관', '개인정보 처리방침'];
   document.getElementById('settings').innerHTML = settings.map(function (s) {

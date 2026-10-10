@@ -36,12 +36,8 @@
   .weekly-row .ph img { position: absolute; left: -1px; top: -1px; width: 60px; height: 60px; }
 
   /* list section: one flowing column, matches Figma auto-layout (Frame 2147203380) */
-  .list { left: 0; top: 407.54px; width: 375px; display: flex; flex-direction: column; align-items: center; }
-  .search { width: 335px; height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; gap: 15px; padding: 0 10px; }
-  .search img { width: 32px; height: 32px; flex: none; }
-  .search input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--ink); outline: none; padding: 0; }
-  .search input::placeholder { color: var(--ink); opacity: 1; }
-  .list-head { margin-top: 10px; width: 335px; height: 19px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .list { left: 0; top: 402.54px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  .list-head { width: 335px; height: 19px; display: flex; justify-content: space-between; align-items: flex-start; }
   .list-head p { font-size: 16px; line-height: 19px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
   .sort img { width: 18px; height: 18px; transition: transform .15s; }
@@ -49,7 +45,7 @@
 
   /* insect cards */
   .cards { display: grid; grid-template-columns: 1fr 1fr; column-gap: 15px; }
-  .cards--top { margin-top: 20px; width: 335px; row-gap: 15px; }
+  .cards--top { margin-top: 10px; width: 335px; row-gap: 15px; }
   .cards--rest { margin-top: 25px; width: 336px; row-gap: 14px; }
   .cards:empty { display: none; }
   .icard { position: relative; height: 138.3px; display: block; }
@@ -72,10 +68,17 @@
 
   /* not-yet-met tiles */
   .utile { position: relative; height: 138.3px; background: var(--brand-soft); border: 1px dashed var(--ink); font-size: 14px; }
-  .utile img { position: absolute; left: 62.05px; top: 38.08px; width: 32px; height: 32.1px; }
-  .utile .no { position: absolute; left: 0; right: 0; top: 85.01px; text-align: center; }
-  .utile .msg { position: absolute; left: 0; right: 0; top: 109.06px; text-align: center; }
-  .unknown-last { margin-top: 15px; width: 336px; row-gap: 14px; }
+  .utile img { position: absolute; left: 63.2px; top: 29px; width: 32px; height: 32.1px; }
+  .utile .no { position: absolute; left: 0; right: 0; top: 71.07px; text-align: center; }
+  .utile .msg { position: absolute; left: 0; right: 0; top: 93.07px; text-align: center; }
+  /* top bar (Figma "top" Property 1=3): big logo + search; search opens a field in place of the logo */
+  .nav .logo.lg { width: 32px; height: 33.62px; }
+  .nav-btn, .nav-btn img { display: block; width: 32px; height: 32px; }
+  .nav-q { display: flex; align-items: center; gap: 10px; flex: 1; height: 40px; margin-right: 10px; padding: 0 10px; background: var(--brand); border: 1px solid var(--ink); }
+  .nav-q img { width: 24px; height: 24px; flex: none; }
+  .nav-q input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--ink); outline: none; padding: 0; }
+  .nav-q input::placeholder { color: var(--ink); opacity: 1; }
+  .nav-q[hidden] { display: none; }
 </style>
 </head><body>
 <div class="phone" style="--h:1974px">
@@ -83,7 +86,11 @@
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
-    <div class="nav"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
+    <div class="nav">
+      <img class="logo lg" id="logo" src="assets/common/logo-mark.png" alt="PICO">
+      <label class="nav-q" id="navQ" hidden><img src="assets/tabs/icon-search.png" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
+      <button class="nav-btn" id="searchBtn" type="button" aria-label="곤충 이름 찾기" aria-expanded="false"><img src="assets/tabs/icon-search.png" alt=""></button>
+    </div>
   </div>
 
   <!-- 나의 수집 현황 -->
@@ -112,7 +119,6 @@
 
   <!-- 검색 + 목록 + TIP + 나머지 곤충 -->
   <div class="abs list" id="list">
-    <label class="search"><img src="assets/tabs/icon-search.png" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
     <div class="list-head"><p>곤충 목록</p>
       <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/tabs/icon-arrow-down-new.png" alt=""></button></div>
     <div class="cards cards--top" id="cards"></div>
@@ -124,7 +130,6 @@
     </div>
 
     <div class="cards cards--rest" id="cards2"></div>
-    <div class="cards unknown-last" id="unknown2"></div>
   </div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
@@ -186,8 +191,8 @@
     if (oldest) shown = shown.slice().reverse();
     cards.innerHTML = shown.slice(0, 4).map(cardHTML).join('');
     // Figma order of the unmet tiles: No.25, No.27 in the last card grid, then No.26, No.28
-    cards2.innerHTML = shown.slice(4).map(cardHTML).join('') + (v ? '' : utile(25) + utile(27));
-    document.getElementById('unknown2').innerHTML = v ? '' : utile(26) + utile(28);
+    // unmet insects (Figma 곤충목록: same order for 최근순 and 오래된순)
+    cards2.innerHTML = shown.slice(4).map(cardHTML).join('') + (v ? '' : ['025', '028', '029', '030', '033', '035', '037', '038'].map(utile).join(''));
     empty.hidden = shown.length > 0;
     // page grows with the list; keep 20px above the tab bar's yellow band
     phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 120)) + 'px');
@@ -205,6 +210,18 @@
   });
 
   q.addEventListener('input', render);
+
+  // search lives in the top bar: the icon opens a field in place of the logo, tapping again closes and clears it
+  var searchBtn = document.getElementById('searchBtn'), navQ = document.getElementById('navQ'), logo = document.getElementById('logo');
+  searchBtn.addEventListener('click', function () {
+    var open = navQ.hidden;
+    navQ.hidden = !open; logo.hidden = open;
+    searchBtn.setAttribute('aria-expanded', open);
+    searchBtn.querySelector('img').src = open ? 'assets/tabs/icon-close.png' : 'assets/tabs/icon-search.png';
+    searchBtn.setAttribute('aria-label', open ? '검색 닫기' : '곤충 이름 찾기');
+    if (open) { q.focus(); var sc = document.querySelector('.phone > .scroll'); if (sc) sc.scrollTop = 0; }
+    else if (q.value) { q.value = ''; render(); }
+  });
 
   // sort: 최근순 <-> 오래된순
   var sort = document.getElementById('sort');
