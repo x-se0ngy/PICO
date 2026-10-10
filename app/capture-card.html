@@ -47,7 +47,7 @@
   <p class="meta" style="left:28.33px">NO.023</p>
   <p class="meta" style="left:98.33px">딱정벌레류</p>
   <p class="meta" style="left:265.85px">27.10.08</p>
-  <p class="name">칠성무당벌레</p>
+  <p class="name" data-species>칠성무당벌레</p>
 
   <div class="tag">내 관찰 일기</div>
   <div class="diary-box"></div>
@@ -57,12 +57,13 @@
     <div class="save-toast-face"><img src="assets/capture/card-toast-icon.png" alt=""><span>사진첩에 카드를 저장했어요.</span></div>
   </div>
 
-  <a class="cta" href="home.html?state=field" style="top:699.5px"><span class="cta-face">들판에 놓아주기 <img src="assets/common/arrow-right.png" alt=""></span></a>
+  <a class="cta" id="release" href="home.html?state=field" style="top:699.5px"><span class="cta-face">들판에 놓아주기 <img src="assets/common/arrow-right.png" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
 <script src="photo.js"></script>
+<script src="field.js"></script>
 <script>
   var LINES = ['나뭇잎 위를 천천히 기어가던 칠성무당벌레의', '빨간 등에 검은 점이 또렷하게 보였어요.', '가까이 다가가자 날개를 펴고 날아갔어요.'];
   var RULES = [{ src: 'card-rule-1.png', h: 2 }, { src: 'card-rule-2.png', h: 3 }, { src: 'card-rule-3.png', h: 3 }];
@@ -77,5 +78,10 @@
   }
   document.getElementById('download').addEventListener('click', function () { showToast(2000); });
   if (document.documentElement.dataset.state === 'saved') showToast(0);
+
+  // 들판에 놓아주기: 4단계에서 그린 그림이 내 들판의 PICO가 돼요
+  document.getElementById('release').addEventListener('click', function () {
+    window.PicoField && PicoField.release(document.querySelector('[data-species]') ? document.querySelector('[data-species]').textContent.trim() : '칠성무당벌레');
+  });
 </script>
 </body></html>

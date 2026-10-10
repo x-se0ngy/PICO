@@ -116,6 +116,32 @@
   /* Figma 2.2.x 큰 버튼: face 330x54 at (19.17, 345), shadow +5.42 / +9.5 */
   .place .cta { left: 19.17px; top: 345px; }
   .place .cta::before { left: 5.42px; top: 9.5px; }
+
+  /* ---- 내 들판: 돌아다니는 PICO 스티커 (field.js) ---- */
+  .pf-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  .pf-bug { position: absolute; left: 0; top: 0; width: 64px; padding: 0; display: flex; flex-direction: column; align-items: center; pointer-events: auto; will-change: transform; }
+  .pf-body { display: block; width: 64px; height: 64px; animation: pf-bob 1.6s ease-in-out infinite; animation-delay: inherit; }
+  .pf-flip { display: block; width: 64px; height: 64px; transition: transform .25s; }
+  .pf-flip svg, .pf-flip img { display: block; width: 64px; height: 64px; filter: drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
+  .pf-bug.is-mine .pf-flip img { object-fit: contain;
+    filter: drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff) drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
+  .pf-name { margin-top: -4px; font-size: 11px; line-height: 16px; padding: 0 6px; white-space: nowrap; background: #fffdf7; border: 1.5px solid var(--ink); }
+  .pf-bug.is-mine .pf-name { background: var(--reward); }
+  .pf-bug.is-moving .pf-body { animation-duration: .5s; }                 /* 걸을 땐 통통 */
+  .pf-bug.is-fly .pf-body { animation-name: pf-flutter; animation-duration: .9s; }
+  .pf-bug.is-hop.is-moving .pf-body { animation-name: pf-hop; animation-duration: .7s; }
+  .pf-bug.is-poke .pf-flip { animation: pf-poke .5s ease; }
+  .pf-bug.is-arrive .pf-body { animation: pf-drop 1.2s cubic-bezier(.3,1.4,.5,1) both; }
+  @keyframes pf-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @keyframes pf-flutter { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+  @keyframes pf-hop { 0%,100% { transform: translateY(0); } 40% { transform: translateY(-14px); } }
+  @keyframes pf-poke { 0% { transform: scale(1); } 40% { transform: scale(1.18) rotate(-6deg); } 100% { transform: scale(1); } }
+  @keyframes pf-drop { 0% { transform: translateY(-260px) scale(.6) rotate(-20deg); opacity: 0; } 30% { opacity: 1; } 100% { transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .pf-body, .pf-bug.is-arrive .pf-body { animation: none; } }
+  .pf-arrive { position: absolute; left: 50%; top: 190px; transform: translateX(-50%); z-index: 6; width: 300px; background: var(--surface); border: 1px solid var(--ink); box-shadow: 5px 7px 0 var(--ink); padding: 12px 14px; text-align: center; animation: pf-banner 3.6s ease both; pointer-events: none; }
+  .pf-arrive b { display: block; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .pf-arrive span { font-size: 13px; }
+  @keyframes pf-banner { 0% { opacity: 0; transform: translate(-50%, -12px); } 12%, 82% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -12px); } }
 </style>
 </head><body>
 <div class="phone" id="phone" data-mode="radar" style="--h:812px">
@@ -200,6 +226,7 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script src="field.js"></script>
 <script>
 (function () {
   var phone = document.getElementById('phone');
@@ -275,6 +302,20 @@
     }
     return '<img class="abs" src="' + F + l[0] + '.png" alt="" style="left:' + l[1] + 'px;top:' + l[2] + 'px;width:' + l[3] + 'px;height:' + l[4] + 'px">';
   }).join('');
+
+
+  // 내 들판: 예시 친구 + 내가 그린 PICO가 돌아다녀요 (field.js)
+  var bugLayer = document.createElement('div');
+  bugLayer.className = 'pf-layer'; bugLayer.id = 'fieldBugs'; bugLayer.setAttribute('aria-label', '들판의 PICO들');
+  document.getElementById('field').appendChild(bugLayer);
+  if (window.PicoField) PicoField.mount(bugLayer, {
+    onArrive: function (b) {
+      var n = document.createElement('div'); n.className = 'pf-arrive'; n.setAttribute('role', 'status');
+      n.innerHTML = '<b>새로운 친구가 들판에 도착했어요!</b><span>' + b.name + '가 오늘부터 여기서 지내요.</span>';
+      document.getElementById('field').appendChild(n);
+      setTimeout(function () { n.remove(); }, 3800);
+    }
+  });
 
   // place sheet content follows the selected place (field pins open 햇살 근린 공원)
   function fillSheet(p) {

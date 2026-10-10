@@ -47,6 +47,7 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script src="field.js"></script>
 <script>
   var PALETTE = [
     { name: 'red', label: '빨강', c: '#e32d3d' }, { name: 'orange', label: '주황', c: '#fca436' },
@@ -68,13 +69,14 @@
   var cv = document.getElementById('pad'), ctx = cv.getContext('2d'), dpr = window.devicePixelRatio || 1;
   cv.width = 333 * dpr; cv.height = 333 * dpr; ctx.scale(dpr, dpr);
   ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5;
-  var drawing = false, last = null;
+  var drawing = false, last = null, used = {};
   function pt(e) {
     var r = cv.getBoundingClientRect();
     return { x: (e.clientX - r.left) * 333 / r.width, y: (e.clientY - r.top) * 333 / r.height };
   }
   cv.addEventListener('pointerdown', function (e) {
     drawing = true; last = pt(e); cv.setPointerCapture(e.pointerId);
+    used[color] = (used[color] || 0) + 1;
     ctx.fillStyle = color; ctx.beginPath(); ctx.arc(last.x, last.y, ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill();
   });
   cv.addEventListener('pointermove', function (e) {
@@ -84,6 +86,13 @@
   });
   function end() { drawing = false; }
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
-  document.getElementById('clear').addEventListener('click', function () { ctx.clearRect(0, 0, 333, 333); });
+  document.getElementById('clear').addEventListener('click', function () { ctx.clearRect(0, 0, 333, 333); used = {}; });
+
+  // 다음: 그린 그림을 PICO 스티커로 저장 (가장 많이 쓴 색 이름은 PICO 이름에 써요)
+  document.querySelector('.cta').addEventListener('click', function () {
+    var top = null, n = 0;
+    PALETTE.forEach(function (p) { if ((used[p.c] || 0) > n) { n = used[p.c]; top = p.label; } });
+    window.PicoField && PicoField.saveDraft(cv, top);
+  });
 </script>
 </body></html>
