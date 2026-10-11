@@ -53,6 +53,10 @@
     var a = e.target.closest('a[data-confirm]'); if (!a) return;
     e.preventDefault(); window.picoConfirm(a.getAttribute('data-confirm'), a.getAttribute('href'));
   });
+  // 홈 화면에 설치하는 앱(PWA): 서비스워커 등록
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' }).catch(function () {}); });
+  }
   // ?state=xxx → body[data-state] so a page can open in a specific Figma-frame state
   var st = new URLSearchParams(location.search).get('state'); if (st) document.documentElement.setAttribute('data-state', st);
 })();

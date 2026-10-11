@@ -1,0 +1,18 @@
+{
+  "id": "/app/",
+  "name": "PICO · 작은 발견에서 시작되는 나만의 탐험",
+  "short_name": "PICO",
+  "description": "아이들이 곤충을 찍고, 관찰하고, 그려서 나만의 도감을 채우는 탐험 앱",
+  "lang": "ko",
+  "start_url": "/app/splash.html",
+  "scope": "/app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf4b1",
+  "theme_color": "#fdf4b1",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
