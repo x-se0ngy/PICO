@@ -19,15 +19,14 @@
      미선택 = 기본 바탕 · 클릭만(고른 스티커) = 밝은 바탕 · 완료(사진에 붙임) = 올리브 + 검은 그림자 5/5 */
   .kinds { position: absolute; left: 0; top: 449px; width: 375px; padding: 0 20px; display: flex; justify-content: space-between; align-items: flex-start; }
   .kbtn { width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; touch-action: none; }
-  .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--bg); border: 1px solid var(--ink); transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
-  .kbtn .sq::before { content: ''; position: absolute; left: 4px; top: 4px; width: 70px; height: 70px; background: var(--ink); border: 1px solid var(--ink); z-index: -1; opacity: 0; }
+  .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--bg); border: 1px solid var(--ink); transition: background-color .3s cubic-bezier(.25, .6, .07, 1), box-shadow .3s cubic-bezier(.25, .6, .07, 1); }
   .kbtn .idle { position: absolute; left: 8.5px; top: 8.5px; width: 47px; height: 47px; pointer-events: none; -webkit-user-drag: none; }
   .kbtn .idle-n { position: absolute; left: 44px; top: 41px; width: 10px; font-size: 12px; line-height: normal; text-align: center; }
   .kbtn .lens { left: 13px; top: 13px; pointer-events: none; }
   .kbtn .lbl { font-size: 16px; line-height: normal; white-space: nowrap; }
   .kbtn[aria-pressed="true"] .sq { background: var(--surface); }
   .kbtn.done .sq { background: var(--brand-soft); }
-  .kbtn.done .sq::before { opacity: 1; }
+  .kbtn.done .sq { box-shadow: 5px 5px 0 var(--ink); }   /* Figma 완료: 검은 칸이 (5, 5) 뒤에 */
   .kbtn.done .lbl { margin-top: 4px; }
   .kbtn:focus-visible { outline: none; }
   .kbtn:focus-visible .sq { outline: 2px solid var(--ink); outline-offset: 3px; }
