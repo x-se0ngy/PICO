@@ -97,7 +97,7 @@
       var done = !!placed(k), on = armed === k;
       var face = done
         ? '<span class="lens">' + L.inner(k, true) + '</span>'
-        : '<img class="idle" src="assets/capture/s2-tray-sticker-off.png" alt=""><span class="idle-n">' + (k + 1) + '</span>';
+        : '<img class="idle" src="assets/capture/sticker-line.svg" alt=""><span class="idle-n">' + (k + 1) + '</span>';
       return '<button type="button" class="kbtn' + (done ? ' done' : '') + '" data-k="' + k + '" aria-pressed="' + on + '"' +
         ' aria-label="' + (k + 1) + '. ' + name + ' 스티커' + (done ? ' · 붙였어요' : '') + '">' +
         '<span class="sq">' + face + '</span><span class="lbl">' + name + '</span></button>';

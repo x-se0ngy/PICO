@@ -163,6 +163,9 @@ img { display: block; }
 
 /* ---------- lens stickers (촬영 2 · 3 · 5, Figma "스티커2" 41px) ---------- */
 .lens-layer { position: absolute; inset: 0; }
+/* 그린 스티커: 번호 칸 없이 숫자만 (Figma 2841:880, 숫자 12px at 32/29) */
+.lens.is-green .art { left: 2px; top: 2px; }   /* 원 중심을 다른 스티커와 같은 (21, 21)에 */
+.lens .n.n--plain { left: 33px; top: 30px; width: 10px; height: 13px; background: none; border: 0; }
 .lens { position: absolute; width: 41px; height: 41px; padding: 0; touch-action: none; -webkit-user-select: none; user-select: none; }
 /* Figma 스티커2 (2884:5270): see-through lens drawn by stickers.js (double keyline, peeled corner),
    number in a 13px #fdf4b1 box at (28, 28) */

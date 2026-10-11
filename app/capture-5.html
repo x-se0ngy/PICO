@@ -59,7 +59,7 @@
       var m = L.cover(333, 198, iw, ih);
       document.getElementById('lensLayer').innerHTML = lenses.map(function (s) {
         var p = m.toBox(s.u, s.v);
-        return L.html(s.k, L.clamp(p.x, L.R, 333 - L.R), L.clamp(p.y, L.R, 198 - L.R), { tag: 'span' });
+        return L.html(s.k, L.clamp(p.x, L.R, 333 - L.R), L.clamp(p.y, L.R, 198 - L.R), { tag: 'span', style: 'green' });
       }).join('');
     });
   })();
