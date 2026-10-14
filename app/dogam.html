@@ -57,16 +57,19 @@
   .cards--top { margin-top: 10px; width: 335px; row-gap: 15px; }
   .cards--rest { margin-top: 25px; width: 336px; row-gap: 14px; }
   .cards:empty { display: none; }
+  /* Figma 곤충 카드 (2942:5905): 위 50px 올리브 띠(점선) + 아래 88px 사진, 오른쪽 위에 내가 그린 그림을 끼운 작은 사진첩 */
   .icard { position: relative; height: 138.3px; display: block; }
-  .icard .photo { position: absolute; left: -0.5px; top: -0.5px; width: calc(100% + 1px); height: 139px; }
-  .icard .band { position: absolute; left: 0; top: 0.68px; width: 100%; height: 49.1px; background: #b1bd35; display: flex; }
-  .icard .band i { height: 50px; margin-top: -0.45px; border: 1px dashed var(--ink); }
-  .icard .band i:first-child { width: 125px; } .icard .band i:last-child { width: 35px; }
-  .icard .meta { position: absolute; left: 0; top: 7.7px; width: 100%; height: 35.08px; padding: 0 5px 0 10px; display: flex; justify-content: space-between; align-items: center; }
-  .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: 19px; white-space: nowrap; }
-  .icard .meta span span { display: block; font-size: 12px; line-height: 14px; margin-top: 2px; white-space: nowrap; }
-  .icard .bm { width: 24px; height: 24px; flex: none; }
-  .icard .bm img { width: 24px; height: 24px; }
+  .icard .photo { position: absolute; left: 0; top: 50px; width: 100%; height: 88.3px; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); border-top: 0; }
+  .icard .band { position: absolute; left: 0; top: 0; width: 100%; height: 50px; background: #b1bd35; border: 1px dashed var(--ink); }
+  .icard .meta { position: absolute; left: 10px; top: 7.5px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
+  .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: 19px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .icard .meta span { display: block; font-size: 12px; line-height: 14px; white-space: nowrap; }
+  /* 사진첩 (Group 2147203403): 45×51 올리브 액자 + 검은 그림자(2, 3.2), 안쪽 40×39 크림 칸, 8° 기울임 */
+  .icard .album { position: absolute; left: 103px; top: 9px; width: 45.3px; height: 51px; transform: rotate(8deg); transform-origin: 0 0; z-index: 1; }
+  .icard .album::before { content: ''; position: absolute; left: 2.6px; top: 2.9px; width: 100%; height: 100%; background: var(--ink); border: .8px solid var(--ink); box-sizing: border-box; }
+  .icard .album::after { content: ''; position: absolute; inset: 0; background: #b1bd35; border: .8px solid var(--ink); box-sizing: border-box; }
+  .icard .album .pic { position: absolute; left: 2.8px; top: 2.9px; width: 39.7px; height: 38.9px; background: var(--bg); border: .8px solid var(--ink); box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .icard .album .pic img, .icard .album .pic svg { width: 34px; height: 34px; display: block; }
   .empty { margin-top: 30px; width: 335px; text-align: center; font-size: 14px; }
 
   /* PICO TIP banner (Figma "TIP 배너") */
@@ -151,6 +154,7 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script src="field.js"></script>
 <script>
 (function () {
   var weekly = [
@@ -165,28 +169,32 @@
 
   // newest first (Figma order). First 4 sit above the TIP banner, the rest below it.
   var insects = [
-    { name: '방아깨비', date: '2027.11.22', img: 'card-grasshopper' },
-    { name: '배추흰나비', date: '2027.11.17', img: 'card-butterfly' },
-    { name: '칠성무당벌레', date: '2027.11.01', img: 'card-ladybug' },
-    { name: '고추 잠자리', date: '2027.10.29', img: 'card-dragonfly' },
-    { name: '소금쟁이', date: '2027.10.18', img: 'card-waterstrider' },
-    { name: '물방개', date: '2027.10.11', img: 'card-divingbeetle' },
-    { name: '흰줄숲모기', date: '2027.10.12', img: 'card-mosquito' },
-    { name: '갈색 여치', date: '2027.10.08', img: 'card-katydid' },
-    { name: '긴수염대벌레', date: '2027.10.08', img: 'card-stickinsect' },
-    { name: '큰자루긴수염나방', date: '2027.10.05', img: 'card-moth' },
-    { name: '붉은점모시나비', date: '2027.09.23', img: 'card-apollo' },
-    { name: '상제나비', date: '2027.09.23', img: 'card-blackveined' }
+    { name: '방아깨비', doodle: 'hop', date: '2027.11.22', img: 'card-grasshopper' },
+    { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly' },
+    { name: '칠성무당벌레', doodle: 'ladybug', date: '2027.11.01', img: 'card-ladybug' },
+    { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly' },
+    { name: '소금쟁이', doodle: 'strider', date: '2027.10.18', img: 'card-waterstrider' },
+    { name: '물방개', doodle: 'beetle', date: '2027.10.11', img: 'card-divingbeetle' },
+    { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito' },
+    { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid' },
+    { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect' },
+    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.05', img: 'card-moth' },
+    { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo' },
+    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.23', img: 'card-blackveined' }
   ];
-  var saved = {};
+  // 사진첩 안 그림: 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있으면 그걸, 없으면 예시 그림
+  var mine = {};
+  ((window.PicoField && PicoField.list()) || []).forEach(function (m) { if (m.species) mine[m.species.replace(/\s+/g, '')] = m.src; });
+  function drawing(it) {
+    var src = mine[it.name.replace(/\s+/g, '')];
+    if (src) return '<img src="' + src + '" alt="내가 그린 ' + it.name + '">';
+    return window.PicoField ? PicoField.doodle(it.doodle) : '';
+  }
   function cardHTML(it) {
-    var on = !!saved[it.name];
     return '<a class="icard" href="dogam-detail.html" data-name="' + it.name + '">' +
-      '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
-      '<span class="band"><i></i><i></i></span>' +
-      '<span class="meta"><span><b>' + it.name + '</b><span>' + it.date + '</span></span>' +
-      '<span class="bm" role="button" tabindex="0" aria-pressed="' + on + '" aria-label="저장"><img src="' +
-      (on ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg') + '" alt=""></span></span></a>';
+      '<span class="band"></span><img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
+      '<span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span>' +
+      '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><span class="pic">' + drawing(it) + '</span></span></a>';
   }
   function utile(n) {
     return '<div class="utile"><img src="assets/icons/outline/help.svg" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
@@ -207,16 +215,6 @@
     phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 120)) + 'px');
   }
   render();
-
-  // bookmark toggle (does not open the card)
-  document.getElementById('list').addEventListener('click', function (e) {
-    var b = e.target.closest('.bm'); if (!b) return;
-    e.preventDefault(); e.stopPropagation();
-    var name = b.closest('.icard').dataset.name;
-    saved[name] = !saved[name];
-    b.setAttribute('aria-pressed', saved[name]);
-    b.querySelector('img').src = saved[name] ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg';
-  });
 
   q.addEventListener('input', render);
 

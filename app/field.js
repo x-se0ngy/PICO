@@ -156,5 +156,22 @@
     return { stop: function () { running = false; } };
   }
 
-  window.PicoField = { saveDraft: saveDraft, release: release, hasDraft: hasDraft, mount: mount, list: list };
+  // 도감 사진첩용 예시 그림 (아이가 크레용으로 그린 느낌: 색칠 + 굵은 검은 선)
+  var DOODLE = {
+    butterfly: BF, butterfly2: '<path d="M31 22c-5-9-18-14-21-6-3 7 7 13 20 11" fill="#fff"/><path d="M33 22c5-9 18-13 21-5 2 7-8 12-20 10" fill="#fff"/><circle cx="20" cy="18" r="3" fill="#E8432E"/><circle cx="44" cy="18" r="3" fill="#E8432E"/><path d="M31 31c-7 2-15 8-12 13 3 4 10-1 12-8" fill="#fff"/><path d="M33 31c7 2 14 8 11 13-3 4-10-1-11-8" fill="#fff"/><path d="M32 19c.6 10-.4 20 .3 30"/><path d="M31 19l-4-7M33 19l5-6"/>',
+    butterfly3: '<path d="M31 22c-5-9-18-14-21-6-3 7 7 13 20 11" fill="#fff"/><path d="M33 22c5-9 18-13 21-5 2 7-8 12-20 10" fill="#fff"/><path d="M14 14l12 10M50 14L38 24M20 40l8-8M44 40l-8-8"/><path d="M31 31c-7 2-15 8-12 13 3 4 10-1 12-8" fill="#fff"/><path d="M33 31c7 2 14 8 11 13-3 4-10-1-11-8" fill="#fff"/><path d="M32 19c.6 10-.4 20 .3 30"/>',
+    dragonfly: DF.replace(/#8ED8FF/g, '#FCE3D8').replace(/#00B2FF/g, '#E8432E').replace('stroke-width="5"', 'stroke-width="5" stroke="#E8432E"'),
+    ladybug: LB, hop: HOP,
+    strider: '<ellipse cx="32" cy="32" rx="12" ry="5" fill="#7A5A3A"/><path d="M22 30L8 20M22 34L6 44M42 30l14-10M42 34l16 10M26 28l-4-10M38 28l4-10"/>',
+    beetle: '<ellipse cx="32" cy="36" rx="14" ry="17" fill="#3B4A2A"/><circle cx="32" cy="17" r="6" fill="#3B4A2A"/><path d="M32 22v30M18 30l-8-4M46 30l8-4M18 42l-8 4M46 42l8 4"/>',
+    mosquito: '<ellipse cx="32" cy="36" rx="4" ry="12" fill="#444"/><path d="M28 30l-14-12M36 30l14-12" /><path d="M30 26c-6-6-14-6-14-2s8 4 14 2zM34 26c6-6 14-6 14-2s-8 4-14 2z" fill="#DDF3FF"/><path d="M32 24v-10M30 40l-10 14M34 40l10 14M30 36l-14 4M34 36l14 4"/>',
+    stick: '<path d="M10 50L54 14" stroke-width="5"/><path d="M20 42l-6 10M24 38l4 12M34 30l-8-8M40 26l8 6M50 18l4-10"/>',
+    moth: '<path d="M30 24C20 14 8 18 10 28s14 8 20 2" fill="#F4D35E"/><path d="M34 24c10-10 22-6 20 4s-14 8-20 2" fill="#F4D35E"/><path d="M32 22v24" stroke-width="4"/><path d="M31 22C26 10 22 4 14 2M33 22c5-12 9-18 17-20"/>'
+  };
+  function doodle(key) {
+    var inner = DOODLE[key] || LB;
+    return '<svg viewBox="2 2 60 60" aria-hidden="true"><g fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g></svg>';
+  }
+
+  window.PicoField = { doodle: doodle, saveDraft: saveDraft, release: release, hasDraft: hasDraft, mount: mount, list: list };
 })();
