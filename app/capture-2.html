@@ -25,15 +25,16 @@
   .ghost { position: absolute; z-index: 30; pointer-events: none; transform: scale(1.12); }
 
   /* Figma 버튼 (2884:4619): 70px 칸 4개, 20px 여백으로 양끝 정렬 (top 449)
-     미선택 = 기본 바탕 · 클릭만(고른 스티커) = 밝은 바탕 · 완료(사진에 붙임) = 올리브 + 검은 그림자 5/5 */
+     기본 = 크림 칸 + 크림 렌즈 스티커 · 선택중(고른 스티커) = 크림 칸 + 검은 그림자 5/5 · 완료(사진에 붙임) = 올리브 칸 + 올리브 렌즈 + 그림자 */
   .kinds { position: absolute; left: 0; top: 449px; width: 375px; padding: 0 20px; display: flex; justify-content: space-between; align-items: flex-start; }
   .kbtn { width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; touch-action: none; }
-  .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--bg); border: 1px solid var(--ink); transition: background-color .3s cubic-bezier(.25, .6, .07, 1), box-shadow .3s cubic-bezier(.25, .6, .07, 1); }
+  .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--surface); border: 1px solid var(--ink); transition: background-color .3s cubic-bezier(.25, .6, .07, 1), box-shadow .3s cubic-bezier(.25, .6, .07, 1); }
   .kbtn .idle { position: absolute; left: 8.5px; top: 8.5px; width: 47px; height: 47px; pointer-events: none; -webkit-user-drag: none; }
   .kbtn .idle-n { position: absolute; left: 44px; top: 41px; width: 10px; font-size: 12px; line-height: normal; text-align: center; }
-  .kbtn .lens { left: 13px; top: 13px; pointer-events: none; }
+  .kbtn .lens { left: 13.5px; top: 13.5px; pointer-events: none; }
   .kbtn .lbl { font-size: 16px; line-height: normal; white-space: nowrap; }
-  .kbtn[aria-pressed="true"] .sq { background: var(--surface); }
+  .kbtn[aria-pressed="true"] .sq { box-shadow: 5px 5px 0 var(--ink); }
+  .kbtn[aria-pressed="true"] .lbl { margin-top: 4px; }
   .kbtn.done .sq { background: var(--brand-soft); }
   .kbtn.done .sq { box-shadow: 5px 5px 0 var(--ink); }   /* Figma 완료: 검은 칸이 (5, 5) 뒤에 */
   .kbtn.done .lbl { margin-top: 4px; }
@@ -106,7 +107,7 @@
       var done = !!placed(k), on = armed === k;
       var face = done
         ? '<span class="lens">' + L.inner(k, true) + '</span>'
-        : '<img class="idle" src="assets/capture/sticker-line.svg" alt=""><span class="idle-n">' + (k + 1) + '</span>';
+        : '<span class="lens">' + L.inner(k, false) + '</span>';   // 크림 렌즈 (Variant4)
       return '<button type="button" class="kbtn' + (done ? ' done' : '') + '" data-k="' + k + '" aria-pressed="' + on + '"' +
         ' aria-label="' + (k + 1) + '. ' + name + ' 스티커' + (done ? ' · 붙였어요' : '') + '">' +
         '<span class="sq">' + face + '</span><span class="lbl">' + name + '</span></button>';
