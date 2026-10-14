@@ -104,7 +104,7 @@
   <div class="abs card-face"></div>
   <div class="abs card-col">
     <div class="me-row"><div class="me"><p class="t">김선우 <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
-      <img class="pf" src="assets/profile/grass.svg" alt="내 프로필"></div>
+      <img class="pf" id="myAvatar" src="assets/profile/grass.svg" alt="내 프로필"></div>
     <div class="card-inner"><div class="week">
       <div class="week-h"><p>나의 탐험</p>
         <div class="week-nav"><button class="prev" id="wkPrev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span id="wkLabel">10월 셋째 주</span><button id="wkNext" aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
@@ -163,6 +163,10 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script>
+  // 개인 설정 3단계에서 고른 탐험의 아이콘이 내 프로필 (없으면 Figma 기본 '풀')
+  try { var av = localStorage.getItem('pico.avatar'); if (/^(flower|grass|river|tree|cloud|moon)$/.test(av)) document.getElementById('myAvatar').src = 'assets/profile/' + av + '.svg'; } catch (e) {}
+</script>
 <script>
 (function () {
   // Figma 달력 (2847:11967, Property 1 = 4…10): 고른 날은 네모 + 파란 방울, 점 찍힌 날(4·6일)은 파란 점,

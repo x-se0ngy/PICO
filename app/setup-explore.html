@@ -21,7 +21,9 @@
   .explore-card { height: 74px; background: var(--surface); border: .938px solid var(--ink); text-align: left;
     display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; padding: 15.95px 0 15.01px 13.14px; }
   .explore-card[aria-pressed="true"] { background: var(--brand); }
-  .explore-card .t { font-weight: 700; font-size: 20px; line-height: 23.8px; white-space: nowrap; }
+  /* Figma 탐험 버튼 (2821:44235): 25px 프로필 아이콘 + 제목 (gap 4) */
+  .explore-card .t { display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 20px; line-height: 23.8px; white-space: nowrap; }
+  .explore-card .t img { width: 25px; height: 25px; flex: none; }
   .explore-card .s { font-size: 12px; line-height: 14px; white-space: nowrap; }
 
   /* disabled CTA look (1.3.1). Still clickable so the toast can explain why. */
@@ -65,9 +67,10 @@
 <script>
 (function () {
   var CARDS = [
-    ['꽃밭 탐험', '나비 • 꿀벌'], ['풀숲 탐험', '메뚜기 • 방아깨비'],
-    ['물가 탐험', '잠자리 • 소금쟁이'], ['나무 탐험', '매미 • 사슴벌레'],
-    ['비 온 뒤 탐험', '지렁이 • 달팽이'], ['해 질 녘 탐험', '나방 • 반딧불이']
+    // [이름, 곤충, 프로필 아이콘] — 고른 탐험의 아이콘이 내 프로필이 돼요
+    ['꽃밭 탐험', '나비 • 꿀벌', 'flower'], ['풀숲 탐험', '메뚜기 • 방아깨비', 'grass'],
+    ['물가 탐험', '잠자리 • 소금쟁이', 'river'], ['나무 탐험', '매미 • 사슴벌레', 'tree'],
+    ['비 온 뒤 탐험', '지렁이 • 달팽이', 'cloud'], ['해 질 녘 탐험', '나방 • 반딧불이', 'moon']
   ];
   var state = document.documentElement.dataset.state;
   var picked = state === 'picked' ? [3] : []; // nothing picked until the child chooses → grey CTA
@@ -77,7 +80,7 @@
   function openQuit() { if (!document.querySelector('.phone > .ox')) window.picoConfirm(QUIT, 'home.html'); }
 
   grid.innerHTML = CARDS.map(function (c, i) {
-    return '<button type="button" class="explore-card" data-i="' + i + '"><span class="t">' + c[0] + '</span><span class="s">' + c[1] + '</span></button>';
+    return '<button type="button" class="explore-card" data-i="' + i + '"><span class="t"><img src="assets/profile/' + c[2] + '-s.svg" alt="">' + c[0] + '</span><span class="s">' + c[1] + '</span></button>';
   }).join('');
 
   function render() {
@@ -99,7 +102,10 @@
   });
   next.addEventListener('click', function () {
     if (!picked.length) { showToast(false); return; }
-    try { localStorage.setItem('pico.explore', JSON.stringify(picked.map(function (i) { return CARDS[i][0]; }))); } catch (e) {}
+    try {
+      localStorage.setItem('pico.explore', JSON.stringify(picked.map(function (i) { return CARDS[i][0]; })));
+      localStorage.setItem('pico.avatar', CARDS[picked[0]][2]);   // 처음 고른 탐험 = 내 프로필 아이콘
+    } catch (e) {}
     location.href = 'setup-done.html';
   });
 
