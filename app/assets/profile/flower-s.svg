@@ -1,0 +1,20 @@
+<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<circle cx="12.5" cy="12.5" r="12" fill="#C4AACC" stroke="black"/>
+<rect x="9.77612" y="4.23828" width="6.0331" height="1.6875" fill="black"/>
+<rect x="15.8093" y="4.23828" width="4.59486" height="1.6875" transform="rotate(60 15.8093 4.23828)" fill="black"/>
+<rect x="20.5073" y="8.41406" width="6.0331" height="1.6875" transform="rotate(90 20.5073 8.41406)" fill="black"/>
+<rect x="6.53711" y="8.41406" width="5.47367" height="1.6875" transform="rotate(90 6.53711 8.41406)" fill="black"/>
+<rect x="20.5073" y="14.4463" width="2.98984" height="1.6875" transform="rotate(150 20.5073 14.4463)" fill="black"/>
+<rect width="3.77761" height="1.6875" transform="matrix(0.866025 0.5 0.5 -0.866025 4.6062 13.876)" fill="black"/>
+<rect width="4.59486" height="1.6875" transform="matrix(-0.5 0.866025 0.866025 0.5 10.5095 4.23828)" fill="black"/>
+<rect x="16.6064" y="7.27734" width="4.03857" height="1.6875" transform="rotate(15 16.6064 7.27734)" fill="black"/>
+<rect width="4.03857" height="1.6875" transform="matrix(-0.965926 0.258819 0.258819 0.965926 9.33936 7.43164)" fill="black"/>
+<rect x="13.3279" y="16.8057" width="5.59439" height="1.6875" transform="rotate(135 13.3279 16.8057)" fill="black"/>
+<rect width="3.54406" height="1.6875" transform="matrix(0.171008 0.98527 0.98527 -0.171008 11.8401 15.6641)" fill="black"/>
+<rect width="4.03857" height="1.6875" transform="matrix(-0.965926 -0.258819 -0.258819 0.965926 16.8806 18.252)" fill="black"/>
+<rect x="20.4043" y="17.0342" width="5.27178" height="1.6875" transform="rotate(135 20.4043 17.0342)" fill="black"/>
+<rect width="5.27178" height="1.6875" transform="matrix(0.707107 0.707107 0.707107 -0.707107 5.63477 17.0342)" fill="black"/>
+<rect x="18.6055" y="13.7432" width="3.726" height="1.6875" transform="rotate(60 18.6055 13.7432)" fill="black"/>
+<rect width="4.19292" height="1.6875" transform="matrix(-0.5 0.866025 0.866025 0.5 7.62476 13.3389)" fill="black"/>
+<path d="M14.115 11.3612L12.4856 10.7013L12.0054 11.7778L12.7304 13.0397L14.2964 12.6782L14.115 11.3612Z" fill="black"/>
+</svg>

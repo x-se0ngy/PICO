@@ -18,17 +18,20 @@
   .abs { position: absolute; }
   .nav a img, .nav button img { width: 32px; height: 32px; }
 
-  .p-shadow { left: 30.44px; top: 154.78px; width: 325px; height: 135px; background: var(--ink); border: 1px solid var(--ink); }
-  .p-face { left: 21.44px; top: 144.34px; width: 325px; height: 135px; background: var(--brand); border: 1px dashed var(--ink); }
-  .avatar { left: 29.54px; top: 118px; width: 91.1px; height: 91.1px; }
-  .bubble { left: 32.58px; top: 212.22px; width: 303.7px; height: 58.3px; }
-  .who { left: 133.44px; top: 163.1px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
+  /* Figma 6.2.1 친구 상세 (2847:3350 · 2884:5709 · 2884:5591 · 2884:5777) */
+  .p-shadow { left: 29px; top: 154.33px; width: 325px; height: 135px; background: var(--ink); border: 1px solid var(--ink); }
+  .p-face { left: 20px; top: 143.89px; width: 325px; height: 135px; background: var(--brand); border: 1px dashed var(--ink); }
+  /* 프로필 큰거 91.1px (2959:7143) — svg is 92px incl. its outline */
+  .avatar { left: 28.11px; top: 117.1px; width: 92px; height: 92px; }
+  .bubble { left: 28.06px; top: 212.15px; width: 303.7px; height: 58.3px; }
+  .who { left: 134.66px; top: 162.65px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
   .who .n { font-weight: 700; font-size: 20px; } .who .n small { font-size: 14px; } .who .n span { font-weight: 400; font-size: 14px; }
   .who p:last-child { font-size: 14px; }
-  .status-msg { left: 45.86px; top: 237.3px; font-size: 16px; white-space: nowrap; }
+  .status-msg { left: 41.47px; top: 238.36px; font-size: 16px; white-space: nowrap; }
 
   .sec-h { left: 20px; top: 309.55px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
   .sec-h img { width: 18px; height: 18px; }
+  .sec-h b { font-weight: 700; }
   .recent { left: 20px; top: 338.55px; display: flex; gap: 14.09px; }
   .recent a { position: relative; width: 110.61px; height: 120px; display: block; flex: none; }
   .recent img { position: absolute; left: -0.5px; top: -0.5px; width: 111.6px; height: 91px; }
@@ -60,13 +63,13 @@
 
   <div class="abs p-shadow"></div>
   <div class="abs p-face"></div>
-  <img class="abs avatar" src="assets/tabs/friend-profile.png" alt="">
+  <img class="abs avatar" id="fAvatar" src="assets/profile/grass.svg" alt="">
   <img class="abs bubble" src="assets/tabs/friend-bubble.png" alt="">
-  <div class="abs who"><p class="n">민지혁 <small>• </small><span>새싹 탐험가</span></p><p>친구가 된 지 25일째</p></div>
-  <p class="abs status-msg">요즘 잠자리를 찾아다니는 중!</p>
+  <div class="abs who"><p class="n"><b id="fName">민지혁</b> <small>• </small><span id="fTitle">새싹 탐험가</span></p><p id="fDays">친구가 된 지 25일째</p></div>
+  <p class="abs status-msg" id="fStatus">요즘 잠자리를 찾아다니는 중!</p>
 
-  <div class="abs sec-h"><span>지혁이가 최근에 만난 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
-  <div class="abs recent">
+  <div class="abs sec-h"><span id="fRecentH"><b>지혁</b>이가 최근에 만난 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
+  <div class="abs recent" id="fRecent">
     <a href="dogam-detail.html"><img src="assets/tabs/fr-longhorn.png" alt=""><span class="band"></span><span class="nm">하늘소</span></a>
     <a href="dogam-detail.html"><img src="assets/tabs/fr-firefly.png" alt=""><span class="band"></span><span class="nm">반딧불이</span></a>
     <a href="dogam-detail.html"><img src="assets/tabs/fr-molecricket.png" alt="" style="width:106px"><span class="band"></span><span class="nm">땅강아지</span></a>
@@ -74,16 +77,54 @@
 
   <p class="abs together-h">함께 발견한 친구들</p>
   <div class="abs box"></div>
-  <div class="abs count"><p>우리가 함께 발견한 곤충은</p><p>모두 <b>8종</b>이에요.</p></div>
-  <div class="abs thumbs">
+  <div class="abs count"><p>우리가 함께 발견한 곤충은</p><p>모두 <b id="fCount">8종</b>이에요.</p></div>
+  <div class="abs thumbs" id="fThumbs">
     <a href="dogam-detail.html"><img src="assets/tabs/fr-sm-longhorn.png" alt=""><span>하늘소</span></a>
     <a href="dogam-detail.html"><img src="assets/tabs/fr-sm-rhino.png" alt=""><span>장수풍뎅이</span></a>
     <a href="dogam-detail.html"><img src="assets/tabs/fr-sm-firefly.png" alt=""><span>반딧불이</span></a>
-    <button class="more" type="button">+ 5</button>
+    <button class="more" type="button" id="fMore">+ 5</button>
   </div>
   <a class="abs go" href="home.html">더 찾으러 가기 <img src="assets/icons/outline/arrow-right.svg" alt=""></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script>
+(function () {
+  // ?friend=jihyuk (기본) | saon | seongyu | haram — 마이 › 함께하는 친구들에서 넘어와요.
+  // Figma 6.2.1: 민지혁 2847:3350 · 민사온 2884:5709 · 유선규 2884:5591 · 정하람 2884:5777
+  var F = {
+    jihyuk: { pf: 'grass', name: '민지혁', title: '새싹 탐험가', days: 25, status: '요즘 잠자리를 찾아다니는 중!', short: '지혁', josa: '이가',
+      recent: [['longhorn', '하늘소'], ['firefly', '반딧불이'], ['molecricket', '땅강아지', 106]], count: 8,
+      thumbs: [['longhorn', '하늘소'], ['rhino', '장수풍뎅이'], ['firefly', '반딧불이']], more: 5 },
+    saon: { pf: 'flower', name: '민사온', title: '꽃밭 탐험가', days: 32, status: '알록달록한 나비를 찾아다니는 중!', short: '사온', josa: '이가',
+      recent: [['swallowtail', '호랑나비'], ['firefly', '반딧불이'], ['comma', '네발나비', 106]], count: 15,
+      thumbs: [['swallowtail', '호랑나비'], ['honeybee', '꿀벌'], ['comma', '네발나비']], more: 12 },
+    seongyu: { pf: 'river', name: '유선규', title: '물가 탐험가', days: 18, status: '물가에 사는 곤충들을 관찰하는 중!', short: '선규', josa: '가',
+      recent: [['greenfly', '점박이초록파리'], ['waterstrider', '소금쟁이'], ['divingbeetle', '물방개', 106]], count: 6,
+      thumbs: [['goldfly', '연두금파리'], ['redbug', '여수별노린재'], ['divingbeetle', '물방개']], more: 3 },
+    haram: { pf: 'moon', name: '정하람', title: '밤의 탐험가', days: 13, status: '어제 소금쟁이를 그렸어!', short: '하람', josa: '이가',
+      recent: [['cricket', '귀뚜라미'], ['bellcricket', '방울벌레'], ['firefly', '반딧불이']], count: 4,
+      thumbs: [['goldfly', '연두금파리'], ['redbug', '여수별노린재'], ['divingbeetle', '물방개']], more: 1 }
+  };
+  var ALIAS = { minji: 'jihyuk', yoo: 'seongyu', sunkyu: 'seongyu' };
+  var k = new URLSearchParams(location.search).get('friend') || 'jihyuk';
+  var f = F[ALIAS[k] || k] || F.jihyuk;
+  function $(id) { return document.getElementById(id); }
+  $('fAvatar').src = 'assets/profile/' + f.pf + '.svg';
+  $('fName').textContent = f.name; $('fTitle').textContent = f.title;
+  $('fDays').textContent = '친구가 된 지 ' + f.days + '일째';
+  $('fStatus').textContent = f.status;
+  $('fRecentH').innerHTML = '<b>' + f.short + '</b>' + f.josa + ' 최근에 만난 곤충';
+  $('fRecent').innerHTML = f.recent.map(function (r) {
+    return '<a href="dogam-detail.html"><img src="assets/tabs/fr-' + r[0] + '.png" alt=""' + (r[2] ? ' style="width:' + r[2] + 'px"' : '') +
+      '><span class="band"></span><span class="nm">' + r[1] + '</span></a>';
+  }).join('');
+  $('fCount').textContent = f.count + '종';
+  $('fThumbs').innerHTML = f.thumbs.map(function (t) {
+    return '<a href="dogam-detail.html"><img src="assets/tabs/fr-sm-' + t[0] + '.png" alt=""><span>' + t[1] + '</span></a>';
+  }).join('') + '<button class="more" type="button">+ ' + f.more + '</button>';
+  document.title = 'PICO · ' + f.name;
+})();
+</script>
 </body></html>

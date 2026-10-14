@@ -45,14 +45,15 @@
   /* friends feed */
   .sec-h { left: 19.72px; top: 373.77px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
   .chev { width: 18px; height: 18px; }
-  .feed { left: 19.72px; top: 403.77px; width: 335px; display: flex; flex-direction: column; gap: 10px; }
-  .feed a { height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; white-space: nowrap; }
+  /* rows 50px with 프로필 중간 40px (Figma 2847:3844, 2962:7678 강 · 2962:7693 나무) */
+  .feed { left: 20px; top: 402.77px; width: 335px; display: flex; flex-direction: column; gap: 10px; }
+  .feed a { height: 50px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 9px; white-space: nowrap; }
   .feed .l { display: flex; gap: 5px; align-items: center; font-size: 12px; line-height: 19px; }
-  .feed .l img { width: 35px; height: 35px; }
+  .feed .l img { width: 40.4px; height: 40.4px; margin: -0.2px; }
   .feed .l b { font-size: 14px; }
 
   /* badge list → TIP banner → more badges (Figma column 2847:3863, gap 10) */
-  .list { left: 0; top: 523.77px; width: 375px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .list { left: 0; top: 532.77px; width: 375px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .list-h { width: 335px; display: flex; justify-content: space-between; align-items: flex-start; }
   .list-h p { font-size: 16px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
@@ -106,7 +107,9 @@
   .finds .q { position: absolute; left: 21.5px; top: 21.5px; width: 32px; height: 32.1px; }
   .finds .sil { position: absolute; left: 16.4px; top: 21.61px; width: 42.192px; height: 35.999px; }
   .owners { display: flex; gap: 10px; align-items: center; font-size: 14px; white-space: nowrap; }
-  .owners img { width: 86px; height: 41px; margin: -0.5px; }
+  /* friends who own the badge: 40px profile icons overlapping by 15px (Figma 2959:7446 · 2959:7236) */
+  .pf-stack { position: relative; flex: none; height: 40px; }
+  .pf-stack img { position: absolute; top: -0.2px; width: 40.4px; height: 40.4px; }
 
   .bmodal { position: absolute; left: 37.5px; top: 50%; margin-top: -250px; width: 300px; height: 500px; background: var(--bg); border: 1px solid var(--ink); }
   .bmodal .x { left: 253px; top: 9px; }
@@ -132,7 +135,7 @@
   .qr-info img { width: 18px; height: 18px; }
 </style>
 </head><body>
-<div class="phone" style="--h:1740px">
+<div class="phone" style="--h:1749px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -150,8 +153,8 @@
 
   <div class="abs sec-h"><p>친구들은 어떤 탐험을 했을까요?</p><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></div>
   <div class="abs feed">
-    <a href="friend.html"><span class="l"><img src="assets/tabs/avatar-sm.png" alt=""><span>09.19</span><span>선규가 <b>나비 박사</b> 배지를 받았어요.</span></span><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></a>
-    <a href="friend.html"><span class="l"><img src="assets/tabs/avatar-sm.png" alt=""><span>09.21</span><span>민지가 <b>공원 탐험가</b> 배지를 받았어요.</span></span><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></a>
+    <a href="friend.html?friend=seongyu"><span class="l"><img src="assets/profile/river-m.svg" alt=""><span>09.19</span><span>선규가 <b>나비 박사</b> 배지를 받았어요.</span></span><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></a>
+    <a href="friend.html"><span class="l"><img src="assets/profile/tree-m.svg" alt=""><span>09.21</span><span>민지가 <b>공원 탐험가</b> 배지를 받았어요.</span></span><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></a>
   </div>
 
   <div class="abs list">
@@ -197,7 +200,7 @@
             </div></div>
           <div class="rule"></div>
           <div class="bsec"><p>이 배지를 얻은 친구</p>
-            <div class="owners"><img src="assets/tabs/friends-stack.png" alt=""><span>서아, 지우도 이 배지를 가지고 있어요.</span></div></div>
+            <div class="owners"><span class="pf-stack" style="width:65px"><img src="assets/profile/flower-m.svg" alt="" style="left:-0.2px"><img src="assets/profile/tree-m.svg" alt="" style="left:24.8px"></span><span>지혁, 선규도 이 배지를 가지고 있어요.</span></div></div>
         </div>
       </div></div></div>
     </div>
@@ -225,7 +228,7 @@
             </div></div>
           <div class="rule"></div>
           <div class="bsec"><p>이 배지를 얻은 친구</p>
-            <div class="owners"><img src="assets/tabs/friends-stack.png" alt=""><span>서아, 지우도 이 배지를 가지고 있어요.</span></div></div>
+            <div class="owners"><span class="pf-stack" style="width:90px"><img src="assets/profile/grass-m.svg" alt="" style="left:-0.2px"><img src="assets/profile/river-m.svg" alt="" style="left:24.8px"><img src="assets/profile/cloud-m.svg" alt="" style="left:49.8px"></span><span>서아, 지우도 이 배지를 가지고 있어요.</span></div></div>
         </div>
       </div></div></div>
     </div>
@@ -254,7 +257,7 @@
       <span class="qr-shadow"></span><span class="qr-face"></span>
       <img class="qr-code" src="assets/tabs/qr-code.png" alt="내 QR 코드">
       <p class="hand" style="left:0;right:0;top:276.7px;text-align:center">친구를 추가해 보세요!</p>
-      <div class="qr-who"><p class="p"><img src="assets/tabs/qr-avatar.png" alt=""><span>민지혁 <b>•</b> 새싹 탐험가</span></p><p class="code">PICO • 4 3 9 1</p></div>
+      <div class="qr-who"><p class="p"><img src="assets/profile/grass-s.svg" alt=""><span>민지혁 <b>•</b> 새싹 탐험가</span></p><p class="code">PICO • 4 3 9 1</p></div>
       <a class="qr-btn" href="capture-1.html" style="left:18.09px;background:var(--brand)"><img src="assets/common/tab-camera.png" alt="">QR 찍기</a>
       <button class="qr-btn" style="left:158.09px">코드 입력하기</button>
       <div class="qr-info"><img src="assets/icons/outline/presentation.svg" alt=""><span>QR 코드를 보여주고 탐험할 친구를 만나 보세요!
