@@ -196,7 +196,7 @@
   <!-- ========== 내 들판 (field) ========== -->
   <section class="field" aria-label="내 들판" id="field"></section>
 
-  <div class="greet"><h1>초고속 탐험가 선우,</h1><p>오늘은 어떤 친구를 만나 볼까요?</p></div>
+  <div class="greet"><h1 id="greetName">초고속 탐험가 선우,</h1><p>오늘은 어떤 친구를 만나 볼까요?</p></div>
 
   <!-- mode toggle -->
   <div class="modes" role="tablist" aria-label="보기 모드">
@@ -240,6 +240,12 @@
 <script>
 (function () {
   var phone = document.getElementById('phone');
+
+  // 인사말: 개인 설정 1에서 정한 탐험가 이름 (setup-name.html → localStorage 'pico.name').
+  // 이름을 정하지 않았으면 탐험가 카드(setup-done.html)와 같은 예시 이름을 써요.
+  var greetName = '초고속 탐험가 선우';
+  try { greetName = (localStorage.getItem('pico.name') || '').trim() || greetName; } catch (e) {}
+  document.getElementById('greetName').textContent = greetName + ',';
 
   // nearby places = radar pins. x/y: bounding box of the rotated 34px square; a: angle (deg, clockwise from up)
   // from the radar centre, so each pin lights up when the sweep passes it.
