@@ -108,7 +108,7 @@ img { display: block; }
 /* 촬영 네모 종이접기 (shared.js가 .tab-cam 안에 종이를 만들어 넣어요).
    누르면 세로 접는 선을 따라 ½, 가로 접는 선을 따라 ¼로 접힌 뒤 촬영 화면으로 넘어가요.
    종이 = 50×50 정사각형을 60° 돌린 것, 4조각(q)으로 나눠 각 조각이 앞·뒷면을 가져요. */
-:root { --fold-ms: 380ms; --fold-ease: cubic-bezier(.55, 0, .25, 1); }
+:root { --fold-ms: 230ms; --fold-ease: cubic-bezier(.3, 0, .2, 1); }   /* 짧고 가볍게: 두 번 접는 데 약 0.45초 */
 .tab-cam.is-origami::before, .tab-cam.is-origami > img { display: none; }
 .tab-cam .origami { position: absolute; left: -0.683px; top: -0.683px; width: 70px; height: 70px; perspective: 240px; transition: transform 120ms ease; }
 .tab-cam:active .origami { transform: scale(.95); }

@@ -32,7 +32,8 @@
   };
   // 하단바 촬영 네모: 누르면 종이접기하듯 ½ → ¼로 접힌 뒤 촬영 화면으로 넘어가요 (Figma 하단바 2821:44176).
   // 접는 선은 Figma 네모 안의 점선 두 줄. 아이콘은 화면에서 똑바로 서 있도록 종이 회전(60°)만큼 되돌려 그려요.
-  var FOLD_PAUSE = 110, FOLD_HOLD = 160;
+  // 두 번째 접기는 첫 번째가 끝나기 직전에 이어 시작하고, ¼로 접히자마자 넘어가요.
+  var FOLD_OVERLAP = 40;
   function foldMs() { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fold-ms')) || 380; }
   function paperHTML() {
     var face = '<rect x="0" y="0" width="50" height="50" fill="#F4D159" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/>' +
@@ -70,8 +71,8 @@
     if (paper.classList.contains('f1')) return;   // 이미 접히는 중
     var step = foldMs(), href = a.getAttribute('href');
     paper.classList.add('f1');
-    setTimeout(function () { paper.classList.add('f2'); }, step + FOLD_PAUSE);
-    setTimeout(function () { location.href = href; }, 2 * step + FOLD_PAUSE + FOLD_HOLD);
+    setTimeout(function () { paper.classList.add('f2'); }, step - FOLD_OVERLAP);
+    setTimeout(function () { location.href = href; }, 2 * step - FOLD_OVERLAP);
   });
   // 뒤로 가기로 돌아오면(bfcache) 접힌 종이를 다시 펼쳐 둬요
   window.addEventListener('pageshow', function () {
