@@ -15,18 +15,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  /* Figma 3.1.2 (2855:14593): photo 335x200 at (20, 232) — same box as 3.1.3, so stickers keep their spot */
+  /* Figma 3.1.2 (2855:14593): photo 335x335 at (20, 208.5) — same box as 3.1.3, so stickers keep their spot */
   .step-title .sub { white-space: nowrap; }
-  .photo { position: absolute; left: 20px; top: 232px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); cursor: crosshair; touch-action: none; overflow: hidden; }
+  .photo { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: var(--surface); border: 1px solid var(--ink); cursor: crosshair; touch-action: none; overflow: hidden; }
   .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
   .photo .lens { cursor: grab; animation: pop .22s ease-out; }
   .photo .lens.dragging { cursor: grabbing; animation: none; transform: scale(1.12); z-index: 3; }
   @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .ghost { position: absolute; z-index: 30; pointer-events: none; transform: scale(1.12); }
 
-  /* Figma 버튼 (2884:4619): 70px 칸 4개, 20px 여백으로 양끝 정렬 (top 449)
+  /* Figma 버튼 (2884:4619): 70px 칸 4개, 20px 여백으로 양끝 정렬 (top 595.5)
      기본 = 크림 칸 + 크림 렌즈 스티커 · 선택중(고른 스티커) = 크림 칸 + 검은 그림자 5/5 · 완료(사진에 붙임) = 올리브 칸 + 올리브 렌즈 + 그림자 */
-  .kinds { position: absolute; left: 0; top: 449px; width: 375px; padding: 0 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .kinds { position: absolute; left: 1px; top: 595.5px; width: 375px; padding: 0 20px; display: flex; justify-content: space-between; align-items: flex-start; }
   .kbtn { width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; touch-action: none; }
   .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--surface); border: 1px solid var(--ink); transition: background-color .3s cubic-bezier(.25, .6, .07, 1), box-shadow .3s cubic-bezier(.25, .6, .07, 1); }
   .kbtn .idle { position: absolute; left: 8.5px; top: 8.5px; width: 47px; height: 47px; pointer-events: none; -webkit-user-drag: none; }
@@ -41,11 +41,11 @@
   .kbtn:focus-visible { outline: none; }
   .kbtn:focus-visible .sq { outline: 2px solid var(--ink); outline-offset: 3px; }
 
-  /* Figma 촬영 02 맨트 (2884:5571): 종류 · 안내, 가운데 정렬 (top 558) */
-  .say { position: absolute; left: 0; top: 558px; width: 375px; display: flex; gap: 8px; align-items: center; justify-content: center; font-size: 14px; line-height: normal; white-space: nowrap; }
+  /* Figma 촬영 02 맨트 (2884:5572 Variant5): 종류 · 안내, 왼쪽 20px부터 (top 560) */
+  .say { position: absolute; left: 0; top: 560px; width: 375px; padding: 0 20px; display: flex; gap: 8px; align-items: center; justify-content: flex-start; font-size: 14px; line-height: normal; white-space: nowrap; }
   .say .dot { width: 12px; font-size: 16px; text-align: center; }
 
-  .reset { position: absolute; left: 323px; top: 656px; width: 32px; height: 32px; }
+  .reset { position: absolute; left: 323px; top: 553.5px; width: 32px; height: 32px; }
   .reset img { width: 32px; height: 32px; transition: transform .3s; }
   .reset:active img { transform: rotate(-90deg); }
   .photo img { -webkit-user-drag: none; }
@@ -64,7 +64,7 @@
 
   <div class="progress" aria-label="5단계 중 2단계"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div>
 
-  <div class="step-title">
+  <div class="step-title cap">
     <p class="q"><span>02.</span><span>어디가 궁금했나요?</span></p>
     <p class="sub">사진에서 궁금한 곳을 눌러 렌즈 스티커를 붙여요.</p>
   </div>
@@ -92,7 +92,7 @@
   var kinds = document.getElementById('kinds'), next = document.getElementById('next');
   var lenses = L.load();          // [{k, u, v}]
   var armed = null, focus = 0, map = null;
-  var W = 333, H = 198;           // photo padding box (same as 3·5단계)
+  var W = 333, H = 333;           // photo padding box (same as 3단계)
 
   function placed(k) { for (var i = 0; i < lenses.length; i++) if (lenses[i].k === k) return lenses[i]; return null; }
   function firstFree() { for (var k = 0; k < 4; k++) if (!placed(k)) return k; return null; }

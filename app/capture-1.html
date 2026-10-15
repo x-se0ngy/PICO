@@ -19,7 +19,8 @@
   .step-title .q, .step-title .sub { white-space: nowrap; }
 
   /* viewfinder */
-  .finder { position: absolute; left: 0; top: 231.85px; width: 375px; height: 430px; background: var(--bg); border: 1px dashed var(--ink); overflow: hidden; }
+  /* Figma 3.1.1 (2847:3144): 가로 전체 375×445 at y 205.63, 위·아래 점선. 배율 칩(y 601)은 뷰파인더 안에 떠 있어요 */
+  .finder { position: absolute; left: 0; top: 205.63px; width: 375px; height: 445px; background: var(--bg); border: 0 dashed var(--ink); border-width: 1px 0; overflow: hidden; }
   .finder video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s, transform .2s; }
   .finder video.live { opacity: 1; }
 
@@ -92,7 +93,7 @@
   </div>
 
   <div class="progress" aria-label="5단계 중 1단계"><span class="on"></span><span></span><span></span><span></span><span></span></div>
-  <div class="step-title">
+  <div class="step-title cap">
     <div class="q"><span>01.</span><span>무엇을 발견했나요?</span></div>
     <p class="sub">곤충을 만지지 말고, 화면을 키워서 찍어보세요.</p>
   </div>
@@ -220,7 +221,7 @@
   // ---- taking the photo ----
   var finder = document.getElementById('finder'), flash = document.getElementById('flash');
   var gallery = document.getElementById('gallery');
-  var ASPECT = 375 / 430;   // what the viewfinder shows
+  var ASPECT = 375 / 445;   // what the viewfinder shows
   function currentZoom() {
     var on = document.querySelector('.chip[aria-pressed="true"]');
     var track = stream && stream.getVideoTracks()[0], caps = track && track.getCapabilities ? track.getCapabilities() : {};
