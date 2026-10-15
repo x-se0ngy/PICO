@@ -63,10 +63,12 @@
 <script src="shared.js"></script>
 <script src="photo.js"></script>
 <script src="stickers.js"></script>
+<script src="ai.js"></script>
 <script>
 (function () {
   // 2단계에서 붙인 스티커를 눌러 → 그 부분을 살펴본 표현 4개 중 하나를 골라요.
-  // (프로토타입: 표현은 스티커 종류별로 정해 둔 목록이고, 살펴보는 동안 AI 분석 화면을 보여 줘요.)
+  // 들어오면 "AI가 분석중이에요"를 보여 주고, AI가 스티커를 붙인 자리마다 표현 4개를 새로 만들어요.
+  // (같은 사진·같은 스티커로 다시 들어오면 저장해 둔 표현을 그대로 써요. AI를 못 쓰면 Figma 기본 표현.)
   var L = PicoLens, W = 333, H = 198, R = L.R;
   var layer = document.getElementById('layer'), opts = document.getElementById('options');
   var promptEl = document.getElementById('prompt');
@@ -122,11 +124,33 @@
   function syncNext() { document.getElementById('next').setAttribute('aria-disabled', Object.keys(answers).length ? 'false' : 'true'); }
   syncNext();
 
+  function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
+  function start() {
+    var first = byKind().filter(function (s) { return answers[s.k] == null; })[0] || byKind()[0];
+    active = null; activate(first.k);
+  }
   L.photoSize(function (iw, ih) {
     map = L.cover(W, H, iw, ih);
     if (!lenses.length) lenses = DEMO.map(function (d) { var q = map.toImg(d.x, d.y); return { k: d.k, u: q.u, v: q.v }; });
-    var first = byKind().filter(function (s) { return answers[s.k] == null; })[0] || byKind()[0];
-    activate(first.k);
+    start();
+    var photo = window.PicoPhoto && PicoPhoto.get();
+    var spotKey = JSON.stringify(byKind().map(function (s) { return [s.k, +s.u.toFixed(3), +s.v.toFixed(3)]; }));
+    if (!photo || ss('pico.capture.optionsFor') === spotKey) return;
+    var w = PicoAI.wait('AI가 분석중이에요', '표시한 곳을 하나씩 살펴보고 있어요');
+    PicoAI.stickers(photo, byKind(), PicoAI.current().name).then(function (r) {
+      var changed = false;
+      Object.keys(r.options).forEach(function (k) {
+        var o = r.options[k]; if (!Array.isArray(o) || o.length !== 4) return;
+        L.OPTIONS[+k] = o; delete answers[k]; changed = true;
+      });
+      if (changed) {
+        var saved = {}; for (var k = 0; k < 4; k++) saved[k] = L.OPTIONS[k];
+        ss('pico.capture.options', JSON.stringify(saved));
+        L.saveAnswers(answers); syncNext();
+      }
+      if (!r.demo) ss('pico.capture.optionsFor', spotKey);
+      return w.done().then(function () { if (changed) { start(); renderOptions('ready'); } });
+    });
   });
 })();
 </script>

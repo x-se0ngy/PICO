@@ -141,6 +141,7 @@
 </div>
 <script src="shared.js"></script>
 <script src="photo.js"></script>
+<script src="ai.js"></script>
 <script>
 (function () {
   var KEY = 'pico.safetyAccepted';
@@ -227,16 +228,30 @@
   }
   function showGallery() { var u = PicoPhoto.get(); if (u) gallery.style.backgroundImage = 'url("' + u + '")'; }
   showGallery();
+  var busy = false;
   function done(url) {
+    if (busy) return; busy = true;
     PicoPhoto.set(url); showGallery();
-    // a new photo starts a fresh observation: clear stickers, picks and diary from the last one
-    ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
+    // a new photo starts a fresh observation: clear stickers, picks, diary and the last AI analysis
+    ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary', 'pico.capture.options', 'pico.capture.optionsFor']
+      .forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
+    PicoAI.clear();
     var img = new Image(); img.className = 'shot'; img.alt = ''; img.src = url;
     finder.insertBefore(img, flash);
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
     if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
-    setTimeout(function () { location.href = 'capture-2.html'; }, 450);
+    // 찍은 사진이 잠깐 멈춰 보인 뒤 "AI가 분석중이에요" → 곤충이 보이면 다음 단계, 안 보이면 다시 찍기 안내
+    setTimeout(function () {
+      var w = PicoAI.wait('AI가 분석중이에요', '사진 속 친구를 살펴보고 있어요');
+      PicoAI.analyze(url).then(function (r) {
+        if (r.is_insect === false) { w.done().then(function () { busy = false; open(error); }); }
+        else { w.done(true).then(function () { location.href = 'capture-2.html'; }); }
+      });
+    }, 450);
   }
+  // 다시 시작하기: 멈춘 사진을 치우고 카메라를 다시 켜요
+  function resetShot() { finder.querySelectorAll('.shot').forEach(function (n) { n.remove(); }); video.classList.remove('live'); startCam(); }
+  error.querySelector('[data-close]').addEventListener('click', resetShot);
   function fromPicker(input) {
     input.addEventListener('change', function () {
       var f = input.files && input.files[0]; input.value = '';

@@ -1,0 +1,141 @@
+// PICO · AI 관찰 분석 (Vercel 서버 함수: POST /api/analyze)
+//
+// 아이가 찍은 사진을 Claude에게 보여 주고, 아래 두 가지를 JSON으로 받아요.
+//   mode "identify"  (촬영 1) : 어떤 곤충인지, 분류, 아이에게 들려줄 분석글 3줄, 스티커 종류별 선택지 4개
+//   mode "stickers"  (촬영 3) : 아이가 스티커를 붙인 자리를 보고, 그 자리에 맞는 선택지 4개
+//
+// 준비: Vercel 프로젝트 Settings → Environment Variables 에 ANTHROPIC_API_KEY 를 넣어 주세요.
+// 키가 없으면 501을 돌려주고, 화면(app/ai.js)은 예시 분석으로 계속 진행해요.
+
+const MODEL = process.env.PICO_AI_MODEL || 'claude-haiku-5-5';
+const KINDS = ['모양', '장소', '움직임', '행동'];
+const GROUPS = ['나비류', '딱정벌레류', '벌·개미류', '잠자리류', '메뚜기류', '기타'];
+const MAX_IMAGE_CHARS = 4_000_000;   // data URL 길이 (약 3MB 사진)
+
+const STYLE = [
+  '너는 어린이 자연 관찰 앱 PICO의 곤충 선생님이야. 사용자는 초등학생이야.',
+  '쉬운 우리말, 부드러운 해요체로 써. 무섭거나 징그러운 표현, 어려운 학술어는 쓰지 마.',
+  '사진에서 보이는 것만 말하고, 확실하지 않으면 "~인 것 같아요"처럼 조심스럽게 말해.',
+  '독이 있거나 쏘는 곤충이면 "손대지 말고 눈으로만 봐요" 같은 안전 한마디를 분석글에 넣어.',
+  '반드시 JSON 하나만 출력해. 설명, 마크다운, 코드 블록은 쓰지 마.'
+].join('\n');
+
+function identifyPrompt() {
+  return [
+    '이 사진 속 생물을 살펴봐 줘. 아래 모양의 JSON으로만 답해.',
+    '{',
+    '  "is_insect": true,                 // 곤충이나 거미·지렁이·달팽이 같은 작은 생물이 보이면 true, 안 보이거나 너무 흐리면 false',
+    '  "name": "칠성무당벌레",             // 우리말 이름. 종까지 모르겠으면 "무당벌레 무리"처럼 넓게',
+    `  "group": "딱정벌레류",             // 다음 중 하나: ${GROUPS.join(', ')}`,
+    '  "confidence": "high",               // high | medium | low',
+    '  "summary": ["...", "...", "..."],  // 아이에게 들려줄 분석글 3줄. 한 줄에 20자 이내, 문장마다 "요."로 끝내기',
+    '  "options": {                        // 아이가 고를 표현. 종류마다 정확히 4개, 각 11자 이내, "요."로 끝내기',
+    '    "모양": [...], "장소": [...], "움직임": [...], "행동": [...]',
+    '  }',
+    '}',
+    'options는 정답 고르기가 아니라 아이가 본 것을 말로 표현하도록 돕는 보기야.',
+    '4개 중 2개 이상은 이 사진에서 실제로 보이는 것, 나머지는 이 곤충에게 있을 법한 것으로 서로 다르게 만들어.',
+    '"장소"는 사진 속 배경(잎, 꽃, 나무, 땅, 물가 등)을 보고 만들어.'
+  ].join('\n');
+}
+
+function stickersPrompt(stickers, insectName) {
+  const spots = stickers.map(s =>
+    `- ${s.k + 1}번 "${KINDS[s.k]}" 스티커: 사진 왼쪽에서 ${Math.round(s.u * 100)}%, 위에서 ${Math.round(s.v * 100)}% 자리`
+  ).join('\n');
+  return [
+    insectName ? `사진 속 생물은 "${insectName}"(으)로 보여.` : '',
+    '아이가 사진에서 궁금한 자리에 관찰 스티커를 붙였어.',
+    spots,
+    '스티커마다 그 자리를 자세히 보고, 아이가 고를 표현 4개를 만들어 줘.',
+    '- 모양: 그 자리의 생김새·색·무늬 / 장소: 그 자리 주변 환경 / 움직임: 어떻게 움직일지 / 행동: 무엇을 하고 있는지',
+    '- 각 11자 이내, "요."로 끝내기. 4개 중 2개 이상은 그 자리에서 실제로 보이는 것, 나머지는 있을 법한 것.',
+    '아래 모양의 JSON으로만 답해. 키는 스티커 번호에서 1을 뺀 숫자(0~3)야.',
+    '{ "options": { "0": ["...", "...", "...", "..."] } }'
+  ].filter(Boolean).join('\n');
+}
+
+function parseImage(dataUrl) {
+  const m = /^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl || '');
+  return m ? { media_type: m[1], data: m[2] } : null;
+}
+
+function firstJson(text) {
+  const start = text.indexOf('{'), end = text.lastIndexOf('}');
+  if (start < 0 || end <= start) throw new Error('no json');
+  return JSON.parse(text.slice(start, end + 1));
+}
+
+const clean = (s, max) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, max);
+function four(list, max) {
+  if (!Array.isArray(list)) return null;
+  const out = list.map(x => clean(x, max)).filter(Boolean).slice(0, 4);
+  return out.length === 4 ? out : null;
+}
+
+async function askClaude(image, prompt) {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 900,
+      system: STYLE,
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: image.media_type, data: image.data } },
+        { type: 'text', text: prompt }
+      ] }]
+    })
+  });
+  if (!r.ok) throw new Error('anthropic ' + r.status + ' ' + (await r.text()).slice(0, 200));
+  const body = await r.json();
+  const text = (body.content || []).filter(c => c.type === 'text').map(c => c.text).join('');
+  return firstJson(text);
+}
+
+module.exports = async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method !== 'POST') { res.status(405).json({ ok: false, error: 'POST only' }); return; }
+  if (!process.env.ANTHROPIC_API_KEY) { res.status(501).json({ ok: false, error: 'ANTHROPIC_API_KEY is not set' }); return; }
+
+  let body = req.body;
+  if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+  body = body || {};
+  if (typeof body.image !== 'string' || body.image.length > MAX_IMAGE_CHARS) { res.status(400).json({ ok: false, error: 'image missing or too large' }); return; }
+  const image = parseImage(body.image);
+  if (!image) { res.status(400).json({ ok: false, error: 'image must be a base64 data URL' }); return; }
+
+  try {
+    if (body.mode === 'stickers') {
+      const stickers = (Array.isArray(body.stickers) ? body.stickers : [])
+        .filter(s => s && Number.isInteger(s.k) && s.k >= 0 && s.k < 4 && isFinite(s.u) && isFinite(s.v)).slice(0, 4);
+      if (!stickers.length) { res.status(400).json({ ok: false, error: 'no stickers' }); return; }
+      const j = await askClaude(image, stickersPrompt(stickers, clean(body.insect, 30)));
+      const options = {};
+      stickers.forEach(s => { const o = four(j.options && j.options[String(s.k)], 14); if (o) options[s.k] = o; });
+      res.status(200).json({ ok: true, options });
+      return;
+    }
+
+    const j = await askClaude(image, identifyPrompt());
+    const options = {};
+    KINDS.forEach((k, i) => { const o = four(j.options && j.options[k], 14); if (o) options[i] = o; });
+    const summary = (Array.isArray(j.summary) ? j.summary : []).map(s => clean(s, 30)).filter(Boolean).slice(0, 3);
+    res.status(200).json({
+      ok: true,
+      is_insect: j.is_insect !== false,
+      name: clean(j.name, 20) || '이름 모를 곤충',
+      group: GROUPS.includes(j.group) ? j.group : '기타',
+      confidence: ['high', 'medium', 'low'].includes(j.confidence) ? j.confidence : 'medium',
+      summary,
+      options
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(502).json({ ok: false, error: 'analysis failed' });
+  }
+};

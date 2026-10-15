@@ -222,3 +222,28 @@ img { display: block; }
   body { background: var(--bg); }
   .status-time, .status-icons, .home-ind, .proto-index { visibility: hidden; }
 }
+
+/* ---------- AI가 분석중이에요 (app/ai.js) ----------
+   사진 위를 연두 띠가 위아래로 훑고, 네모 점 세 개가 차례로 깜빡여요. 나타날 때·사라질 때 모두 디졸브. */
+.ai-wait { position: absolute; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  background: rgba(253, 244, 177, .96); animation: pico-dissolve var(--dissolve) var(--ease-slow) both; transition: opacity var(--dissolve) var(--ease-slow); }
+.ai-wait.is-out { opacity: 0; }
+.ai-card { display: flex; flex-direction: column; align-items: center; gap: 0; transform: translateY(-20px); }
+.ai-photo { position: relative; width: 200px; height: 200px; background: var(--surface) center / cover no-repeat; border: 1px solid var(--ink);
+  box-shadow: 5px 7px 0 var(--ink); overflow: hidden; }
+.ai-scan { position: absolute; left: 0; right: 0; top: 0; height: 46px; transform: translateY(-46px);
+  background: linear-gradient(to bottom, rgba(177, 189, 53, 0), rgba(177, 189, 53, .55) 85%, var(--brand) 85%, var(--brand) 100%);
+  animation: ai-scan 1.8s cubic-bezier(.45, .05, .2, 1) infinite alternate; }
+@keyframes ai-scan { from { transform: translateY(-46px); } to { transform: translateY(200px); } }
+.ai-corner { position: absolute; width: 18px; height: 18px; border: 0 solid var(--surface); }
+.ai-corner.tl { left: 10px; top: 10px; border-left-width: 3px; border-top-width: 3px; }
+.ai-corner.tr { right: 10px; top: 10px; border-right-width: 3px; border-top-width: 3px; }
+.ai-corner.bl { left: 10px; bottom: 10px; border-left-width: 3px; border-bottom-width: 3px; }
+.ai-corner.br { right: 10px; bottom: 10px; border-right-width: 3px; border-bottom-width: 3px; }
+.ai-title { margin-top: 30px; font-weight: 700; font-size: 20px; line-height: normal; white-space: nowrap; }
+.ai-sub { margin-top: 6px; font-size: 14px; line-height: normal; white-space: nowrap; }
+.ai-dots { display: flex; gap: 8px; margin-top: 16px; }
+.ai-dots i { display: block; width: 8px; height: 8px; background: var(--brand); border: 1px solid var(--ink); animation: ai-dot 1.2s ease-in-out infinite; }
+.ai-dots i:nth-child(2) { animation-delay: .2s; } .ai-dots i:nth-child(3) { animation-delay: .4s; }
+@keyframes ai-dot { 0%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .ai-scan, .ai-dots i { animation: none; } .ai-scan { transform: translateY(77px); } }

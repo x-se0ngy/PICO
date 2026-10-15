@@ -11,6 +11,15 @@
     ['날아다녀요.', '기어 다녀요.', '폴짝폴짝 뛰어요.', '가만히 있어요.'],
     ['꽃에서 꿀을 먹어요.', '잎을 갉아 먹어요.', '혼자 움직이고 있어요.', '다른 친구와 있어요.']
   ];
+  // AI 분석(app/ai.js)이 만든 선택지가 있으면 그걸 써요: 촬영 3 스티커 자리 분석 > 촬영 1 사진 분석 > 위의 Figma 기본
+  (function () {
+    function rd(k) { try { return JSON.parse(sessionStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+    var photoAi = rd('pico.analysis'), spotAi = rd('pico.capture.options');
+    [photoAi && photoAi.options, spotAi].forEach(function (src) {
+      if (!src) return;
+      for (var k = 0; k < 4; k++) { var o = src[k]; if (Array.isArray(o) && o.length === 4) OPTIONS[k] = o.slice(); }
+    });
+  })();
   var PROMPTS = ['내가 관찰한 특징들을 표현해 봐요.', '내가 관찰한 특징들을 표현해 봐요.', '내가 관찰한 특징들을 표현해 봐요.', '주변과 어떻게 어울리고 있나요?'];
   // 촬영 2 버튼 이름과 버튼 아래 안내 (촬영 02 맨트 2884:5571)
   var LABELS = KINDS;
