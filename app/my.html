@@ -29,6 +29,8 @@
   .me { display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
   .me .t { font-weight: 700; font-size: 20px; } .me .t small { font-size: 14px; } .me .t span { font-weight: 400; font-size: 14px; }
   .me .s { font-size: 14px; }
+  /* 개인 설정에서 정한 이름이 길면(최대 10자) 프로필 옆에서 줄을 바꿔요 */
+  .me { min-width: 0; } .me .t { white-space: normal; word-break: keep-all; }
   .card-inner { width: 310px; height: 190px; background: var(--brand-soft); padding: 10px 7.5px; }
 
   .week { width: 295px; display: flex; flex-direction: column; gap: 10px; }
@@ -103,7 +105,7 @@
   <div class="abs card-shadow"></div>
   <div class="abs card-face"></div>
   <div class="abs card-col">
-    <div class="me-row"><div class="me"><p class="t">김선우 <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
+    <div class="me-row"><div class="me"><p class="t"><b id="myName">김선우</b> <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
       <img class="pf" id="myAvatar" src="assets/profile/grass.svg" alt="내 프로필"></div>
     <div class="card-inner"><div class="week">
       <div class="week-h"><p>나의 탐험</p>
@@ -166,6 +168,13 @@
 <script>
   // 개인 설정 3단계에서 고른 탐험의 아이콘이 내 프로필 (없으면 Figma 기본 '풀')
   try { var av = localStorage.getItem('pico.avatar'); if (/^(flower|grass|river|tree|cloud|moon)$/.test(av)) document.getElementById('myAvatar').src = 'assets/profile/' + av + '.svg'; } catch (e) {}
+  // 이름: 개인 설정 1에서 정한 탐험가 이름의 마지막 단어 (탐험가 카드 setup-done.html과 같은 규칙).
+  // 이름을 정하지 않았으면 같은 예시 이름 '초고속 탐험가 선우' → '선우'.
+  (function () {
+    var full = '초고속 탐험가 선우';
+    try { full = (localStorage.getItem('pico.name') || '').trim() || full; } catch (e) {}
+    document.getElementById('myName').textContent = full.split(/\s+/).pop();
+  })();
 </script>
 <script>
 (function () {
