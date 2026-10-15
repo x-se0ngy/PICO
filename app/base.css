@@ -105,6 +105,29 @@ img { display: block; }
 .tab-cam::before { content: ''; position: absolute; left: 9.15px; top: 9.15px; width: 50px; height: 50px; background: var(--reward); border: 1px dashed var(--ink); transform: rotate(60deg); }
 .tab-cam img { position: absolute; left: 18.15px; top: 17.75px; width: 32px; height: 32px; }
 
+/* 촬영 네모 종이접기 (shared.js가 .tab-cam 안에 종이를 만들어 넣어요).
+   누르면 세로 접는 선을 따라 ½, 가로 접는 선을 따라 ¼로 접힌 뒤 촬영 화면으로 넘어가요.
+   종이 = 50×50 정사각형을 60° 돌린 것, 4조각(q)으로 나눠 각 조각이 앞·뒷면을 가져요. */
+:root { --fold-ms: 380ms; --fold-ease: cubic-bezier(.55, 0, .25, 1); }
+.tab-cam.is-origami::before, .tab-cam.is-origami > img { display: none; }
+.tab-cam .origami { position: absolute; left: -0.683px; top: -0.683px; width: 70px; height: 70px; perspective: 240px; transition: transform 120ms ease; }
+.tab-cam:active .origami { transform: scale(.95); }
+.tab-cam .paper { position: absolute; left: 9.83px; top: 9.83px; width: 50px; height: 50px; transform-style: preserve-3d;
+  --tx: 0px; --ty: 0px; transform: rotate(60deg) translate(var(--tx), var(--ty)); transition: transform var(--fold-ms) var(--fold-ease); }
+.tab-cam .half { position: absolute; left: 0; width: 50px; height: 25px; transform-style: preserve-3d; }
+.tab-cam .half.top { top: 0; }
+.tab-cam .half.bottom { top: 25px; transform-origin: 50% 0; transform: translateZ(0px) rotateX(0deg); transition: transform var(--fold-ms) var(--fold-ease); }
+.tab-cam .q { position: absolute; top: 0; width: 25px; height: 25px; transform-style: preserve-3d; }
+.tab-cam .q.left { left: 0; }
+.tab-cam .q.right { left: 25px; transform-origin: 0 50%; transform: translateZ(0px) rotateY(0deg); transition: transform var(--fold-ms) var(--fold-ease); }
+.tab-cam .pface { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.tab-cam .pface svg { position: absolute; display: block; }
+.tab-cam .pface.back { transform: rotateY(180deg); }
+.tab-cam .paper.f1 { --tx: 12.5px; }
+.tab-cam .paper.f1 .q.right { transform: translateZ(1px) rotateY(-180deg); }
+.tab-cam .paper.f2 { --ty: 12.5px; }
+.tab-cam .paper.f2 .half.bottom { transform: translateZ(3px) rotateX(180deg); }
+
 /* ---------- primary CTA (330x54 + offset black shadow) ---------- */
 .cta { position: absolute; left: 20px; width: 330px; height: 54px; display: block; }
 .cta::before { content: ''; position: absolute; left: 5px; top: 8.6px; width: 330px; height: 54px; background: var(--ink); border: 1px solid var(--ink); }
@@ -141,17 +164,21 @@ img { display: block; }
 .proto-index { position: fixed; right: 12px; bottom: 12px; z-index: 100; font: 12px/1 var(--font-ui); background: #fff; color: #000; padding: 8px 10px; border-radius: 6px; opacity: .7; }
 @media (max-width: 499px) { .proto-index { display: none; } }
 
-/* ---------- screen transitions: Figma "Dissolve · Slow · 300ms" ----------
-   Page-to-page: cross-document View Transitions crossfade the old and new screen.
-   In-page state changes (sheets, popups, home mode) dissolve in via the same timing.
-   The curve is Figma's "Slow" spring (mass 1, stiffness 80, damping 20) fitted to a cubic-bezier. */
-:root { --dissolve: 300ms; --ease-slow: cubic-bezier(.25, .6, .07, 1); }
-@view-transition { navigation: auto; }
-::view-transition-group(root) { animation-duration: var(--dissolve); }
-::view-transition-old(root), ::view-transition-new(root) {
-  animation-duration: var(--dissolve);
-  animation-timing-function: var(--ease-slow);
+/* ---------- screen transitions: Figma "Dissolve · Slow" ----------
+   Page-to-page: cross-document View Transitions. Like Figma's Dissolve, the current screen stays put
+   and the next one fades in on top of it.
+   Slow is Figma's spring preset (mass 1, stiffness 80, damping 20). Figma plays a spring at its own
+   length (the 300ms field does not apply), so pages use the full ~1.05s curve, sampled into linear().
+   In-page state changes (sheets, popups, home mode) keep the quicker 300ms dissolve. */
+:root { --dissolve: 300ms; --ease-slow: cubic-bezier(.25, .6, .07, 1);
+  --page-dissolve: 1050ms; --ease-spring-slow: cubic-bezier(.25, .6, .3, 1); }
+@supports (transition-timing-function: linear(0, 1)) {
+  :root { --ease-spring-slow: linear(0, 0.0387, 0.1248, 0.2285, 0.3337, 0.4323, 0.5209, 0.5983, 0.6647, 0.7211, 0.7685, 0.8082, 0.8413, 0.8688, 0.8916, 0.9105, 0.9261, 0.939, 0.9497, 0.9585, 0.9658, 0.9718, 0.9767, 0.9808, 0.9842, 0.9869, 0.9892, 0.9911, 0.9927, 0.994, 1); }
 }
+@view-transition { navigation: auto; }
+::view-transition-group(root) { animation-duration: var(--page-dissolve); }
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: pico-dissolve var(--page-dissolve) var(--ease-spring-slow) both; }
 @keyframes pico-dissolve { from { opacity: 0; } to { opacity: 1; } }
 .phone > .dim, .phone > .sheet, .phone > .modal, .phone > .toast, .phone > .ov, [data-dissolve] {
   animation: pico-dissolve var(--dissolve) var(--ease-slow);
