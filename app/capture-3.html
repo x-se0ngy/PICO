@@ -121,7 +121,7 @@
     if (answers[active] == null) return;
     // move on to the next sticker without an answer
     var next = byKind().filter(function (s) { return answers[s.k] == null; })[0];
-    if (next) setTimeout(function () { activate(next.k); }, 350);
+    if (next) setTimeout(function () { activate(next.k); }, (window.picoDur ? picoDur() : 300) + 50);
   });
 
   // grey CTA until at least one sticker question is answered

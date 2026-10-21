@@ -373,7 +373,7 @@
     closeTimer = setTimeout(function () {
       sheet.hidden = true; dim.hidden = true;
       sheet.classList.remove('is-closing'); dim.classList.remove('is-closing');
-    }, 300);
+    }, (window.picoDur ? picoDur() : 300) + 20);
   }
   document.addEventListener('click', function (e) { if (e.target.closest('[data-open-sheet]')) openSheet(); });
   dim.addEventListener('click', closeSheet);

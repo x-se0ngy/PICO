@@ -19,6 +19,8 @@
     Array.prototype.slice.call(p.children).forEach(function (c) { if (!c.matches(FIXED)) cv.appendChild(c); });
     p.insertBefore(sc, p.firstChild);
   }
+  // 앱 전체 움직임 길이(base.css의 --dur) — 애니메이션이 끝난 뒤 정리하는 타이머가 같은 값을 써요
+  window.picoDur = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur')) || 300; };
   window.addEventListener('resize', fit);
   document.addEventListener('DOMContentLoaded', function () { wrap(); fit(); });
   // [data-go="page.html"] → navigate on click (for non-<a> elements)

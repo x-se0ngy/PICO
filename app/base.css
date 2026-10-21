@@ -108,7 +108,7 @@ img { display: block; }
 /* 촬영 네모 종이접기 (shared.js가 .tab-cam 안에 종이를 만들어 넣어요).
    누르면 세로 접는 선을 따라 ½, 가로 접는 선을 따라 ¼로 접힌 뒤 촬영 화면으로 넘어가요.
    종이 = 50×50 정사각형을 60° 돌린 것, 4조각(q)으로 나눠 각 조각이 앞·뒷면을 가져요. */
-:root { --fold-ms: 300ms; --fold-ease: ease-in-out; }   /* Figma 스마트 애니메이트와 같은 300ms · ease in-out (두 번 접고 약 0.55초) */
+:root { --fold-ms: 400ms; --fold-ease: ease-in-out; }   /* 두 번 접고 약 0.7초 · ease in-out */
 .tab-cam.is-origami::before, .tab-cam.is-origami > img { display: none; }
 .tab-cam .origami { position: absolute; left: -0.683px; top: -0.683px; width: 70px; height: 70px; perspective: 240px; transition: transform 120ms ease; }
 .tab-cam:active .origami { transform: scale(.95); }
@@ -168,13 +168,13 @@ img { display: block; }
 .proto-index { position: fixed; right: 12px; bottom: 12px; z-index: 100; font: 12px/1 var(--font-ui); background: #fff; color: #000; padding: 8px 10px; border-radius: 6px; opacity: .7; }
 @media (max-width: 499px) { .proto-index { display: none; } }
 
-/* ---------- 화면 전환: Figma 스마트 애니메이트 · Ease in-out · 300ms ----------
-   앱 전체가 같은 한 가지 움직임을 써요: 300ms, ease in-out.
-   - 화면 → 화면: 문서 간 View Transition. 다음 화면이 300ms 동안 디졸브로 나타나요.
+/* ---------- 화면 전환: Figma 스마트 애니메이트 · Ease in-out ----------
+   앱 전체가 같은 한 가지 움직임을 써요: --dur(지금 500ms) · ease in-out. 숫자 하나만 바꾸면 전체가 같이 바뀌어요.
+   - 화면 → 화면: 문서 간 View Transition. 다음 화면이 --dur 동안 디졸브로 나타나요.
      두 화면에 똑같이 있는 층(상단 바 · 하단 탭 · 큰 버튼 · 진행 표시 · 홈 인디케이터)에는 이름을 붙여
      Figma 스마트 애니메이트처럼 화면이 바뀌어도 제자리에 그대로 있고, 달라진 부분만 부드럽게 바뀌어요.
-   - 같은 화면 안(팝업 · 시트 · 카드 바뀜): 같은 300ms · ease in-out으로 나타나고 사라져요. */
-:root { --dur: 300ms; --ease: ease-in-out; --dissolve: var(--dur); --page-dissolve: var(--dur); --ease-slow: var(--ease); --ease-spring-slow: var(--ease); }
+   - 같은 화면 안(팝업 · 시트 · 카드 바뀜): 같은 --dur · ease in-out으로 나타나고 사라져요. */
+:root { --dur: 500ms; --ease: ease-in-out; --dissolve: var(--dur); --page-dissolve: var(--dur); --ease-slow: var(--ease); --ease-spring-slow: var(--ease); }
 @view-transition { navigation: auto; }
 ::view-transition-group(*) { animation-duration: var(--dur); animation-timing-function: var(--ease); }
 ::view-transition-old(root) { animation: none; }

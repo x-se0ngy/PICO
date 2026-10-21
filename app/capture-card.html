@@ -161,7 +161,7 @@
       function close() {
         if (closed) return; closed = true;
         keep(); el.classList.add('is-out');                          // 액자에 접은 모습을 먼저 넣고 디졸브로 걷어요
-        setTimeout(function () { el.remove(); }, 320);
+        setTimeout(function () { el.remove(); }, (window.picoDur ? picoDur() : 300) + 20);
       }
       setTimeout(function () {
         anim = PicoOrigami.play(el.querySelector('canvas'), model, {

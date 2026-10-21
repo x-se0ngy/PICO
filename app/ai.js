@@ -71,7 +71,7 @@
           setTimeout(function () {
             if (keep) { resolve(); return; }
             el.classList.add('is-out');
-            setTimeout(function () { el.remove(); resolve(); }, 300);
+            setTimeout(function () { el.remove(); resolve(); }, (window.picoDur ? picoDur() : 300) + 20);
           }, left);
         });
       }
