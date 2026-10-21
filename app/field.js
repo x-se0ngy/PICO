@@ -1,7 +1,7 @@
 // PICO · 내 들판 (서식지)
-// 촬영 4에서 그린 그림이 관찰 카드를 거쳐 "들판에 놓아주기"를 누르면
+// 촬영 5에서 그린 그림이 관찰 카드를 거쳐 "들판에 놓아주기"를 누르면
 // 홈 > 내 들판에 스티커가 되어 돌아다녀요.
-//   capture-4.html  → PicoField.saveDraft(canvas, colorName)
+//   capture-5.html  → PicoField.saveDraft(canvas, colorName)
 //   capture-card    → PicoField.saveFolded(png)    (origami.js로 접은 모습을 그림에 붙여요)
 //                     PicoField.release(species)   (그림이 없으면 들판에 보내지 않음)
 //   home.html       → PicoField.mount(layerEl)

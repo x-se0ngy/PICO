@@ -2,7 +2,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="/app/manifest.json">
-<meta name="theme-color" content="#fdf4b1">
+<meta name="theme-color" content="#fffad3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -10,22 +10,29 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<title>PICO · 촬영 5 관찰 일기</title>
+<title>PICO · 촬영 5 그림 그리기</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  .photo { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 200px; background: var(--surface); border: 1px solid var(--ink); }
-  .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
-  .label { position: absolute; left: 20px; top: 451.52px; font-size: 16px; white-space: nowrap; }
-  .chips { position: absolute; left: 20px; top: 481.18px; width: 335px; display: flex; flex-wrap: wrap; column-gap: 10.67px; row-gap: 9.67px; }
-  /* filled = not used yet · dashed = already in the diary */
-  .chip { height: 35px; display: flex; align-items: center; justify-content: center; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; white-space: nowrap; }
-  .chip.used { background: var(--bg); border-style: dashed; }
-  /* diary input — Figma 2847:3299: 335x117 surface box with a dashed border at y 572 */
-  .diary { position: absolute; left: 20px; top: 572px; width: 335px; height: 117px; padding: 12px 14px; resize: none; background: var(--surface); border: 1px dashed var(--ink); border-radius: 0; font: 14px/20px var(--font); color: var(--ink); outline: none; }
-  .diary:focus { border-style: solid; }
-  .diary::placeholder { color: rgba(0,0,0,.4); }
+  .board { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: transparent; border: 1px solid var(--ink); z-index: 2; }
+  /* 일기를 쓴 다음이라 빈 종이에서 시작해요(Figma 촬영 5: 기억나는 모습을 그려보세요).
+     사진 버튼을 누르면 사진이 연하게 비쳐 보여요(따라 그리기). 저장되는 건 그린 선뿐이에요. */
+  .board .ref { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .4; transition: opacity .2s; pointer-events: none; }
+  .board.hide-ref .ref { opacity: 0; }
+  .board canvas { position: relative; display: block; width: 333px; height: 333px; touch-action: none; cursor: crosshair; }
+  /* Figma Warm-Up 촬영 5: 색연필 8자루(32.685 폭, 간격 4)가 (22, 591)부터 끝까지 다 보이고, 그 오른쪽 10px에
+     아이콘 두 개(사진 보기 · 모두 지우기)가 아래쪽 맞춤으로 세로로 놓여요. */
+  .crayons { position: absolute; left: 22px; top: 591px; height: 92.18px; display: flex; gap: 4px; }
+  .crayon { width: 32.685px; height: 92.18px; position: relative; flex: none; transition: transform .15s ease-out; }
+  .crayon img { position: absolute; left: -.2px; top: 0; width: 33.6px; height: auto; max-width: none; }
+  .crayon[aria-pressed="true"] { transform: translateY(-12px); }
+  .tools { position: absolute; left: 321.5px; top: 609.18px; display: flex; flex-direction: column; gap: 10px; }
+  .tools button, .tools img { display: block; width: 32px; height: 32px; }
+  .ref-toggle img { transition: opacity .2s; }
+  .ref-toggle[aria-pressed="true"] { background: var(--brand-soft); outline: 1px solid var(--ink); }
+  .refresh img { transition: transform .3s; }
+  .refresh:active img { transform: rotate(-90deg); }
 </style>
 </head><body>
 <div class="phone" style="--h:812px">
@@ -42,16 +49,17 @@
   <div class="progress" aria-label="5단계 중 5단계"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
 
   <div class="step-title cap">
-    <p class="q"><span>05.</span><span>관찰 일기를 써 볼까요?</span></p>
-    <p class="sub">본 것을 나의 글로 적어보세요.</p>
+    <p class="q"><span>05.</span><span>기억나는 모습을 그려보세요.</span></p>
+    <p class="sub">자유롭게 그려 보세요. 똑같지 않아도 괜찮아요.</p>
   </div>
 
-  <div class="photo" data-photo aria-label="촬영한 사진"><div class="lens-layer" id="lensLayer"></div></div>
+  <div class="board hide-ref" id="board"><div class="ref" data-photo></div><canvas id="pad" width="333" height="333" aria-label="그림판"></canvas></div>
 
-  <p class="label">내가 관찰한 단어들을 문장에 넣어 보세요</p>
-  <div class="chips" id="chips" role="group" aria-label="관찰 단어"></div>
-
-  <textarea class="diary" id="diary" aria-label="관찰 일기" placeholder="여기에 관찰 일기를 적어보세요."></textarea>
+  <div class="crayons" id="crayons" role="radiogroup" aria-label="색연필"></div>
+  <div class="tools">
+    <button class="ref-toggle" id="refToggle" type="button" aria-pressed="false" aria-label="사진 겹쳐 보기"><img src="assets/icons/outline/photo.svg" alt=""></button>
+    <button class="refresh" id="clear" type="button" aria-label="모두 지우기"><img src="assets/icons/outline/refresh.svg" alt=""></button>
+  </div>
 
   <a class="cta step" href="capture-card.html"><span class="cta-face">다음 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
 
@@ -59,52 +67,59 @@
 </div>
 <script src="shared.js"></script>
 <script src="photo.js"></script>
-<script src="stickers.js"></script>
+<script src="field.js"></script>
 <script>
-  // Lens stickers from step 2, at the same spot on the photo
-  (function () {
-    var L = PicoLens, lenses = L.load(); if (!lenses.length) return;
-    L.photoSize(function (iw, ih) {
-      var m = L.cover(333, 198, iw, ih);
-      document.getElementById('lensLayer').innerHTML = lenses.map(function (s) {
-        var p = m.toBox(s.u, s.v);
-        return L.html(s.k, L.clamp(p.x, L.R, 333 - L.R), L.clamp(p.y, L.R, 198 - L.R), { tag: 'span', style: 'green' });
-      }).join('');
-    });
-  })();
-
-  // Word chips: the expressions picked in step 3 (Figma words when nothing was picked)
-  var WORDS = (function () {
-    var a = PicoLens.answers(), out = [];
-    Object.keys(a).sort().forEach(function (k) { var o = PicoLens.OPTIONS[+k] && PicoLens.OPTIONS[+k][a[k]]; if (o) out.push({ t: o }); });
-    return out.length ? out : [{ t: '팔랑팔랑', w: 96.127 }, { t: '꽃에서 쉬어요.', w: 120 }, { t: '날개에 줄무늬', w: 120.357 }];
-  })();
-  var diary = document.getElementById('diary'), chips = document.getElementById('chips');
-  var KEY = 'pico.capture.diary';
-  var stored = null; try { stored = sessionStorage.getItem(KEY); } catch (e) {}
-  var picked = Object.keys(PicoLens.answers()).length > 0;
-  diary.value = stored !== null ? stored : (picked ? '' : '꽃에서 쉬어요.');
-  function renderChips() {
-    chips.innerHTML = WORDS.map(function (w, i) {
-      var used = diary.value.indexOf(w.t) > -1;
-      return '<button class="chip' + (used ? ' used' : '') + '" data-i="' + i + '" style="' + (w.w ? 'width:' + w.w + 'px' : 'padding:0 14px') + '">' + w.t + '</button>';
+  document.getElementById('refToggle').addEventListener('click', function () {
+    var on = this.getAttribute('aria-pressed') !== 'true';
+    this.setAttribute('aria-pressed', String(on));
+    document.getElementById('board').classList.toggle('hide-ref', !on);
+  });
+</script>
+<script>
+  var PALETTE = [
+    { name: 'red', label: '빨강', c: '#e32d3d' }, { name: 'orange', label: '주황', c: '#fca436' },
+    { name: 'yellow', label: '노랑', c: '#f4d159' }, { name: 'leaf', label: '연두', c: '#a7c049' },
+    { name: 'teal', label: '청록', c: '#48b2bb' }, { name: 'blue', label: '파랑', c: '#2c70d1' },
+    { name: 'purple', label: '보라', c: '#6b4eac' }, { name: 'gray', label: '회색', c: '#4e4e4e' }
+  ];
+  var color = PALETTE[0].c, box = document.getElementById('crayons');
+  function renderCrayons() {
+    box.innerHTML = PALETTE.map(function (p) {
+      return '<button class="crayon" role="radio" data-c="' + p.c + '" aria-pressed="' + (p.c === color) + '" aria-checked="' + (p.c === color) + '" aria-label="' + p.label + '">' +
+        '<img src="assets/capture/s4-crayon-' + p.name + '.png" alt=""></button>';
     }).join('');
   }
-  function save() { try { sessionStorage.setItem(KEY, diary.value); } catch (e) {} }
-  chips.addEventListener('mousedown', function (e) { e.preventDefault(); }); // keep caret in the textarea
-  chips.addEventListener('click', function (e) {
-    var b = e.target.closest('.chip'); if (!b) return;
-    var word = WORDS[+b.dataset.i].t, v = diary.value;
-    var start = document.activeElement === diary ? diary.selectionStart : v.length;
-    var end = document.activeElement === diary ? diary.selectionEnd : v.length;
-    var before = v.slice(0, start), after = v.slice(end);
-    var ins = (before && !/\s$/.test(before) ? ' ' : '') + word + (after && !/^\s/.test(after) ? ' ' : '');
-    diary.value = before + ins + after;
-    var caret = (before + ins).length;
-    diary.focus(); diary.setSelectionRange(caret, caret);
-    save(); renderChips();
+  box.addEventListener('click', function (e) { var b = e.target.closest('.crayon'); if (b) { color = b.dataset.c; renderCrayons(); } });
+  renderCrayons();
+
+  // Drawing pad (pointer events, HiDPI)
+  var cv = document.getElementById('pad'), ctx = cv.getContext('2d'), dpr = window.devicePixelRatio || 1;
+  cv.width = 333 * dpr; cv.height = 333 * dpr; ctx.scale(dpr, dpr);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5;
+  var drawing = false, last = null, used = {};
+  function pt(e) {
+    var r = cv.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * 333 / r.width, y: (e.clientY - r.top) * 333 / r.height };
+  }
+  cv.addEventListener('pointerdown', function (e) {
+    drawing = true; last = pt(e); cv.setPointerCapture(e.pointerId);
+    used[color] = (used[color] || 0) + 1;
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(last.x, last.y, ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill();
   });
-  diary.addEventListener('input', function () { save(); renderChips(); });
-  renderChips();
+  cv.addEventListener('pointermove', function (e) {
+    if (!drawing) return;
+    var p = pt(e); ctx.strokeStyle = color;
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p;
+  });
+  function end() { drawing = false; }
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  document.getElementById('clear').addEventListener('click', function () { ctx.clearRect(0, 0, 333, 333); used = {}; });
+
+  // 다음: 그린 그림을 PICO 스티커로 저장 (가장 많이 쓴 색 이름은 PICO 이름에 써요)
+  document.querySelector('.cta').addEventListener('click', function () {
+    var top = null, n = 0;
+    PALETTE.forEach(function (p) { if ((used[p.c] || 0) > n) { n = used[p.c]; top = p.label; } });
+    window.PicoField && PicoField.saveDraft(cv, top);
+  });
 </script>
 </body></html>
