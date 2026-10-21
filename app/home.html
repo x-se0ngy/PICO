@@ -41,7 +41,7 @@
   .sweep::after { content: ''; position: absolute; left: 149.25px; top: 0; width: 1.5px; height: 150px; background: var(--reward); }
   /* sonar pulse from my position */
   .pulse { position: absolute; left: 0; top: 0; width: 300px; height: 300px; border-radius: 50%; border: 1.5px solid var(--reward); opacity: 0;
-    animation: radar-pulse var(--sweep) cubic-bezier(.25, .6, .07, 1) infinite; }
+    animation: radar-pulse var(--sweep) var(--ease) infinite; }
   .pulse + .pulse { animation-delay: calc(var(--sweep) / 2); }
   :root { --sweep: 4s; }
   @keyframes radar-sweep { to { transform: rotate(360deg); } }
@@ -50,13 +50,13 @@
   /* pins: yellow = not selected, green = selected. All pins show right away on load;
      each one pings when the sweep passes it (--a = its angle). */
   .pin { position: absolute; width: 47.852px; height: 47.852px; z-index: 2;
-    animation: pin-found .3s cubic-bezier(.25, .6, .07, 1) both, pin-ping var(--sweep) linear infinite;
+    animation: pin-found var(--dur) var(--ease) both, pin-ping var(--sweep) linear infinite;
     animation-delay: 0s, calc(var(--sweep) * var(--a) / 360); }
   .pin i { position: absolute; left: 6.93px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); border: 1px dashed var(--ink); background: var(--reward);
-    transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
+    transition: background-color var(--dur) var(--ease); }
   .pin img { position: absolute; left: 15.43px; top: 14.43px; width: 18px; height: 18px; }
   .pin::before { content: ''; position: absolute; left: 9.79px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); background: var(--ink-950); border: 1px solid var(--ink);
-    opacity: 0; transition: opacity .3s cubic-bezier(.25, .6, .07, 1); }
+    opacity: 0; transition: opacity var(--dur) var(--ease); }
   .pin.on i { background: var(--brand); border-style: solid; }
   .pin.on::before { opacity: 1; }
   .pin:active i { filter: brightness(.92); }
@@ -103,9 +103,9 @@
   .dim.scrim { background: rgba(44, 44, 44, .57); }
   .place { top: 357px; height: 455px; border-top: 0; }
   /* place sheet: slides up from the bottom edge, slides back down on close */
-  .phone > .sheet.place { animation: sheet-up .3s cubic-bezier(.32, .72, 0, 1) both; }
-  .phone > .sheet.place.is-closing { animation: sheet-down .3s cubic-bezier(.4, 0, .7, .2) both; }
-  .phone > .dim.scrim.is-closing { animation: scrim-out .3s cubic-bezier(.25, .6, .07, 1) both; }
+  .phone > .sheet.place { animation: sheet-up var(--dur) var(--ease) both; }
+  .phone > .sheet.place.is-closing { animation: sheet-down var(--dur) var(--ease) both; }
+  .phone > .dim.scrim.is-closing { animation: scrim-out var(--dur) var(--ease) both; }
   @keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
   @keyframes sheet-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
   @keyframes scrim-out { from { opacity: 1; } to { opacity: 0; } }
@@ -131,7 +131,7 @@
   .pf-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
   .pf-bug { position: absolute; left: 0; top: 0; width: 64px; padding: 0; display: flex; flex-direction: column; align-items: center; pointer-events: auto; will-change: transform; }
   .pf-body { display: block; width: 64px; height: 64px; animation: pf-bob 1.6s ease-in-out infinite; animation-delay: inherit; }
-  .pf-flip { display: block; width: 64px; height: 64px; transition: transform .25s; }
+  .pf-flip { display: block; width: 64px; height: 64px; transition: transform var(--dur) var(--ease); }
   .pf-flip svg, .pf-flip img { display: block; width: 64px; height: 64px; filter: drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
   .pf-bug.is-mine .pf-flip img { object-fit: contain;
     filter: drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff) drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }

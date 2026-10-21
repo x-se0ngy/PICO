@@ -108,7 +108,7 @@ img { display: block; }
 /* 촬영 네모 종이접기 (shared.js가 .tab-cam 안에 종이를 만들어 넣어요).
    누르면 세로 접는 선을 따라 ½, 가로 접는 선을 따라 ¼로 접힌 뒤 촬영 화면으로 넘어가요.
    종이 = 50×50 정사각형을 60° 돌린 것, 4조각(q)으로 나눠 각 조각이 앞·뒷면을 가져요. */
-:root { --fold-ms: 320ms; --fold-ease: cubic-bezier(.45, .05, .2, 1); }   /* 부드럽게 시작해 길게 내려앉기: 두 번 접고 머무는 데 약 0.7초 */
+:root { --fold-ms: 300ms; --fold-ease: ease-in-out; }   /* Figma 스마트 애니메이트와 같은 300ms · ease in-out (두 번 접고 약 0.55초) */
 .tab-cam.is-origami::before, .tab-cam.is-origami > img { display: none; }
 .tab-cam .origami { position: absolute; left: -0.683px; top: -0.683px; width: 70px; height: 70px; perspective: 240px; transition: transform 120ms ease; }
 .tab-cam:active .origami { transform: scale(.95); }
@@ -168,27 +168,29 @@ img { display: block; }
 .proto-index { position: fixed; right: 12px; bottom: 12px; z-index: 100; font: 12px/1 var(--font-ui); background: #fff; color: #000; padding: 8px 10px; border-radius: 6px; opacity: .7; }
 @media (max-width: 499px) { .proto-index { display: none; } }
 
-/* ---------- screen transitions: Figma "Dissolve · Slow" ----------
-   Page-to-page: cross-document View Transitions. Like Figma's Dissolve, the current screen stays put
-   and the next one fades in on top of it.
-   Slow is Figma's spring preset (mass 1, stiffness 80, damping 20). Figma plays a spring at its own
-   length (the 300ms field does not apply), so pages use the full ~1.05s curve, sampled into linear().
-   In-page state changes (sheets, popups, home mode) keep the quicker 300ms dissolve. */
-:root { --dissolve: 300ms; --ease-slow: cubic-bezier(.25, .6, .07, 1);
-  --page-dissolve: 1050ms; --ease-spring-slow: cubic-bezier(.25, .6, .3, 1); }
-@supports (transition-timing-function: linear(0, 1)) {
-  :root { --ease-spring-slow: linear(0, 0.0387, 0.1248, 0.2285, 0.3337, 0.4323, 0.5209, 0.5983, 0.6647, 0.7211, 0.7685, 0.8082, 0.8413, 0.8688, 0.8916, 0.9105, 0.9261, 0.939, 0.9497, 0.9585, 0.9658, 0.9718, 0.9767, 0.9808, 0.9842, 0.9869, 0.9892, 0.9911, 0.9927, 0.994, 1); }
-}
+/* ---------- 화면 전환: Figma 스마트 애니메이트 · Ease in-out · 300ms ----------
+   앱 전체가 같은 한 가지 움직임을 써요: 300ms, ease in-out.
+   - 화면 → 화면: 문서 간 View Transition. 다음 화면이 300ms 동안 디졸브로 나타나요.
+     두 화면에 똑같이 있는 층(상단 바 · 하단 탭 · 큰 버튼 · 진행 표시 · 홈 인디케이터)에는 이름을 붙여
+     Figma 스마트 애니메이트처럼 화면이 바뀌어도 제자리에 그대로 있고, 달라진 부분만 부드럽게 바뀌어요.
+   - 같은 화면 안(팝업 · 시트 · 카드 바뀜): 같은 300ms · ease in-out으로 나타나고 사라져요. */
+:root { --dur: 300ms; --ease: ease-in-out; --dissolve: var(--dur); --page-dissolve: var(--dur); --ease-slow: var(--ease); --ease-spring-slow: var(--ease); }
 @view-transition { navigation: auto; }
-::view-transition-group(root) { animation-duration: var(--page-dissolve); }
+::view-transition-group(*) { animation-duration: var(--dur); animation-timing-function: var(--ease); }
 ::view-transition-old(root) { animation: none; }
-::view-transition-new(root) { animation: pico-dissolve var(--page-dissolve) var(--ease-spring-slow) both; }
+::view-transition-new(root) { animation: pico-dissolve var(--dur) var(--ease) both; }
+/* 이름은 화면마다 하나씩만 있어야 해서 .phone 바로 아래 층에만 붙여요 */
+.phone > .top { view-transition-name: pico-top; }
+.phone > .tabbar { view-transition-name: pico-tabbar; }
+.phone > .progress { view-transition-name: pico-progress; }
+.phone > .cta { view-transition-name: pico-cta; }
+.phone > .home-ind { view-transition-name: pico-home-ind; }
 @keyframes pico-dissolve { from { opacity: 0; } to { opacity: 1; } }
 .phone > .dim, .phone > .sheet, .phone > .modal, .phone > .toast, .phone > .ov, [data-dissolve] {
-  animation: pico-dissolve var(--dissolve) var(--ease-slow);
+  animation: pico-dissolve var(--dur) var(--ease);
 }
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(root), ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none; }
   .phone > .dim, .phone > .sheet, .phone > .modal, .phone > .toast, .phone > .ov, [data-dissolve] { animation: none; }
 }
 
@@ -263,9 +265,9 @@ img { display: block; }
 .fold-title { font-weight: 700; font-size: 18px; line-height: normal; white-space: nowrap; }
 .fold-sub { font-size: 14px; line-height: normal; white-space: nowrap; }
 .fold-dots { position: absolute; left: 162.5px; top: 540.5px; width: 58px; height: 14px; }
-.fold-dots i { position: absolute; top: 0; width: 10px; height: 10px; background: var(--bg); border: 1px solid var(--ink); transition: background-color .2s, transform .2s; }
+.fold-dots i { position: absolute; top: 0; width: 10px; height: 10px; background: var(--bg); border: 1px solid var(--ink); transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
 .fold-dots i:nth-child(1) { left: 0; } .fold-dots i:nth-child(2) { left: 24px; } .fold-dots i:nth-child(3) { left: 48px; }
 .fold-dots i.on { background: var(--brand); transform: translateY(2.11px); }
-.fold-wait.is-done .fold-board { animation: fold-pop .32s cubic-bezier(.3, 1.6, .5, 1); }
-@keyframes fold-pop { 0% { transform: scale(1); } 45% { transform: scale(1.05) rotate(-1.2deg); } 100% { transform: scale(1); } }
+.fold-wait.is-done .fold-board { animation: fold-pop var(--dur) var(--ease); }
+@keyframes fold-pop { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .fold-wait.is-done .fold-board { animation: none; } .fold-dots i { transition: none; } }

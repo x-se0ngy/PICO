@@ -25,9 +25,9 @@
   .say .dot { width: 12px; font-size: 16px; text-align: center; }
   .options { position: absolute; left: 22.89px; top: 590.38px; width: 329.22px; display: grid; grid-template-columns: 162px 162px; column-gap: 5.22px; row-gap: 4.5px; }
   .opt { height: 46px; display: flex; align-items: center; justify-content: center; background: #fffad7; border: 1px solid var(--ink); font-size: 16px; white-space: nowrap;
-    transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
+    transition: background-color var(--dur) var(--ease); }
   .opt[aria-pressed="true"] { background: var(--brand); }
-  .options.ready .opt { animation: opt-in .3s cubic-bezier(.25, .6, .07, 1) both; }
+  .options.ready .opt { animation: opt-in var(--dur) var(--ease) both; }
   .options.ready .opt:nth-child(2) { animation-delay: .05s; } .options.ready .opt:nth-child(3) { animation-delay: .1s; } .options.ready .opt:nth-child(4) { animation-delay: .15s; }
   @keyframes opt-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .options.ready .opt { animation: none; } }

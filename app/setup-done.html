@@ -16,10 +16,10 @@
 <link rel="stylesheet" href="base.css">
 <style>
   /* 1.2.4 완료 (Figma Warm-Up 3090:29362): 종이 위에 큰 프로필 + 흩뿌린 색종이, 한 줄 안내, 큰 버튼 */
-  .pf-big { position: absolute; left: 120.2px; top: 249.35px; width: 130px; height: 130px; animation: pf-pop .5s cubic-bezier(.3, 1.5, .5, 1) both; }
-  .cf { position: absolute; display: flex; align-items: center; justify-content: center; animation: pico-dissolve .6s .25s var(--ease-slow) both; }
+  .pf-big { position: absolute; left: 120.2px; top: 249.35px; width: 130px; height: 130px; animation: pf-pop var(--dur) var(--ease) both; }
+  .cf { position: absolute; display: flex; align-items: center; justify-content: center; animation: pico-dissolve var(--dur) .15s var(--ease) both; }
   .cf i { display: block; border: 1px solid var(--ink); flex: none; }
-  .cf-dot { position: absolute; width: 12.294px; height: 12.294px; border: 1px solid var(--ink); border-radius: 50%; animation: pico-dissolve .6s .35s var(--ease-slow) both; }
+  .cf-dot { position: absolute; width: 12.294px; height: 12.294px; border: 1px solid var(--ink); border-radius: 50%; animation: pico-dissolve var(--dur) .25s var(--ease) both; }
   .done-title { position: absolute; left: 196.92px; top: 418px; transform: translateX(-50%); margin: 0; text-align: center; white-space: pre; font-size: 22px; line-height: 35px; }
   @keyframes pf-pop { from { opacity: 0; transform: scale(.7); } }
   @media (prefers-reduced-motion: reduce) { .pf-big, .cf, .cf-dot { animation: none; } }

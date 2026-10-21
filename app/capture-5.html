@@ -18,20 +18,20 @@
   .board { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: transparent; border: 1px solid var(--ink); z-index: 2; }
   /* 일기를 쓴 다음이라 빈 종이에서 시작해요(Figma 촬영 5: 기억나는 모습을 그려보세요).
      사진 버튼을 누르면 사진이 연하게 비쳐 보여요(따라 그리기). 저장되는 건 그린 선뿐이에요. */
-  .board .ref { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .4; transition: opacity .2s; pointer-events: none; }
+  .board .ref { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .4; transition: opacity var(--dur) var(--ease); pointer-events: none; }
   .board.hide-ref .ref { opacity: 0; }
   .board canvas { position: relative; display: block; width: 333px; height: 333px; touch-action: none; cursor: crosshair; }
   /* Figma Warm-Up 촬영 5: 색연필 8자루(32.685 폭, 간격 4)가 (22, 591)부터 끝까지 다 보이고, 그 오른쪽 10px에
      아이콘 두 개(사진 보기 · 모두 지우기)가 아래쪽 맞춤으로 세로로 놓여요. */
   .crayons { position: absolute; left: 22px; top: 591px; height: 92.18px; display: flex; gap: 4px; }
-  .crayon { width: 32.685px; height: 92.18px; position: relative; flex: none; transition: transform .15s ease-out; }
+  .crayon { width: 32.685px; height: 92.18px; position: relative; flex: none; transition: transform var(--dur) var(--ease); }
   .crayon img { position: absolute; left: -.2px; top: 0; width: 33.6px; height: auto; max-width: none; }
   .crayon[aria-pressed="true"] { transform: translateY(-12px); }
   .tools { position: absolute; left: 321.5px; top: 609.18px; display: flex; flex-direction: column; gap: 10px; }
   .tools button, .tools img { display: block; width: 32px; height: 32px; }
-  .ref-toggle img { transition: opacity .2s; }
+  .ref-toggle img { transition: opacity var(--dur) var(--ease); }
   .ref-toggle[aria-pressed="true"] { background: var(--brand-soft); outline: 1px solid var(--ink); }
-  .refresh img { transition: transform .3s; }
+  .refresh img { transition: transform var(--dur) var(--ease); }
   .refresh:active img { transform: rotate(-90deg); }
 </style>
 </head><body>

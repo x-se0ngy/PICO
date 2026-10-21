@@ -21,7 +21,7 @@
   /* viewfinder */
   /* Figma 3.1.1 (2847:3144): 가로 전체 375×445 at y 205.63, 위·아래 점선. 배율 칩(y 601)은 뷰파인더 안에 떠 있어요 */
   .finder { position: absolute; left: 0; top: 205.63px; width: 375px; height: 445px; background: transparent; border: 0 dashed var(--ink); border-width: 1px 0; overflow: hidden; }
-  .finder video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s, transform .2s; }
+  .finder video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
   .finder video.live { opacity: 1; }
 
   .zoom { position: absolute; left: 50%; top: 601px; transform: translateX(-50%); display: flex; gap: 15px; }
@@ -38,7 +38,7 @@
   /* shutter feedback: white flash, then the frame freezes on the taken photo */
   .finder .shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .finder .flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
-  .finder .flash.go { animation: shot-flash .35s ease-out; }
+  .finder .flash.go { animation: shot-flash var(--dur) var(--ease); }
   @keyframes shot-flash { 0% { opacity: .9; } 100% { opacity: 0; } }
   .finder .hint { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-size: 14px; line-height: 20px; }
   .finder video.live ~ .hint { display: none; }

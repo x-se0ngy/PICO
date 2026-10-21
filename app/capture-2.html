@@ -19,7 +19,7 @@
   .step-title .sub { white-space: nowrap; }
   .photo { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: transparent; border: 1px solid var(--ink); cursor: crosshair; touch-action: none; overflow: hidden; }
   .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
-  .photo .lens { cursor: grab; animation: pop .22s ease-out; }
+  .photo .lens { cursor: grab; animation: pop var(--dur) var(--ease); }
   .photo .lens.dragging { cursor: grabbing; animation: none; transform: scale(1.12); z-index: 3; }
   @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .ghost { position: absolute; z-index: 30; pointer-events: none; transform: scale(1.12); }
@@ -28,7 +28,7 @@
      기본 = 크림 칸 + 크림 렌즈 스티커 · 선택중(고른 스티커) = 크림 칸 + 검은 그림자 5/5 · 완료(사진에 붙임) = 올리브 칸 + 올리브 렌즈 + 그림자 */
   .kinds { position: absolute; left: 1px; top: 595.5px; width: 375px; padding: 0 20px; display: flex; justify-content: space-between; align-items: flex-start; }
   .kbtn { width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; touch-action: none; }
-  .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--surface); border: 1px solid var(--ink); transition: background-color .3s cubic-bezier(.25, .6, .07, 1), box-shadow .3s cubic-bezier(.25, .6, .07, 1); }
+  .kbtn .sq { position: relative; width: 70px; height: 70px; background: var(--surface); border: 1px solid var(--ink); transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
   .kbtn .idle { position: absolute; left: 8.5px; top: 8.5px; width: 47px; height: 47px; pointer-events: none; -webkit-user-drag: none; }
   .kbtn .idle-n { position: absolute; left: 44px; top: 41px; width: 10px; font-size: 12px; line-height: normal; text-align: center; }
   .kbtn .lens { left: 13.5px; top: 13.5px; pointer-events: none; }
@@ -46,7 +46,7 @@
   .say .dot { width: 12px; font-size: 16px; text-align: center; }
 
   .reset { position: absolute; left: 323px; top: 553.5px; width: 32px; height: 32px; }
-  .reset img { width: 32px; height: 32px; transition: transform .3s; }
+  .reset img { width: 32px; height: 32px; transition: transform var(--dur) var(--ease); }
   .reset:active img { transform: rotate(-90deg); }
   .photo img { -webkit-user-drag: none; }
 </style>
