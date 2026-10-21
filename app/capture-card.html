@@ -14,6 +14,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
+<script>
+  // 아직 안 접은 그림이 있으면 "종이로 접는 중" 화면이 첫 프레임부터 떠 있어야 해요
+  // (접을 모양을 계산하는 동안 완성된 카드가 먼저 보이지 않게). 본문이 그려지기 전에 표시해 둬요.
+  try {
+    var d0 = JSON.parse(sessionStorage.getItem('pico.drawing') || 'null');
+    var still0 = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (d0 && d0.src && !d0.folded && !still0 && !new URLSearchParams(location.search).get('state')) document.documentElement.classList.add('fold-pending');
+  } catch (e) {}
+</script>
 <style>
   .nav-actions { display: flex; gap: 10px; align-items: center; }
   .headline { position: absolute; left: 0; top: 127.15px; width: 375px; text-align: center; font-family: var(--font-hand); font-size: 24px; white-space: nowrap; }
@@ -73,6 +82,13 @@
 
   <div class="save-toast" id="toast" role="status" hidden>
     <div class="save-toast-face"><img src="assets/capture/card-toast-icon.png" alt=""><span>사진첩에 카드를 저장했어요.</span></div>
+  </div>
+
+  <!-- 종이로 접는 중 (Figma Warm-Up 촬영 8~10): html.fold-pending 일 때만 보여요 -->
+  <div class="ai-wait fold-wait" id="foldWait" role="status" aria-live="polite">
+    <div class="fold-board"><canvas width="440" height="440"></canvas></div>
+    <div class="fold-text"><p class="fold-title">내 그림을 종이로 접고 있어요.</p><p class="fold-sub">관찰한 특징을 하나씩 담아볼게요.</p></div>
+    <div class="fold-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
   </div>
 
   <a class="cta" id="release" href="home.html?state=field" style="top:702px"><span class="cta-face">들판에 놓아주기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
@@ -135,34 +151,28 @@
   // 관찰을 마치면 그 그림이 종이로 접혀요: 처음 한 번만 "접는 중이에요" 화면을 보여주고, 접은 모습을 액자와 들판에 써요.
   var FOLD_SECONDS = 8;   // "종이로 접는 중이에요"를 일부러 아주 길게 (초)
   (function () {
-    var win = document.getElementById('picoWin');
+    var win = document.getElementById('picoWin'), el = document.getElementById('foldWait');
+    function leave() { document.documentElement.classList.remove('fold-pending'); }   // 로딩 화면 치우기
     var d = null; try { d = JSON.parse(sessionStorage.getItem('pico.drawing') || 'null'); } catch (e) {}
-    if (!d || !d.src) return;
+    if (!d || !d.src) { leave(); return; }
     function show(src) { win.innerHTML = ''; var im = new Image(); im.alt = ''; im.src = src; win.appendChild(im); }
-    if (d.folded) { show(d.folded); return; }                       // 이미 접었으면 다시 접지 않아요 (뒤로 갔다 와도 그대로)
+    if (d.folded) { show(d.folded); leave(); return; }               // 이미 접었으면 다시 접지 않아요 (뒤로 갔다 와도 그대로)
     show(d.src);                                                     // 접기 전에는 그린 그대로
-    if (!window.PicoOrigami) return;
+    if (!window.PicoOrigami) { leave(); return; }
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var quiet = !!document.documentElement.dataset.state || reduce;  // ?state=… 화면이나 모션 줄이기: 연출 없이 바로 접은 모습
     PicoOrigami.make(d.src).then(function (model) {
-      if (!model) return;                                            // 접을 수 없는 그림(너무 작거나 선이 거의 없음)은 그린 그대로
+      if (!model) { leave(); return; }                               // 접을 수 없는 그림(너무 작거나 선이 거의 없음)은 그린 그대로
       var png = PicoOrigami.png(model, 220);
       function keep() { PicoField.saveFolded(png); show(png); }
-      if (quiet) { keep(); return; }
+      if (quiet) { keep(); leave(); return; }
 
-      var phone = document.querySelector('.phone');
-      var el = document.createElement('div');
-      el.className = 'ai-wait fold-wait'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
       // Figma Warm-Up 촬영 8 · 9 · 10 — 접는 단계마다 문구와 켜진 점이 함께 바뀌어요
       var STAGES = [
         ['내 그림을 종이로 접고 있어요.', '관찰한 특징을 하나씩 담아볼게요.'],            // 촬영 8  · 점 1
         ['조금씩 모습을 갖춰가고 있어요.', '색과 무늬까지 꼼꼼하게 표현하고 있어요.'],      // 촬영 9  · 점 2
         ['세상에 하나뿐인 작품이 완성됐어요!', '오늘의 발견을 관찰 카드에 담았어요.']        // 촬영 10 · 점 3
       ];
-      el.innerHTML = '<div class="fold-board"><canvas width="440" height="440"></canvas></div>' +
-        '<div class="fold-text"><p class="fold-title">' + STAGES[0][0] + '</p><p class="fold-sub">' + STAGES[0][1] + '</p></div>' +
-        '<div class="fold-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>';
-      phone.appendChild(el);
       var text = el.querySelector('.fold-text'), title = el.querySelector('.fold-title'), sub = el.querySelector('.fold-sub'), dots = el.querySelectorAll('.fold-dots i'), anim = null, closed = false, stage = 0, swapTimer = 0;
       function step(n) {
         for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('on', i === n);
@@ -175,7 +185,7 @@
       function close() {
         if (closed) return; closed = true;
         keep(); el.classList.add('is-out');                          // 액자에 접은 모습을 먼저 넣고 디졸브로 걷어요
-        setTimeout(function () { el.remove(); }, (window.picoDur ? picoDur() : 300) + 20);
+        setTimeout(leave, (window.picoDur ? picoDur() : 300) + 20);
       }
       setTimeout(function () {
         anim = PicoOrigami.play(el.querySelector('canvas'), model, {
@@ -188,7 +198,7 @@
         });
       }, 450);
       el.addEventListener('click', function () { if (el.classList.contains('is-done')) close(); });   // 접는 동안엔 끝까지 기다려요 (일부러 길게)
-    });
+    }, leave);
   })();
 
   var toast = document.getElementById('toast'), timer;

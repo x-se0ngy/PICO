@@ -267,7 +267,8 @@ img { display: block; }
 /* ---------- 종이로 접는 중이에요 (app/origami.js · 관찰 카드, Figma Warm-Up 촬영 8~10) ----------
    카드 위에 종이 질감을 85%로 덮어 카드가 희미하게 비치고, 가운데 종이 판 위에서 그림이 삼각형 면으로 접혀요.
    아래 점 세 개가 접는 단계(1 → 2 → 3)를 알려주고, 끝나면 문구가 바뀐 뒤 디졸브로 사라져요. */
-.fold-wait { display: block; background: none; }
+.fold-wait { display: none; background: none; animation: none; }      /* 첫 프레임부터 떠 있어야 해서 따로 페이드인하지 않아요 (페이지 전환이 디졸브해 줘요) */
+.fold-pending .fold-wait { display: block; }
 .fold-wait::before { content: ''; position: absolute; inset: 0; background: #fffad3 url('assets/common/paper.jpg') 0 0 / 375px 812px no-repeat; opacity: .85; }
 .fold-board { position: absolute; left: 81.66px; top: 240.9px; width: 205.717px; height: 211.45px; background: var(--surface); border: .631px dashed var(--ink); box-shadow: 5.74px 7.13px 0 var(--ink); }
 .fold-board canvas { position: absolute; left: 50%; top: 50%; width: 196px; height: 196px; transform: translate(-50%, -50%); display: block; }
