@@ -21,6 +21,22 @@
   }
   // 앱 전체 움직임 길이(base.css의 --dur) — 애니메이션이 끝난 뒤 정리하는 타이머가 같은 값을 써요
   window.picoDur = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur')) || 300; };
+  // 문서 간 View Transition이 없는 브라우저: 나타날 때 디졸브(CSS .no-vt), 떠날 때 먼저 흐려진 뒤 이동해요
+  if (!('CSSViewTransitionRule' in window)) {
+    document.documentElement.classList.add('no-vt');
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href]');
+      if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0 || a.target || a.hasAttribute('download') || a.hasAttribute('data-confirm')) return;
+      var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
+      if (u.origin !== location.origin || (u.pathname === location.pathname && u.search === location.search && u.hash)) return;
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+      e.preventDefault();
+      document.documentElement.classList.add('is-leaving');
+      setTimeout(function () { location.href = a.href; }, window.picoDur() * 0.6);
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) document.documentElement.classList.remove('is-leaving'); });
+  }
   window.addEventListener('resize', fit);
   document.addEventListener('DOMContentLoaded', function () { wrap(); fit(); });
   // [data-go="page.html"] → navigate on click (for non-<a> elements)

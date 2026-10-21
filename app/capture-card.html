@@ -133,6 +133,7 @@
 
   // 4단계에서 그린 그림을 액자에 넣어요 (그림이 없으면 빈 액자)
   // 관찰을 마치면 그 그림이 종이로 접혀요: 처음 한 번만 "접는 중이에요" 화면을 보여주고, 접은 모습을 액자와 들판에 써요.
+  var FOLD_SECONDS = 8;   // "종이로 접는 중이에요"를 일부러 아주 길게 (초)
   (function () {
     var win = document.getElementById('picoWin');
     var d = null; try { d = JSON.parse(sessionStorage.getItem('pico.drawing') || 'null'); } catch (e) {}
@@ -165,14 +166,15 @@
       }
       setTimeout(function () {
         anim = PicoOrigami.play(el.querySelector('canvas'), model, {
-          onProgress: function (p) { step(p < .45 ? 0 : 1); },
+          duration: FOLD_SECONDS,
+          onProgress: function (p) { step(p < .5 ? 0 : 1); },
           onDone: function () {
             step(2); title.textContent = '다 접었어요!'; sub.textContent = '나만의 PICO가 완성 되었어요.'; el.classList.add('is-done');
-            setTimeout(close, 1300);
+            setTimeout(close, 2000);
           }
         });
       }, 450);
-      el.addEventListener('click', function () { if (el.classList.contains('is-done')) close(); else if (anim) anim.skip(); });
+      el.addEventListener('click', function () { if (el.classList.contains('is-done')) close(); });   // 접는 동안엔 끝까지 기다려요 (일부러 길게)
     });
   })();
 
