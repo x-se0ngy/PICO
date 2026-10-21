@@ -23,69 +23,71 @@
   .greet h1 { font-weight: 700; font-size: 22px; line-height: 25.25px; height: 25.25px; white-space: nowrap; }
   .greet p { font-size: 16px; line-height: 15.25px; height: 15.25px; white-space: nowrap; }
 
-  /* ---- radar mode ---- */
+  /* ---- 내 근처: 종이 지도 (레이더 없음) ----
+     사람이 먼저: 지도 위에는 친구 아바타가 크게, 장소 핀은 작게. 아래 카드는 친구와 인사를 나누는 소통 카드.
+     그림자 없이 얇은 선과 접힌 모서리로 종이 느낌을 내요. */
   .radar, .field { position: absolute; inset: 0; }
   .phone[data-mode="field"] .radar, .phone[data-mode="radar"] .field { display: none; }
+  .phone[data-mode="radar"] .panel { height: 411px; }
   .abs { position: absolute; display: block; }
-  .ring-lbl { position: absolute; top: 354.37px; font-size: 10px; line-height: 20px; white-space: nowrap; z-index: 1; }
-  /* radar scope (Figma 2.1.2: dashed rings 300 / 200 / 100, centre at 187.35, 364.37) */
-  .scope { position: absolute; left: 37.35px; top: 214.37px; width: 300px; height: 300px; }
-  .ring { position: absolute; border: 1px dashed var(--ink); border-radius: 50%; }
-  .ring--300 { left: 0; top: 0; width: 300px; height: 300px; }
-  .ring--200 { left: 50px; top: 50px; width: 200px; height: 200px; }
-  .ring--100 { left: 100px; top: 100px; width: 100px; height: 100px; }
-  /* sweep: one turn every 4s, yellow (#F4D159, --reward) wedge trailing a thin leading line */
-  .sweep { position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
-    background: conic-gradient(from 0deg, rgba(244, 209, 89, 0) 0deg, rgba(244, 209, 89, 0) 290deg, rgba(244, 209, 89, .5) 360deg);
-    animation: radar-sweep var(--sweep) linear infinite; }
-  .sweep::after { content: ''; position: absolute; left: 149.25px; top: 0; width: 1.5px; height: 150px; background: var(--reward); }
-  /* sonar pulse from my position */
-  .pulse { position: absolute; left: 0; top: 0; width: 300px; height: 300px; border-radius: 50%; border: 1.5px solid var(--reward); opacity: 0;
-    animation: radar-pulse var(--sweep) cubic-bezier(.25, .6, .07, 1) infinite; }
-  .pulse + .pulse { animation-delay: calc(var(--sweep) / 2); }
-  :root { --sweep: 4s; }
-  @keyframes radar-sweep { to { transform: rotate(360deg); } }
-  @keyframes radar-pulse { 0% { transform: scale(.07); opacity: .9; } 100% { transform: scale(1); opacity: 0; } }
+  .pmap { position: absolute; left: 0; top: 119px; width: 375px; height: 409px; display: block; }
+  .dogear { position: absolute; left: 348px; top: 117px; width: 28px; height: 28px; z-index: 1; }
 
-  /* pins: yellow = not selected, green = selected. All pins show right away on load;
-     each one pings when the sweep passes it (--a = its angle). */
-  .pin { position: absolute; width: 47.852px; height: 47.852px; z-index: 2;
-    animation: pin-found .3s cubic-bezier(.25, .6, .07, 1) both, pin-ping var(--sweep) linear infinite;
-    animation-delay: 0s, calc(var(--sweep) * var(--a) / 360); }
-  .pin i { position: absolute; left: 6.93px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); border: 1px dashed var(--ink); background: var(--reward);
-    transition: background-color .3s cubic-bezier(.25, .6, .07, 1); }
-  .pin img { position: absolute; left: 15.43px; top: 14.43px; width: 18px; height: 18px; }
-  .pin::before { content: ''; position: absolute; left: 9.79px; top: 6.93px; width: 34px; height: 34px; transform: rotate(39.37deg); background: var(--ink-950); border: 1px solid var(--ink);
-    opacity: 0; transition: opacity .3s cubic-bezier(.25, .6, .07, 1); }
+  /* 나 */
+  .me-tag { position: absolute; font-size: 11px; line-height: 14px; padding: 0 5px; background: var(--ink); color: var(--surface); z-index: 2; white-space: nowrap; }
+
+  /* 장소 핀: 작고 조용하게 (사람 다음) */
+  .pin { position: absolute; width: 30px; height: 30px; z-index: 2; padding: 0; }
+  .pin i { position: absolute; left: 4px; top: 4px; width: 22px; height: 22px; transform: rotate(39.37deg); border: 1px dashed var(--ink); background: var(--reward); transition: background-color .3s var(--ease-slow); }
+  .pin img { position: absolute; left: 8px; top: 8px; width: 14px; height: 14px; }
+  .pin-lbl { position: absolute; left: 50%; top: 31px; transform: translateX(-50%); font-size: 10px; line-height: 12px; padding: 0 3px; white-space: nowrap; background: rgba(255, 250, 215, .9); pointer-events: none; }
   .pin.on i { background: var(--brand); border-style: solid; }
-  .pin.on::before { opacity: 1; }
+  .pin.on .pin-lbl { background: var(--brand-soft); border: 1px solid var(--ink); padding: 0 4px; }
   .pin:active i { filter: brightness(.92); }
-  @keyframes pin-found { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
-  @keyframes pin-ping { 0% { transform: scale(1); } 4% { transform: scale(1.14); } 12%, 100% { transform: scale(1); } }
-  @media (prefers-reduced-motion: reduce) { .sweep, .pulse { animation: none; display: none; } .pin { animation: none; } }
 
-  .rec-card[hidden] { display: none; }
-  /* empty state (Figma 2.1.2 홈-내 근처-0): no pin selected yet */
-  .rec-empty { cursor: default; }
-  .rec-empty .rec-face { gap: 10px; }
-  .rec-empty .slot { position: relative; flex: none; width: 71.786px; height: 50px; border: 1px solid var(--ink); }
-  .rec-empty .slot img { position: absolute; left: 19px; top: 7px; width: 32px; height: 32px; }
-  .rec-empty .rec-txt { width: 190px; gap: 2px; }
-  .rec-empty .rec-txt span { white-space: nowrap; }
+  /* 친구 마커: 지도의 주인공 */
+  .fm { position: absolute; width: 44px; height: 40px; z-index: 3; padding: 0; animation: fm-in .4s var(--ease-slow) both; }
+  .fm-av { position: absolute; left: 2px; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #fff; transition: transform .25s var(--ease-slow), box-shadow .25s var(--ease-slow); }
+  .fm-av img { display: block; width: 40px; height: 40px; }
+  .fm.on .fm-av { transform: scale(1.14); box-shadow: 0 0 0 3px var(--brand), 0 0 0 4px var(--ink); }
+  .fm-name { position: absolute; left: 50%; top: 45px; transform: translateX(-50%); font-size: 11px; line-height: 14px; padding: 0 6px; white-space: nowrap; background: #fffdf7; border: 1.5px solid var(--ink); }
+  .fm.on .fm-name { background: var(--reward); }
+  .fm-bub { position: absolute; left: 50%; bottom: 52px; transform: translateX(-50%); display: none; font-size: 11px; line-height: 14px; padding: 4px 8px; white-space: nowrap; background: var(--surface); border: 1px solid var(--ink); }
+  .fm-bub::after { content: ''; position: absolute; left: 50%; bottom: -5px; width: 8px; height: 8px; margin-left: -4px; background: var(--surface); border: solid var(--ink); border-width: 0 1px 1px 0; transform: rotate(45deg); }
+  .fm.on .fm-bub { display: block; animation: fm-bub .3s var(--ease-slow) both; }
+  .fm-heart { position: absolute; left: 30px; top: -8px; font-size: 20px; line-height: 22px; color: #e8432e; text-shadow: 0 0 3px #fff, 0 0 3px #fff; opacity: 0; pointer-events: none; }
+  .fm.hi .fm-heart { animation: fm-heart 1.1s ease-out forwards; }
+  @keyframes fm-in { from { opacity: 0; transform: translateY(8px) scale(.85); } to { opacity: 1; transform: none; } }
+  @keyframes fm-bub { from { opacity: 0; transform: translate(-50%, 4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  @keyframes fm-heart { 0% { opacity: 0; transform: translateY(8px) scale(.6); } 25% { opacity: 1; transform: translateY(-4px) scale(1.15); } 100% { opacity: 0; transform: translateY(-26px) scale(1); } }
 
-  .rec-h { position: absolute; left: 19.94px; top: 577.25px; font-size: 16px; line-height: 20px; white-space: nowrap; }
-  .rec-card { position: absolute; left: 19.85px; top: 601.94px; width: 330px; height: 70px; text-align: left; }
-  .rec-card::before { content: ''; position: absolute; left: 5px; top: 6.85px; width: 330px; height: 70px; background: var(--ink); border: 1px solid var(--ink); }
-  .rec-face { position: absolute; inset: 0; background: var(--surface); border: 1px solid var(--ink); padding: 10px 1px 10px 14px; display: flex; align-items: center; gap: 9px; }
-  .rec-face .thumb { width: 71.786px; height: 50px; }
-  .rec-body { display: flex; align-items: flex-end; gap: 31px; }
-  .rec-txt { width: 171.09px; display: flex; flex-direction: column; gap: 2px; }
-  .rec-txt b { font-weight: 400; font-size: 14px; line-height: 20px; white-space: nowrap; }
-  .rec-txt span { font-size: 10px; line-height: 12px; }
-  .rec-body .chev { width: 32px; height: 32px; transform: rotate(-90deg); }
+  /* 아래 카드: 지금 근처에 있는 친구 + 인사 */
+  .pp-h { position: absolute; left: 20px; top: 539px; font-size: 16px; line-height: 20px; white-space: nowrap; }
+  .pp-h small { font-size: 12px; margin-left: 6px; }
+  .pp-card { position: absolute; left: 20px; top: 566px; width: 335px; height: 112px; background: var(--surface); border: 1px solid var(--ink); animation: pp-in .3s var(--ease-slow) both; }
+  .pp-card::before { content: ''; position: absolute; top: -1px; right: -1px; width: 17px; height: 17px; background: linear-gradient(to bottom left, var(--bg) 50%, transparent 50%); }
+  .pp-card::after { content: ''; position: absolute; top: -1px; right: -1px; width: 17px; height: 17px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 17 17'%3E%3Cpath d='M.5 .5V16.5H16.5Z' fill='%23fffad7' stroke='%23000' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat; }
+  @keyframes pp-in { from { opacity: 0; } to { opacity: 1; } }
+  .pp-av { position: absolute; left: 14px; top: 11px; width: 48px; height: 48px; }
+  .pp-t { position: absolute; left: 74px; top: 10px; width: 232px; }
+  .pp-t b { font-weight: 400; font-size: 16px; line-height: 20px; }
+  .pp-t small { font-size: 11px; line-height: 14px; margin-left: 6px; padding: 0 5px; background: var(--brand-soft); border: 1px solid var(--ink); vertical-align: 2px; white-space: nowrap; }
+  .pp-say { font-size: 13px; line-height: 18px; margin-top: 3px; white-space: nowrap; }
+  .pp-where { font-size: 11px; line-height: 14px; margin-top: 2px; display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+  .pp-where img { width: 12px; height: 12px; }
+  .pp-act { position: absolute; left: 14px; right: 14px; top: 68px; display: flex; gap: 10px; }
+  .pp-b { flex: 1; height: 32px; border: 1px solid var(--ink); background: var(--surface); display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 13px; line-height: 16px; white-space: nowrap; transition: background-color .2s; }
+  .pp-b img { width: 18px; height: 18px; }
+  .pp-heart { font-weight: 400; font-size: 16px; line-height: 16px; color: #e8432e; }
+  .pp-b.sent .pp-heart { color: var(--ink); }
+  .pp-b--go { background: var(--reward); }
+  .pp-b.sent { background: var(--brand); }
+  .pp-b:active { filter: brightness(.94); }
+  @media (prefers-reduced-motion: reduce) { .fm, .fm.on .fm-bub, .fm.hi .fm-heart, .pp-card { animation: none; } .fm.hi .fm-heart { opacity: 1; } }
 
   /* ---- mode toggle ---- */
-  .modes { position: absolute; left: 283.03px; top: 495.63px; width: 73px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; z-index: 4; }
+  .modes { position: absolute; left: 283.03px; top: 463px; width: 73px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; z-index: 4; }
   .phone[data-mode="field"] .modes { left: 282.39px; top: 636.3px; }
   .mode { position: relative; width: 72px; height: 25px; border: 1px dashed var(--ink); display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 10px; line-height: 10.27px; }
   .mode img { width: 18px; height: 18px; }
@@ -158,38 +160,81 @@
 
   <div class="panel"></div>
 
-  <!-- ========== 내 근처 (radar) ========== -->
+  <!-- ========== 내 근처 (종이 지도) ========== -->
   <section class="radar" aria-label="내 근처">
-    <div class="scope" aria-hidden="true">
-      <div class="sweep"></div>
-      <div class="pulse"></div><div class="pulse"></div>
-      <div class="ring ring--300"></div><div class="ring ring--200"></div><div class="ring ring--100"></div>
-    </div>
-    <img class="abs" src="assets/home/radar-me-outer.png" alt="" style="left:177.35px;top:354.37px;width:20px;height:20px">
-    <img class="abs" src="assets/home/radar-me-inner.png" alt="내 위치" style="left:182.35px;top:359.37px;width:10px;height:10px">
-    <span class="ring-lbl" style="left:207.85px">100m</span>
-    <span class="ring-lbl" style="left:254.03px">200m</span>
-    <span class="ring-lbl" style="left:303.99px">300m</span>
-    <div id="radarPins"></div>
+    <svg class="pmap" viewBox="0 0 375 409" aria-hidden="true">
+      <defs>
+        <linearGradient id="fold-a" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".08"/></linearGradient>
+        <linearGradient id="fold-b" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".08"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/></linearGradient>
+        <linearGradient id="fold-c" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      </defs>
+      <!-- 개울 -->
+      <path d="M-10 150 C 55 118, 120 182, 190 156 S 320 118, 385 168" fill="none" stroke="#000" stroke-width="27" stroke-linecap="round"/>
+      <path d="M-10 150 C 55 118, 120 182, 190 156 S 320 118, 385 168" fill="none" stroke="#bfe9fb" stroke-width="25" stroke-linecap="round"/>
+      <path d="M52 146h12M160 166h12M262 140h12M334 144h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      <!-- 공원 -->
+      <path d="M24 292 C22 262 62 246 100 256 C136 250 158 276 150 306 C146 336 108 350 70 344 C38 340 26 320 24 292Z" fill="#c5cd71" stroke="#000" stroke-dasharray="4 3"/>
+      <ellipse cx="120" cy="300" rx="20" ry="11" fill="#bfe9fb" stroke="#000"/>
+      <!-- 텃밭 -->
+      <g transform="translate(250 252) rotate(-4)">
+        <rect x="-8" y="-8" width="106" height="64" fill="none" stroke="#000" stroke-dasharray="4 3"/>
+        <g stroke="#000" stroke-width=".8">
+          <rect x="0" y="0" width="28" height="22" fill="#b1bd35"/><rect x="31" y="0" width="28" height="22" fill="#dbe28f"/><rect x="62" y="0" width="28" height="22" fill="#b1bd35"/>
+          <rect x="0" y="26" width="28" height="22" fill="#dbe28f"/><rect x="31" y="26" width="28" height="22" fill="#b1bd35"/><rect x="62" y="26" width="28" height="22" fill="#dbe28f"/>
+        </g>
+      </g>
+      <!-- 학교 -->
+      <g stroke="#000" stroke-linejoin="round">
+        <rect x="286" y="62" width="44" height="26" fill="#fffad7"/>
+        <path d="M282 62 L308 44 L334 62Z" fill="#f4d159"/>
+        <rect x="302" y="72" width="12" height="16" fill="#c5cd71"/>
+        <rect x="340" y="76" width="20" height="14" fill="#fffad7"/><path d="M337 76 L350 66 L363 76Z" fill="#f4d159"/>
+      </g>
+      <!-- 길 -->
+      <path d="M10 409 C70 352 135 318 187 258 S300 176 385 92" fill="none" stroke="#000" stroke-width="15" stroke-linecap="round"/>
+      <path d="M10 409 C70 352 135 318 187 258 S300 176 385 92" fill="none" stroke="#fffdf0" stroke-width="13" stroke-linecap="round"/>
+      <path d="M10 409 C70 352 135 318 187 258 S300 176 385 92" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="5 5" opacity=".45"/>
+      <path d="M-10 384 C90 364 250 396 385 356" fill="none" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+      <path d="M-10 384 C90 364 250 396 385 356" fill="none" stroke="#fffdf0" stroke-width="10" stroke-linecap="round"/>
+      <!-- 나무 -->
+      <image href="assets/home/field/tree-a.png" x="36" y="262" width="30.42" height="47.67"/>
+      <image href="assets/home/field/tree-b.png" x="72" y="262" width="25.67" height="40.23"/>
+      <image href="assets/home/field/tree-c.png" x="132" y="326" width="25.67" height="39.84"/>
+      <image href="assets/home/field/tree-b.png" x="204" y="338" width="25.67" height="40.23"/>
+      <image href="assets/home/field/tree-a.png" x="22" y="120" width="30.42" height="47.67"/>
+      <!-- 접힌 종이: 세로 두 번, 가로 한 번 -->
+      <g pointer-events="none">
+        <rect x="0" y="0" width="125" height="409" fill="url(#fold-a)"/>
+        <rect x="125" y="0" width="125" height="409" fill="url(#fold-b)"/>
+        <rect x="250" y="0" width="125" height="409" fill="url(#fold-c)"/>
+        <path d="M125.5 0V409M250.5 0V409" stroke="#000" stroke-opacity=".16"/>
+        <path d="M126.5 0V409M251.5 0V409" stroke="#fff" stroke-opacity=".55"/>
+        <path d="M0 205.5H375" stroke="#000" stroke-opacity=".12"/><path d="M0 206.5H375" stroke="#fff" stroke-opacity=".5"/>
+      </g>
+    </svg>
+    <!-- 오른쪽 위 접힌 모서리 -->
+    <svg class="dogear" viewBox="0 0 28 28" aria-hidden="true"><path d="M0 0H28V28Z" fill="#fdf4b1"/><path d="M.5 .5V27.5H27.5Z" fill="#fffad7" stroke="#000" stroke-linejoin="round" transform="translate(0 0)"/></svg>
 
-    <!-- 내 근처 탐험 추천: shown only while a pin is selected (green) -->
-    <div class="rec" id="rec" aria-live="polite">
-      <p class="rec-h">내 근처 탐험 추천</p>
-      <div class="rec-card rec-empty" id="recEmpty" data-dissolve>
-        <span class="rec-face">
-          <span class="slot"><img src="assets/icons/outline/map.svg" alt=""></span>
-          <span class="rec-txt"><b>어디로 탐험을 떠나볼까요?</b><span>지도에서 탐험지를 선택하면<br>만날 수 있는 친구들을 미리 볼 수 있어요.</span></span>
-        </span>
+    <img class="abs" src="assets/home/radar-me-outer.png" alt="" style="left:177px;top:365px;width:20px;height:20px">
+    <img class="abs" src="assets/home/radar-me-inner.png" alt="내 위치" style="left:182px;top:370px;width:10px;height:10px">
+    <span class="me-tag" style="left:200px;top:368px">나</span>
+
+    <div id="radarPins"></div>
+    <div id="friendPins"></div>
+
+    <!-- 사람 먼저: 지금 근처에 있는 친구 -->
+    <p class="pp-h">지금 근처에 있는 친구<small id="ppCount"></small></p>
+    <div class="pp-card" id="ppCard">
+      <img class="pp-av" id="ppAv" src="assets/profile/grass.svg" alt="">
+      <div class="pp-t">
+        <div><b id="ppName">민지혁</b><small id="ppTitle">새싹 탐험가</small></div>
+        <p class="pp-say" id="ppSay"></p>
+        <p class="pp-where"><img src="assets/icons/outline/location.svg" alt=""><span id="ppWhere"></span></p>
       </div>
-      <button class="rec-card" type="button" id="recCard" data-open-sheet data-dissolve hidden>
-        <span class="rec-face">
-          <img class="thumb" id="recThumb" src="assets/home/place-thumb-park.png" alt="">
-          <span class="rec-body">
-            <span class="rec-txt"><b id="recName">햇살 근린 공원</b><span id="recSub">걸어서 5분 · 지금 방아깨비가 많아요</span></span>
-            <img class="chev" src="assets/icons/outline/arrow-alternate.svg" alt="">
-          </span>
-        </span>
-      </button>
+      <div class="pp-act">
+        <button type="button" class="pp-b" id="ppHi"><b class="pp-heart" aria-hidden="true">♥</b><span>반가워요</span></button>
+        <button type="button" class="pp-b pp-b--go" id="ppGo" data-open-sheet><span>같이 탐험하기</span><img src="assets/icons/outline/arrow-right.svg" alt=""></button>
+      </div>
     </div>
   </section>
 
@@ -200,7 +245,7 @@
 
   <!-- mode toggle -->
   <div class="modes" role="tablist" aria-label="보기 모드">
-    <button class="mode on" type="button" role="tab" data-mode="radar" aria-selected="true"><img src="assets/icons/filled/radar.svg" alt=""><span>내 근처</span></button>
+    <button class="mode on" type="button" role="tab" data-mode="radar" aria-selected="true"><img src="assets/icons/filled/location.svg" alt=""><span>내 근처</span></button>
     <button class="mode" type="button" role="tab" data-mode="field" aria-selected="false"><img src="assets/icons/outline/map.svg" alt=""><span>내 들판</span></button>
   </div>
 
@@ -247,52 +292,85 @@
   try { greetName = (localStorage.getItem('pico.name') || '').trim() || greetName; } catch (e) {}
   document.getElementById('greetName').textContent = greetName + ',';
 
-  // nearby places = radar pins. x/y: bounding box of the rotated 34px square; a: angle (deg, clockwise from up)
-  // from the radar centre, so each pin lights up when the sweep passes it.
-  // Only 햇살 근린 공원 is designed in Figma; the other two reuse its map and use insect photos as thumbnails.
-  // Figma 2.1.2 홈 ×3 + 2.2.1–2.2.3 홈 팝업: pin positions = "map" instance + 3.63 (rotated-square bounds)
+  // 내 근처 = 종이 지도. 사람(친구)이 먼저, 장소는 그다음.
+  // 좌표는 지도 SVG(375x409) 기준. 지도는 화면 y 119px부터 시작해요.
+  var MAPTOP = 119;
   var ALL_BUGS = [['grasshopper', '방아깨비'], ['ladybug', '무당벌레'], ['butterfly', '호랑나비'], ['dragonfly', '고추잠자리']];
   var places = [
-    { x: 94.63,  y: 455.63, a: 210.9, name: '햇살 근린 공원', sub: '걸어서 5분 · 지금 방아깨비가 많아요',
+    { x: 86,  y: 318, name: '햇살 근린 공원', sub: '걸어서 5분 · 지금 방아깨비가 많아요',
       thumb: 'assets/home/place-thumb-park.png', map: 'assets/home/place-map.png', bugs: ALL_BUGS },
-    { x: 128.63, y: 257.63, a: 337.2, name: '물빛 개울 산책로', sub: '걸어서 6분 · 고추잠자리가 자주 보여요',
+    { x: 172, y: 180, name: '물빛 개울 산책로', sub: '걸어서 6분 · 고추잠자리가 자주 보여요',
       thumb: 'assets/home/place-thumb-stream.png', map: 'assets/home/place-map-stream.png', bugs: [['dragonfly', '고추잠자리']] },
-    { x: 268.63, y: 400.63, a: 119.8, name: '학교 뒤 텃밭', sub: '걸어서 7분 · 잎 위에 무당벌레가 있어요',
+    { x: 238, y: 296, name: '학교 뒤 텃밭', sub: '걸어서 7분 · 잎 위에 무당벌레가 있어요',
       thumb: 'assets/home/place-thumb-garden.png', map: 'assets/home/place-map-garden.png', bugs: [['ladybug', '무당벌레'], ['butterfly', '호랑나비']] }
   ];
-  var pinsEl = document.getElementById('radarPins');
+  var friends = [
+    { pf: 'grass', name: '민지혁', title: '새싹 탐험가', x: 96, y: 198, place: 0, bub: '방아깨비 발견!', say: '방금 방아깨비를 발견했어요!' },
+    { pf: 'river', name: '유선규', title: '물가 탐험가', x: 216, y: 104, place: 1, bub: '소금쟁이 관찰 중', say: '소금쟁이를 관찰하는 중이에요!' },
+    { pf: 'flower', name: '민사온', title: '꽃밭 탐험가', x: 304, y: 198, place: 2, bub: '나비 따라가는 중', say: '호랑나비를 따라가는 중이에요!' }
+  ];
+  var pinsEl = document.getElementById('radarPins'), fpEl = document.getElementById('friendPins');
   pinsEl.innerHTML = places.map(function (p, i) {
-    return '<button type="button" class="pin" data-pin="' + i + '" aria-pressed="false" style="left:' + p.x + 'px;top:' + p.y + 'px;--a:' + p.a +
-      '" aria-label="' + p.name + '"><i></i><img src="assets/icons/outline/location.svg" alt=""></button>';
+    return '<button type="button" class="pin" data-pin="' + i + '" aria-pressed="false" style="left:' + (p.x - 15) + 'px;top:' + (p.y + MAPTOP - 15) +
+      'px" aria-label="' + p.name + '"><i></i><img src="assets/icons/outline/location.svg" alt=""><span class="pin-lbl">' + p.name + '</span></button>';
   }).join('');
+  fpEl.innerHTML = friends.map(function (f, i) {
+    return '<button type="button" class="fm" data-fm="' + i + '" aria-pressed="false" style="left:' + (f.x - 22) + 'px;top:' + (f.y + MAPTOP - 20) + 'px;animation-delay:' + (i * 90) + 'ms" aria-label="' + f.name + '">' +
+      '<span class="fm-bub">' + f.bub + '</span><span class="fm-av"><img src="assets/profile/' + f.pf + '-m.svg" alt=""></span><span class="fm-name">' + f.name + '</span><span class="fm-heart" aria-hidden="true">♥</span></button>';
+  }).join('');
+  document.getElementById('ppCount').textContent = friends.length + '명';
 
-  // selection: yellow = not selected, green = selected → 내 근처 탐험 추천 appears
-  var selected = -1, recEmpty = document.getElementById('recEmpty'), recCard = document.getElementById('recCard');
-  function setThumb(img, p) { img.src = p.thumb; }
-  function select(i) {
-    if (i === selected) return;
+  // 장소 선택: 노랑 = 안 고름, 초록 = 고름
+  var selected = -1;
+  function selectPlace(i) {
     selected = i;
     pinsEl.querySelectorAll('.pin').forEach(function (b) {
       var on = +b.dataset.pin === i;
       b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
-    // swap the card (empty ↔ place) and replay its 300ms dissolve
-    var show = i < 0 ? recEmpty : recCard, hide = i < 0 ? recCard : recEmpty;
-    hide.hidden = true; show.hidden = true; void show.offsetWidth; show.hidden = false;
-    if (i < 0) return;
-    var p = places[i];
-    document.getElementById('recName').textContent = p.name;
-    document.getElementById('recSub').textContent = p.sub;
-    setThumb(document.getElementById('recThumb'), p);
-    recCard.setAttribute('aria-label', p.name + ' 자세히 보기');
   }
+  // 친구 선택: 지도 마커 · 아래 카드 · 그 친구가 있는 장소가 함께 바뀌어요
+  var curFriend = -1, sent = {};
+  var card = document.getElementById('ppCard'), hiBtn = document.getElementById('ppHi');
+  function paintHi() {
+    var on = !!sent[curFriend];
+    hiBtn.classList.toggle('sent', on);
+    hiBtn.querySelector('span').textContent = on ? '인사를 보냈어요' : '반가워요';
+  }
+  function selectFriend(i) {
+    if (i === curFriend) return;
+    curFriend = i;
+    var f = friends[i];
+    fpEl.querySelectorAll('.fm').forEach(function (b) {
+      var on = +b.dataset.fm === i;
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    document.getElementById('ppAv').src = 'assets/profile/' + f.pf + '.svg';
+    document.getElementById('ppName').textContent = f.name;
+    document.getElementById('ppTitle').textContent = f.title;
+    document.getElementById('ppSay').textContent = f.say;
+    document.getElementById('ppWhere').textContent = places[f.place].name + ' 근처';
+    card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
+    paintHi(); selectPlace(f.place);
+  }
+  fpEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.fm'); if (b) selectFriend(+b.dataset.fm);
+  });
   pinsEl.addEventListener('click', function (e) {
-    var b = e.target.closest('.pin'); if (b) select(+b.dataset.pin);
+    var b = e.target.closest('.pin'); if (b) selectPlace(+b.dataset.pin === selected ? -1 : +b.dataset.pin);
   });
-  // tapping empty radar space clears the selection
+  hiBtn.addEventListener('click', function () {
+    sent[curFriend] = !sent[curFriend]; paintHi();
+    var m = fpEl.querySelector('[data-fm="' + curFriend + '"]');
+    m.classList.remove('hi'); void m.offsetWidth; if (sent[curFriend]) m.classList.add('hi');
+  });
+  // 같이 탐험하기: 그 친구가 있는 장소의 시트가 열려요 (document의 [data-open-sheet]가 이어서 열어요)
+  document.getElementById('ppGo').addEventListener('click', function () { selectPlace(friends[curFriend].place); });
+  // 지도의 빈 곳을 누르면 장소 선택만 풀어요
   document.querySelector('.radar').addEventListener('click', function (e) {
-    if (!e.target.closest('.pin, .rec, button, a')) select(-1);
+    if (!e.target.closest('.pin, .fm, .pp-card, button, a')) selectPlace(-1);
   });
+  function setThumb(img, p) { img.src = p.thumb; }
 
   // field illustration: exported layers, Figma render bounds, in Figma z-order
   var F = 'assets/home/field/';
@@ -382,7 +460,8 @@
   var st = document.documentElement.dataset.state;
   // 홈은 항상 내 들판으로 열려요. 내 근처는 토글이나 ?state=radar|picked 로만.
   if (st === 'radar' || st === 'picked') setMode('radar'); else setMode('field');
-  if (st === 'picked') select(0);
+  selectFriend(0);
+  if (st === 'picked') selectPlace(0);
   if (st === 'sheet') { setMode('field'); openSheet(); }
 })();
 </script>
