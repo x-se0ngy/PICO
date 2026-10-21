@@ -157,7 +157,7 @@
     var x0 = W, y0 = H, x1 = -1, y1 = -1, x, y;
     for (y = 0; y < H; y++) for (x = 0; x < W; x++) if (TM[y * W + x]) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
     if (x1 < 0) return null;
-    var cxm = (x0 + x1) / 2, halfW = Math.max(1, (x1 - x0) / 2), rnd = mulberry32(seed);
+    var cxm = (x0 + x1) / 2, rnd = mulberry32(seed);
     var pts = [], seen = {};
     function add(px, py) { var k = Math.round(px / 2) + ',' + Math.round(py / 2); if (seen[k]) return; seen[k] = 1; pts.push([px, py]); }
 
@@ -220,8 +220,8 @@
         v: [p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]],
         r: cr, g: cg, b: cb, shade: shade,
         h: [ha[0], ha[1], -hy / hl, hx / hl],
-        delay: (Math.abs(fx - cxm) / halfW * 0.55 + (fy - y0) / Math.max(1, y1 - y0) * 0.25 + rnd() * 0.12),
-        dur: 0.55
+        delay: rnd() * 0.35,   // 가운데서 바깥으로 훑듯이 퍼지지 않고, 면마다 아주 조금씩만 다르게 자연스럽게 나타나요
+        dur: 1.35
       });
     }
     if (!facets.length) return null;
@@ -255,18 +255,15 @@
     ctx.lineJoin = 'round';
     for (var i = 0; i < fs.length; i++) {
       var f = fs[i], s = 1;
-      if (time !== Infinity) { s = clamp((time - f.delay) / f.dur, 0, 1); if (s <= 0) continue; s = 1 - Math.pow(1 - s, 3); }
-      var v = f.v, ax = v[0], ay = v[1], bx = v[2], by = v[3], cx = v[4], cy = v[5];
-      if (s < 1) {
-        var h = f.h, k1 = ((ax - h[0]) * h[2] + (ay - h[1]) * h[3]) * (1 - s), k2 = ((bx - h[0]) * h[2] + (by - h[1]) * h[3]) * (1 - s), k3 = ((cx - h[0]) * h[2] + (cy - h[1]) * h[3]) * (1 - s);
-        ax -= h[2] * k1; ay -= h[3] * k1; bx -= h[2] * k2; by -= h[3] * k2; cx -= h[2] * k3; cy -= h[3] * k3;
-      }
-      var col = rgb(f.r, f.g, f.b, f.shade * (0.72 + 0.28 * s));
-      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.lineTo(cx, cy); ctx.closePath();
+      if (time !== Infinity) { s = clamp((time - f.delay) / f.dur, 0, 1); if (s <= 0) continue; s = s < .5 ? 2 * s * s : 1 - Math.pow(-2 * s + 2, 2) / 2; }   // ease in-out
+      var v = f.v, col = rgb(f.r, f.g, f.b, f.shade);
+      ctx.globalAlpha = s;                                                      // 접힌 면이 제자리에서 스르륵 나타나요 (퍼지거나 펴지는 움직임 없이)
+      ctx.beginPath(); ctx.moveTo(v[0], v[1]); ctx.lineTo(v[2], v[3]); ctx.lineTo(v[4], v[5]); ctx.closePath();
       ctx.fillStyle = col; ctx.fill();
       ctx.lineWidth = 0.8; ctx.strokeStyle = col; ctx.stroke();                  // 면 사이 실금 가리기
       ctx.lineWidth = 0.7; ctx.strokeStyle = 'rgba(50,30,10,.16)'; ctx.stroke(); // 접힌 선
     }
+    ctx.globalAlpha = 1;
     if (!grain) grain = makeGrain();
     ctx.save();
     ctx.globalCompositeOperation = 'source-atop';
