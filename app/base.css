@@ -85,7 +85,7 @@ img { display: block; }
 
 .nav { position: relative; height: 58px; padding: 0 20px 5px; display: flex; align-items: center; justify-content: space-between; }
 .nav--center { justify-content: center; padding: 0 24px 5px; }
-.nav .logo { width: 24px; height: 24px; }
+.nav .logo { width: 32px; height: 32px; }   /* 24 → 32: 도감의 .logo.lg와 같은 크기로 모든 화면 통일 */
 .nav .icon { width: 32px; height: 32px; }
 .nav-weather { display: flex; gap: 8px; align-items: center; font-size: 14px; line-height: 20px; }
 
