@@ -83,6 +83,7 @@
 <script src="photo.js"></script>
 <script src="ai.js"></script>
 <script src="field.js"></script>
+<script src="origami.js"></script>
 <script>
   // 촬영 1에서 AI가 알아본 곤충 이름 · 분류 · 분석글 (AI를 못 쓰면 예시 분석)
   var AI = PicoAI.current();
@@ -95,9 +96,45 @@
   }).join('');
 
   // 4단계에서 그린 그림을 액자에 넣어요 (그림이 없으면 빈 액자)
+  // 관찰을 마치면 그 그림이 종이로 접혀요: 처음 한 번만 "접는 중이에요" 화면을 보여주고, 접은 모습을 액자와 들판에 써요.
   (function () {
+    var win = document.getElementById('picoWin');
     var d = null; try { d = JSON.parse(sessionStorage.getItem('pico.drawing') || 'null'); } catch (e) {}
-    if (d && d.src) { var im = new Image(); im.alt = ''; im.src = d.src; document.getElementById('picoWin').appendChild(im); }
+    if (!d || !d.src) return;
+    function show(src) { win.innerHTML = ''; var im = new Image(); im.alt = ''; im.src = src; win.appendChild(im); }
+    if (d.folded) { show(d.folded); return; }                       // 이미 접었으면 다시 접지 않아요 (뒤로 갔다 와도 그대로)
+    show(d.src);                                                     // 접기 전에는 그린 그대로
+    if (!window.PicoOrigami) return;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var quiet = !!document.documentElement.dataset.state || reduce;  // ?state=… 화면이나 모션 줄이기: 연출 없이 바로 접은 모습
+    PicoOrigami.make(d.src).then(function (model) {
+      if (!model) return;                                            // 접을 수 없는 그림(너무 작거나 선이 거의 없음)은 그린 그대로
+      var png = PicoOrigami.png(model, 220);
+      function keep() { PicoField.saveFolded(png); show(png); }
+      if (quiet) { keep(); return; }
+
+      var phone = document.querySelector('.phone');
+      var el = document.createElement('div');
+      el.className = 'ai-wait fold-wait'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+      el.innerHTML = '<div class="ai-card"><div class="fold-board"><canvas width="440" height="440"></canvas></div>' +
+        '<p class="ai-title">종이로 접는 중이에요</p><p class="ai-sub">그린 곤충을 한 장 한 장 접고 있어요</p><span class="ai-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>';
+      phone.appendChild(el);
+      var title = el.querySelector('.ai-title'), sub = el.querySelector('.ai-sub'), anim = null, closed = false;
+      function close() {
+        if (closed) return; closed = true;
+        keep(); el.classList.add('is-out');                          // 액자에 접은 모습을 먼저 넣고 디졸브로 걷어요
+        setTimeout(function () { el.remove(); }, 320);
+      }
+      setTimeout(function () {
+        anim = PicoOrigami.play(el.querySelector('canvas'), model, {
+          onDone: function () {
+            title.textContent = '다 접었어요!'; sub.textContent = '내 PICO가 종이접기가 됐어요'; el.classList.add('is-done');
+            setTimeout(close, 1100);
+          }
+        });
+      }, 450);
+      el.addEventListener('click', function () { if (el.classList.contains('is-done')) close(); else if (anim) anim.skip(); });
+    });
   })();
 
   var toast = document.getElementById('toast'), timer;

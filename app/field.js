@@ -2,7 +2,8 @@
 // 촬영 4에서 그린 그림이 관찰 카드를 거쳐 "들판에 놓아주기"를 누르면
 // 홈 > 내 들판에 스티커가 되어 돌아다녀요.
 //   capture-4.html  → PicoField.saveDraft(canvas, colorName)
-//   capture-card    → PicoField.release(species)   (그림이 없으면 들판에 보내지 않음)
+//   capture-card    → PicoField.saveFolded(png)    (origami.js로 접은 모습을 그림에 붙여요)
+//                     PicoField.release(species)   (그림이 없으면 들판에 보내지 않음)
 //   home.html       → PicoField.mount(layerEl)
 (function () {
   var DRAFT = 'pico.drawing';          // 이번 관찰에서 그린 그림 (sessionStorage)
@@ -32,12 +33,20 @@
     return true;
   }
 
+  // 관찰 카드에서 종이로 접은 모습(PNG)을 이번 그림에 붙여 둬요 (들판 스티커는 접은 모습을 써요)
+  function saveFolded(png) {
+    var d; try { d = JSON.parse(ss(DRAFT) || 'null'); } catch (e) { d = null; }
+    if (!d || !d.src) return false;
+    d.folded = png; ss(DRAFT, JSON.stringify(d));
+    return true;
+  }
+
   // ---------- 2) 들판에 놓아주기 ----------
   function release(species) {
     var d; try { d = JSON.parse(ss(DRAFT) || 'null'); } catch (e) { d = null; }
     if (!d || !d.src) return null;                               // 그림 없음 = 들판에 보내지 않음
     var short = (species || '').replace(/^칠성|^호랑|^배추흰|^고추|^왕/, '') || 'PICO';
-    var item = { id: 'p' + Date.now(), src: d.src, name: (d.color ? d.color + ' ' : '') + short, species: species || '', at: Date.now() };
+    var item = { id: 'p' + Date.now(), src: d.folded || d.src, name: (d.color ? d.color + ' ' : '') + short, species: species || '', at: Date.now() };
     var all = list(); all.push(item); while (all.length > MAX) all.shift();
     ls(LIST, JSON.stringify(all)); ls(NEW, item.id); ss(DRAFT, null);
     return item;
@@ -173,5 +182,5 @@
     return '<svg viewBox="2 2 60 60" aria-hidden="true"><g fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g></svg>';
   }
 
-  window.PicoField = { doodle: doodle, saveDraft: saveDraft, release: release, hasDraft: hasDraft, mount: mount, list: list };
+  window.PicoField = { doodle: doodle, saveDraft: saveDraft, saveFolded: saveFolded, release: release, hasDraft: hasDraft, mount: mount, list: list };
 })();

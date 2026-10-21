@@ -251,3 +251,12 @@ img { display: block; }
 .ai-dots i:nth-child(2) { animation-delay: .2s; } .ai-dots i:nth-child(3) { animation-delay: .4s; }
 @keyframes ai-dot { 0%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
 @media (prefers-reduced-motion: reduce) { .ai-scan, .ai-dots i { animation: none; } .ai-scan { transform: translateY(77px); } }
+
+/* ---------- 종이로 접는 중이에요 (app/origami.js · 관찰 카드) ----------
+   AI 분석 화면(.ai-wait)과 같은 틀. 종이 판 위에서 그림이 삼각형 면으로 접히고, 끝나면 문구가 바뀐 뒤 디졸브로 사라져요. */
+.fold-board { position: relative; width: 200px; height: 200px; background: var(--surface); border: 1px solid var(--ink); box-shadow: 5px 7px 0 var(--ink); }
+.fold-board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.fold-wait.is-done .ai-dots { visibility: hidden; }
+.fold-wait.is-done .fold-board { animation: fold-pop .32s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes fold-pop { 0% { transform: scale(1); } 45% { transform: scale(1.05) rotate(-1.2deg); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .fold-wait.is-done .fold-board { animation: none; } }
