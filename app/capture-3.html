@@ -67,7 +67,7 @@
 <script>
 (function () {
   // 2단계에서 붙인 스티커를 눌러 → 그 부분을 살펴본 표현 4개 중 하나를 골라요.
-  // 들어오면 "AI가 분석중이에요"를 보여 주고, AI가 스티커를 붙인 자리마다 표현 4개를 새로 만들어요.
+  // 들어오면 바로 보여 주고, AI가 스티커를 붙인 자리마다 표현 4개를 뒤에서 새로 만들어요(분석 화면 없음).
   // (같은 사진·같은 스티커로 다시 들어오면 저장해 둔 표현을 그대로 써요. AI를 못 쓰면 Figma 기본 표현.)
   var L = PicoLens, W = 333, H = 333, R = L.R;
   // 촬영 3에서 부르는 스티커 이름 (Figma 3.1.3.1~4: 생김새 · 사는 곳 · 움직임 · 관계)
@@ -140,20 +140,20 @@
     var photo = window.PicoPhoto && PicoPhoto.get();
     var spotKey = JSON.stringify(byKind().map(function (s) { return [s.k, +s.u.toFixed(3), +s.v.toFixed(3)]; }));
     if (!photo || ss('pico.capture.optionsFor') === spotKey) return;
-    var w = PicoAI.wait('AI가 분석중이에요', '표시한 곳을 하나씩 살펴보고 있어요');
+    // 화면은 바로 보여 주고, AI가 만든 표현은 뒤에서 받아 와요 (분석 화면 없음).
+    // 아직 아무것도 고르지 않았을 때만 부드럽게 바꿔 끼워요. 이미 고르기 시작했으면 말이 바뀌지 않게 그대로 둬요.
     PicoAI.stickers(photo, byKind(), PicoAI.current().name).then(function (r) {
+      if (!r || r.demo || Object.keys(answers).length) return;
       var changed = false;
       Object.keys(r.options).forEach(function (k) {
         var o = r.options[k]; if (!Array.isArray(o) || o.length !== 4) return;
-        L.OPTIONS[+k] = o; delete answers[k]; changed = true;
+        L.OPTIONS[+k] = o; changed = true;
       });
-      if (changed) {
-        var saved = {}; for (var k = 0; k < 4; k++) saved[k] = L.OPTIONS[k];
-        ss('pico.capture.options', JSON.stringify(saved));
-        L.saveAnswers(answers); syncNext();
-      }
-      if (!r.demo) ss('pico.capture.optionsFor', spotKey);
-      return w.done().then(function () { if (changed) { start(); renderOptions('ready'); } });
+      if (!changed) return;
+      var saved = {}; for (var k = 0; k < 4; k++) saved[k] = L.OPTIONS[k];
+      ss('pico.capture.options', JSON.stringify(saved));
+      ss('pico.capture.optionsFor', spotKey);
+      renderOptions('ready');
     });
   });
 })();
