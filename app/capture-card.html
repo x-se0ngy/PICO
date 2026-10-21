@@ -2,7 +2,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="/app/manifest.json">
-<meta name="theme-color" content="#fdf4b1">
+<meta name="theme-color" content="#fffad3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,15 +16,15 @@
 <link rel="stylesheet" href="base.css">
 <style>
   .nav-actions { display: flex; gap: 10px; align-items: center; }
-  .headline { position: absolute; left: 72.5px; top: 127.15px; font-family: var(--font-hand); font-size: 24px; white-space: nowrap; }
-  .card-shadow { position: absolute; left: 29.1px; top: 176.6px; width: 326.285px; height: 335px; background: var(--ink); }
-  .card { position: absolute; left: 20px; top: 165.3px; width: 325.917px; height: 335px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-photo { position: absolute; left: 30.46px; top: 177.42px; width: 305px; height: 248px; object-fit: cover; background: var(--brand-soft); }
-  .meta { position: absolute; top: 435.24px; font-size: 16px; white-space: nowrap; }
-  .name { position: absolute; left: 28.33px; top: 455.44px; font-size: 24px; white-space: nowrap; }
-  .tag { position: absolute; left: 20px; top: 525.1px; width: 96.127px; height: 35px; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
-  .diary-box { position: absolute; left: 20.04px; top: 564.9px; width: 334.96px; height: 117.409px; background: var(--surface); border: 1px solid var(--ink); }
-  .diary-lines { position: absolute; left: 34px; top: 578px; width: 321px; display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+  .headline { position: absolute; left: 0; top: 127.15px; width: 375px; text-align: center; font-family: var(--font-hand); font-size: 24px; white-space: nowrap; }
+  .card-shadow { position: absolute; left: 28.91px; top: 176.6px; width: 326.285px; height: 335px; background: var(--ink); }
+  .card { position: absolute; left: 19.81px; top: 165.3px; width: 325.917px; height: 335px; background: var(--brand); border: 1px dashed var(--ink); }
+  .card-photo { position: absolute; left: 28.81px; top: 177px; width: 308px; height: 250px; object-fit: cover; background: var(--brand-soft); }
+  .meta { position: absolute; top: 437px; font-size: 16px; white-space: nowrap; }
+  .name { position: absolute; left: 28.81px; top: 457.2px; font-size: 24px; white-space: nowrap; }
+  .tag { position: absolute; left: 19.81px; top: 526.6px; width: 96.127px; height: 35px; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+  .diary-box { position: absolute; left: 19.81px; top: 566.6px; width: 335.38px; height: 117.409px; background: var(--surface); border: 1px solid var(--ink); }
+  .diary-lines { position: absolute; left: 33.81px; top: 579.7px; width: 321px; display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
   .diary-lines p { padding: 0 12px; font-family: var(--font-hand); font-size: 14px; line-height: 20px; white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
   .diary-lines img { width: 300px; }
   /* Figma 2884:6106: 4단계에서 그린 그림을 담은 작은 액자 (7.96° 기울임, 검은 그림자 +2.45/+3.98) */
@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <p class="headline">관찰 카드가 완성됐어요!</p>
+  <p class="headline">관찰 카드가 완성 됐어요!</p>
 
   <div class="card-shadow"></div>
   <div class="card"></div>
@@ -62,12 +62,12 @@
   <div class="pico-frame" role="img" aria-label="내가 그린 PICO">
     <span class="pf-shadow"></span><span class="pf-face"></span><span class="pf-win" id="picoWin"></span>
   </div>
-  <p class="meta" style="left:28.33px">NO.023</p>
-  <p class="meta" style="left:98.33px" id="group">딱정벌레류</p>
+  <p class="meta" style="left:28.81px">NO.023</p>
+  <p class="meta" style="left:98.81px" id="group">딱정벌레류</p>
   <p class="meta" style="left:265.85px">27.10.08</p>
   <p class="name" data-species>칠성무당벌레</p>
 
-  <div class="tag">AI 분석</div>
+  <div class="tag" id="tag">내 관찰 일기</div>
   <div class="diary-box"></div>
   <div class="diary-lines" id="diaryLines"></div>
 
@@ -75,7 +75,7 @@
     <div class="save-toast-face"><img src="assets/capture/card-toast-icon.png" alt=""><span>사진첩에 카드를 저장했어요.</span></div>
   </div>
 
-  <a class="cta" id="release" href="home.html?state=field" style="top:699.5px"><span class="cta-face">들판에 놓아주기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+  <a class="cta" id="release" href="home.html?state=field" style="top:702px"><span class="cta-face">들판에 놓아주기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
@@ -85,15 +85,51 @@
 <script src="field.js"></script>
 <script src="origami.js"></script>
 <script>
-  // 촬영 1에서 AI가 알아본 곤충 이름 · 분류 · 분석글 (AI를 못 쓰면 예시 분석)
+  // 촬영 1에서 AI가 알아본 곤충 이름 · 분류 (AI를 못 쓰면 예시)
   var AI = PicoAI.current();
   document.querySelector('[data-species]').textContent = AI.name;
   document.getElementById('group').textContent = AI.group;
-  var LINES = (AI.summary && AI.summary.length ? AI.summary : PicoAI.DEMO.summary).slice(0, 3);
+
+  // 내 관찰 일기: 촬영 4에서 쓴 글을 세 줄로 보여줘요. 아무것도 안 썼으면 AI 분석글로 채우고 이름표도 바꿔요.
   var RULES = [{ src: 'card-rule-1.png', h: 2 }, { src: 'card-rule-2.png', h: 3 }, { src: 'card-rule-3.png', h: 3 }];
-  document.getElementById('diaryLines').innerHTML = LINES.map(function (t, i) {
-    return '<p>' + t.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }) + '</p><img src="assets/capture/' + RULES[i].src + '" style="height:' + RULES[i].h + 'px" alt="">';
-  }).join('');
+  function esc(t) { return t.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function wrapLines(text, maxW) {
+    var ctx = document.createElement('canvas').getContext('2d'); ctx.font = '14px SejongGeulggot, Allimjang, sans-serif';
+    var out = [];
+    text.split(/\n+/).forEach(function (para) {
+      var line = '';
+      para.trim().split(/\s+/).filter(Boolean).forEach(function (word) {
+        var tryLine = line ? line + ' ' + word : word;
+        if (ctx.measureText(tryLine).width <= maxW) { line = tryLine; return; }
+        if (line) out.push(line);
+        line = '';                                   // 한 단어가 한 줄보다 길면 글자 단위로 잘라요
+        word.split('').forEach(function (ch) {
+          if (ctx.measureText(line + ch).width > maxW && line) { out.push(line); line = ''; }
+          line += ch;
+        });
+      });
+      if (line) out.push(line);
+    });
+    if (out.length > 3) {
+      var last = out[2]; while (last && ctx.measureText(last + '…').width > maxW) last = last.slice(0, -1);
+      out = out.slice(0, 2).concat(last + '…');
+    }
+    return out;
+  }
+  function renderDiary() {
+    var mine = ''; try { mine = (sessionStorage.getItem('pico.capture.diary') || '').trim(); } catch (e) {}
+    var lines;
+    if (mine) lines = wrapLines(mine, 276);
+    else {
+      document.getElementById('tag').textContent = 'AI 분석';
+      lines = (AI.summary && AI.summary.length ? AI.summary : PicoAI.DEMO.summary).slice(0, 3);
+    }
+    document.getElementById('diaryLines').innerHTML = lines.map(function (t, i) {
+      return '<p>' + esc(t) + '</p><img src="assets/capture/' + RULES[i].src + '" style="height:' + RULES[i].h + 'px" alt="">';
+    }).join('');
+  }
+  var fontsReady = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('14px SejongGeulggot'), new Promise(function (r) { setTimeout(r, 1200); })]) : Promise.resolve();
+  fontsReady.then(renderDiary, renderDiary);
 
   // 4단계에서 그린 그림을 액자에 넣어요 (그림이 없으면 빈 액자)
   // 관찰을 마치면 그 그림이 종이로 접혀요: 처음 한 번만 "접는 중이에요" 화면을 보여주고, 접은 모습을 액자와 들판에 써요.
@@ -116,10 +152,12 @@
       var phone = document.querySelector('.phone');
       var el = document.createElement('div');
       el.className = 'ai-wait fold-wait'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
-      el.innerHTML = '<div class="ai-card"><div class="fold-board"><canvas width="440" height="440"></canvas></div>' +
-        '<p class="ai-title">종이로 접는 중이에요</p><p class="ai-sub">그린 곤충을 한 장 한 장 접고 있어요</p><span class="ai-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>';
+      el.innerHTML = '<div class="fold-board"><canvas width="440" height="440"></canvas></div>' +
+        '<div class="fold-text"><p class="fold-title">종이로 접는 중이에요.</p><p class="fold-sub">그린 곤충을 한 장 한 장 접고 있어요.</p></div>' +
+        '<div class="fold-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>';
       phone.appendChild(el);
-      var title = el.querySelector('.ai-title'), sub = el.querySelector('.ai-sub'), anim = null, closed = false;
+      var title = el.querySelector('.fold-title'), sub = el.querySelector('.fold-sub'), dots = el.querySelectorAll('.fold-dots i'), anim = null, closed = false;
+      function step(n) { for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('on', i === n); }
       function close() {
         if (closed) return; closed = true;
         keep(); el.classList.add('is-out');                          // 액자에 접은 모습을 먼저 넣고 디졸브로 걷어요
@@ -127,9 +165,10 @@
       }
       setTimeout(function () {
         anim = PicoOrigami.play(el.querySelector('canvas'), model, {
+          onProgress: function (p) { step(p < .45 ? 0 : 1); },
           onDone: function () {
-            title.textContent = '다 접었어요!'; sub.textContent = '내 PICO가 종이접기가 됐어요'; el.classList.add('is-done');
-            setTimeout(close, 1100);
+            step(2); title.textContent = '다 접었어요!'; sub.textContent = '나만의 PICO가 완성 되었어요.'; el.classList.add('is-done');
+            setTimeout(close, 1300);
           }
         });
       }, 450);

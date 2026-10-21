@@ -5,7 +5,7 @@
 //   3) 면마다 빛을 받는 정도를 달리해 접힌 판처럼 보이게 하고, 종이 결을 얹어요
 //
 //   PicoOrigami.make(src)            → Promise<model>   (src: 그림 PNG 주소 또는 Image · 못 접으면 null)
-//   PicoOrigami.play(canvas, model, { onDone })  접히는 모습을 canvas에 그려요 → { skip() }
+//   PicoOrigami.play(canvas, model, { onDone, onProgress(0~1) })  접히는 모습을 canvas에 그려요 → { skip() }
 //   PicoOrigami.png(model, px)       → 다 접은 모습의 PNG 주소 (배경 투명)
 (function () {
   'use strict';
@@ -311,6 +311,7 @@
       var t = (now - t0) / 1000;
       if (t >= total) { finish(); return; }
       draw(ctx, model, t);
+      if (opts.onProgress) opts.onProgress(t / total);
       raf = requestAnimationFrame(frame);
     }
     draw(ctx, model, 0);

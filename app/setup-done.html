@@ -2,7 +2,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="/app/manifest.json">
-<meta name="theme-color" content="#fdf4b1">
+<meta name="theme-color" content="#fffad3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,32 +15,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  /* 1.2.4 완료 · 탐험가 카드 발급: 1~3단계에서 고른 것(이름 · 탐험 · 아이콘)을 카드 한 장에 모아요 */
-  .hi { position: absolute; left: 0; right: 0; top: 128px; text-align: center; }
-  .hi h1 { margin: 0; font-weight: 700; font-size: 24px; line-height: 1.35; }
-  .hi p { font-size: 14px; margin-top: 6px; }
-  .idcard { position: absolute; left: 38px; top: 262px; width: 300px; height: 360px; transform: rotate(-3deg); animation: card-in .6s cubic-bezier(.25, .6, .07, 1) both; }
-  .idcard::before { content: ''; position: absolute; left: 8px; top: 10px; width: 100%; height: 100%; background: var(--ink); }
-  .idcard .face { position: absolute; inset: 0; background: var(--brand); border: 1px dashed var(--ink); padding: 22px; }
-  .idcard .row { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
-  .idcard .who { margin-top: 16px; display: flex; gap: 16px; align-items: center; }
-  .idcard .who img { width: 96px; height: 96px; flex: none; }
-  .idcard .nm { font-weight: 700; font-size: 24px; line-height: 1.25; word-break: keep-all; }
-  .idcard .kind { font-size: 13px; margin-top: 6px; }
-  .idcard .box { margin-top: 18px; background: var(--surface); border: 1px solid var(--ink); padding: 12px 14px; }
-  .idcard .box b { font-size: 12px; }
-  .idcard .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .idcard .chips span { font-size: 13px; padding: 3px 10px; background: var(--brand-soft); border: 1px solid var(--ink); }
-  .idcard .mission { word-break: keep-all; font-family: var(--font-hand); font-size: 15px; margin-top: 12px; line-height: 1.5; }
-  .stamp { position: absolute; right: 16px; bottom: 14px; width: 70px; height: 70px; border-radius: 50%; border: 2px solid #c9531f; color: #c9531f;
-    display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 700; font-size: 13px; line-height: 1.1;
-    background: rgba(255, 251, 224, .6); transform: rotate(12deg); animation: stamp .35s .55s cubic-bezier(.3, 1.6, .5, 1) both; }
-  @keyframes card-in { from { opacity: 0; transform: translateY(30px) rotate(-8deg); } }
-  @keyframes stamp { from { opacity: 0; transform: rotate(12deg) scale(1.8); } }
-  @media (prefers-reduced-motion: reduce) { .idcard, .stamp { animation: none; } }
+  /* 1.2.4 완료 (Figma Warm-Up 3090:29362): 종이 위에 큰 프로필 + 흩뿌린 색종이, 한 줄 안내, 큰 버튼 */
+  .pf-big { position: absolute; left: 120.2px; top: 249.35px; width: 130px; height: 130px; animation: pf-pop .5s cubic-bezier(.3, 1.5, .5, 1) both; }
+  .cf { position: absolute; display: flex; align-items: center; justify-content: center; animation: pico-dissolve .6s .25s var(--ease-slow) both; }
+  .cf i { display: block; border: 1px solid var(--ink); flex: none; }
+  .cf-dot { position: absolute; width: 12.294px; height: 12.294px; border: 1px solid var(--ink); border-radius: 50%; animation: pico-dissolve .6s .35s var(--ease-slow) both; }
+  .done-title { position: absolute; left: 196.92px; top: 418px; transform: translateX(-50%); margin: 0; text-align: center; white-space: pre; font-size: 22px; line-height: 35px; }
+  @keyframes pf-pop { from { opacity: 0; transform: scale(.7); } }
+  @media (prefers-reduced-motion: reduce) { .pf-big, .cf, .cf-dot { animation: none; } }
 </style>
 </head><body>
-<!-- 1.2.4 완료: 탐험가 카드 발급 (Figma 프레임은 비어 있어서 제안 시안 A로 채움) -->
+<!-- 1.2.4 완료 -->
 <div class="phone" style="--h:812px">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -48,41 +33,32 @@
     <div class="nav nav--center"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
   </div>
 
-  <div class="hi"><h1><span id="short">선우</span>의 탐험가 카드가<br>만들어졌어요!</h1><p>고른 탐험에 맞춰 PICO 친구가 정해졌어요.</p></div>
+  <img class="pf-big" id="av" src="assets/profile/grass.svg" alt="내 프로필">
 
-  <section class="idcard" aria-label="내 탐험가 카드"><div class="face">
-    <div class="row"><span>PICO 탐험가 카드</span><span>No.0001</span></div>
-    <div class="who"><img id="av" src="assets/profile/flower.svg" alt="">
-      <div><div class="nm" id="nm">초고속 탐험가 선우</div><div class="kind" id="kind">꽃밭 탐험가 · 2026.10.15</div></div></div>
-    <div class="box"><b>좋아하는 탐험</b><div class="chips" id="chips"></div><p class="mission" id="mission"></p></div>
-    <span class="stamp" aria-hidden="true">탐험<br>시작!</span>
-  </div></section>
+  <span class="cf" style="left:100.14px;top:224.95px;width:20.527px;height:24.396px" aria-hidden="true"><i style="width:9.755px;height:22.74px;background:#d3c77c;transform:rotate(147.16deg)"></i></span>
+  <span class="cf" style="left:245.1px;top:372.45px;width:26.027px;height:26.027px" aria-hidden="true"><i style="width:9.755px;height:27.053px;background:#b1d4a1;transform:rotate(-45deg)"></i></span>
+  <span class="cf" style="left:58.02px;top:292.23px;width:23.55px;height:27.736px" aria-hidden="true"><i style="width:9.755px;height:27.053px;background:#9ebfc7;transform:rotate(35.15deg)"></i></span>
+  <span class="cf" style="left:245.1px;top:224.95px;width:12.794px;height:18.035px" aria-hidden="true"><i style="width:9.755px;height:16.439px;background:#9ad1cc;transform:rotate(11.33deg)"></i></span>
+  <span class="cf-dot" style="left:100.14px;top:367.06px;background:#c4aacc" aria-hidden="true"></span>
+  <span class="cf-dot" style="left:290.42px;top:258.71px;background:#96b8ca" aria-hidden="true"></span>
 
-  <a class="cta" href="home.html" style="top:702px"><span class="cta-face">첫 탐험 떠나기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+  <p class="done-title"><span id="short">선우</span>의 탐험가 카드가 
+완성됐어요!</p>
+
+  <a class="cta" href="home.html" style="top:702px"><span class="cta-face">첫 탐험하러 가기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
 <script>
 (function () {
-  var MISSION = {
-    '꽃밭 탐험': '꽃 위에 앉은 곤충을 한 마리 찾아보세요!', '풀숲 탐험': '풀잎 사이에서 폴짝 뛰는 곤충을 찾아보세요!',
-    '물가 탐험': '물 위를 걷는 곤충을 찾아보세요!', '나무 탐험': '나무껍질에 붙은 곤충을 찾아보세요!',
-    '비 온 뒤 탐험': '비 온 다음 날, 촉촉한 땅을 살펴보세요!', '해 질 녘 탐험': '보호자와 함께 저녁 빛을 따라가 보세요!'
-  };
   var ICON = { '꽃밭 탐험': 'flower', '풀숲 탐험': 'grass', '물가 탐험': 'river', '나무 탐험': 'tree', '비 온 뒤 탐험': 'cloud', '해 질 녘 탐험': 'moon' };
   var name = '초고속 탐험가 선우', explore = ['꽃밭 탐험'];
   try {
     name = localStorage.getItem('pico.name') || name;
     var e = JSON.parse(localStorage.getItem('pico.explore') || 'null'); if (e && e.length) explore = e;
   } catch (err) {}
-  var first = explore[0], d = new Date();
-  var short = name.trim().split(/\s+/).pop();
-  document.getElementById('short').textContent = short;
-  document.getElementById('nm').textContent = name;
-  document.getElementById('av').src = 'assets/profile/' + (ICON[first] || 'flower') + '.svg';
-  document.getElementById('kind').textContent = first.replace(' 탐험', '') + ' 탐험가 · ' + d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
-  document.getElementById('chips').innerHTML = explore.slice(0, 3).map(function (x) { return '<span>' + x + '</span>'; }).join('');
-  document.getElementById('mission').textContent = '첫 미션 · ' + (MISSION[first] || MISSION['꽃밭 탐험']);
+  document.getElementById('short').textContent = name.trim().split(/\s+/).pop();
+  document.getElementById('av').src = 'assets/profile/' + (ICON[explore[0]] || 'flower') + '.svg';
 })();
 </script>
 </body></html>

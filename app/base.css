@@ -31,7 +31,7 @@
   --brand: #b1bd35;         /* surface/brand, olive/500 */
   --brand-soft: #c5cd71;
   --reward: #f4d159;        /* accent/reward */
-  --ink: #000;              /* text/primary, border/strong */
+  --ink: #211b17;             /* text/primary, border/strong */
   --ink-950: #121212;
   --dim: rgba(0, 0, 0, .45);
   --font: 'Allimjang', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
@@ -63,7 +63,7 @@ img { display: block; }
   flex: none;
   width: 375px;
   height: 812px;
-  background: var(--bg);
+  background: #fffad3 url('assets/common/paper.jpg') 0 0 / 375px 812px no-repeat;   /* Figma Warm-Up: 종이 질감 배경 (image 3214) */
   overflow: hidden;
   transform-origin: top center;
 }
@@ -130,7 +130,7 @@ img { display: block; }
 
 /* ---------- primary CTA (330x54 + offset black shadow) ---------- */
 .cta { position: absolute; left: 20px; width: 330px; height: 54px; display: block; }
-.cta::before { content: ''; position: absolute; left: 5px; top: 8.6px; width: 330px; height: 54px; background: var(--ink); border: 1px solid var(--ink); }
+.cta::before { content: ""; position: absolute; left: 5.42px; top: 9.5px; width: 330px; height: 54px; background: var(--ink); border: 1px solid var(--ink); box-sizing: border-box; }
 .cta-face { position: absolute; inset: 0; background: var(--brand); border: 1px dashed var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 16px; }
 .cta-face img { width: 24px; height: 24px; }
 .cta--yellow .cta-face { background: var(--reward); }
@@ -158,7 +158,7 @@ img { display: block; }
 
 /* ---------- overlays ---------- */
 .dim { position: absolute; inset: 0; background: var(--dim); z-index: 40; }
-.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px dashed var(--ink); z-index: 41; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fffad3 url('assets/common/paper.jpg') 0 0 / 375px 812px no-repeat; border-top: 1px dashed var(--ink); z-index: 41; }
 .sheet-handle { width: 80px; height: 5px; border-radius: 3px; background: var(--ink); margin: 14px auto 0; }
 .modal { position: absolute; left: 37.5px; width: 300px; background: var(--bg); border: 1px solid var(--ink); z-index: 41; }
 .toast { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; align-items: center; padding: 10px 16px; background: var(--ink); color: #fff; font-size: 14px; white-space: nowrap; z-index: 42; }
@@ -223,7 +223,7 @@ img { display: block; }
 /* ---------- 홈 화면에 설치해서 열었을 때 (standalone) ----------
    진짜 상태바가 화면 위에 겹쳐 보이니 가짜 9:41 상태바와 홈 인디케이터는 숨겨요 (자리는 그대로 둬서 레이아웃은 같아요). */
 @media (display-mode: standalone) {
-  body { background: var(--bg); }
+  body { background: #fffad3; }
   .status-time, .status-icons, .home-ind, .proto-index { visibility: hidden; }
 }
 
@@ -252,11 +252,20 @@ img { display: block; }
 @keyframes ai-dot { 0%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
 @media (prefers-reduced-motion: reduce) { .ai-scan, .ai-dots i { animation: none; } .ai-scan { transform: translateY(77px); } }
 
-/* ---------- 종이로 접는 중이에요 (app/origami.js · 관찰 카드) ----------
-   AI 분석 화면(.ai-wait)과 같은 틀. 종이 판 위에서 그림이 삼각형 면으로 접히고, 끝나면 문구가 바뀐 뒤 디졸브로 사라져요. */
-.fold-board { position: relative; width: 200px; height: 200px; background: var(--surface); border: 1px solid var(--ink); box-shadow: 5px 7px 0 var(--ink); }
-.fold-board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.fold-wait.is-done .ai-dots { visibility: hidden; }
+/* ---------- 종이로 접는 중이에요 (app/origami.js · 관찰 카드, Figma Warm-Up 촬영 8~10) ----------
+   카드 위에 종이 질감을 85%로 덮어 카드가 희미하게 비치고, 가운데 종이 판 위에서 그림이 삼각형 면으로 접혀요.
+   아래 점 세 개가 접는 단계(1 → 2 → 3)를 알려주고, 끝나면 문구가 바뀐 뒤 디졸브로 사라져요. */
+.fold-wait { display: block; background: none; }
+.fold-wait::before { content: ''; position: absolute; inset: 0; background: #fffad3 url('assets/common/paper.jpg') 0 0 / 375px 812px no-repeat; opacity: .85; }
+.fold-board { position: absolute; left: 81.66px; top: 240.9px; width: 205.717px; height: 211.45px; background: var(--surface); border: .631px dashed var(--ink); box-shadow: 5.74px 7.13px 0 var(--ink); }
+.fold-board canvas { position: absolute; left: 50%; top: 50%; width: 196px; height: 196px; transform: translate(-50%, -50%); display: block; }
+.fold-text { position: absolute; left: 24px; top: 473.5px; width: 327px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.fold-title { font-weight: 700; font-size: 18px; line-height: normal; white-space: nowrap; }
+.fold-sub { font-size: 14px; line-height: normal; white-space: nowrap; }
+.fold-dots { position: absolute; left: 162.5px; top: 540.5px; width: 58px; height: 14px; }
+.fold-dots i { position: absolute; top: 0; width: 10px; height: 10px; background: var(--bg); border: 1px solid var(--ink); transition: background-color .2s, transform .2s; }
+.fold-dots i:nth-child(1) { left: 0; } .fold-dots i:nth-child(2) { left: 24px; } .fold-dots i:nth-child(3) { left: 48px; }
+.fold-dots i.on { background: var(--brand); transform: translateY(2.11px); }
 .fold-wait.is-done .fold-board { animation: fold-pop .32s cubic-bezier(.3, 1.6, .5, 1); }
 @keyframes fold-pop { 0% { transform: scale(1); } 45% { transform: scale(1.05) rotate(-1.2deg); } 100% { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .fold-wait.is-done .fold-board { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .fold-wait.is-done .fold-board { animation: none; } .fold-dots i { transition: none; } }
