@@ -153,12 +153,25 @@
       var phone = document.querySelector('.phone');
       var el = document.createElement('div');
       el.className = 'ai-wait fold-wait'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+      // Figma Warm-Up 촬영 8 · 9 · 10 — 접는 단계마다 문구와 켜진 점이 함께 바뀌어요
+      var STAGES = [
+        ['내 그림을 종이로 접고 있어요.', '관찰한 특징을 하나씩 담아볼게요.'],            // 촬영 8  · 점 1
+        ['조금씩 모습을 갖춰가고 있어요.', '색과 무늬까지 꼼꼼하게 표현하고 있어요.'],      // 촬영 9  · 점 2
+        ['세상에 하나뿐인 작품이 완성됐어요!', '오늘의 발견을 관찰 카드에 담았어요.']        // 촬영 10 · 점 3
+      ];
       el.innerHTML = '<div class="fold-board"><canvas width="440" height="440"></canvas></div>' +
-        '<div class="fold-text"><p class="fold-title">종이로 접는 중이에요.</p><p class="fold-sub">그린 곤충을 한 장 한 장 접고 있어요.</p></div>' +
+        '<div class="fold-text"><p class="fold-title">' + STAGES[0][0] + '</p><p class="fold-sub">' + STAGES[0][1] + '</p></div>' +
         '<div class="fold-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>';
       phone.appendChild(el);
-      var title = el.querySelector('.fold-title'), sub = el.querySelector('.fold-sub'), dots = el.querySelectorAll('.fold-dots i'), anim = null, closed = false;
-      function step(n) { for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('on', i === n); }
+      var text = el.querySelector('.fold-text'), title = el.querySelector('.fold-title'), sub = el.querySelector('.fold-sub'), dots = el.querySelectorAll('.fold-dots i'), anim = null, closed = false, stage = 0, swapTimer = 0;
+      function step(n) {
+        for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('on', i === n);
+        if (n === stage) return;
+        stage = n;
+        // 문구는 반은 흐려지고 반은 다시 나타나는 디졸브로 바꿔요 (--dur 한 번 동안)
+        clearTimeout(swapTimer); text.classList.add('is-swap');
+        swapTimer = setTimeout(function () { title.textContent = STAGES[n][0]; sub.textContent = STAGES[n][1]; text.classList.remove('is-swap'); }, (window.picoDur ? picoDur() : 300) / 2);
+      }
       function close() {
         if (closed) return; closed = true;
         keep(); el.classList.add('is-out');                          // 액자에 접은 모습을 먼저 넣고 디졸브로 걷어요
@@ -169,7 +182,7 @@
           duration: FOLD_SECONDS,
           onProgress: function (p) { step(p < .5 ? 0 : 1); },
           onDone: function () {
-            step(2); title.textContent = '다 접었어요!'; sub.textContent = '나만의 PICO가 완성 되었어요.'; el.classList.add('is-done');
+            step(2); el.classList.add('is-done');
             setTimeout(close, 2000);
           }
         });

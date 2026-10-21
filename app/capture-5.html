@@ -16,8 +16,8 @@
 <link rel="stylesheet" href="base.css">
 <style>
   .board { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: transparent; border: 1px solid var(--ink); z-index: 2; }
-  /* 일기를 쓴 다음이라 빈 종이에서 시작해요(Figma 촬영 5: 기억나는 모습을 그려보세요).
-     사진 버튼을 누르면 사진이 연하게 비쳐 보여요(따라 그리기). 저장되는 건 그린 선뿐이에요. */
+  /* 사진이 처음부터 연하게 비쳐 보여요(따라 그리기). 사진 버튼을 누르면 숨기고 빈 종이로 그려요.
+     저장되는 건 그린 선뿐이라 사진은 그림에 섞이지 않아요. */
   .board .ref { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .4; transition: opacity var(--dur) var(--ease); pointer-events: none; }
   .board.hide-ref .ref { opacity: 0; }
   .board canvas { position: relative; display: block; width: 333px; height: 333px; touch-action: none; cursor: crosshair; }
@@ -53,11 +53,11 @@
     <p class="sub">자유롭게 그려 보세요. 똑같지 않아도 괜찮아요.</p>
   </div>
 
-  <div class="board hide-ref" id="board"><div class="ref" data-photo></div><canvas id="pad" width="333" height="333" aria-label="그림판"></canvas></div>
+  <div class="board" id="board"><div class="ref" data-photo></div><canvas id="pad" width="333" height="333" aria-label="그림판"></canvas></div>
 
   <div class="crayons" id="crayons" role="radiogroup" aria-label="색연필"></div>
   <div class="tools">
-    <button class="ref-toggle" id="refToggle" type="button" aria-pressed="false" aria-label="사진 겹쳐 보기"><img src="assets/icons/outline/photo.svg" alt=""></button>
+    <button class="ref-toggle" id="refToggle" type="button" aria-pressed="true" aria-label="사진 겹쳐 보기"><img src="assets/icons/outline/photo.svg" alt=""></button>
     <button class="refresh" id="clear" type="button" aria-label="모두 지우기"><img src="assets/icons/outline/refresh.svg" alt=""></button>
   </div>
 

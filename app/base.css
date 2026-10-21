@@ -271,7 +271,8 @@ img { display: block; }
 .fold-wait::before { content: ''; position: absolute; inset: 0; background: #fffad3 url('assets/common/paper.jpg') 0 0 / 375px 812px no-repeat; opacity: .85; }
 .fold-board { position: absolute; left: 81.66px; top: 240.9px; width: 205.717px; height: 211.45px; background: var(--surface); border: .631px dashed var(--ink); box-shadow: 5.74px 7.13px 0 var(--ink); }
 .fold-board canvas { position: absolute; left: 50%; top: 50%; width: 196px; height: 196px; transform: translate(-50%, -50%); display: block; }
-.fold-text { position: absolute; left: 24px; top: 473.5px; width: 327px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.fold-text { position: absolute; left: 24px; top: 473.5px; width: 327px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity calc(var(--dur) / 2) var(--ease); }
+.fold-text.is-swap { opacity: 0; }
 .fold-title { font-weight: 700; font-size: 18px; line-height: normal; white-space: nowrap; }
 .fold-sub { font-size: 14px; line-height: normal; white-space: nowrap; }
 .fold-dots { position: absolute; left: 162.5px; top: 540.5px; width: 58px; height: 14px; }
