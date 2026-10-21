@@ -83,26 +83,97 @@
     { name: 'purple', label: '보라', c: '#6b4eac' }, { name: 'gray', label: '회색', c: '#4e4e4e' }
   ];
   var color = PALETTE[0].c, box = document.getElementById('crayons');
-  function renderCrayons() {
-    box.innerHTML = PALETTE.map(function (p) {
-      return '<button class="crayon" role="radio" data-c="' + p.c + '" aria-pressed="' + (p.c === color) + '" aria-checked="' + (p.c === color) + '" aria-label="' + p.label + '">' +
-        '<img src="assets/capture/s4-crayon-' + p.name + '.png" alt=""></button>';
-    }).join('');
+  // 색연필은 한 번만 만들고 눌림 상태(aria-pressed)만 바꿔요.
+  // 누를 때마다 새로 그리면 transition이 끊겨서 집어 올리는 모션이 안 보여요.
+  box.innerHTML = PALETTE.map(function (p) {
+    return '<button class="crayon" type="button" role="radio" data-c="' + p.c + '" aria-pressed="' + (p.c === color) + '" aria-checked="' + (p.c === color) + '" aria-label="' + p.label + '">' +
+      '<img src="assets/capture/s4-crayon-' + p.name + '.png" alt=""></button>';
+  }).join('');
+  function pick(c) {
+    color = c;
+    Array.prototype.forEach.call(box.children, function (b) {
+      var on = b.dataset.c === c;
+      b.setAttribute('aria-pressed', on); b.setAttribute('aria-checked', on);
+    });
   }
-  box.addEventListener('click', function (e) { var b = e.target.closest('.crayon'); if (b) { color = b.dataset.c; renderCrayons(); } });
-  renderCrayons();
+  box.addEventListener('click', function (e) { var b = e.target.closest('.crayon'); if (b) pick(b.dataset.c); });
 
   // Drawing pad (pointer events, HiDPI)
   var cv = document.getElementById('pad'), ctx = cv.getContext('2d'), dpr = window.devicePixelRatio || 1;
   cv.width = 333 * dpr; cv.height = 333 * dpr; ctx.scale(dpr, dpr);
   ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5;
-  var drawing = false, last = null, used = {};
+  var drawing = false, last = null, used = {}, pts = [];
   function pt(e) {
     var r = cv.getBoundingClientRect();
     return { x: (e.clientX - r.left) * 333 / r.width, y: (e.clientY - r.top) * 333 / r.height };
   }
+
+  // ---- 선을 닫으면 색이 채워져요 ----
+  //  1) 선이 스스로 가로지르면 그 고리 안쪽을 채워요 (닫으면서 조금 넘어가도 돼요)
+  //  2) 가로지르지 않았어도 끝점이 시작점 근처(CLOSE)에 오면 시작점으로 이어서 채워요
+  var CLOSE = 30;        // 끝점이 시작점에서 이만큼(px) 안이면 닫은 것으로 봐요
+  var MIN_AREA = 140;    // 이보다 작은 점·짧은 선은 채우지 않아요
+  function area(poly) {
+    var a = 0;
+    for (var i = 0, n = poly.length; i < n; i++) { var p = poly[i], q = poly[(i + 1) % n]; a += p.x * q.y - q.x * p.y; }
+    return Math.abs(a) / 2;
+  }
+  function cross(a, b, c, d) {
+    var rx = b.x - a.x, ry = b.y - a.y, sx = d.x - c.x, sy = d.y - c.y, den = rx * sy - ry * sx;
+    if (Math.abs(den) < 1e-9) return null;
+    var t = ((c.x - a.x) * sy - (c.y - a.y) * sx) / den, u = ((c.x - a.x) * ry - (c.y - a.y) * rx) / den;
+    if (t < 0 || t > 1 || u < 0 || u > 1) return null;
+    return { x: a.x + t * rx, y: a.y + t * ry };
+  }
+  function closedShapes(p) {
+    var out = [], n = p.length, from = 0;
+    if (n < 4) return out;
+    for (var i = 2; i < n - 1; i++) {
+      for (var j = from; j < i - 1; j++) {
+        var x = cross(p[j], p[j + 1], p[i], p[i + 1]);
+        if (!x) continue;
+        var poly = [x].concat(p.slice(j + 1, i + 1));
+        if (area(poly) >= MIN_AREA) out.push(poly);
+        from = i;                 // 이 고리는 썼으니, 다음 고리는 여기서부터 찾아요
+        break;
+      }
+    }
+    if (!out.length && Math.hypot(p[n - 1].x - p[0].x, p[n - 1].y - p[0].y) < CLOSE && area(p) >= MIN_AREA) out.push(p.slice());
+    return out;
+  }
+
+  // 채워지는 모습도 다른 움직임처럼 --dur ease in-out으로 스르륵
+  var fill = null;
+  function paint(f, t) {
+    ctx.putImageData(f.snap, 0, 0);
+    ctx.save(); ctx.globalAlpha = t; ctx.fillStyle = f.color;
+    f.shapes.forEach(function (poly) {
+      ctx.beginPath(); ctx.moveTo(poly[0].x, poly[0].y);
+      for (var i = 1; i < poly.length; i++) ctx.lineTo(poly[i].x, poly[i].y);
+      ctx.closePath(); ctx.fill();
+    });
+    ctx.restore();
+  }
+  function finishFill() { if (fill) { cancelAnimationFrame(fill.raf); paint(fill, 1); fill = null; } }
+  function startFill(shapes) {
+    var f = { shapes: shapes, color: color, snap: ctx.getImageData(0, 0, cv.width, cv.height), t0: 0, raf: 0 };
+    var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var dur = still ? 0 : (window.picoDur ? picoDur() : 500);
+    used[color] = (used[color] || 0) + 1;
+    if (!dur) { paint(f, 1); return; }
+    fill = f;
+    f.raf = requestAnimationFrame(function step(now) {
+      if (fill !== f) return;
+      if (!f.t0) f.t0 = now;
+      var x = Math.min(1, (now - f.t0) / dur), e = x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;   // ease in-out
+      paint(f, e);
+      if (x < 1) f.raf = requestAnimationFrame(step); else fill = null;
+    });
+  }
+
   cv.addEventListener('pointerdown', function (e) {
-    drawing = true; last = pt(e); cv.setPointerCapture(e.pointerId);
+    finishFill();
+    drawing = true; last = pt(e); pts = [last]; cv.setPointerCapture(e.pointerId);
     used[color] = (used[color] || 0) + 1;
     ctx.fillStyle = color; ctx.beginPath(); ctx.arc(last.x, last.y, ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill();
   });
@@ -110,13 +181,25 @@
     if (!drawing) return;
     var p = pt(e); ctx.strokeStyle = color;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p;
+    var q = pts[pts.length - 1]; if (Math.hypot(p.x - q.x, p.y - q.y) >= 2) pts.push(p);
   });
-  function end() { drawing = false; }
-  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
-  document.getElementById('clear').addEventListener('click', function () { ctx.clearRect(0, 0, 333, 333); used = {}; });
+  function end(close) {
+    if (!drawing) return;
+    drawing = false;
+    var shapes = close ? closedShapes(pts) : [];
+    if (shapes.length) startFill(shapes);
+    pts = [];
+  }
+  cv.addEventListener('pointerup', function () { end(true); });
+  cv.addEventListener('pointercancel', function () { end(false); });
+  document.getElementById('clear').addEventListener('click', function () {
+    if (fill) { cancelAnimationFrame(fill.raf); fill = null; }
+    ctx.clearRect(0, 0, 333, 333); used = {};
+  });
 
   // 다음: 그린 그림을 PICO 스티커로 저장 (가장 많이 쓴 색 이름은 PICO 이름에 써요)
   document.querySelector('.cta').addEventListener('click', function () {
+    finishFill();
     var top = null, n = 0;
     PALETTE.forEach(function (p) { if ((used[p.c] || 0) > n) { n = used[p.c]; top = p.label; } });
     window.PicoField && PicoField.saveDraft(cv, top);
