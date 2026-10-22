@@ -1,9 +1,8 @@
 // PICO 앱 서비스워커 — 홈 화면에 설치하고, 한 번 연 화면은 인터넷이 없어도 열려요 (전시장 와이파이 대비).
 // 화면(html)은 새 버전을 먼저 받아 보고, 안 되면 저장해 둔 것을 보여줘요. 그림·폰트는 저장해 둔 것을 먼저 써요.
-var CACHE = 'pico-app-v11';
+var CACHE = 'pico-app-v10';
 var CORE = ['splash.html', 'home.html', 'base.css', 'shared.js', 'photo.js', 'stickers.js', 'field.js',
-  'fonts/HakgyoansimAllimjangTTF-R.woff2', 'fonts/HakgyoansimAllimjangTTF-B.woff2', '/favicon.svg', '/icons/icon-192.png']
-  .concat(['k01', 'k17', 'k15', 'k12', 'k14', 'k16', 'k03', 'k05'].map(function (k) { return 'assets/dummy/' + k + '.png'; }));   // 들판에 나오는 아이들 그림
+  'fonts/HakgyoansimAllimjangTTF-R.woff2', 'fonts/HakgyoansimAllimjangTTF-B.woff2', '/favicon.svg', '/icons/icon-192.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).catch(function () {}).then(function () { return self.skipWaiting(); }));

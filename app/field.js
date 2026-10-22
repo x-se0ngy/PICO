@@ -59,36 +59,19 @@
   var LB = '<path d="M24 22a8 6 0 0 1 16 0" fill="#111"/><ellipse cx="32" cy="38" rx="18" ry="16" fill="#E8432E"/><path d="M32 22v32"/><circle cx="24" cy="32" r="3" fill="#111"/><circle cx="40" cy="32" r="3" fill="#111"/><circle cx="22" cy="43" r="2.5" fill="#111"/><circle cx="42" cy="43" r="2.5" fill="#111"/>';
   var HOP = '<path d="M8 40 L44 26 L56 30 L50 38 Z" fill="#B3BE37"/><path d="M20 36 L28 22 L40 30 M28 22 L34 46 M18 38 L14 50 M30 34 L32 50"/><path d="M54 30 L60 16"/>';
   var SNAIL = '<path d="M6 48h46c4 0 6-6 2-8" fill="#F2A7C3"/><circle cx="30" cy="32" r="14" fill="#F4D35E"/><path d="M30 32a6 6 0 1 1 6-6"/><path d="M50 40l2-14M54 40l6-12"/>';
-  // 예시 친구들: 아이들이 직접 그린 그림을 종이접기로 바꾼 것 (assets/dummy/) — 앱 더미 데이터예요.
-  // 위에서부터 들판에 나오고, species가 있는 건 도감 사진첩의 같은 곤충 칸에도 들어가요.
-  var KIDS = [
-    { f: 'k01', name: '분홍 나비',   fly: true, species: '붉은점모시나비' },
-    { f: 'k17', name: '노랑 달팽이', slow: true },
-    { f: 'k15', name: '무당벌레',    species: '칠성무당벌레' },
-    { f: 'k12', name: '노랑 나비',   fly: true, species: '배추흰나비' },
-    { f: 'k14', name: '꿀벌',        fly: true },
-    { f: 'k16', name: '지렁이',      slow: true },
-    { f: 'k03', name: '나무 위 친구', species: '흰줄숲모기' },
-    { f: 'k05', name: '보라 나비',   fly: true, species: '상제나비' },
-    { f: 'k02', name: '달팽이',      slow: true },
-    { f: 'k04', name: '빨간 지렁이', slow: true },
-    { f: 'k06', name: '지네' },
-    { f: 'k07', name: '핑크 나비',   fly: true },
-    { f: 'k08', name: '가시 노린재', species: '갈색여치' },
-    { f: 'k09', name: '점박이 나비', fly: true },
-    { f: 'k10', name: '잠자리',      fly: true },
-    { f: 'k11', name: '동글 무당벌레' },
-    { f: 'k13', name: '빨간 벌레',   slow: true },
-    { f: 'p01', name: '줄무늬 벌',   fly: true }
-  ];
-  var SAMPLE_COUNT = 8;                                         // 내 PICO가 늘면 그만큼 줄어요
-  function kidSrc(k) { return 'assets/dummy/' + k.f + '.png'; }
-  // 도감 사진첩용: 곤충 이름에 맞는 아이 그림 (없으면 null)
-  function kidFor(species) {
-    var key = (species || '').replace(/\s+/g, '');
-    for (var i = 0; i < KIDS.length; i++) if (KIDS[i].species === key) return kidSrc(KIDS[i]);
-    return null;
+  function svgSticker(inner) {
+    return '<svg viewBox="-6 -6 76 76" width="64" height="64" aria-hidden="true">' +
+      '<g fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g>' +
+      '<g fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g></svg>';
   }
+  // 예시 친구들 (그림을 아직 안 그렸을 때도 들판이 비어 보이지 않게)
+  var SAMPLES = [
+    { name: '노랑 날개', svg: BF, fly: true },
+    { name: '파랑 꼬리', svg: DF, fly: true },
+    { name: '빨강 점박이', svg: LB },
+    { name: '통통 다리', svg: HOP, hop: true },
+    { name: '느릿느릿', svg: SNAIL, slow: true }
+  ];
 
   // 들판 좌표(375x812 폰 기준): 걷는 친구는 언덕 위, 나는 친구는 하늘~언덕
   var GROUND = { x0: 14, x1: 300, y0: 400, y1: 640 };
@@ -98,17 +81,6 @@
 
   function rnd(a, b) { return a + Math.random() * (b - a); }
   function inRect(p, r) { return p.x > r.x0 - 40 && p.x < r.x1 && p.y > r.y0 - 50 && p.y < r.y1; }
-  // 처음 자리는 서로 멀찍이 (여러 친구가 한곳에 뭉쳐서 시작하지 않게)
-  function spread(area, bugs) {
-    var best = null, bestD = -1;
-    for (var k = 0; k < 14; k++) {
-      var p = pick(area), dmin = 1e9;
-      bugs.forEach(function (o) { if (o.pos) { var dd = Math.hypot(o.pos.x - p.x, o.pos.y - p.y); if (dd < dmin) dmin = dd; } });
-      if (dmin > 90) return p;
-      if (dmin > bestD) { bestD = dmin; best = p; }
-    }
-    return best;
-  }
   function pick(area) {
     for (var i = 0; i < 20; i++) {
       var p = { x: rnd(area.x0, area.x1), y: rnd(area.y0, area.y1) };
@@ -122,21 +94,21 @@
     opts = opts || {};
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var mine = list(), newId = ls(NEW);
-    var sampleCount = Math.max(0, SAMPLE_COUNT - mine.length);     // 내 PICO가 많아지면 예시는 줄어요
-    var bugs = KIDS.slice(0, sampleCount).map(function (k) { return { name: k.name, kid: true, fly: k.fly, slow: k.slow, html: '<img src="' + kidSrc(k) + '" alt="" width="64" height="64" draggable="false">' }; })
+    var sampleCount = Math.max(0, 5 - mine.length);                // 내 PICO가 많아지면 예시는 줄어요
+    var bugs = SAMPLES.slice(0, sampleCount).map(function (s) { return { name: s.name, html: svgSticker(s.svg), fly: s.fly, hop: s.hop, slow: s.slow }; })
       .concat(mine.map(function (m) { return { id: m.id, name: m.name, mine: true, html: '<img src="' + m.src + '" alt="" width="64" height="64">' }; }));
 
     layer.innerHTML = '';
     bugs.forEach(function (b, i) {
       var el = document.createElement('button');
       el.type = 'button';
-      el.className = 'pf-bug' + (b.mine ? ' is-mine' : '') + (b.kid ? ' is-kid' : '') + (b.fly ? ' is-fly' : '') + (b.hop ? ' is-hop' : '');
-      el.setAttribute('aria-label', b.name + (b.mine ? ' · 내가 그린 PICO' : b.kid ? ' · 아이들이 그린 PICO' : ''));
+      el.className = 'pf-bug' + (b.mine ? ' is-mine' : '') + (b.fly ? ' is-fly' : '') + (b.hop ? ' is-hop' : '');
+      el.setAttribute('aria-label', b.name + (b.mine ? ' · 내가 그린 PICO' : ''));
       el.innerHTML = '<span class="pf-body"><span class="pf-flip">' + b.html + '</span></span><span class="pf-name">' + b.name + '</span>';
       layer.appendChild(el);
       b.el = el; b.flip = el.querySelector('.pf-flip');
       b.area = b.fly ? SKY : GROUND;
-      b.pos = spread(b.area, bugs); b.to = pick(b.area);
+      b.pos = pick(b.area); b.to = pick(b.area);
       b.speed = b.slow ? 6 : b.fly ? rnd(26, 36) : rnd(12, 20);
       b.wait = rnd(0, 1500);
       el.style.animationDelay = (-i * 0.37) + 's';
@@ -210,5 +182,5 @@
     return '<svg viewBox="2 2 60 60" aria-hidden="true"><g fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g></svg>';
   }
 
-  window.PicoField = { kidFor: kidFor, doodle: doodle, saveDraft: saveDraft, saveFolded: saveFolded, release: release, hasDraft: hasDraft, mount: mount, list: list };
+  window.PicoField = { doodle: doodle, saveDraft: saveDraft, saveFolded: saveFolded, release: release, hasDraft: hasDraft, mount: mount, list: list };
 })();
