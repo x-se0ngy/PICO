@@ -1,26 +1,32 @@
-// PICO · 렌즈 스티커 (촬영 2 → 3 → 5)
-// 스티커 위치는 "사진 기준" 좌표(u, v: 0~1)로 저장해서, 2단계(335×335)와 3단계(335×200)처럼
-// 사진 칸 비율이 달라도 같은 곳을 가리켜요.
+// PICO · 관찰 질문 (capture-3 → capture-4 → 관찰 카드)
+// 사진을 보고 모양 · 장소 · 움직임 · 행동을 하나씩 골라요. (스티커를 붙이던 단계는 없앴어요 — 렌즈 그리기 코드는 남겨 두었지만 쓰지 않아요.)
+// 모양 질문은 "점이 몇 개 있나요?"처럼 사진을 자세히 세어 보는 질문이에요.
 (function () {
   // Figma 버튼 (2884:4619) 순서: 1 모양 · 2 장소 · 3 움직임 · 4 행동 — 2·3·5단계가 모두 이 순서를 써요.
   var KINDS = ['모양', '장소', '움직임', '행동'];
-  // Figma 3.1.3: 스티커 종류마다 고를 수 있는 표현
+  // 질문마다 고를 수 있는 표현. 모양(0번)은 점·줄무늬 개수를 세어 보는 질문이에요.
   var OPTIONS = [
-    ['줄무늬가 있어요.', '점무늬가 있어요.', '한 가지 색이에요.', '반짝이고 있어요.'],
+    ['점이 없어요.', '1~3개 있어요.', '4~7개 있어요.', '8개가 넘어요.'],
     ['풀잎 위에 있어요.', '나무에 있어요.', '꽃 주변에 있어요.', '물가에 있어요.'],
     ['날아다녀요.', '기어 다녀요.', '폴짝폴짝 뛰어요.', '가만히 있어요.'],
     ['꽃에서 꿀을 먹어요.', '잎을 갉아 먹어요.', '혼자 움직이고 있어요.', '다른 친구와 있어요.']
   ];
-  // AI 분석(app/ai.js)이 만든 선택지가 있으면 그걸 써요: 촬영 3 스티커 자리 분석 > 촬영 1 사진 분석 > 위의 Figma 기본
+  var PROMPTS = ['점이나 줄무늬가 몇 개 있나요?', '어디에 있나요?', '어떻게 움직이나요?', '무엇을 하고 있나요?'];
+  var MATCH = {};   // AI가 보기에 사진과 가장 가까운 보기 번호 (질문별) — 관찰이 실제와 얼마나 닮았는지 볼 때 써요
+  // AI 분석(app/ai.js, 촬영 1 사진 분석)이 만든 질문·선택지가 있으면 그걸 써요. 없으면 위의 기본.
   (function () {
     function rd(k) { try { return JSON.parse(sessionStorage.getItem(k) || 'null'); } catch (e) { return null; } }
-    var photoAi = rd('pico.analysis'), spotAi = rd('pico.capture.options');
-    [photoAi && photoAi.options, spotAi].forEach(function (src) {
-      if (!src) return;
-      for (var k = 0; k < 4; k++) { var o = src[k]; if (Array.isArray(o) && o.length === 4) OPTIONS[k] = o.slice(); }
-    });
+    var photoAi = rd('pico.analysis');
+    if (!photoAi) return;
+    for (var k = 0; k < 4; k++) {
+      var o = photoAi.options && photoAi.options[k];
+      if (Array.isArray(o) && o.length === 4) OPTIONS[k] = o.slice();
+      var q = photoAi.questions && photoAi.questions[k];
+      if (typeof q === 'string' && q) PROMPTS[k] = q;
+      var m = photoAi.match && photoAi.match[k];
+      if (Number.isInteger(m) && m >= 0 && m < 4) MATCH[k] = m;
+    }
   })();
-  var PROMPTS = ['내가 관찰한 특징들을 표현해 봐요.', '내가 관찰한 특징들을 표현해 봐요.', '내가 관찰한 특징들을 표현해 봐요.', '주변과 어떻게 어울리고 있나요?'];
   // 촬영 2 버튼 이름과 버튼 아래 안내 (촬영 02 맨트 2884:5571)
   var LABELS = KINDS;
   var LINES = ['어떤 생김새인지 궁금한 곳에 붙여요.', '어디에서 살고 있는지 궁금한 곳에 붙여요.', '어떻게 움직이는지 궁금한 곳에 붙여요.', '무엇을 하고 있는지 궁금한 곳에 붙여요.'];
@@ -84,11 +90,19 @@
   }
 
   window.PicoLens = {
-    KINDS: KINDS, OPTIONS: OPTIONS, PROMPTS: PROMPTS, LABELS: LABELS, LINES: LINES, R: R, inner: inner,
+    KINDS: KINDS, OPTIONS: OPTIONS, PROMPTS: PROMPTS, MATCH: MATCH, LABELS: LABELS, LINES: LINES, R: R, inner: inner,
     load: function () { var l = read(KEY, []); return Array.isArray(l) ? l.filter(function (s) { return s && s.k >= 0 && s.k < 4; }) : []; },
     save: function (list) { write(KEY, list); },
     answers: function () { return read(ANS, {}) || {}; },
-    saveAnswers: function (a) { write(ANS, a); },
+    // 답을 저장할 때 "실제 관찰과 얼마나 닮았는지"도 같이 적어 둬요 (보여 주는 화면은 아직 없어요).
+    // hit = AI가 사진에서 본 것과 같은 보기를 고른 질문 수, total = AI가 기준을 가진 질문 중 답한 수
+    saveAnswers: function (a) {
+      write(ANS, a);
+      var hit = 0, total = 0;
+      Object.keys(MATCH).forEach(function (k) { if (a[k] != null) { total++; if (a[k] === MATCH[k]) hit++; } });
+      write('pico.capture.match', { hit: hit, total: total, ratio: total ? hit / total : null });
+    },
+    match: function () { return read('pico.capture.match', null); },
     cover: cover, clamp: clamp, photoSize: photoSize, html: html
   };
 })();

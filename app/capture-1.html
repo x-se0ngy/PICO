@@ -92,7 +92,7 @@
     </div>
   </div>
 
-  <div class="progress" aria-label="5단계 중 1단계"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+  <div class="progress" aria-label="4단계 중 1단계"><span class="on"></span><span></span><span></span><span></span></div>
   <div class="step-title cap">
     <div class="q"><span>01.</span><span>무엇을 발견했나요?</span></div>
     <p class="sub">곤충을 만지지 말고, 화면을 키워서 찍어보세요.</p>
@@ -135,7 +135,7 @@
     <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
     <div class="tips" id="tips"></div>
     <button class="cta cta--yellow" type="button" data-close style="top:334px"><span class="cta-face">다시 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
-    <a class="use-photo" href="capture-2.html">이 곤충이 맞아요! 이 사진으로 할래요</a>
+    <a class="use-photo" href="capture-3.html">이 곤충이 맞아요! 이 사진으로 할래요</a>
   </div>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
@@ -233,8 +233,8 @@
   function done(url) {
     if (busy) return; busy = true;
     PicoPhoto.set(url); showGallery();
-    // a new photo starts a fresh observation: clear stickers, picks, diary and the last AI analysis
-    ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary', 'pico.capture.options', 'pico.capture.optionsFor']
+    // a new photo starts a fresh observation: clear picks, diary and the last AI analysis
+    ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary', 'pico.capture.options', 'pico.capture.optionsFor', 'pico.capture.match']
       .forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
     PicoAI.clear();
     var img = new Image(); img.className = 'shot'; img.alt = ''; img.src = url;
@@ -246,7 +246,7 @@
       var w = PicoAI.wait('AI가 분석중이에요', '사진 속 친구를 살펴보고 있어요');
       PicoAI.analyze(url).then(function (r) {
         if (r.is_insect === false) { w.done().then(function () { busy = false; open(error); }); }
-        else { w.done(true).then(function () { location.href = 'capture-2.html'; }); }
+        else { w.done(true).then(function () { location.href = 'capture-3.html'; }); }
       });
     }, 450);
   }

@@ -71,6 +71,21 @@
   .rel a { position: relative; width: 80px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; white-space: nowrap; }
   .rel .c { width: 81px; height: 81px; margin: -0.5px; }
   .rel .q { position: absolute; left: 24px; top: 24px; width: 32px; height: 32.1px; }
+  /* 내가 그린 그림이 화면을 돌아다녀요. 누르면 놀라서 도망가요 */
+  .roam { position: absolute; inset: 0; z-index: 12; pointer-events: none; overflow: hidden; }
+  .bug { position: absolute; left: 0; top: 0; width: 64px; height: 64px; padding: 0; pointer-events: auto; will-change: transform; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .bug .body { display: block; width: 64px; height: 64px; animation: bug-bob 1.6s ease-in-out infinite; }
+  .bug .flip { display: block; width: 64px; height: 64px; transition: transform .18s ease; }
+  .bug svg, .bug img { display: block; width: 64px; height: 64px; filter: drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
+  .bug.is-mine img { object-fit: contain;
+    filter: drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff) drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
+  .bug.is-moving .body { animation-duration: .5s; }
+  .bug.is-flee .body { animation: bug-scurry .16s linear infinite; }
+  .bug.is-poke .flip { animation: bug-poke .35s ease; }
+  @keyframes bug-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @keyframes bug-scurry { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-4px) rotate(6deg); } }
+  @keyframes bug-poke { 0% { transform: scale(1); } 35% { transform: scale(1.25) rotate(-8deg); } 100% { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .bug .body { animation: none !important; } .bug.is-poke .flip { animation: none; } }
 </style>
 </head><body>
 <div class="phone" style="--h:1398px">
@@ -139,9 +154,12 @@
     <a href="badge.html?state=locked"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/icons/outline/help.svg" alt=""><span>더 관찰하기</span></a>
   </div>
 
+  <div class="roam" id="roam" data-fixed></div>
+
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script src="field.js"></script>
 <script>
 (function () {
   var log = [
@@ -161,6 +179,69 @@
     bm.setAttribute('aria-pressed', on);
     bm.querySelector('img').src = on ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg';
   });
+  // ---------- 내 그림이 화면을 돌아다녀요 (누르면 도망) ----------
+  // 이 곤충 이름으로 내가 그려서 들판에 놓아준 그림이 있으면 그걸, 없으면 예시 그림을 써요.
+  (function () {
+    var layer = document.getElementById('roam'); if (!layer || !window.PicoField) return;
+    var NAME = '칠성무당벌레';
+    var mine = (PicoField.list() || []).filter(function (m) { return m.species && m.species.replace(/\s+/g, '') === NAME; }).pop();
+    var el = document.createElement('button');
+    el.type = 'button'; el.className = 'bug' + (mine ? ' is-mine' : '');
+    el.setAttribute('aria-label', '내가 그린 ' + NAME + ' 그림. 눌러 보세요');
+    el.innerHTML = '<span class="body"><span class="flip">' + (mine ? '<img src="' + mine.src + '" alt="">' : PicoField.sticker('ladybug')) + '</span></span>';
+    layer.appendChild(el);
+    var flip = el.querySelector('.flip');
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+    function area() { var w = layer.clientWidth || 375, h = layer.clientHeight || 812; return { x0: 8, x1: w - 72, y0: 112, y1: h - 100 }; }
+    function rand() { var A = area(); return { x: rnd(A.x0, A.x1), y: rnd(A.y0, A.y1) }; }
+    var pos = { x: 230, y: 330 }, to = rand(), wait = 700, speed = 20, fleeing = false;
+    function place() { el.style.transform = 'translate(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px)'; }
+    place();
+
+    // 눌린 곳과 반대쪽 먼 곳으로 달아나요
+    function runAway(from) {
+      var cx = pos.x + 32, cy = pos.y + 32, best = null, bestScore = -1e9;
+      for (var i = 0; i < 14; i++) {
+        var p = rand(), away = Math.hypot(p.x + 32 - from.x, p.y + 32 - from.y), far = Math.hypot(p.x - pos.x, p.y - pos.y);
+        // 눌린 곳에서 멀수록, 그리고 지금 자리에서 너무 짧지 않게 (최소 140px)
+        var score = away + (far < 140 ? -400 : 0);
+        if (score > bestScore) { bestScore = score; best = p; }
+      }
+      return best;
+    }
+    el.addEventListener('click', function (e) {
+      el.classList.remove('is-poke'); void el.offsetWidth; el.classList.add('is-poke');
+      var r = layer.getBoundingClientRect(), k = r.width / (layer.clientWidth || 375) || 1;
+      var from = { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k };
+      if (!e.clientX && !e.clientY) from = { x: pos.x + 32 + rnd(-10, 10), y: pos.y + 32 + rnd(-10, 10) };   // 키보드로 눌렀을 때
+      to = runAway(from); fleeing = true; speed = 240; wait = 0;
+      el.classList.add('is-flee');
+      if (reduce) { pos = { x: to.x, y: to.y }; place(); fleeing = false; el.classList.remove('is-flee'); }
+    });
+
+    if (reduce) return;
+    var last = 0;
+    (function tick(t) {
+      var dt = last ? Math.min(0.05, (t - last) / 1000) : 0; last = t;
+      if (wait > 0) { wait -= dt * 1000; el.classList.remove('is-moving'); }
+      else {
+        var dx = to.x - pos.x, dy = to.y - pos.y, d = Math.hypot(dx, dy);
+        if (d < 2) {
+          // 도착하면 잠깐 숨 돌리고, 다시 천천히 기어다녀요
+          if (fleeing) { fleeing = false; el.classList.remove('is-flee'); wait = rnd(700, 1400); } else wait = rnd(600, 2400);
+          speed = rnd(14, 24); to = rand(); el.classList.remove('is-moving');
+        } else {
+          var step = Math.min(d, speed * dt);
+          pos.x += dx / d * step; pos.y += dy / d * step;
+          if (Math.abs(dx) > 1) flip.style.transform = dx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+          el.classList.add('is-moving'); place();
+        }
+      }
+      requestAnimationFrame(tick);
+    })(0);
+  })();
 })();
 </script>
 </body></html>

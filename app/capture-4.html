@@ -41,14 +41,14 @@
     </div>
   </div>
 
-  <div class="progress" aria-label="5단계 중 4단계"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+  <div class="progress" aria-label="4단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
 
   <div class="step-title cap">
-    <p class="q"><span>04.</span><span>관찰 일기를 써 볼까요?</span></p>
+    <p class="q"><span>03.</span><span>관찰 일기를 써 볼까요?</span></p>
     <p class="sub">본 것을 나의 글로 적어보세요.</p>
   </div>
 
-  <div class="photo" data-photo aria-label="촬영한 사진"><div class="lens-layer" id="lensLayer"></div></div>
+  <div class="photo" data-photo aria-label="촬영한 사진"></div>
 
   <p class="label">내가 관찰한 단어들을 문장에 넣어 보세요</p>
   <div class="chips" id="chips" role="group" aria-label="관찰 단어"></div>
@@ -63,18 +63,6 @@
 <script src="photo.js"></script>
 <script src="stickers.js"></script>
 <script>
-  // Lens stickers from step 2, at the same spot on the photo
-  (function () {
-    var L = PicoLens, lenses = L.load(); if (!lenses.length) return;
-    L.photoSize(function (iw, ih) {
-      var m = L.cover(333, 268, iw, ih);
-      document.getElementById('lensLayer').innerHTML = lenses.map(function (s) {
-        var p = m.toBox(s.u, s.v);
-        return L.html(s.k, L.clamp(p.x, L.R, 333 - L.R), L.clamp(p.y, L.R, 268 - L.R), { tag: 'span', style: 'green' });
-      }).join('');
-    });
-  })();
-
   // Word chips: the expressions picked in step 3 (Figma words when nothing was picked)
   var WORDS = (function () {
     var a = PicoLens.answers(), out = [];

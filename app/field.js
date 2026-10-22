@@ -182,5 +182,8 @@
     return '<svg viewBox="2 2 60 60" aria-hidden="true"><g fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g></svg>';
   }
 
-  window.PicoField = { doodle: doodle, saveDraft: saveDraft, saveFolded: saveFolded, release: release, hasDraft: hasDraft, mount: mount, list: list };
+  // 도감 상세에서 돌아다니는 그림용: 예시 그림에 하얀 테두리를 둘러 스티커처럼
+  function sticker(key) { return svgSticker(DOODLE[key] || LB); }
+
+  window.PicoField = { doodle: doodle, sticker: sticker, saveDraft: saveDraft, saveFolded: saveFolded, release: release, hasDraft: hasDraft, mount: mount, list: list };
 })();

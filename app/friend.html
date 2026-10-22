@@ -37,6 +37,10 @@
   .recent img { position: absolute; left: -0.5px; top: -0.5px; width: 111.6px; height: 91px; }
   .recent .band { position: absolute; left: 0; top: 90px; width: 110.61px; height: 30px; background: var(--brand); border: 1px solid var(--ink); }
   .recent .nm { position: absolute; left: 6.12px; top: 96.5px; font-size: 14px; white-space: nowrap; }
+  /* 관찰 등급 이름표 (grade.js) — 사진 왼쪽 위에 붙는 작은 종이 라벨 */
+  .gr { position: absolute; left: 6px; top: 6px; z-index: 1; height: 18px; padding: 0 6px; display: flex; align-items: center; font-size: 11px; line-height: 1; white-space: nowrap; background: var(--surface); border: 1px solid var(--ink); }
+  .gr-normal { background: var(--brand-soft); }
+  .gr-rare { background: var(--reward); font-weight: 700; }
 
   .together-h { left: 20px; top: 478.55px; font-size: 16px; }
   .box { left: 20px; top: 507.55px; width: 335px; height: 240px; background: var(--surface); border: 1px solid var(--ink); }
@@ -70,9 +74,9 @@
 
   <div class="abs sec-h"><span id="fRecentH"><b>지혁</b>이가 최근에 만난 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
   <div class="abs recent" id="fRecent">
-    <a href="dogam-detail.html"><img src="assets/tabs/fr-longhorn.png" alt=""><span class="band"></span><span class="nm">하늘소</span></a>
-    <a href="dogam-detail.html"><img src="assets/tabs/fr-firefly.png" alt=""><span class="band"></span><span class="nm">반딧불이</span></a>
-    <a href="dogam-detail.html"><img src="assets/tabs/fr-molecricket.png" alt="" style="width:106px"><span class="band"></span><span class="nm">땅강아지</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-longhorn.png" alt=""><span class="band"></span><span class="gr gr-normal">보통</span><span class="nm">하늘소</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-firefly.png" alt=""><span class="band"></span><span class="gr gr-rare">희귀</span><span class="nm">반딧불이</span></a>
+    <a href="dogam-detail.html"><img src="assets/tabs/fr-molecricket.png" alt="" style="width:106px"><span class="band"></span><span class="gr gr-normal">보통</span><span class="nm">땅강아지</span></a>
   </div>
 
   <p class="abs together-h">함께 발견한 친구들</p>
@@ -89,6 +93,7 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script src="grade.js"></script>
 <script>
 (function () {
   // ?friend=jihyuk (기본) | saon | seongyu | haram — 마이 › 함께하는 친구들에서 넘어와요.
@@ -118,7 +123,7 @@
   $('fRecentH').innerHTML = '<b>' + f.short + '</b>' + f.josa + ' 최근에 만난 곤충';
   $('fRecent').innerHTML = f.recent.map(function (r) {
     return '<a href="dogam-detail.html"><img src="assets/tabs/fr-' + r[0] + '.png" alt=""' + (r[2] ? ' style="width:' + r[2] + 'px"' : '') +
-      '><span class="band"></span><span class="nm">' + r[1] + '</span></a>';
+      '><span class="band"></span>' + PicoGrade.tag(r[1]) + '<span class="nm">' + r[1] + '</span></a>';
   }).join('');
   $('fCount').textContent = f.count + '종';
   $('fThumbs').innerHTML = f.thumbs.map(function (t) {

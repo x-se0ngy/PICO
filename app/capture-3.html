@@ -10,18 +10,29 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<title>PICO · 촬영 3 특징 고르기</title>
+<title>PICO · 촬영 2 자세히 보기</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
   .step-title .sub { white-space: nowrap; }
-  /* Figma 3.1.3 촬영 3~6 */
+  /* 사진을 크게 보며 질문에 답해요: 사진 칸(335×335)은 그대로, 안쪽 .zoom만 확대해요 */
   .photo { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: transparent; border: 1px solid var(--ink); overflow: hidden; }
-  .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
-  .photo .lens { z-index: 2; }
-  /* Figma 3.1.3.x: 종류 · 안내 (y 559.5, 왼쪽 20px부터), 선택지 = 버튼 3 (2836:711) 162×46 두 줄 (x 22.89 / 190.11, y 590.38 / 640.88) */
+  .zoom { position: absolute; inset: 0; transform-origin: 0 0; cursor: zoom-in; touch-action: none; user-select: none; -webkit-user-select: none; outline: none; }
+  .zoom.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
+  .zoom.is-zoomed { cursor: grab; }
+  .zoom.is-anim { transition: transform var(--dur) var(--ease); }
+  .zoom:focus-visible { box-shadow: inset 0 0 0 3px var(--brand); }
+  .hint { position: absolute; left: 8px; bottom: 8px; padding: 4px 9px; background: var(--bg); border: 1px solid var(--ink); font-size: 12px; line-height: 16px; white-space: nowrap; pointer-events: none; z-index: 2; }
+  /* 질문 번호 1~4: 눌러서 다른 질문으로 옮겨 가요 (지금 질문 = 초록, 답한 질문 = 체크) */
+  .steps { position: absolute; left: 8px; top: 8px; display: flex; gap: 5px; z-index: 2; }
+  .steps button { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px solid var(--ink); font-size: 13px; line-height: 1; transition: background-color var(--dur) var(--ease); }
+  .steps button[aria-current="true"] { background: var(--brand); font-weight: 700; }
+  .steps button.done::after { content: ''; width: 5px; height: 9px; margin: -2px 0 0 1px; border: solid var(--ink); border-width: 0 2px 2px 0; transform: rotate(40deg); }
+  .steps button.done span { display: none; }
+  /* 질문 (y 559.5) · 선택지 = 버튼 3 (2836:711) 162×46 두 줄 (x 22.89 / 190.11, y 590.38 / 640.88) */
   .say { position: absolute; left: 0; top: 559.5px; width: 375px; padding: 0 20px; display: flex; gap: 8px; align-items: center; font-size: 14px; line-height: normal; white-space: nowrap; }
+  .say .no { font-weight: 700; }
   .say .dot { width: 12px; font-size: 16px; text-align: center; }
   .options { position: absolute; left: 22.89px; top: 590.38px; width: 329.22px; display: grid; grid-template-columns: 162px 162px; column-gap: 5.22px; row-gap: 4.5px; }
   .opt { height: 46px; display: flex; align-items: center; justify-content: center; background: #fffad7; border: 1px solid var(--ink); font-size: 16px; white-space: nowrap;
@@ -39,22 +50,26 @@
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav">
-      <a href="capture-2.html" aria-label="뒤로"><img class="icon" src="assets/icons/outline/arrow-left.svg" alt=""></a>
+      <a href="capture-1.html" aria-label="뒤로"><img class="icon" src="assets/icons/outline/arrow-left.svg" alt=""></a>
       <a href="home.html" aria-label="닫기" data-confirm="관찰을 중단할까요?"><img class="icon" src="assets/icons/outline/close.svg" alt=""></a>
     </div>
   </div>
 
-  <div class="progress" aria-label="5단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  <div class="progress" aria-label="4단계 중 2단계"><span class="on"></span><span class="on"></span><span></span><span></span></div>
 
   <div class="step-title cap">
-    <p class="q"><span id="qNo">03-1.</span><span>자세히 보니 어땠나요?</span></p>
-    <p class="sub">내가 표시한 곳마다 하나씩 골라보세요. 정답은 없어요.</p>
+    <p class="q"><span>02.</span><span>자세히 보니 어땠나요?</span></p>
+    <p class="sub">사진을 눌러 크게 보고 골라 보세요. 정답은 없어요.</p>
   </div>
 
-  <div class="photo" data-photo aria-label="촬영한 사진"><div class="lens-layer" id="layer"></div></div>
+  <div class="photo" aria-label="촬영한 사진">
+    <div class="zoom" id="zoom" data-photo role="button" tabindex="0" aria-pressed="false" aria-label="촬영한 사진. 누르면 크게 볼 수 있어요"></div>
+    <div class="steps" id="steps" role="group" aria-label="질문 고르기"></div>
+    <span class="hint" id="hint">눌러서 크게 보기</span>
+  </div>
 
-  <p class="say" aria-live="polite"><span id="kindName">생김새</span><span class="dot">·</span><span id="prompt">내가 관찰한 특징들을 표현해 봐요.</span></p>
-  <div class="options" id="options" role="group" aria-label="특징 고르기"></div>
+  <p class="say" aria-live="polite"><span class="no" id="qCount">1/4</span><span class="dot">·</span><span id="prompt"></span></p>
+  <div class="options" id="options" role="group" aria-label="보기 고르기"></div>
 
   <a class="cta step" id="next" href="capture-4.html" aria-disabled="true"><span class="cta-face">다음 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
 
@@ -66,31 +81,68 @@
 <script src="ai.js"></script>
 <script>
 (function () {
-  // 2단계에서 붙인 스티커를 눌러 → 그 부분을 살펴본 표현 4개 중 하나를 골라요.
-  // 들어오면 바로 보여 주고, AI가 스티커를 붙인 자리마다 표현 4개를 뒤에서 새로 만들어요(분석 화면 없음).
-  // (같은 사진·같은 스티커로 다시 들어오면 저장해 둔 표현을 그대로 써요. AI를 못 쓰면 Figma 기본 표현.)
-  var L = PicoLens, W = 333, H = 333, R = L.R;
-  // 촬영 3에서 부르는 스티커 이름 (Figma 3.1.3.1~4: 생김새 · 사는 곳 · 움직임 · 관계)
-  var NAMES = ['생김새', '사는 곳', '움직임', '관계'];
-  var layer = document.getElementById('layer'), opts = document.getElementById('options');
-  var promptEl = document.getElementById('prompt');
-  var lenses = L.load();
-  var answers = L.answers();
-  var active = null, map = null;
+  // 사진을 크게 보며 질문 4개(모양 · 장소 · 움직임 · 행동)에 하나씩 답해요.
+  // 모양 질문은 "점이 몇 개 있나요?"처럼 사진을 자세히 세어 보는 질문이에요 (질문·보기는 촬영 1의 AI 분석이 만들어 둬요).
+  var L = PicoLens, N = 4;
+  var zoom = document.getElementById('zoom'), hint = document.getElementById('hint'), box = zoom.parentNode;
+  var stepsEl = document.getElementById('steps'), opts = document.getElementById('options');
+  var promptEl = document.getElementById('prompt'), countEl = document.getElementById('qCount');
+  var answers = L.answers(), active = -1;
 
-  // 2단계를 거치지 않고 들어오면 Figma 3.1.3 프레임의 스티커 4개 위치로 보여 줘요 (칸 안 중심 좌표)
-  var DEMO = [{ k: 0, x: 117, y: 135 }, { k: 1, x: 76, y: 74 }, { k: 2, x: 259, y: 177 }, { k: 3, x: 233, y: 94 }];
+  /* ---------- 사진 확대: 누르면 그 자리를 크게, 확대한 채로 끌면 옮겨 보고, 다시 누르면 돌아와요 ---------- */
+  var Z = 2.6, scale = 1, tx = 0, ty = 0, drag = null;
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function paint(anim) {
+    zoom.classList.toggle('is-anim', !!anim);
+    zoom.style.transform = scale === 1 ? '' : 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    zoom.classList.toggle('is-zoomed', scale > 1);
+    zoom.setAttribute('aria-pressed', scale > 1);
+    hint.textContent = scale > 1 ? '끌어서 옮기기 · 다시 누르면 돌아와요' : '눌러서 크게 보기';
+  }
+  function limit() { var w = box.clientWidth, h = box.clientHeight; tx = clamp(tx, w * (1 - scale), 0); ty = clamp(ty, h * (1 - scale), 0); }
+  function toggle(px, py) {
+    if (scale > 1) { scale = 1; tx = ty = 0; }
+    else { scale = Z; tx = px * (1 - Z); ty = py * (1 - Z); limit(); }
+    paint(true);
+  }
+  zoom.addEventListener('pointerdown', function (e) {
+    drag = { x: e.clientX, y: e.clientY, tx: tx, ty: ty, moved: false };
+    try { zoom.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  zoom.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.moved && Math.hypot(dx, dy) < 6) return;
+    drag.moved = true;
+    if (scale === 1) return;
+    var k = box.getBoundingClientRect().width / box.offsetWidth || 1;   // 화면에 맞춰 줄여 보일 때도 손가락을 따라가게
+    tx = drag.tx + dx / k; ty = drag.ty + dy / k; limit(); paint(false);
+  });
+  function release(e) {
+    if (!drag) return;
+    var d = drag; drag = null;
+    if (d.moved || e.type === 'pointercancel') return;
+    var r = box.getBoundingClientRect(), k = r.width / box.offsetWidth || 1;
+    toggle((e.clientX - r.left) / k, (e.clientY - r.top) / k);
+  }
+  zoom.addEventListener('pointerup', release);
+  zoom.addEventListener('pointercancel', release);
+  zoom.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(box.clientWidth / 2, box.clientHeight / 2); }
+  });
 
-  function byKind() { return lenses.slice().sort(function (a, b) { return a.k - b.k; }); }
-  function pos(s) { var p = map.toBox(s.u, s.v); return { x: L.clamp(p.x, R, W - R + 1), y: L.clamp(p.y, R, H - R + 1) }; }
-
-  // 지금 고르는 스티커 = 올리브 띠, 나머지 = 크림 띠 (Figma 3.1.3.2 ~ 3.1.3.4)
-  function renderLenses() {
-    layer.innerHTML = byKind().map(function (s) {
-      var p = pos(s);
-      return L.html(s.k, p.x, p.y, { on: s.k === active,
-        attrs: ' aria-pressed="' + (s.k === active) + '" aria-label="' + (s.k + 1) + '. ' + L.KINDS[s.k] + (answers[s.k] != null ? ' · 골랐어요' : '') + '"' });
-    }).join('');
+  /* ---------- 질문 ---------- */
+  function renderSteps() {
+    stepsEl.innerHTML = '';
+    for (var k = 0; k < N; k++) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.dataset.k = k;
+      b.className = answers[k] != null ? 'done' : '';
+      b.setAttribute('aria-current', k === active ? 'true' : 'false');
+      b.setAttribute('aria-label', (k + 1) + '번 질문' + (answers[k] != null ? ' · 답했어요' : ''));
+      b.innerHTML = '<span>' + (k + 1) + '</span>';
+      stepsEl.appendChild(b);
+    }
   }
   function renderOptions(state) {
     opts.className = 'options' + (state ? ' ' + state : '');
@@ -98,64 +150,39 @@
       return '<button type="button" class="opt" data-i="' + i + '" aria-pressed="' + (answers[active] === i) + '">' + o + '</button>';
     }).join('');
   }
-  function activate(k) {
-    var changed = active !== null && active !== k;
-    active = k;
-    // 제목 번호 = 지금 고르는 스티커가 몇 번째인지 (03-1, 03-2 …)
-    var order = byKind().map(function (s) { return s.k; }).indexOf(k) + 1;
-    document.getElementById('qNo').textContent = '03-' + (order || 1) + '.';
-    document.getElementById('kindName').textContent = NAMES[k];
-    promptEl.textContent = L.PROMPTS[k];
-    renderLenses();
-    renderOptions(changed ? 'ready' : '');
+  function fit() {   // 질문이 길어도 한 줄에 들어오게 글씨를 조금 줄여요
+    var row = promptEl.parentNode; row.style.fontSize = '';
+    var size = 14; while (row.scrollWidth > row.clientWidth && size > 11) { size -= 1; row.style.fontSize = size + 'px'; }
   }
+  function activate(k) {
+    var changed = active !== -1 && active !== k;
+    active = k;
+    countEl.textContent = (k + 1) + '/' + N;
+    promptEl.textContent = L.PROMPTS[k];
+    fit(); renderSteps(); renderOptions(changed ? 'ready' : '');
+  }
+  function nextOpen() {   // 지금 다음 번호부터, 없으면 처음부터 아직 안 답한 질문
+    for (var i = 1; i <= N; i++) { var k = (active + i) % N; if (answers[k] == null) return k; }
+    return -1;
+  }
+  function syncNext() { document.getElementById('next').setAttribute('aria-disabled', Object.keys(answers).length ? 'false' : 'true'); }
 
-  layer.addEventListener('click', function (e) { var b = e.target.closest('.lens'); if (b) activate(+b.dataset.k); });
+  stepsEl.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) activate(+b.dataset.k); });
   opts.addEventListener('click', function (e) {
     var b = e.target.closest('.opt'); if (!b) return;
     var i = +b.dataset.i;
     if (answers[active] === i) delete answers[active]; else answers[active] = i;
     L.saveAnswers(answers);
     opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', answers[active] === +o.dataset.i); });
-    renderLenses(); syncNext();
+    renderSteps(); syncNext();
     if (answers[active] == null) return;
-    // move on to the next sticker without an answer
-    var next = byKind().filter(function (s) { return answers[s.k] == null; })[0];
-    if (next) setTimeout(function () { activate(next.k); }, (window.picoDur ? picoDur() : 300) + 50);
+    var next = nextOpen();
+    if (next > -1) setTimeout(function () { activate(next); }, (window.picoDur ? picoDur() : 300) + 50);
   });
 
-  // grey CTA until at least one sticker question is answered
-  function syncNext() { document.getElementById('next').setAttribute('aria-disabled', Object.keys(answers).length ? 'false' : 'true'); }
   syncNext();
-
-  function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
-  function start() {
-    var first = byKind().filter(function (s) { return answers[s.k] == null; })[0] || byKind()[0];
-    active = null; activate(first.k);
-  }
-  L.photoSize(function (iw, ih) {
-    map = L.cover(W, H, iw, ih);
-    if (!lenses.length) lenses = DEMO.map(function (d) { var q = map.toImg(d.x, d.y); return { k: d.k, u: q.u, v: q.v }; });
-    start();
-    var photo = window.PicoPhoto && PicoPhoto.get();
-    var spotKey = JSON.stringify(byKind().map(function (s) { return [s.k, +s.u.toFixed(3), +s.v.toFixed(3)]; }));
-    if (!photo || ss('pico.capture.optionsFor') === spotKey) return;
-    // 화면은 바로 보여 주고, AI가 만든 표현은 뒤에서 받아 와요 (분석 화면 없음).
-    // 아직 아무것도 고르지 않았을 때만 부드럽게 바꿔 끼워요. 이미 고르기 시작했으면 말이 바뀌지 않게 그대로 둬요.
-    PicoAI.stickers(photo, byKind(), PicoAI.current().name).then(function (r) {
-      if (!r || r.demo || Object.keys(answers).length) return;
-      var changed = false;
-      Object.keys(r.options).forEach(function (k) {
-        var o = r.options[k]; if (!Array.isArray(o) || o.length !== 4) return;
-        L.OPTIONS[+k] = o; changed = true;
-      });
-      if (!changed) return;
-      var saved = {}; for (var k = 0; k < 4; k++) saved[k] = L.OPTIONS[k];
-      ss('pico.capture.options', JSON.stringify(saved));
-      ss('pico.capture.optionsFor', spotKey);
-      renderOptions('ready');
-    });
-  });
+  var first = 0; for (var q = 0; q < N; q++) { if (answers[q] == null) { first = q; break; } }
+  activate(first); paint(false);
 })();
 </script>
 </body></html>

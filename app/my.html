@@ -20,8 +20,8 @@
   .abs { position: absolute; }
 
   /* profile card (Figma 6.1.1, 2847:4004) */
-  .card-shadow { left: 29.5px; top: 158.44px; width: 325px; height: 280px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 20.5px; top: 148px; width: 325px; height: 280px; background: var(--brand); border: 1px dashed var(--ink); }
+  .card-shadow { left: 29.5px; top: 158.44px; width: 325px; height: 229px; background: var(--ink); border: 1px solid var(--ink); }
+  .card-face { left: 20.5px; top: 148px; width: 325px; height: 229px; background: var(--brand); border: 1px dashed var(--ink); }
   .card-col { left: 28px; top: 118px; width: 310px; display: flex; flex-direction: column; gap: 10px; }
   /* name + 프로필 큰거 (2959:7143 · 풀, 91.1px) sit on one row, bottom-aligned (Figma 2847:4011) */
   .me-row { padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-end; }
@@ -31,35 +31,25 @@
   .me .s { font-size: 14px; }
   /* 개인 설정에서 정한 이름이 길면(최대 10자) 프로필 옆에서 줄을 바꿔요 */
   .me { min-width: 0; } .me .t { white-space: normal; word-break: keep-all; }
-  .card-inner { width: 310px; height: 190px; background: var(--brand-soft); padding: 10px 7.5px; }
+  .card-inner { width: 310px; height: 139px; background: var(--brand-soft); padding: 10px 7.5px; overflow: hidden; }
 
-  .week { width: 295px; display: flex; flex-direction: column; gap: 10px; }
-  .week-h { padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-start; }
-  .week-h > p { font-size: 14px; line-height: 19px; }
-  .week-nav { display: flex; gap: 4px; align-items: center; font-size: 12px; white-space: nowrap; }
-  .week-nav button img { width: 18px; height: 18px; }
-  .week-nav .prev img { transform: scaleX(-1); }
-  /* 달력 (Figma J. design systeam › 달력], 2847:11967 · Property 1 = 4…10)
-     새 스타일은 Property 1=6 기준: 요일 14px + 30px 점선 · 날짜 30px 칸 가운데 12px · 295px 점선 · 그날 기록 12/20 */
-  .cal { display: flex; flex-direction: column; gap: 15px; }
-  .days { display: flex; justify-content: space-between; width: 295px; }
-  .day { width: 30px; font-weight: 400; display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 14px; text-align: center; }
-  .day .dl { position: relative; width: 30px; height: 20.89px; font-weight: 400; }
-  .day .dl::after { content: ''; position: absolute; left: 0; top: 20.39px; width: 30px; height: 1px; background: url('assets/tabs/cal-rule-30.svg') no-repeat; }
-  .day .num { position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 12px; line-height: normal; }
-  .day .num span { position: relative; }
-  /* 탐험한 날 점 (Group 2147203356): 30px 칸 안 20/4.22, 5px */
-  .day .dot { position: absolute; left: 20px; top: 4.22px; width: 5px; height: 5px; }
-  /* 고른 날: 30px 네모 + 파란 방울(그림자 없음, Group 2147203354) 1.75/1.22 · 숫자는 칸 가운데 */
-  .day.sel .num::after { content: ''; position: absolute; inset: 0; border: 1px solid var(--ink); }
-  .day .bubble { position: absolute; left: 1.75px; top: 1.22px; width: 27.14px; height: 27px; }
-  .day.sel .num span { top: 0.22px; }
-  .cal hr { margin: 0; width: 295px; height: 1px; border: 0; background: url('assets/tabs/cal-rule-295.svg') no-repeat; }
-  .daylog { width: 250px; font-size: 12px; line-height: 20px; white-space: nowrap; }
-  .daylog p:last-child { font-family: var(--font-hand); }
+  /* 내가 모은 곤충: 카드 안에서 옆으로 넘겨 봐요 (4번째 카드가 살짝 보여요) */
+  .mine-h { padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-end; white-space: nowrap; }
+  .mine-h > p { font-size: 14px; line-height: 19px; }
+  .mine-h a { display: flex; align-items: center; gap: 2px; font-size: 12px; }
+  .mine-h a img { width: 18px; height: 18px; }
+  .mine-list { margin-top: 10px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .mine-list::-webkit-scrollbar { display: none; }
+  .mi { flex: none; width: 88px; display: flex; flex-direction: column; gap: 5px; font-size: 12px; line-height: 16px; white-space: nowrap; }
+  .mi .ph { position: relative; width: 88px; height: 70px; border: 1px solid var(--ink); overflow: hidden; background: var(--surface); }
+  .mi .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+  /* 관찰 등급 이름표 (grade.js) — 사진 왼쪽 위에 붙는 작은 종이 라벨 */
+  .gr { position: absolute; left: 5px; top: 5px; z-index: 1; height: 18px; padding: 0 6px; display: flex; align-items: center; font-size: 11px; line-height: 1; white-space: nowrap; background: var(--surface); border: 1px solid var(--ink); }
+  .gr-normal { background: var(--brand-soft); }
+  .gr-rare { background: var(--reward); font-weight: 700; }
 
   /* sections below the card: Figma column gap 20 */
-  .stack { left: 0; top: 458.44px; width: 375px; display: flex; flex-direction: column; gap: 20px; }
+  .stack { left: 0; top: 407.44px; width: 375px; display: flex; flex-direction: column; gap: 20px; }
   .sec { display: flex; flex-direction: column; gap: 10px; }
   .sec-h { padding: 0 20px; width: 375px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
   .sec-h img { width: 18px; height: 18px; }
@@ -99,7 +89,7 @@
   .settings button img { width: 32px; height: 32px; }
 </style>
 </head><body>
-<div class="phone" style="--h:1464px">
+<div class="phone" style="--h:1413px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -112,12 +102,10 @@
   <div class="abs card-col">
     <div class="me-row"><div class="me"><p class="t"><b id="myName">김선우</b> <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
       <img class="pf" id="myAvatar" src="assets/profile/grass.svg" alt="내 프로필"></div>
-    <div class="card-inner"><div class="week">
-      <div class="week-h"><p>나의 탐험</p>
-        <div class="week-nav"><button class="prev" id="wkPrev" aria-label="이전 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button><span id="wkLabel">10월 셋째 주</span><button id="wkNext" aria-label="다음 주"><img src="assets/tabs/chevron-right-18.png" alt=""></button></div></div>
-      <div class="cal"><div class="days" id="days"></div><hr>
-        <div class="daylog" aria-live="polite"><p id="dayTitle">10월 8일 탐험</p><p id="dayText">친구와 곤충 3종을 발견해 함께 탐험을 완료했어요</p></div></div>
-    </div></div>
+    <div class="card-inner">
+      <div class="mine-h"><p>내가 모은 곤충</p><a href="dogam.html"><span>24종 / 80종</span><img src="assets/tabs/chevron-right-18.png" alt=""></a></div>
+      <div class="mine-list" id="mineList"></div>
+    </div>
   </div>
 
   <div class="abs stack">
@@ -170,6 +158,7 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
+<script src="grade.js"></script>
 <script>
   // 개인 설정 3단계에서 고른 탐험의 아이콘이 내 프로필 (없으면 Figma 기본 '풀')
   try { var av = localStorage.getItem('pico.avatar'); if (/^(flower|grass|river|tree|cloud|moon)$/.test(av)) document.getElementById('myAvatar').src = 'assets/profile/' + av + '.svg'; } catch (e) {}
@@ -183,50 +172,13 @@
 </script>
 <script>
 (function () {
-  // Figma 달력 (2847:11967, Property 1 = 4…10): 고른 날은 네모 + 파란 방울, 점 찍힌 날(4·6일)은 파란 점,
-  // 아래 기록이 그날 문구로 바뀌어요. 문구는 Figma 변형마다 들어 있는 그대로예요.
-  var NAMES = ['월', '화', '수', '목', '금', '토', '일'];
-  var LOG = { '10-4': '새로운 곤충 3종을 발견했어요 · 첫 관찰을 기록했어요',
-              '10-5': '나비 2마리를 만났어요 · 꽃밭 탐험을 완료했어요',
-              '10-6': '곤충 4마리를 관찰했어요 · 호기심 배지를 받았어요',
-              '10-7': '무당벌레를 발견했어요 · 관찰 스티커 3개를 모았어요',
-              '10-8': '친구와 곤충 3종을 발견해 함께 탐험을 완료했어요',
-              '10-9': '친구와 곤충 3종을 발견했어요 · 함께 탐험을 완료했어요',
-              '10-10': '새로운 곤충 6마리를 만났어요 · 일주일 탐험 배지를 받았어요' };
-  var DOT = { '10-4': 1, '10-6': 1 };                         // Figma에서 파란 점이 찍힌 날
-  // 프로토타입 달력: 기준 주는 Figma처럼 10월 4(월)~10(일)일 · "10월 셋째 주". 화살표로 앞뒤 주를 넘겨요.
-  // 2027년 10월 4일이 월요일이라 배지 날짜(2027.10.xx)와 요일이 맞아요.
-  var WEEKS = ['첫째', '둘째', '셋째', '넷째', '다섯째'];
-  var BASE = new Date(2027, 9, 4), offset = 0, sel = 4;       // 기본: 금 8일 선택 (Figma 6.1.1)
-  var el = document.getElementById('days'), dayTitle = document.getElementById('dayTitle'),
-      dayText = document.getElementById('dayText'), wkLabel = document.getElementById('wkLabel');
-  var st = +document.documentElement.dataset.state;          // ?state=4…10 → 그날을 골라 열어요 (Figma Property 1)
-  if (st >= 4 && st <= 10) sel = st - 4;
-  function day(i) { var d = new Date(BASE); d.setDate(d.getDate() + offset * 7 + i); return d; }
-  function key(d) { return (d.getMonth() + 1) + '-' + d.getDate(); }
-  function render() {
-    el.innerHTML = NAMES.map(function (n, i) {
-      var d = day(i), k = key(d), on = i === sel, dot = !!DOT[k], num = d.getDate();
-      // 고른 날: 점 있는 날은 점이 그려진 방울(Figma 4·6 변형), 아니면 기본 방울
-      var mark = on ? '<img class="bubble" src="assets/tabs/' + (dot ? 'cal-selected-dot' : 'cal-selected') + '.svg" alt="">'
-                    : (dot ? '<img class="dot" src="assets/tabs/cal-dot.svg" alt="">' : '');
-      return '<button class="day' + (on ? ' sel' : '') + '" data-i="' + i + '" aria-pressed="' + on + '" aria-label="' + (d.getMonth() + 1) + '월 ' + num + '일 ' + n + '요일' + (LOG[k] ? ' · 탐험 기록 있음' : '') + '">' +
-        '<span class="dl">' + n + '</span><span class="num">' + mark +
-        '<span>' + num + '</span></span></button>';
-    }).join('');
-    var s = day(sel);
-    dayTitle.textContent = (s.getMonth() + 1) + '월 ' + s.getDate() + '일 탐험';
-    dayText.textContent = LOG[key(s)] || '이날은 탐험 기록이 없어요.';
-    var w = 2 + offset;                                       // 기준 주 = 10월 셋째 주
-    wkLabel.textContent = (w < 0 ? '9월 ' + WEEKS[Math.max(0, 5 + w)] : w < 5 ? '10월 ' + WEEKS[w] : '11월 ' + WEEKS[Math.min(4, w - 5)]) + ' 주';
-  }
-  el.addEventListener('click', function (e) {
-    var b = e.target.closest('.day'); if (!b) return;
-    sel = +b.dataset.i; render();
-  });
-  document.getElementById('wkPrev').addEventListener('click', function () { offset--; render(); });
-  document.getElementById('wkNext').addEventListener('click', function () { offset++; render(); });
-  render();
+  // 내가 모은 곤충 (도감과 같은 곤충들, 최근에 만난 순)
+  var MINE = [['방아깨비', 'grasshopper'], ['배추흰나비', 'butterfly'], ['칠성무당벌레', 'ladybug'], ['고추 잠자리', 'dragonfly'],
+    ['소금쟁이', 'waterstrider'], ['물방개', 'divingbeetle'], ['흰줄숲모기', 'mosquito'], ['갈색 여치', 'katydid'],
+    ['긴수염대벌레', 'stickinsect'], ['큰자루긴수염나방', 'moth'], ['붉은점모시나비', 'apollo'], ['상제나비', 'blackveined']];
+  document.getElementById('mineList').innerHTML = MINE.map(function (m) {
+    return '<a class="mi" href="dogam-detail.html"><span class="ph"><img src="assets/tabs/card-' + m[1] + '.png" alt="">' + PicoGrade.tag(m[0]) + '</span><span>' + m[0] + '</span></a>';
+  }).join('');
 
   var settings = ['알림 관리', '공지사항', '고객센터', '보호자 설정', '위치 정보 설정', '서비스 이용 약관', '개인정보 처리방침'];
   document.getElementById('settings').innerHTML = settings.map(function (s) {

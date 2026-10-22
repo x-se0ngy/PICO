@@ -1,8 +1,9 @@
 // PICO · AI 관찰 분석 (Vercel 서버 함수: POST /api/analyze)
 //
 // 아이가 찍은 사진을 Claude에게 보여 주고, 아래 두 가지를 JSON으로 받아요.
-//   mode "identify"  (촬영 1) : 어떤 곤충인지, 분류, 아이에게 들려줄 분석글 3줄, 스티커 종류별 선택지 4개
-//   mode "stickers"  (촬영 3) : 아이가 스티커를 붙인 자리를 보고, 그 자리에 맞는 선택지 4개
+//   mode "identify"  (촬영 1) : 어떤 곤충인지, 분류, 아이에게 들려줄 분석글 3줄, 관찰 질문(모양·장소·움직임·행동)별 선택지 4개
+//                               + 모양 질문은 "점이 몇 개 있나요?"처럼 세어 보는 질문, 사진과 가장 가까운 보기 번호(match)
+//   mode "stickers"  (예전 스티커 단계용, 지금 화면은 쓰지 않아요) : 스티커를 붙인 자리에 맞는 선택지 4개
 //
 // 준비: Vercel 프로젝트 Settings → Environment Variables 에 ANTHROPIC_API_KEY 를 넣어 주세요.
 // 키가 없으면 501을 돌려주고, 화면(app/ai.js)은 예시 분석으로 계속 진행해요.
@@ -29,13 +30,20 @@ function identifyPrompt() {
     `  "group": "딱정벌레류",             // 다음 중 하나: ${GROUPS.join(', ')}`,
     '  "confidence": "high",               // high | medium | low',
     '  "summary": ["...", "...", "..."],  // 아이에게 들려줄 분석글 3줄. 한 줄에 20자 이내, 문장마다 "요."로 끝내기',
-    '  "options": {                        // 아이가 고를 표현. 종류마다 정확히 4개, 각 11자 이내, "요."로 끝내기',
+    '  "questions": {                      // 아이에게 물어볼 관찰 질문. 종류마다 하나, 각 20자 이내, "나요?"/"까요?"로 끝내기',
+    '    "모양": "...", "장소": "...", "움직임": "...", "행동": "..."',
+    '  },',
+    '  "options": {                        // 질문마다 아이가 고를 보기. 정확히 4개, 각 11자 이내, "요."로 끝내기',
     '    "모양": [...], "장소": [...], "움직임": [...], "행동": [...]',
-    '  }',
+    '  },',
+    '  "match": { "모양": 2, "장소": 0, "움직임": 1, "행동": 3 }   // 질문마다 이 사진과 가장 가까운 보기의 번호(0~3). 사진만으로 알 수 없으면 그 질문은 빼',
     '}',
-    'options는 정답 고르기가 아니라 아이가 본 것을 말로 표현하도록 돕는 보기야.',
+    '"모양" 질문은 사진을 자세히 세어 보게 하는 질문으로 만들어. 점·줄무늬·날개·다리처럼 사진에서 세어 볼 수 있는 것이 있으면',
+    '"등에 검은 점이 몇 개 있나요?"처럼 개수를 묻고, 보기는 "3개 있어요."처럼 서로 다른 개수 4개(사진의 실제 개수가 하나 들어가게)로 만들어.',
+    '세어 볼 것이 없으면 "어떤 무늬가 있나요?"처럼 생김새를 묻고 표현 보기 4개로 만들어.',
+    '다른 질문의 보기는 정답 고르기가 아니라 아이가 본 것을 말로 표현하도록 돕는 보기야.',
     '4개 중 2개 이상은 이 사진에서 실제로 보이는 것, 나머지는 이 곤충에게 있을 법한 것으로 서로 다르게 만들어.',
-    '"장소"는 사진 속 배경(잎, 꽃, 나무, 땅, 물가 등)을 보고 만들어.'
+    '"장소"는 사진 속 배경(잎, 꽃, 나무, 땅, 물가 등)을 보고, "행동"은 무엇을 하고 있는지(먹기, 쉬기, 걷기 등)를 보고 만들어.'
   ].join('\n');
 }
 
@@ -83,7 +91,7 @@ async function askClaude(image, prompt) {
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 900,
+      max_tokens: 1100,
       system: STYLE,
       messages: [{ role: 'user', content: [
         { type: 'image', source: { type: 'base64', media_type: image.media_type, data: image.data } },
@@ -122,8 +130,12 @@ module.exports = async function handler(req, res) {
     }
 
     const j = await askClaude(image, identifyPrompt());
-    const options = {};
-    KINDS.forEach((k, i) => { const o = four(j.options && j.options[k], 14); if (o) options[i] = o; });
+    const options = {}, questions = {}, match = {};
+    KINDS.forEach((k, i) => {
+      const o = four(j.options && j.options[k], 14); if (o) options[i] = o;
+      const q = clean(j.questions && j.questions[k], 26); if (q && o) questions[i] = q;
+      const m = j.match && j.match[k]; if (o && Number.isInteger(m) && m >= 0 && m < 4) match[i] = m;
+    });
     const summary = (Array.isArray(j.summary) ? j.summary : []).map(s => clean(s, 30)).filter(Boolean).slice(0, 3);
     res.status(200).json({
       ok: true,
@@ -132,7 +144,9 @@ module.exports = async function handler(req, res) {
       group: GROUPS.includes(j.group) ? j.group : '기타',
       confidence: ['high', 'medium', 'low'].includes(j.confidence) ? j.confidence : 'medium',
       summary,
-      options
+      options,
+      questions,
+      match
     });
   } catch (e) {
     console.error(e);

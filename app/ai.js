@@ -10,7 +10,9 @@
   var DEMO = {
     demo: true, is_insect: true, name: '칠성무당벌레', group: '딱정벌레류', confidence: 'medium',
     summary: ['빨간 등에 검은 점이 일곱 개 있어요.', '진딧물을 잡아먹는 고마운 곤충이에요.', '놀라면 다리를 접고 죽은 척해요.'],
-    options: {}
+    options: { 0: ['점이 없어요.', '1~3개 있어요.', '4~7개 있어요.', '8개가 넘어요.'] },
+    questions: { 0: '등에 검은 점이 몇 개 있나요?' },
+    match: { 0: 2 }
   };
 
   function read() { try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
@@ -33,13 +35,14 @@
     return post({ mode: 'identify', image: photo }).then(function (j) {
       var r = j && j.ok ? {
         demo: false, is_insect: j.is_insect, name: j.name, group: j.group, confidence: j.confidence,
-        summary: j.summary && j.summary.length ? j.summary : DEMO.summary, options: j.options || {}
+        summary: j.summary && j.summary.length ? j.summary : DEMO.summary, options: j.options || {},
+        questions: j.questions || {}, match: j.match || {}
       } : DEMO;
       write(r); return r;
     });
   }
 
-  // 촬영 3: 스티커를 붙인 자리마다 선택지 4개
+  // (예전 스티커 단계용 — 지금은 쓰지 않아요) 스티커를 붙인 자리마다 선택지 4개
   function stickers(photo, lenses, insect) {
     if (!photo || !lenses.length) return Promise.resolve({ demo: true, options: {} });
     return post({ mode: 'stickers', image: photo, insect: insect || '',
