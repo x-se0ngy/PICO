@@ -29,6 +29,11 @@
   .card-shadow { position: absolute; left: 28.91px; top: 176.6px; width: 326.285px; height: 335px; background: var(--ink); }
   .card { position: absolute; left: 19.81px; top: 165.3px; width: 325.917px; height: 335px; background: var(--brand); border: 1px dashed var(--ink); }
   .card-photo { position: absolute; left: 28.81px; top: 177px; width: 308px; height: 250px; object-fit: cover; background: var(--brand-soft); }
+  /* 곤충 단계(사진 왼쪽 위) · 꼼꼼 관찰(이름 줄 오른쪽) */
+  .gr.card-gr { left: 34.81px; top: 183px; }
+  .look { position: absolute; left: 245px; top: 458px; width: 92px; text-align: right; white-space: nowrap; }
+  .look .lk-t { display: block; font-size: 11px; line-height: 14px; }
+  .look .lk-s { display: block; font-size: 17px; line-height: 20px; letter-spacing: 1px; }
   .meta { position: absolute; top: 437px; font-size: 16px; white-space: nowrap; }
   .name { position: absolute; left: 28.81px; top: 457.2px; font-size: 24px; white-space: nowrap; }
   .tag { position: absolute; left: 19.81px; top: 526.6px; width: 96.127px; height: 35px; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
@@ -71,6 +76,8 @@
   <div class="pico-frame" role="img" aria-label="내가 그린 PICO">
     <span class="pf-shadow"></span><span class="pf-face"></span><span class="pf-win" id="picoWin"></span>
   </div>
+  <span class="gr card-gr" id="cardGr"></span>
+  <p class="look" id="look" hidden><span class="lk-t">꼼꼼 관찰</span><span class="lk-s" id="lookStars"></span></p>
   <p class="meta" style="left:28.81px">NO.023</p>
   <p class="meta" style="left:98.81px" id="group">딱정벌레류</p>
   <p class="meta" style="left:265.85px">27.10.08</p>
@@ -98,6 +105,7 @@
 <script src="shared.js"></script>
 <script src="photo.js"></script>
 <script src="ai.js"></script>
+<script src="grade.js"></script>
 <script src="field.js"></script>
 <script src="origami.js"></script>
 <script>
@@ -105,6 +113,19 @@
   var AI = PicoAI.current();
   document.querySelector('[data-species]').textContent = AI.name;
   document.getElementById('group').textContent = AI.group;
+
+  // 곤충 단계 (자주 만나는 · 조금 찾아야 하는 · 관찰하기 어려운) — 곤충 종마다 정해져 있어요
+  (function () {
+    var g = PicoGrade.of(AI.name), el = document.getElementById('cardGr');
+    el.className = 'gr card-gr gr-' + g; el.textContent = PicoGrade.TIERS[g].short; el.title = PicoGrade.TIERS[g].name + ' 곤충';
+    // 꼼꼼 관찰: 촬영 2에서 고른 답이 AI가 사진에서 본 것과 얼마나 같았는지 (낮아도 별 1개 — 틀렸다고 하지 않아요)
+    var lk = PicoGrade.look();
+    if (lk) {
+      var box = document.getElementById('look'); box.hidden = false;
+      document.getElementById('lookStars').textContent = lk.stars;
+      box.setAttribute('aria-label', '꼼꼼 관찰 ' + lk.level + '단계, 3단계 중');
+    }
+  })();
 
   // 내 관찰 일기: 촬영 4에서 쓴 글을 세 줄로 보여줘요. 아무것도 안 썼으면 AI 분석글로 채우고 이름표도 바꿔요.
   var RULES = [{ src: 'card-rule-1.png', h: 2 }, { src: 'card-rule-2.png', h: 3 }, { src: 'card-rule-3.png', h: 3 }];

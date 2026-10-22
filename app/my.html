@@ -33,7 +33,7 @@
   .me { min-width: 0; } .me .t { white-space: normal; word-break: keep-all; }
   .card-inner { width: 310px; height: 139px; background: var(--brand-soft); padding: 10px 7.5px; overflow: hidden; }
 
-  /* 내가 모은 곤충: 카드 안에서 옆으로 넘겨 봐요 (4번째 카드가 살짝 보여요) */
+  /* 내가 만난 곤충: 카드 안에서 옆으로 넘겨 봐요 (4번째 카드가 살짝 보여요) */
   .mine-h { padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-end; white-space: nowrap; }
   .mine-h > p { font-size: 14px; line-height: 19px; }
   .mine-h a { display: flex; align-items: center; gap: 2px; font-size: 12px; }
@@ -43,10 +43,6 @@
   .mi { flex: none; width: 88px; display: flex; flex-direction: column; gap: 5px; font-size: 12px; line-height: 16px; white-space: nowrap; }
   .mi .ph { position: relative; width: 88px; height: 70px; border: 1px solid var(--ink); overflow: hidden; background: var(--surface); }
   .mi .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
-  /* 관찰 등급 이름표 (grade.js) — 사진 왼쪽 위에 붙는 작은 종이 라벨 */
-  .gr { position: absolute; left: 5px; top: 5px; z-index: 1; height: 18px; padding: 0 6px; display: flex; align-items: center; font-size: 11px; line-height: 1; white-space: nowrap; background: var(--surface); border: 1px solid var(--ink); }
-  .gr-normal { background: var(--brand-soft); }
-  .gr-rare { background: var(--reward); font-weight: 700; }
 
   /* sections below the card: Figma column gap 20 */
   .stack { left: 0; top: 407.44px; width: 375px; display: flex; flex-direction: column; gap: 20px; }
@@ -103,7 +99,7 @@
     <div class="me-row"><div class="me"><p class="t"><b id="myName">김선우</b> <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
       <img class="pf" id="myAvatar" src="assets/profile/grass.svg" alt="내 프로필"></div>
     <div class="card-inner">
-      <div class="mine-h"><p>내가 모은 곤충</p><a href="dogam.html"><span>24종 / 80종</span><img src="assets/tabs/chevron-right-18.png" alt=""></a></div>
+      <div class="mine-h"><p>내가 만난 곤충</p><a href="dogam.html"><span>24종 / 80종</span><img src="assets/tabs/chevron-right-18.png" alt=""></a></div>
       <div class="mine-list" id="mineList"></div>
     </div>
   </div>
@@ -172,7 +168,7 @@
 </script>
 <script>
 (function () {
-  // 내가 모은 곤충 (도감과 같은 곤충들, 최근에 만난 순)
+  // 내가 만난 곤충 (도감과 같은 곤충들, 최근에 만난 순)
   var MINE = [['방아깨비', 'grasshopper'], ['배추흰나비', 'butterfly'], ['칠성무당벌레', 'ladybug'], ['고추 잠자리', 'dragonfly'],
     ['소금쟁이', 'waterstrider'], ['물방개', 'divingbeetle'], ['흰줄숲모기', 'mosquito'], ['갈색 여치', 'katydid'],
     ['긴수염대벌레', 'stickinsect'], ['큰자루긴수염나방', 'moth'], ['붉은점모시나비', 'apollo'], ['상제나비', 'blackveined']];

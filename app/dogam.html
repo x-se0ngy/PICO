@@ -20,15 +20,23 @@
   .abs { position: absolute; }
 
   /* summary card */
-  .card-shadow { left: 29.5px; top: 167.54px; width: 325px; height: 215px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 20.5px; top: 157.1px; width: 325px; height: 215px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-inner { left: 28px; top: 239.19px; width: 310px; height: 125px; background: var(--brand-soft); }
-  .summary { left: 28px; top: 173.19px; white-space: nowrap; display: flex; flex-direction: column; gap: 5px; }
+  .card-shadow { left: 29.5px; top: 167.54px; width: 325px; height: 229px; background: var(--ink); border: 1px solid var(--ink); }
+  .card-face { left: 20.5px; top: 157.1px; width: 325px; height: 229px; background: var(--brand); border: 1px dashed var(--ink); }
+  .card-inner { left: 28px; top: 253.19px; width: 310px; height: 125px; background: var(--brand-soft); }
+  .summary { left: 28px; top: 173.19px; width: 310px; white-space: nowrap; display: flex; justify-content: space-between; align-items: center; }
   .summary .t { font-size: 20px; }
-  .summary .n { display: flex; gap: 4px; align-items: center; }
+  .summary .n { display: flex; gap: 4px; align-items: baseline; }
   .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
+  /* 단계별로 몇 종을 만났는지 — 다음 목표가 보여요 */
+  .tiers { left: 28px; top: 205px; width: 310px; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 8px; }
+  .tier { min-width: 0; white-space: nowrap; }
+  .tier .tn { font-size: 12px; line-height: 15px; }
+  .tier .tc { font-size: 12px; line-height: 16px; } .tier .tc b { font-weight: 400; font-size: 16px; }
+  .tier .bar { display: block; height: 7px; margin-top: 3px; background: var(--surface); border: 1px solid var(--ink); }
+  .tier .bar i { display: block; height: 100%; background: var(--reward); }
+  .tier .bar i:not([style*="width:0%"]) { border-right: 1px solid var(--ink); }
 
-  .weekly { left: 36px; top: 248.19px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
+  .weekly { left: 36px; top: 262.19px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
   .weekly > p { font-size: 14px; line-height: 19px; }
   .weekly-row { display: flex; gap: 15px; justify-content: center; padding: 0 5px; }
   .weekly-row a { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 10px; line-height: 12px; white-space: nowrap; }
@@ -37,7 +45,7 @@
   .weekly-row .ph img { position: absolute; left: -1px; top: -1px; width: 60px; height: 60px; }
 
   /* list section: one flowing column, matches Figma auto-layout (Frame 2147203380) */
-  .list { left: 0; top: 402.54px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  .list { left: 0; top: 416.54px; width: 375px; display: flex; flex-direction: column; align-items: center; }
   .list-head { width: 335px; height: 19px; display: flex; justify-content: space-between; align-items: flex-start; }
   .list-head p { font-size: 16px; line-height: 19px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
@@ -53,6 +61,7 @@
   .icard { position: relative; height: 138.3px; display: block; }
   .icard .photo { position: absolute; left: 0; top: 50px; width: 100%; height: 88.3px; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); border-top: 0; }
   .icard .band { position: absolute; left: 0; top: 0; width: 100%; height: 50px; background: #b1bd35; border: 1px dashed var(--ink); }
+  .icard .gr { top: 56px; }
   .icard .meta { position: absolute; left: 10px; top: 7.5px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
   .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: 19px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .icard .meta span { display: block; font-size: 12px; line-height: 14px; white-space: nowrap; }
@@ -72,6 +81,7 @@
 
   /* not-yet-met tiles */
   .utile { position: relative; height: 138.3px; background: var(--brand-soft); border: 1px dashed var(--ink); font-size: 14px; }
+  .utile .gr { top: 6px; left: 6px; }
   .utile img { position: absolute; left: 63.2px; top: 29px; width: 32px; height: 32.1px; }
   .utile .no { position: absolute; left: 0; right: 0; top: 71.07px; text-align: center; }
   .utile .msg { position: absolute; left: 0; right: 0; top: 93.07px; text-align: center; }
@@ -102,9 +112,10 @@
   <div class="abs card-face"></div>
   <div class="abs card-inner"></div>
   <div class="abs summary">
-    <p class="t">나의 수집 현황</p>
-    <div class="n"><b>24종</b><span>/ 80종</span></div>
+    <p class="t">내가 만난 곤충</p>
+    <div class="n"><b id="allGot">24종</b><span id="allTotal">/ 80종</span></div>
   </div>
+  <div class="abs tiers" id="tiers"></div>
   <div class="abs weekly">
     <p>이번주 새로 만난 곤충</p>
     <div class="weekly-row" id="weekly"></div>
@@ -136,8 +147,19 @@
 </div>
 <script src="shared.js"></script>
 <script src="field.js"></script>
+<script src="grade.js"></script>
 <script>
 (function () {
+  // 단계별 진행 (자주 만나는 · 조금 찾아야 하는 · 관찰하기 어려운)
+  var G = PicoGrade, gotAll = 0, totalAll = 0;
+  document.getElementById('tiers').innerHTML = G.ORDER.map(function (k) {
+    var t = G.TIERS[k]; gotAll += t.got; totalAll += t.total;
+    return '<div class="tier"><p class="tn">' + t.name + '</p><p class="tc"><b>' + t.got + '</b> / ' + t.total + '종</p>' +
+      '<span class="bar" role="img" aria-label="' + t.name + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
+  }).join('');
+  document.getElementById('allGot').textContent = gotAll + '종';
+  document.getElementById('allTotal').textContent = '/ ' + totalAll + '종';
+
   var weekly = [
     { name: '칠성무당벌레', img: 'new-ladybug' },
     { name: '고추잠자리', img: 'new-dragonfly' },
@@ -173,12 +195,14 @@
   }
   function cardHTML(it) {
     return '<a class="icard" href="dogam-detail.html" data-name="' + it.name + '">' +
-      '<span class="band"></span><img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
+      '<span class="band"></span><img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' + PicoGrade.tag(it.name) +
       '<span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span>' +
       '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><span class="pic">' + drawing(it) + '</span></span></a>';
   }
+  // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
+  var UNMET = { '025': 'common', '028': 'common', '029': 'normal', '030': 'normal', '033': 'normal', '035': 'rare', '037': 'rare', '038': 'rare' };
   function utile(n) {
-    return '<div class="utile"><img src="assets/icons/outline/help.svg" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
+    return '<div class="utile">' + PicoGrade.tagOf(UNMET[n]) + '<img src="assets/icons/outline/help.svg" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
   }
   var cards = document.getElementById('cards'), cards2 = document.getElementById('cards2');
   var q = document.getElementById('q'), empty = document.getElementById('empty');

@@ -283,3 +283,8 @@ img { display: block; }
 .fold-wait.is-done .fold-board { animation: fold-pop var(--dur) var(--ease); }
 @keyframes fold-pop { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .fold-wait.is-done .fold-board { animation: none; } .fold-dots i { transition: none; } }
+
+/* ---------- 곤충 단계 이름표 (grade.js) · 사진 왼쪽 위에 붙는 작은 종이 라벨 ---------- */
+.gr { position: absolute; left: 6px; top: 6px; z-index: 1; height: 18px; padding: 0 6px; display: flex; align-items: center; font-size: 11px; line-height: 1; white-space: nowrap; background: var(--surface); border: 1px solid var(--ink); }
+.gr-normal { background: var(--brand-soft); }
+.gr-rare { background: var(--reward); font-weight: 700; }
