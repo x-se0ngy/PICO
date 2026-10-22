@@ -182,12 +182,14 @@
     { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo' },
     { name: '상제나비', doodle: 'butterfly3', date: '2027.09.23', img: 'card-blackveined' }
   ];
-  // 사진첩 안 그림: 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있으면 그걸, 없으면 예시 그림
+  // 사진첩 안 그림: 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충) → 아이들이 그린 그림 → 예시 그림 순서
   var mine = {};
   ((window.PicoField && PicoField.list()) || []).forEach(function (m) { if (m.species) mine[m.species.replace(/\s+/g, '')] = m.src; });
   function drawing(it) {
     var src = mine[it.name.replace(/\s+/g, '')];
     if (src) return '<img src="' + src + '" alt="내가 그린 ' + it.name + '">';
+    var kid = window.PicoField && PicoField.kidFor(it.name);
+    if (kid) return '<img src="' + kid + '" alt="아이들이 그린 ' + it.name + '">';
     return window.PicoField ? PicoField.doodle(it.doodle) : '';
   }
   function cardHTML(it) {
