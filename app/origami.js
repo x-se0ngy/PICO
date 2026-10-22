@@ -4,7 +4,7 @@
 //   2) 두꺼운 부분(몸통·머리·날개)만 삼각형 면으로 나누고, 다리·더듬이 같은 가는 선은 그린 그대로 둬요
 //   3) 면마다 빛을 받는 정도를 달리해 접힌 판처럼 보이게 하고, 종이 결을 얹어요
 //
-//   PicoOrigami.make(src)            → Promise<model>   (src: 그림 PNG 주소 또는 Image · 못 접으면 null)
+//   PicoOrigami.make(src)            → Promise<model>   (src: 그림 PNG 주소 또는 Image · 그림을 못 불러오면 null · 선뿐이면 도톰하게 불려서 접고, 그래도 안 되면 면 없이 그린 그대로)
 //   PicoOrigami.play(canvas, model, { duration(초, 기본 1.7), onDone, onProgress(0~1) })  접히는 모습을 canvas에 그려요 → { skip() }
 //   PicoOrigami.png(model, px)       → 다 접은 모습의 PNG 주소 (배경 투명)
 (function () {
@@ -279,6 +279,14 @@
       var im = new Image(); im.onload = function () { resolve(im); }; im.onerror = function () { resolve(null); }; im.src = src;
     });
   }
+  // 그림의 선을 사방으로 조금씩 밀어 그려서 두껍게 만들어요 (색은 그대로)
+  function thicken(c) {
+    var t = document.createElement('canvas'); t.width = t.height = S;
+    var g = t.getContext('2d', { willReadFrequently: true }), k, a;
+    [7, 3.5].forEach(function (R) { for (k = 0; k < 16; k++) { a = k / 16 * Math.PI * 2; g.drawImage(c, Math.cos(a) * R, Math.sin(a) * R); } });
+    g.drawImage(c, 0, 0);
+    return t;
+  }
   function make(src, opts) {
     opts = opts || {};
     return load(src).then(function (im) {
@@ -289,10 +297,19 @@
         var sc = Math.min(S / im.naturalWidth, S / im.naturalHeight);       // 그림 비율은 그대로, 가운데에
         var w = im.naturalWidth * sc, h = im.naturalHeight * sc;
         g.drawImage(im, (S - w) / 2, (S - h) / 2, w, h);
+        var spacing = opts.spacing || SPACING, seed = opts.seed || 7;
         var filled = fillEnclosed(g.getImageData(0, 0, S, S), S, S);
         g.putImageData(new ImageData(filled.data, S, S), 0, 0);
-        var mesh = buildMesh(filled, S, S, opts.spacing || SPACING, opts.seed || 7);
-        if (!mesh) return null;
+        var mesh = buildMesh(filled, S, S, spacing, seed);
+        if (!mesh) {                                   // 가는 선뿐인 그림: 선을 종이띠처럼 도톰하게 불려서 다시 시도해요
+          var t = thicken(c), tg = t.getContext('2d', { willReadFrequently: true });
+          var f2 = fillEnclosed(tg.getImageData(0, 0, S, S), S, S);
+          tg.putImageData(new ImageData(f2.data, S, S), 0, 0);
+          mesh = buildMesh(f2, S, S, spacing, seed);
+          if (mesh) c = t;
+        }
+        // 그래도 면을 못 만들면 그린 그대로 (null이 아니라 면 없는 모델) — 로딩 화면은 어떤 그림이든 똑같이 보여줘요
+        if (!mesh) return { mesh: { facets: [], count: 0 }, under: c, count: 0 };
         return { mesh: mesh, under: c, count: mesh.count };
       } catch (e) { return null; }
     });
