@@ -1,17 +1,21 @@
 // PICO · 관찰 질문 (capture-3 → capture-4 → 관찰 카드)
-// 사진을 보고 모양 · 장소 · 움직임 · 행동을 하나씩 골라요. (스티커를 붙이던 단계는 없앴어요 — 렌즈 그리기 코드는 남겨 두었지만 쓰지 않아요.)
-// 모양 질문은 "점이 몇 개 있나요?"처럼 사진을 자세히 세어 보는 질문이에요.
+// 관찰 기준: 공통 관찰(색 · 위치) + 맞춤 관찰(움직임 · 특징). 사진을 보고 하나씩 답해요.
+//   색     : 주변과 섞여 보였나, 눈에 띄었나 (보기는 고정, AI는 사진과 가장 가까운 번호만 알려 줘요)
+//   위치   : 어디에 있었나 (AI가 사진 속 배경을 보고 보기를 만들어요)
+//   움직임 : 사진 위에 곤충이 움직인 길을 따라 그려요 → 느림 · 빠름 · 구불구불 · 멈췄다 움직임 (보기는 고정)
+//   특징   : 곤충마다 달라요. "점이 몇 개 있나요?"처럼 사진을 자세히 세어 보는 질문 (AI가 만들어요)
+// (스티커를 붙이던 단계는 없앴어요 — 렌즈 그리기 코드는 남겨 두었지만 쓰지 않아요.)
 (function () {
-  // Figma 버튼 (2884:4619) 순서: 1 모양 · 2 장소 · 3 움직임 · 4 행동 — 2·3·5단계가 모두 이 순서를 써요.
-  var KINDS = ['모양', '장소', '움직임', '행동'];
-  // 질문마다 고를 수 있는 표현. 모양(0번)은 점·줄무늬 개수를 세어 보는 질문이에요.
+  var KINDS = ['색', '위치', '움직임', '특징'];
+  var COMMON = [0, 1], CUSTOM = [2, 3];   // 공통 관찰 · 맞춤 관찰
+  var FIXED = [0, 2];                     // 보기가 고정인 질문 (AI는 번호만 알려 줘요)
   var OPTIONS = [
-    ['점이 없어요.', '1~3개 있어요.', '4~7개 있어요.', '8개가 넘어요.'],
+    ['주변과 똑같아 보여요.', '조금만 섞여 보여요.', '눈에 잘 띄어요.', '아주 확 튀어요.'],
     ['풀잎 위에 있어요.', '나무에 있어요.', '꽃 주변에 있어요.', '물가에 있어요.'],
-    ['날아다녀요.', '기어 다녀요.', '폴짝폴짝 뛰어요.', '가만히 있어요.'],
-    ['꽃에서 꿀을 먹어요.', '잎을 갉아 먹어요.', '혼자 움직이고 있어요.', '다른 친구와 있어요.']
+    ['느리게 움직여요.', '빠르게 움직여요.', '구불구불 움직여요.', '움직이다 멈춰요.'],   // 따라 그린 선의 속도·굴곡·끊김으로 골라져요
+    ['점이 없어요.', '1~3개 있어요.', '4~7개 있어요.', '8개가 넘어요.']
   ];
-  var PROMPTS = ['점이나 줄무늬가 몇 개 있나요?', '어디에 있나요?', '어떻게 움직이나요?', '무엇을 하고 있나요?'];
+  var PROMPTS = ['주변과 비슷해 보였나요, 눈에 띄었나요?', '어디에 있었나요?', '곤충이 움직인 길을 따라 그려보세요.', '점이나 줄무늬가 몇 개 있나요?'];
   var MATCH = {};   // AI가 보기에 사진과 가장 가까운 보기 번호 (질문별) — 관찰이 실제와 얼마나 닮았는지 볼 때 써요
   // AI 분석(app/ai.js, 촬영 1 사진 분석)이 만든 질문·선택지가 있으면 그걸 써요. 없으면 위의 기본.
   (function () {
@@ -19,10 +23,12 @@
     var photoAi = rd('pico.analysis');
     if (!photoAi) return;
     for (var k = 0; k < 4; k++) {
-      var o = photoAi.options && photoAi.options[k];
-      if (Array.isArray(o) && o.length === 4) OPTIONS[k] = o.slice();
-      var q = photoAi.questions && photoAi.questions[k];
-      if (typeof q === 'string' && q) PROMPTS[k] = q;
+      if (FIXED.indexOf(k) < 0) {
+        var o = photoAi.options && photoAi.options[k];
+        if (Array.isArray(o) && o.length === 4) OPTIONS[k] = o.slice();
+        var q = photoAi.questions && photoAi.questions[k];
+        if (typeof q === 'string' && q) PROMPTS[k] = q;
+      }
       var m = photoAi.match && photoAi.match[k];
       if (Number.isInteger(m) && m >= 0 && m < 4) MATCH[k] = m;
     }
@@ -90,7 +96,7 @@
   }
 
   window.PicoLens = {
-    KINDS: KINDS, OPTIONS: OPTIONS, PROMPTS: PROMPTS, MATCH: MATCH, LABELS: LABELS, LINES: LINES, R: R, inner: inner,
+    KINDS: KINDS, COMMON: COMMON, CUSTOM: CUSTOM, OPTIONS: OPTIONS, PROMPTS: PROMPTS, MATCH: MATCH, LABELS: LABELS, LINES: LINES, R: R, inner: inner,
     load: function () { var l = read(KEY, []); return Array.isArray(l) ? l.filter(function (s) { return s && s.k >= 0 && s.k < 4; }) : []; },
     save: function (list) { write(KEY, list); },
     answers: function () { return read(ANS, {}) || {}; },

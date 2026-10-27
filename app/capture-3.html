@@ -24,12 +24,18 @@
   .zoom.is-anim { transition: transform var(--dur) var(--ease); }
   .zoom:focus-visible { box-shadow: inset 0 0 0 3px var(--brand); }
   .hint { position: absolute; left: 8px; bottom: 8px; padding: 4px 9px; background: var(--bg); border: 1px solid var(--ink); font-size: 12px; line-height: 16px; white-space: nowrap; pointer-events: none; z-index: 2; }
-  /* 질문 번호 1~4: 눌러서 다른 질문으로 옮겨 가요 (지금 질문 = 초록, 답한 질문 = 체크) */
-  .steps { position: absolute; left: 8px; top: 8px; display: flex; gap: 5px; z-index: 2; }
-  .steps button { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px solid var(--ink); font-size: 13px; line-height: 1; transition: background-color var(--dur) var(--ease); }
+  /* 질문 이름표 4개(색 · 위치 | 움직임 · 특징): 눌러서 다른 질문으로 옮겨 가요 (지금 질문 = 초록, 답한 질문 = 체크) */
+  .steps { position: absolute; left: 8px; top: 8px; display: flex; gap: 5px; z-index: 3; }
+  .steps button { height: 26px; padding: 0 8px; display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px solid var(--ink); font-size: 13px; line-height: 1; white-space: nowrap; transition: background-color var(--dur) var(--ease); }
   .steps button[aria-current="true"] { background: var(--brand); font-weight: 700; }
-  .steps button.done::after { content: ''; width: 5px; height: 9px; margin: -2px 0 0 1px; border: solid var(--ink); border-width: 0 2px 2px 0; transform: rotate(40deg); }
-  .steps button.done span { display: none; }
+  .steps button.done::after { content: ''; width: 4px; height: 8px; margin: -2px 0 0 6px; border: solid var(--ink); border-width: 0 2px 2px 0; transform: rotate(40deg); }
+  .steps .gap { width: 5px; }
+  /* 움직임 질문: 사진 위에 길을 따라 그려요 */
+  .trace { position: absolute; inset: 0; width: 100%; height: 100%; display: none; touch-action: none; cursor: crosshair; z-index: 1; }
+  .trace.on { display: block; }
+  .tools { position: absolute; right: 8px; bottom: 8px; display: flex; gap: 5px; z-index: 3; }
+  .tools button { height: 26px; padding: 0 9px; background: var(--bg); border: 1px solid var(--ink); font-size: 12px; line-height: 1; white-space: nowrap; }
+  .tools button.go { background: var(--brand); font-weight: 700; }
   /* 질문 (y 559.5) · 선택지 = 버튼 3 (2836:711) 162×46 두 줄 (x 22.89 / 190.11, y 590.38 / 640.88) */
   .say { position: absolute; left: 0; top: 559.5px; width: 375px; padding: 0 20px; display: flex; gap: 8px; align-items: center; font-size: 14px; line-height: normal; white-space: nowrap; }
   .say .no { font-weight: 700; }
@@ -59,12 +65,14 @@
 
   <div class="step-title cap">
     <p class="q"><span>02.</span><span>자세히 보니 어땠나요?</span></p>
-    <p class="sub">사진을 눌러 크게 보고 골라 보세요. 정답은 없어요.</p>
+    <p class="sub">사진을 자세히 보고 답해 보세요. 정답은 없어요.</p>
   </div>
 
   <div class="photo" aria-label="촬영한 사진">
     <div class="zoom" id="zoom" data-photo role="button" tabindex="0" aria-pressed="false" aria-label="촬영한 사진. 누르면 크게 볼 수 있어요"></div>
+    <canvas class="trace" id="trace" role="img" aria-label="곤충이 움직인 길을 손가락으로 그리는 곳"></canvas>
     <div class="steps" id="steps" role="group" aria-label="질문 고르기"></div>
+    <div class="tools" id="tools" hidden><button type="button" id="clear">지우기</button><button type="button" class="go" id="nextQ">다음 →</button></div>
     <span class="hint" id="hint">눌러서 크게 보기</span>
   </div>
 
@@ -81,12 +89,14 @@
 <script src="ai.js"></script>
 <script>
 (function () {
-  // 사진을 크게 보며 질문 4개(모양 · 장소 · 움직임 · 행동)에 하나씩 답해요.
-  // 모양 질문은 "점이 몇 개 있나요?"처럼 사진을 자세히 세어 보는 질문이에요 (질문·보기는 촬영 1의 AI 분석이 만들어 둬요).
-  var L = PicoLens, N = 4;
+  // 사진을 자세히 보며 관찰 질문 4개에 답해요.  공통 관찰: 색 · 위치 / 맞춤 관찰: 움직임 · 특징
+  //   색·위치·특징은 보기를 골라요. 움직임은 사진 위에 곤충이 움직인 길을 따라 그리면 (생태 모방 인터랙션)
+  //   속도 · 굴곡 · 끊김으로 느림 / 빠름 / 구불구불 / 멈췄다 움직임 중 하나가 골라져요.
+  var L = PicoLens, N = 4, MOVE = 2;
   var zoom = document.getElementById('zoom'), hint = document.getElementById('hint'), box = zoom.parentNode;
-  var stepsEl = document.getElementById('steps'), opts = document.getElementById('options');
+  var stepsEl = document.getElementById('steps'), opts = document.getElementById('options'), tools = document.getElementById('tools');
   var promptEl = document.getElementById('prompt'), countEl = document.getElementById('qCount');
+  var cv = document.getElementById('trace'), cx = cv.getContext('2d');
   var answers = L.answers(), active = -1;
 
   /* ---------- 사진 확대: 누르면 그 자리를 크게, 확대한 채로 끌면 옮겨 보고, 다시 누르면 돌아와요 ---------- */
@@ -97,13 +107,17 @@
     zoom.style.transform = scale === 1 ? '' : 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
     zoom.classList.toggle('is-zoomed', scale > 1);
     zoom.setAttribute('aria-pressed', scale > 1);
-    hint.textContent = scale > 1 ? '끌어서 옮기기 · 다시 누르면 돌아와요' : '눌러서 크게 보기';
+    hintText();
   }
   function limit() { var w = box.clientWidth, h = box.clientHeight; tx = clamp(tx, w * (1 - scale), 0); ty = clamp(ty, h * (1 - scale), 0); }
   function toggle(px, py) {
     if (scale > 1) { scale = 1; tx = ty = 0; }
     else { scale = Z; tx = px * (1 - Z); ty = py * (1 - Z); limit(); }
     paint(true);
+  }
+  function localPoint(e) {   // 화면에 맞춰 줄여 보일 때도 칸 안 좌표로
+    var r = box.getBoundingClientRect(), k = r.width / box.offsetWidth || 1;
+    return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k, k: k };
   }
   zoom.addEventListener('pointerdown', function (e) {
     drag = { x: e.clientX, y: e.clientY, tx: tx, ty: ty, moved: false };
@@ -115,15 +129,14 @@
     if (!drag.moved && Math.hypot(dx, dy) < 6) return;
     drag.moved = true;
     if (scale === 1) return;
-    var k = box.getBoundingClientRect().width / box.offsetWidth || 1;   // 화면에 맞춰 줄여 보일 때도 손가락을 따라가게
+    var k = localPoint(e).k;
     tx = drag.tx + dx / k; ty = drag.ty + dy / k; limit(); paint(false);
   });
   function release(e) {
     if (!drag) return;
     var d = drag; drag = null;
     if (d.moved || e.type === 'pointercancel') return;
-    var r = box.getBoundingClientRect(), k = r.width / box.offsetWidth || 1;
-    toggle((e.clientX - r.left) / k, (e.clientY - r.top) / k);
+    var p = localPoint(e); toggle(p.x, p.y);
   }
   zoom.addEventListener('pointerup', release);
   zoom.addEventListener('pointercancel', release);
@@ -131,16 +144,104 @@
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(box.clientWidth / 2, box.clientHeight / 2); }
   });
 
+  /* ---------- 움직임 따라 그리기 ---------- */
+  var strokes = [], cur = null, moveMsg = '';
+  function sizeCanvas() {
+    var w = box.clientWidth, h = box.clientHeight, d = window.devicePixelRatio || 1;
+    cv.width = Math.round(w * d); cv.height = Math.round(h * d); cx.setTransform(d, 0, 0, d, 0, 0); redraw();
+  }
+  function line(s, w, color) {
+    var p = s.pts; if (!p.length) return;
+    cx.beginPath(); cx.moveTo(p[0].x, p[0].y);
+    for (var i = 1; i < p.length; i++) cx.lineTo(p[i].x, p[i].y);
+    if (p.length === 1) cx.lineTo(p[0].x + .1, p[0].y);
+    cx.lineWidth = w; cx.strokeStyle = color; cx.lineCap = cx.lineJoin = 'round'; cx.stroke();
+  }
+  function redraw() {
+    cx.clearRect(0, 0, box.clientWidth, box.clientHeight);
+    strokes.forEach(function (s) {
+      line(s, 8, 'rgba(255,255,255,.95)'); line(s, 3, '#111');
+      var a = s.pts[0]; cx.beginPath(); cx.arc(a.x, a.y, 6, 0, 7); cx.fillStyle = '#111'; cx.fill(); cx.lineWidth = 2; cx.strokeStyle = '#fff'; cx.stroke();   // 출발점
+    });
+  }
+  // 선이 어떤 움직임인지: 끊겼으면 "멈췄다 움직임" > 많이 굽이쳤으면 "구불구불" > 아니면 속도로 "느림/빠름"
+  function classify(ss) {
+    var len = 0, ms = 0, pauses = 0, turn = 0, real = 0;
+    ss.forEach(function (s) {
+      var p = s.pts, sl = 0, i;
+      for (i = 1; i < p.length; i++) {
+        var d = Math.hypot(p[i].x - p[i - 1].x, p[i].y - p[i - 1].y), dt = p[i].t - p[i - 1].t;
+        sl += d; if (dt > 350 && d < 8) pauses++;           // 손가락이 멈춰 있다 다시 움직임
+      }
+      if (sl > 14) real++;
+      len += sl; ms += Math.max(0, p[p.length - 1].t - p[0].t);
+      var last = null, prev = p[0];                          // 10px마다 방향이 얼마나 꺾였는지
+      for (i = 1; i < p.length; i++) {
+        if (Math.hypot(p[i].x - prev.x, p[i].y - prev.y) < 10) continue;
+        var h = Math.atan2(p[i].y - prev.y, p[i].x - prev.x);
+        if (last !== null) { var dh = Math.abs(h - last); if (dh > Math.PI) dh = 2 * Math.PI - dh; turn += dh; }
+        last = h; prev = p[i];
+      }
+    });
+    if (len < 30) return -1;                                  // 너무 짧아서 알 수 없어요
+    if (real >= 3 || pauses >= 2) return 3;
+    var a = ss[0].pts[0], z = ss[ss.length - 1].pts, b = z[z.length - 1];
+    var chord = Math.max(1, Math.hypot(b.x - a.x, b.y - a.y));
+    if (len > 90 && (turn > 4.2 || len / chord > 1.9)) return 2;
+    var v = len / Math.max(0.05, ms / 1000);                  // 그린 속도 (px/초)
+    return v < 250 ? 0 : 1;
+  }
+  function pickMove(i) {
+    answers[MOVE] = i; L.saveAnswers(answers);
+    moveMsg = L.OPTIONS[MOVE][i];
+    opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', i === +o.dataset.i); });
+    renderSteps(); syncNext(); hintText();
+  }
+  cv.addEventListener('pointerdown', function (e) {
+    var p = localPoint(e);
+    cur = { pts: [{ x: p.x, y: p.y, t: e.timeStamp }] }; strokes.push(cur);
+    try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+    redraw();
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (!cur) return;
+    var p = localPoint(e), q = cur.pts[cur.pts.length - 1];
+    if (Math.hypot(p.x - q.x, p.y - q.y) < 1.5) return;
+    cur.pts.push({ x: p.x, y: p.y, t: e.timeStamp }); redraw();
+  });
+  function endStroke() {
+    if (!cur) return;
+    cur = null;
+    var r = classify(strokes);
+    if (r < 0) { moveMsg = '조금 더 길게 그려 보세요'; hintText(); return; }
+    pickMove(r);
+  }
+  cv.addEventListener('pointerup', endStroke);
+  cv.addEventListener('pointercancel', endStroke);
+  document.getElementById('clear').addEventListener('click', function () {
+    strokes = []; cur = null; moveMsg = ''; redraw();
+    delete answers[MOVE]; L.saveAnswers(answers);
+    opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+    renderSteps(); syncNext(); hintText();
+  });
+  document.getElementById('nextQ').addEventListener('click', function () { var n = nextOpen(); activate(n > -1 ? n : (active + 1) % N); });
+  window.addEventListener('resize', sizeCanvas);
+
+  function hintText() {
+    if (active === MOVE) hint.textContent = moveMsg || '손가락으로 그려 보세요';
+    else hint.textContent = scale > 1 ? '끌어서 옮기기 · 다시 누르면 돌아와요' : '눌러서 크게 보기';
+  }
+
   /* ---------- 질문 ---------- */
   function renderSteps() {
     stepsEl.innerHTML = '';
     for (var k = 0; k < N; k++) {
+      if (k === 2) { var g = document.createElement('i'); g.className = 'gap'; g.setAttribute('aria-hidden', 'true'); stepsEl.appendChild(g); }   // 공통 | 맞춤
       var b = document.createElement('button');
-      b.type = 'button'; b.dataset.k = k;
+      b.type = 'button'; b.dataset.k = k; b.textContent = L.KINDS[k];
       b.className = answers[k] != null ? 'done' : '';
       b.setAttribute('aria-current', k === active ? 'true' : 'false');
-      b.setAttribute('aria-label', (k + 1) + '번 질문' + (answers[k] != null ? ' · 답했어요' : ''));
-      b.innerHTML = '<span>' + (k + 1) + '</span>';
+      b.setAttribute('aria-label', (k < 2 ? '공통 관찰 ' : '맞춤 관찰 ') + L.KINDS[k] + (answers[k] != null ? ' · 답했어요' : ''));
       stepsEl.appendChild(b);
     }
   }
@@ -157,9 +258,12 @@
   function activate(k) {
     var changed = active !== -1 && active !== k;
     active = k;
+    var move = k === MOVE;
+    cv.classList.toggle('on', move); tools.hidden = !move;
+    if (move) { scale = 1; tx = ty = 0; paint(false); sizeCanvas(); moveMsg = answers[MOVE] != null && strokes.length ? L.OPTIONS[MOVE][answers[MOVE]] : ''; }
     countEl.textContent = (k + 1) + '/' + N;
     promptEl.textContent = L.PROMPTS[k];
-    fit(); renderSteps(); renderOptions(changed ? 'ready' : '');
+    fit(); renderSteps(); renderOptions(changed ? 'ready' : ''); hintText();
   }
   function nextOpen() {   // 지금 다음 번호부터, 없으면 처음부터 아직 안 답한 질문
     for (var i = 1; i <= N; i++) { var k = (active + i) % N; if (answers[k] == null) return k; }
@@ -174,7 +278,8 @@
     if (answers[active] === i) delete answers[active]; else answers[active] = i;
     L.saveAnswers(answers);
     opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', answers[active] === +o.dataset.i); });
-    renderSteps(); syncNext();
+    if (active === MOVE) moveMsg = answers[MOVE] != null ? L.OPTIONS[MOVE][answers[MOVE]] : '';
+    renderSteps(); syncNext(); hintText();
     if (answers[active] == null) return;
     var next = nextOpen();
     if (next > -1) setTimeout(function () { activate(next); }, (window.picoDur ? picoDur() : 300) + 50);

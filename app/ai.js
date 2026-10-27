@@ -10,9 +10,9 @@
   var DEMO = {
     demo: true, is_insect: true, name: '칠성무당벌레', group: '딱정벌레류', confidence: 'medium',
     summary: ['빨간 등에 검은 점이 일곱 개 있어요.', '진딧물을 잡아먹는 고마운 곤충이에요.', '놀라면 다리를 접고 죽은 척해요.'],
-    options: { 0: ['점이 없어요.', '1~3개 있어요.', '4~7개 있어요.', '8개가 넘어요.'] },
-    questions: { 0: '등에 검은 점이 몇 개 있나요?' },
-    match: { 0: 2 }
+    options: { 3: ['점이 없어요.', '1~3개 있어요.', '4~7개 있어요.', '8개가 넘어요.'] },
+    questions: { 3: '등에 검은 점이 몇 개 있나요?' },
+    match: { 0: 2, 1: 0, 2: 0, 3: 2 }     // 색 = 눈에 잘 띄어요 · 위치 = 풀잎 위 · 움직임 = 느리게 · 특징 = 점 4~7개
   };
 
   function read() { try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
