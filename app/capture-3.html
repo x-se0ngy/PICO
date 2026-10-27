@@ -108,8 +108,12 @@
 </div>
 <script src="shared.js"></script>
 <script src="photo.js"></script>
-<script src="stickers.js"></script>
 <script src="ai.js"></script>
+<script>
+  // 촬영 1을 거치지 않고 바로 열었을 때도 예시 사진(무당벌레)에 맞는 질문·보기로 시작해요.
+  try { if (!sessionStorage.getItem('pico.analysis')) sessionStorage.setItem('pico.analysis', JSON.stringify(PicoAI.DEMO)); } catch (e) {}
+</script>
+<script src="stickers.js"></script>
 <script>
 (function () {
   // 사진을 자세히 보며 관찰 질문 4개에 답해요.  공통 관찰: 색 · 위치 / 맞춤 관찰: 움직임 · 특징
