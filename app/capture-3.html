@@ -15,28 +15,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  .step-title .sub { white-space: nowrap; }
-  /* 사진을 크게 보며 질문에 답해요: 사진 칸(335×335)은 그대로, 안쪽 .zoom만 확대해요 */
-  .photo { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: transparent; border: 1px solid var(--ink); overflow: hidden; }
+  /* 질문 헤더: 질문 하나가 화면 제목이에요 (이름표 · 몇 번째 점 / 질문 / 한 줄 안내) */
+  .hd { position: absolute; left: 20px; top: 154px; width: 335px; }
+  .hd-row { height: 22px; display: flex; align-items: center; justify-content: space-between; }
+  .kind { height: 22px; padding: 0 9px; display: flex; align-items: center; background: var(--surface); border: 1px solid var(--ink); font-size: 12px; font-weight: 700; line-height: 1; white-space: nowrap; }
+  .dots { display: flex; gap: 6px; align-items: center; padding-right: 2px; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--ink); background: var(--bg); transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .dots i.done { background: var(--ink); }
+  .dots i.on { background: var(--brand); transform: scale(1.3); }
+  .dots .gap { width: 6px; border: 0; background: none; }
+  .hd h2 { margin: 10px 0 0; font-size: 22px; line-height: 30px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hd .sub { margin: 3px 0 0; font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hd.swap h2, .hd.swap .sub { animation: opt-in var(--dur) var(--ease) both; }
+  /* 사진을 크게 보며 질문에 답해요: 사진 칸(335×250)은 그대로, 안쪽 .zoom만 확대해요 */
+  .photo { position: absolute; left: 20px; top: 252px; width: 335px; height: 250px; background: transparent; border: 1px solid var(--ink); overflow: hidden; }
   .zoom { position: absolute; inset: 0; transform-origin: 0 0; cursor: zoom-in; touch-action: none; user-select: none; -webkit-user-select: none; outline: none; }
   .zoom.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
   .zoom.is-zoomed { cursor: grab; }
   .zoom.is-anim { transition: transform var(--dur) var(--ease); }
   .zoom:focus-visible { box-shadow: inset 0 0 0 3px var(--brand); }
-  .hint { position: absolute; left: 8px; bottom: 8px; padding: 4px 9px; background: var(--bg); border: 1px solid var(--ink); font-size: 12px; line-height: 16px; white-space: nowrap; pointer-events: none; z-index: 2; }
-  /* 질문 이름표 4개(색 · 위치 | 움직임 · 특징): 눌러서 다른 질문으로 옮겨 가요 (지금 질문 = 초록, 답한 질문 = 체크) */
-  .steps { position: absolute; left: 8px; top: 8px; display: flex; gap: 5px; z-index: 3; }
-  .steps button { height: 26px; padding: 0 8px; display: flex; align-items: center; justify-content: center; background: var(--bg); border: 1px solid var(--ink); font-size: 13px; line-height: 1; white-space: nowrap; transition: background-color var(--dur) var(--ease); }
-  .steps button[aria-current="true"] { background: var(--brand); font-weight: 700; }
-  .steps button.done::after { content: ''; width: 4px; height: 8px; margin: -2px 0 0 6px; border: solid var(--ink); border-width: 0 2px 2px 0; transform: rotate(40deg); }
-  .steps .gap { width: 5px; }
   /* 움직임 질문: 사진 위에 길을 따라 그려요 */
   .trace { position: absolute; inset: 0; width: 100%; height: 100%; display: none; touch-action: none; cursor: crosshair; z-index: 1; }
   .trace.on { display: block; }
-  .tools { position: absolute; right: 8px; bottom: 8px; display: flex; gap: 5px; z-index: 3; }
-  .tools button { height: 26px; padding: 0 9px; background: var(--bg); border: 1px solid var(--ink); font-size: 12px; line-height: 1; white-space: nowrap; }
-  .tools button.go { background: var(--brand); font-weight: 700; }
-  .tools[data-mode="move"] #zoomBtn, .tools[data-mode="pick"] #clear, .tools[data-mode="pick"] #other { display: none; }
+  /* 사진 아래 줄: 왼쪽 안내 · 오른쪽 도구 (사진을 가리지 않아요) */
+  .bar { position: absolute; left: 20px; top: 508px; width: 335px; height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .hint { flex: 1; min-width: 0; font-size: 13px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tools { flex: none; display: flex; gap: 5px; }
+  .tools button { height: 28px; padding: 0 11px; background: var(--surface); border: 1px solid var(--ink); font-size: 13px; line-height: 1; white-space: nowrap; }
+  .bar[data-mode="move"] #zoomBtn, .bar:not([data-mode="move"]) #clear, .bar:not([data-mode="move"]) #other { display: none; }
   /* 색: 8색 + 사진에서 뽑기 */
   .options.colors { left: 20px; width: 335px; grid-template-columns: repeat(5, 1fr); column-gap: 4px; }
   .opt.sw { padding: 0 4px; gap: 5px; font-size: 14px; }
@@ -52,18 +58,17 @@
   .other input:focus { box-shadow: inset 0 0 0 1px var(--ink); }
   .other button { flex: none; width: 56px; height: 46px; background: #fffad7; border: 1px solid var(--ink); font-size: 14px; }
   .other button.ok { background: var(--brand); font-weight: 700; }
-  /* 질문 (y 559.5) · 선택지 = 버튼 3 (2836:711) 162×46 두 줄 (x 22.89 / 190.11, y 590.38 / 640.88) */
-  .say { position: absolute; left: 0; top: 559.5px; width: 375px; padding: 0 20px; display: flex; gap: 8px; align-items: center; font-size: 14px; line-height: normal; white-space: nowrap; }
-  .say .no { font-weight: 700; }
-  .say .dot { width: 12px; font-size: 16px; text-align: center; }
-  .options { position: absolute; left: 22.89px; top: 590.38px; width: 329.22px; display: grid; grid-template-columns: 162px 162px; column-gap: 5.22px; row-gap: 4.5px; }
+  /* 보기 = 버튼 3 (2836:711) 162×46 두 줄 */
+  .options { position: absolute; left: 22.89px; top: 548px; width: 329.22px; display: grid; grid-template-columns: 162px 162px; column-gap: 5.22px; row-gap: 4.5px; }
   .opt { height: 46px; display: flex; align-items: center; justify-content: center; background: #fffad7; border: 1px solid var(--ink); font-size: 16px; white-space: nowrap;
     transition: background-color var(--dur) var(--ease); }
   .opt[aria-pressed="true"] { background: var(--brand); }
   .options.ready .opt { animation: opt-in var(--dur) var(--ease) both; }
   .options.ready .opt:nth-child(2) { animation-delay: .05s; } .options.ready .opt:nth-child(3) { animation-delay: .1s; } .options.ready .opt:nth-child(4) { animation-delay: .15s; }
   @keyframes opt-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .options.ready .opt { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .options.ready .opt, .hd.swap h2, .hd.swap .sub { animation: none; } }
+  .skip { position: absolute; left: 20px; width: 335px; top: 656px; height: 32px; display: none; align-items: center; justify-content: center; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; color: var(--ink); opacity: .75; }
+  .skip.show { display: flex; }
 </style>
 </head><body>
 <div class="phone" style="--h:812px">
@@ -79,21 +84,23 @@
 
   <div class="progress" aria-label="4단계 중 2단계"><span class="on"></span><span class="on"></span><span></span><span></span></div>
 
-  <div class="step-title cap">
-    <p class="q"><span>02.</span><span>자세히 보니 어땠나요?</span></p>
-    <p class="sub">사진을 자세히 보고 답해 보세요. 정답은 없어요.</p>
+  <div class="hd" id="hd">
+    <div class="hd-row"><span class="kind" id="kind"></span><span class="dots" id="dots" role="img"></span></div>
+    <h2 id="prompt" aria-live="polite"></h2>
+    <p class="sub" id="guide"></p>
   </div>
 
   <div class="photo" aria-label="촬영한 사진">
     <div class="zoom" id="zoom" data-photo role="button" tabindex="0" aria-pressed="false" aria-label="촬영한 사진. 누르면 크게 볼 수 있어요"></div>
     <canvas class="trace" id="trace" role="img" aria-label="곤충이 움직인 길을 손가락으로 그리는 곳"></canvas>
-    <div class="steps" id="steps" role="group" aria-label="질문 고르기"></div>
-    <div class="tools" id="tools" data-mode="move" hidden><button type="button" id="zoomBtn">확대</button><button type="button" id="clear">지우기</button><button type="button" id="other">그 외</button><button type="button" class="go" id="nextQ">다음 →</button></div>
+  </div>
+  <div class="bar" id="bar" data-mode="view">
     <span class="hint" id="hint">눌러서 크게 보기</span>
+    <span class="tools" id="tools"><button type="button" id="zoomBtn">확대</button><button type="button" id="clear">지우기</button><button type="button" id="other">그 외</button></span>
   </div>
 
-  <p class="say" aria-live="polite"><span class="no" id="qCount">1/4</span><span class="dot">·</span><span id="prompt"></span></p>
   <div class="options" id="options" role="group" aria-label="보기 고르기"></div>
+  <button type="button" class="skip" id="skip">잘 모르겠어요 · 건너뛰기</button>
 
   <a class="cta step" id="next" href="capture-4.html" aria-disabled="true"><span class="cta-face">다음 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
 
@@ -113,8 +120,11 @@
   // 보기에 없는 답은 answers[k] = -1 이고 글은 custom[k]에 저장해요 (일기 단어에는 들어가고, 꼼꼼 관찰 계산에서는 빠져요).
   var L = PicoLens, N = 4, COLOR = 0, PLACE = 1, MOVE = 2;
   var zoom = document.getElementById('zoom'), hint = document.getElementById('hint'), box = zoom.parentNode;
-  var stepsEl = document.getElementById('steps'), opts = document.getElementById('options'), tools = document.getElementById('tools');
-  var promptEl = document.getElementById('prompt'), countEl = document.getElementById('qCount');
+  var dotsEl = document.getElementById('dots'), kindEl = document.getElementById('kind'), hd = document.getElementById('hd'), guideEl = document.getElementById('guide'),
+      opts = document.getElementById('options'), bar = document.getElementById('bar'), skipBtn = document.getElementById('skip'), nextBtn = document.getElementById('next'),
+      back = document.querySelector('.nav a[aria-label="뒤로"]');
+  var promptEl = document.getElementById('prompt');
+  var GUIDE = ['비슷한 색을 골라요. 없으면 사진에서 뽑아요.', '곤충이 있던 곳을 골라요. 정답은 없어요.', '사진 위에 손가락으로 길을 따라 그려요.', '사진을 크게 보고 골라요. 정답은 없어요.'];
   var cv = document.getElementById('trace'), cx = cv.getContext('2d');
   var answers = L.answers(), custom = L.custom(), active = -1, pickMode = false, ring = null;
   function save() { L.saveAnswers(answers); L.saveCustom(custom); }
@@ -225,7 +235,7 @@
     save();
     if (!ring) { ring = document.createElement('i'); ring.className = 'pick-ring'; zoom.appendChild(ring); }
     ring.style.left = bx + 'px'; ring.style.top = by + 'px'; ring.style.setProperty('--c', hex);
-    renderSteps(); renderOptions(''); syncNext(); hintText(c.name);
+    renderDots(); renderOptions(''); syncNext(); hintText(c.name);
   }
 
   /* ---------- 움직임 따라 그리기 ---------- */
@@ -279,7 +289,7 @@
     answers[MOVE] = i; delete custom[MOVE]; save();
     moveMsg = L.OPTIONS[MOVE][i];
     opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', i === +o.dataset.i); });
-    renderSteps(); syncNext(); hintText();
+    renderDots(); syncNext(); hintText();
   }
   cv.addEventListener('pointerdown', function (e) {
     var p = localPoint(e);
@@ -306,9 +316,8 @@
     strokes = []; cur = null; moveMsg = ''; redraw();
     delete answers[MOVE]; delete custom[MOVE]; save();
     opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
-    renderSteps(); syncNext(); hintText();
+    renderDots(); syncNext(); hintText();
   });
-  document.getElementById('nextQ').addEventListener('click', function () { var n = nextOpen(); activate(n > -1 ? n : (active + 1) % N); });
   document.getElementById('other').addEventListener('click', function () { showOther(MOVE); });
   window.addEventListener('resize', sizeCanvas);
 
@@ -319,17 +328,15 @@
   }
 
   /* ---------- 질문 ---------- */
-  function renderSteps() {
-    stepsEl.innerHTML = '';
+  function renderDots() {   // 질문 4개 중 몇 번째인지: 지금 = 초록(크게) · 답했어요 = 검정 (공통 | 맞춤 사이는 조금 띄워요)
+    var h = '';
     for (var k = 0; k < N; k++) {
-      if (k === 2) { var g = document.createElement('i'); g.className = 'gap'; g.setAttribute('aria-hidden', 'true'); stepsEl.appendChild(g); }   // 공통 | 맞춤
-      var b = document.createElement('button');
-      b.type = 'button'; b.dataset.k = k; b.textContent = L.KINDS[k];
-      b.className = answers[k] != null ? 'done' : '';
-      b.setAttribute('aria-current', k === active ? 'true' : 'false');
-      b.setAttribute('aria-label', (k < 2 ? '공통 관찰 ' : '맞춤 관찰 ') + L.KINDS[k] + (answers[k] != null ? ' · 답했어요' : ''));
-      stepsEl.appendChild(b);
+      if (k === 2) h += '<i class="gap"></i>';
+      h += '<i class="' + (k === active ? 'on' : answers[k] != null ? 'done' : '') + '"></i>';
     }
+    dotsEl.innerHTML = h;
+    dotsEl.setAttribute('aria-label', N + '개 질문 중 ' + (active + 1) + '번째');
+    kindEl.textContent = '02 · ' + (active < 2 ? '공통 관찰' : '맞춤 관찰');
   }
   function btn(cls, attrs, html) { return '<button type="button" class="opt ' + cls + '" ' + attrs + '>' + html + '</button>'; }
   function renderOptions(state) {
@@ -357,34 +364,42 @@
     var inp = opts.querySelector('input'); inp.focus();
     inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); opts.querySelector('.ok').click(); } });
   }
-  function fit() {   // 질문이 길어도 한 줄에 들어오게 글씨를 조금 줄여요
-    var row = promptEl.parentNode; row.style.fontSize = '';
-    var size = 14; while (row.scrollWidth > row.clientWidth && size > 11) { size -= 1; row.style.fontSize = size + 'px'; }
+  function fit() {   // 질문이 길면 글씨를 조금 줄여서 한 줄에 넣어요
+    promptEl.style.fontSize = '';
+    var size = 22; while (promptEl.scrollWidth > promptEl.clientWidth && size > 17) { size -= 1; promptEl.style.fontSize = size + 'px'; }
   }
-  function mode() { return active === MOVE ? 'move' : (active === COLOR && pickMode) ? 'pick' : ''; }
   function activate(k) {
     var changed = active !== -1 && active !== k;
     active = k; pickMode = false;
-    var m = mode();
     cv.classList.toggle('on', k === MOVE);
-    zoom.classList.remove('picking');
-    if (k === MOVE) { scale = 1; tx = ty = 0; paint(false); sizeCanvas(); moveMsg = answers[MOVE] != null && strokes.length ? L.OPTIONS[MOVE][answers[MOVE]] : (answers[MOVE] === -1 && custom[MOVE] ? custom[MOVE].t : ''); }
-    updateTools();
-    countEl.textContent = (k + 1) + '/' + N;
-    promptEl.textContent = L.PROMPTS[k];
-    fit(); renderSteps(); renderOptions(changed ? 'ready' : ''); hintText();
+    if (k === MOVE) { sizeCanvas(); moveMsg = answers[MOVE] != null && strokes.length ? L.OPTIONS[MOVE][answers[MOVE]] : (answers[MOVE] === -1 && custom[MOVE] ? custom[MOVE].t : ''); }
+    if (changed || k === MOVE) { scale = 1; tx = ty = 0; paint(false); }
+    promptEl.textContent = L.PROMPTS[k]; guideEl.textContent = GUIDE[k];
+    hd.classList.remove('swap'); if (changed) { void hd.offsetWidth; hd.classList.add('swap'); }
+    updateTools(); fit(); renderDots(); renderOptions(changed ? 'ready' : ''); hintText(); syncNext();
   }
   function updateTools() {
-    var m = mode(); tools.hidden = !m; tools.dataset.mode = m || 'move';
-    zoom.classList.toggle('picking', m === 'pick');
+    bar.dataset.mode = active === MOVE ? 'move' : 'view';
+    zoom.classList.toggle('picking', pickMode && active === COLOR);
   }
   function nextOpen() {   // 지금 다음 번호부터, 없으면 처음부터 아직 안 답한 질문
     for (var i = 1; i <= N; i++) { var k = (active + i) % N; if (answers[k] == null) return k; }
     return -1;
   }
-  function syncNext() { document.getElementById('next').setAttribute('aria-disabled', Object.keys(answers).length ? 'false' : 'true'); }
+  // 아래 버튼: 이 질문에 답해야 눌러져요. 마지막 질문이면 일기(03)로, 아니면 다음 질문으로 가요.
+  function syncNext() {
+    var ok = answers[active] != null, any = Object.keys(answers).length > 0;
+    nextBtn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+    skipBtn.classList.toggle('show', !ok && (active < N - 1 || any));   // 마지막 질문인데 하나도 못 답했으면 건너뛰기는 숨겨요
+  }
+  function go(k) { activate(k); }
+  nextBtn.addEventListener('click', function (e) {
+    if (nextBtn.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+    if (active < N - 1) { e.preventDefault(); go(active + 1); }
+  });
+  skipBtn.addEventListener('click', function () { if (active < N - 1) go(active + 1); else nextBtn.setAttribute('aria-disabled', 'false'), nextBtn.click(); });
+  back.addEventListener('click', function (e) { if (active > 0) { e.preventDefault(); go(active - 1); } });
 
-  stepsEl.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) activate(+b.dataset.k); });
   opts.addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     var act = b.dataset.act, k = active;
@@ -398,8 +413,7 @@
       answers[k] = -1; custom[k] = { t: txt }; save();
       if (k === MOVE) { moveMsg = txt; renderOptions(''); }
       else renderOptions('');
-      renderSteps(); syncNext(); hintText();
-      var nx = nextOpen(); if (nx > -1 && k !== MOVE) setTimeout(function () { activate(nx); }, (window.picoDur ? picoDur() : 300) + 50);
+      renderDots(); syncNext(); hintText();
       return;
     }
     var i = +b.dataset.i; if (isNaN(i)) return;
@@ -407,13 +421,9 @@
     if (answers[k] === i) { delete answers[k]; delete custom[k]; } else { answers[k] = i; delete custom[k]; }
     save();
     if (k === MOVE) moveMsg = answers[MOVE] != null ? L.OPTIONS[MOVE][answers[MOVE]] : '';
-    renderOptions(''); renderSteps(); syncNext(); hintText();
-    if (answers[k] == null) return;
-    var next = nextOpen();
-    if (next > -1) setTimeout(function () { activate(next); }, (window.picoDur ? picoDur() : 300) + 50);
+    renderOptions(''); renderDots(); syncNext(); hintText();
   });
 
-  syncNext();
   var first = 0; for (var q = 0; q < N; q++) { if (answers[q] == null) { first = q; break; } }
   activate(first); paint(false);
 })();
