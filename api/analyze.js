@@ -3,8 +3,8 @@
 // 아이가 찍은 사진을 Claude에게 보여 주고, 아래 두 가지를 JSON으로 받아요.
 //   mode "identify"  (촬영 1) : 어떤 곤충인지, 분류, 아이에게 들려줄 분석글 3줄,
 //                               관찰 질문 4개 = 공통 관찰(색·위치) + 맞춤 관찰(움직임·특징), 사진과 가장 가까운 보기 번호(match)
-//                               위치·특징은 AI가 질문/보기를 만들고(특징은 "점이 몇 개 있나요?"처럼 세어 보는 질문),
-//                               색·움직임은 보기가 앱에 고정이라 AI는 번호만 알려 줘요.
+//                               위치(보기 3개)·특징(보기 4개)은 AI가 질문/보기를 만들고(특징은 "점이 몇 개 있나요?"처럼 세어 보는 질문),
+//                               색(8색)·움직임(4가지)은 보기가 앱에 고정이라 AI는 번호만 알려 줘요.
 //   mode "stickers"  (예전 스티커 단계용, 지금 화면은 쓰지 않아요) : 스티커를 붙인 자리에 맞는 선택지 4개
 //
 // 준비: Vercel 프로젝트 Settings → Environment Variables 에 ANTHROPIC_API_KEY 를 넣어 주세요.
@@ -37,15 +37,15 @@ function identifyPrompt() {
     '  "questions": {                      // 아이에게 물어볼 질문. 20자 이내, "나요?"/"까요?"로 끝내기',
     '    "위치": "어디에 있었나요?", "특징": "..."',
     '  },',
-    '  "options": {                        // 아이가 고를 보기. 정확히 4개, 각 11자 이내, "요."로 끝내기',
+    '  "options": {                        // 아이가 고를 보기. 각 11자 이내, "요."로 끝내기. 위치는 정확히 3개, 특징은 정확히 4개',
     '    "위치": [...], "특징": [...]',
     '  },',
-    '  "match": { "색": 2, "위치": 0, "움직임": 1, "특징": 3 }   // 질문마다 이 사진·이 곤충과 가장 가까운 보기의 번호(0~3). 알 수 없으면 그 질문은 빼',
+    '  "match": { "색": 0, "위치": 0, "움직임": 1, "특징": 3 }   // 질문마다 이 사진·이 곤충과 가장 가까운 보기의 번호. 알 수 없으면 그 질문은 빼',
     '}',
     '관찰 질문은 4가지야. 색·움직임은 앱에 보기가 정해져 있어서 보기를 만들지 말고 match 번호만 골라.',
-    '- "색": 곤충이 주변 배경과 어떻게 보이는지. 0 주변과 똑같아 보여요, 1 조금만 섞여 보여요, 2 눈에 잘 띄어요, 3 아주 확 튀어요.',
+    '- "색": 곤충 몸의 가장 큰 색. 0 빨강, 1 주황, 2 노랑, 3 초록, 4 파랑, 5 갈색, 6 검정, 7 흰색 (0~7). 이 8색에 없으면 가장 가까운 색으로.',
     '- "움직임": 이 곤충이 보통 어떻게 움직이는지. 0 느리게, 1 빠르게, 2 구불구불, 3 움직이다 멈춰요. (사진은 멈춰 있으니 이 곤충이 보통 보이는 모습으로 골라)',
-    '- "위치": 사진 속 배경(잎, 꽃, 나무, 땅, 물가 등)을 보고 곤충이 어디에 있는지 보기 4개를 만들어. 사진에 보이는 곳이 1개 이상 들어가게.',
+    '- "위치": 사진 속 배경(잎, 꽃, 나무, 땅, 물가 등)을 보고 곤충이 어디에 있는지 보기 3개를 만들어(0~2). 사진에 보이는 곳이 1개 이상 들어가게. "다른 곳" 보기는 앱이 따로 붙이니 넣지 마.',
     '- "특징": 이 곤충만의 눈에 띄는 모습을 세어 보는 질문이야. 점·줄무늬·날개·다리처럼 세어 볼 수 있는 것이 있으면',
     '  "등에 검은 점이 몇 개 있나요?"처럼 개수를 묻고, 보기는 "3개 있어요."처럼 서로 다른 개수 4개(사진의 실제 개수가 하나 들어가게)로 만들어.',
     '  세어 볼 것이 없으면 "어떤 무늬가 있나요?"처럼 생김새를 묻고 표현 보기 4개로 만들어.',
@@ -81,10 +81,10 @@ function firstJson(text) {
 }
 
 const clean = (s, max) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, max);
-function four(list, max) {
+function four(list, max, n = 4) {
   if (!Array.isArray(list)) return null;
-  const out = list.map(x => clean(x, max)).filter(Boolean).slice(0, 4);
-  return out.length === 4 ? out : null;
+  const out = list.map(x => clean(x, max)).filter(Boolean).slice(0, n);
+  return out.length === n ? out : null;
 }
 
 async function askClaude(image, prompt) {
@@ -139,13 +139,14 @@ module.exports = async function handler(req, res) {
     const options = {}, questions = {}, match = {};
     KINDS.forEach((k, i) => {
       const m = j.match && j.match[k];
-      if (FIXED.includes(i)) {                      // 색 · 움직임: 보기는 앱에 있어서 번호만 받아요
-        if (Number.isInteger(m) && m >= 0 && m < 4) match[i] = m;
+      if (FIXED.includes(i)) {                      // 색(8색) · 움직임(4가지): 보기는 앱에 있어서 번호만 받아요
+        if (Number.isInteger(m) && m >= 0 && m < (i === 0 ? 8 : 4)) match[i] = m;
         return;
       }
-      const o = four(j.options && j.options[k], 14); if (o) options[i] = o;
+      const n = i === 1 ? 3 : 4;                    // 위치는 3개 (4번째 칸은 앱의 "다른 곳이에요")
+      const o = four(j.options && j.options[k], 14, n); if (o) options[i] = o;
       const q = clean(j.questions && j.questions[k], 26); if (q && o) questions[i] = q;
-      if (o && Number.isInteger(m) && m >= 0 && m < 4) match[i] = m;
+      if (o && Number.isInteger(m) && m >= 0 && m < n) match[i] = m;
     });
     const summary = (Array.isArray(j.summary) ? j.summary : []).map(s => clean(s, 30)).filter(Boolean).slice(0, 3);
     res.status(200).json({

@@ -234,7 +234,7 @@
     if (busy) return; busy = true;
     PicoPhoto.set(url); showGallery();
     // a new photo starts a fresh observation: clear picks, diary and the last AI analysis
-    ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary', 'pico.capture.options', 'pico.capture.optionsFor', 'pico.capture.match']
+    ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary', 'pico.capture.options', 'pico.capture.optionsFor', 'pico.capture.match', 'pico.capture.custom']
       .forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
     PicoAI.clear();
     var img = new Image(); img.className = 'shot'; img.alt = ''; img.src = url;

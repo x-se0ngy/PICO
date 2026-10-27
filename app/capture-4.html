@@ -66,7 +66,7 @@
   // Word chips: the expressions picked in step 3 (Figma words when nothing was picked)
   var WORDS = (function () {
     var a = PicoLens.answers(), out = [];
-    Object.keys(a).sort().forEach(function (k) { var o = PicoLens.OPTIONS[+k] && PicoLens.OPTIONS[+k][a[k]]; if (o) out.push({ t: o }); });
+    Object.keys(a).sort().forEach(function (k) { var o = PicoLens.word(+k); if (o) out.push({ t: o }); });
     return out.length ? out : [{ t: '팔랑팔랑', w: 96.127 }, { t: '꽃에서 쉬어요.', w: 120 }, { t: '날개에 줄무늬', w: 120.357 }];
   })();
   var diary = document.getElementById('diary'), chips = document.getElementById('chips');

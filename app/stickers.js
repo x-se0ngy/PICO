@@ -1,21 +1,31 @@
 // PICO · 관찰 질문 (capture-3 → capture-4 → 관찰 카드)
 // 관찰 기준: 공통 관찰(색 · 위치) + 맞춤 관찰(움직임 · 특징). 사진을 보고 하나씩 답해요.
-//   색     : 주변과 섞여 보였나, 눈에 띄었나 (보기는 고정, AI는 사진과 가장 가까운 번호만 알려 줘요)
-//   위치   : 어디에 있었나 (AI가 사진 속 배경을 보고 보기를 만들어요)
-//   움직임 : 사진 위에 곤충이 움직인 길을 따라 그려요 → 느림 · 빠름 · 구불구불 · 멈췄다 움직임 (보기는 고정)
+//   색     : 곤충은 무슨 색이었나. 8색 중에서 고르거나, 없으면 사진을 눌러 색을 직접 뽑아요 (AI는 8색 중 가까운 번호만 알려 줘요)
+//   위치   : 어디에 있었나. AI가 사진 속 배경을 보고 보기 3개를 만들고, 없으면 "다른 곳이에요"로 직접 써요
+//   움직임 : 사진 위에 곤충이 움직인 길을 따라 그려요 → 느림 · 빠름 · 구불구불 · 멈췄다 움직임. 안 맞으면 "그 외"로 직접 써요
 //   특징   : 곤충마다 달라요. "점이 몇 개 있나요?"처럼 사진을 자세히 세어 보는 질문 (AI가 만들어요)
+// 보기에 없는 답(다른 색·다른 곳·그 외)은 답이 -1이고 글은 custom에 저장해요. 일기 단어에는 들어가고, 꼼꼼 관찰 계산에서는 빠져요.
 // (스티커를 붙이던 단계는 없앴어요 — 렌즈 그리기 코드는 남겨 두었지만 쓰지 않아요.)
 (function () {
   var KINDS = ['색', '위치', '움직임', '특징'];
   var COMMON = [0, 1], CUSTOM = [2, 3];   // 공통 관찰 · 맞춤 관찰
   var FIXED = [0, 2];                     // 보기가 고정인 질문 (AI는 번호만 알려 줘요)
+  // 곤충에서 가장 흔한 8색 (빨주노초파 + 갈색·검정·흰색). 이 밖의 색은 사진에서 뽑아요.
+  var COLORS = [
+    { n: '빨강', hex: '#E0392B', s: '빨간색이에요.' }, { n: '주황', hex: '#F08A24', s: '주황색이에요.' },
+    { n: '노랑', hex: '#F4D03F', s: '노란색이에요.' }, { n: '초록', hex: '#4FA33A', s: '초록색이에요.' },
+    { n: '파랑', hex: '#2F7BD8', s: '파란색이에요.' }, { n: '갈색', hex: '#8A5A33', s: '갈색이에요.' },
+    { n: '검정', hex: '#1B1B1B', s: '검은색이에요.' }, { n: '흰색', hex: '#FFFFFF', s: '흰색이에요.' }
+  ];
+  var OTHER = ['다른 색이에요.', '다른 곳이에요.', '다르게 움직여요.', '그 외예요.'];   // 보기에 없을 때 (직접 쓰기 기본 글)
   var OPTIONS = [
-    ['주변과 똑같아 보여요.', '조금만 섞여 보여요.', '눈에 잘 띄어요.', '아주 확 튀어요.'],
-    ['풀잎 위에 있어요.', '나무에 있어요.', '꽃 주변에 있어요.', '물가에 있어요.'],
+    COLORS.map(function (c) { return c.s; }),
+    ['풀잎 위에 있어요.', '나무에 있어요.', '꽃 주변에 있어요.'],      // 4번째 칸은 "다른 곳이에요"
+
     ['느리게 움직여요.', '빠르게 움직여요.', '구불구불 움직여요.', '움직이다 멈춰요.'],   // 따라 그린 선의 속도·굴곡·끊김으로 골라져요
     ['점이 없어요.', '1~3개 있어요.', '4~7개 있어요.', '8개가 넘어요.']
   ];
-  var PROMPTS = ['주변과 비슷해 보였나요, 눈에 띄었나요?', '어디에 있었나요?', '곤충이 움직인 길을 따라 그려보세요.', '점이나 줄무늬가 몇 개 있나요?'];
+  var PROMPTS = ['곤충은 무슨 색이었나요?', '어디에 있었나요?', '곤충이 움직인 길을 따라 그려보세요.', '점이나 줄무늬가 몇 개 있나요?'];
   var MATCH = {};   // AI가 보기에 사진과 가장 가까운 보기 번호 (질문별) — 관찰이 실제와 얼마나 닮았는지 볼 때 써요
   // AI 분석(app/ai.js, 촬영 1 사진 분석)이 만든 질문·선택지가 있으면 그걸 써요. 없으면 위의 기본.
   (function () {
@@ -24,13 +34,13 @@
     if (!photoAi) return;
     for (var k = 0; k < 4; k++) {
       if (FIXED.indexOf(k) < 0) {
-        var o = photoAi.options && photoAi.options[k];
-        if (Array.isArray(o) && o.length === 4) OPTIONS[k] = o.slice();
+        var o = photoAi.options && photoAi.options[k], want = k === 1 ? 3 : 4;   // 위치는 3개 + "다른 곳이에요"
+        if (Array.isArray(o) && o.length >= want) OPTIONS[k] = o.slice(0, want);
         var q = photoAi.questions && photoAi.questions[k];
         if (typeof q === 'string' && q) PROMPTS[k] = q;
       }
       var m = photoAi.match && photoAi.match[k];
-      if (Number.isInteger(m) && m >= 0 && m < 4) MATCH[k] = m;
+      if (Number.isInteger(m) && m >= 0 && m < OPTIONS[k].length) MATCH[k] = m;
     }
   })();
   // 촬영 2 버튼 이름과 버튼 아래 안내 (촬영 02 맨트 2884:5571)
@@ -96,7 +106,7 @@
   }
 
   window.PicoLens = {
-    KINDS: KINDS, COMMON: COMMON, CUSTOM: CUSTOM, OPTIONS: OPTIONS, PROMPTS: PROMPTS, MATCH: MATCH, LABELS: LABELS, LINES: LINES, R: R, inner: inner,
+    KINDS: KINDS, COMMON: COMMON, CUSTOM: CUSTOM, COLORS: COLORS, OTHER: OTHER, OPTIONS: OPTIONS, PROMPTS: PROMPTS, MATCH: MATCH, LABELS: LABELS, LINES: LINES, R: R, inner: inner,
     load: function () { var l = read(KEY, []); return Array.isArray(l) ? l.filter(function (s) { return s && s.k >= 0 && s.k < 4; }) : []; },
     save: function (list) { write(KEY, list); },
     answers: function () { return read(ANS, {}) || {}; },
@@ -105,10 +115,14 @@
     saveAnswers: function (a) {
       write(ANS, a);
       var hit = 0, total = 0;
-      Object.keys(MATCH).forEach(function (k) { if (a[k] != null) { total++; if (a[k] === MATCH[k]) hit++; } });
+      Object.keys(MATCH).forEach(function (k) { if (a[k] != null && a[k] >= 0) { total++; if (a[k] === MATCH[k]) hit++; } });   // 다른 색·다른 곳·그 외(-1)는 계산에서 빼요
       write('pico.capture.match', { hit: hit, total: total, ratio: total ? hit / total : null });
     },
     match: function () { return read('pico.capture.match', null); },
+    // 보기에 없어서 직접 쓰거나 뽑은 답: { k: { t: 글, hex?: 뽑은 색, name?: 색 이름 } }
+    custom: function () { return read('pico.capture.custom', {}) || {}; },
+    saveCustom: function (c) { write('pico.capture.custom', c); },
+    word: function (k) { var c = (read('pico.capture.custom', {}) || {})[k], a = (read(ANS, {}) || {})[k]; return (c && c.t) || (a != null && OPTIONS[k] && OPTIONS[k][a]) || ''; },
     cover: cover, clamp: clamp, photoSize: photoSize, html: html
   };
 })();

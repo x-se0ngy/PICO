@@ -36,6 +36,22 @@
   .tools { position: absolute; right: 8px; bottom: 8px; display: flex; gap: 5px; z-index: 3; }
   .tools button { height: 26px; padding: 0 9px; background: var(--bg); border: 1px solid var(--ink); font-size: 12px; line-height: 1; white-space: nowrap; }
   .tools button.go { background: var(--brand); font-weight: 700; }
+  .tools[data-mode="move"] #zoomBtn, .tools[data-mode="pick"] #clear, .tools[data-mode="pick"] #other { display: none; }
+  /* 색: 8색 + 사진에서 뽑기 */
+  .options.colors { left: 20px; width: 335px; grid-template-columns: repeat(5, 1fr); column-gap: 4px; }
+  .opt.sw { padding: 0 4px; gap: 5px; font-size: 14px; }
+  .opt.sw i, .opt.pick i { flex: none; width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--ink); background: var(--c, transparent); }
+  .opt.pick { grid-column: span 2; gap: 6px; font-size: 13px; }
+  .opt.pick i { background: conic-gradient(#E0392B, #F4D03F, #4FA33A, #2F7BD8, #8A5A33, #E0392B); }
+  .opt.pick.has i { background: var(--c); }
+  .zoom.picking { cursor: crosshair; }
+  .pick-ring { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: var(--c); border: 3px solid #fff; box-shadow: 0 0 0 1.5px #111, inset 0 0 0 1.5px #111; transform: scale(calc(1 / var(--z, 1))); pointer-events: none; }
+  /* 보기에 없을 때 직접 쓰기 */
+  .other { grid-column: 1 / -1; display: flex; gap: 5px; }
+  .other input { flex: 1; min-width: 0; height: 46px; padding: 0 12px; background: var(--surface); border: 1px solid var(--ink); border-radius: 0; font: 16px var(--font); color: var(--ink); outline: none; }
+  .other input:focus { box-shadow: inset 0 0 0 1px var(--ink); }
+  .other button { flex: none; width: 56px; height: 46px; background: #fffad7; border: 1px solid var(--ink); font-size: 14px; }
+  .other button.ok { background: var(--brand); font-weight: 700; }
   /* 질문 (y 559.5) · 선택지 = 버튼 3 (2836:711) 162×46 두 줄 (x 22.89 / 190.11, y 590.38 / 640.88) */
   .say { position: absolute; left: 0; top: 559.5px; width: 375px; padding: 0 20px; display: flex; gap: 8px; align-items: center; font-size: 14px; line-height: normal; white-space: nowrap; }
   .say .no { font-weight: 700; }
@@ -72,7 +88,7 @@
     <div class="zoom" id="zoom" data-photo role="button" tabindex="0" aria-pressed="false" aria-label="촬영한 사진. 누르면 크게 볼 수 있어요"></div>
     <canvas class="trace" id="trace" role="img" aria-label="곤충이 움직인 길을 손가락으로 그리는 곳"></canvas>
     <div class="steps" id="steps" role="group" aria-label="질문 고르기"></div>
-    <div class="tools" id="tools" hidden><button type="button" id="clear">지우기</button><button type="button" class="go" id="nextQ">다음 →</button></div>
+    <div class="tools" id="tools" data-mode="move" hidden><button type="button" id="zoomBtn">확대</button><button type="button" id="clear">지우기</button><button type="button" id="other">그 외</button><button type="button" class="go" id="nextQ">다음 →</button></div>
     <span class="hint" id="hint">눌러서 크게 보기</span>
   </div>
 
@@ -90,14 +106,18 @@
 <script>
 (function () {
   // 사진을 자세히 보며 관찰 질문 4개에 답해요.  공통 관찰: 색 · 위치 / 맞춤 관찰: 움직임 · 특징
-  //   색·위치·특징은 보기를 골라요. 움직임은 사진 위에 곤충이 움직인 길을 따라 그리면 (생태 모방 인터랙션)
-  //   속도 · 굴곡 · 끊김으로 느림 / 빠름 / 구불구불 / 멈췄다 움직임 중 하나가 골라져요.
-  var L = PicoLens, N = 4, MOVE = 2;
+  //   색     : 8색에서 고르거나, 없으면 "사진에서 뽑기"로 사진을 눌러 색을 직접 뽑아요.
+  //   위치   : AI가 만든 보기 3개 + "다른 곳이에요"(직접 쓰기)
+  //   움직임 : 사진 위에 곤충이 움직인 길을 따라 그리면 속도 · 굴곡 · 끊김으로 보기 하나가 골라져요. 안 맞으면 "그 외"(직접 쓰기)
+  //   특징   : AI가 만든 질문(예: 점이 몇 개 있나요?)과 보기 4개
+  // 보기에 없는 답은 answers[k] = -1 이고 글은 custom[k]에 저장해요 (일기 단어에는 들어가고, 꼼꼼 관찰 계산에서는 빠져요).
+  var L = PicoLens, N = 4, COLOR = 0, PLACE = 1, MOVE = 2;
   var zoom = document.getElementById('zoom'), hint = document.getElementById('hint'), box = zoom.parentNode;
   var stepsEl = document.getElementById('steps'), opts = document.getElementById('options'), tools = document.getElementById('tools');
   var promptEl = document.getElementById('prompt'), countEl = document.getElementById('qCount');
   var cv = document.getElementById('trace'), cx = cv.getContext('2d');
-  var answers = L.answers(), active = -1;
+  var answers = L.answers(), custom = L.custom(), active = -1, pickMode = false, ring = null;
+  function save() { L.saveAnswers(answers); L.saveCustom(custom); }
 
   /* ---------- 사진 확대: 누르면 그 자리를 크게, 확대한 채로 끌면 옮겨 보고, 다시 누르면 돌아와요 ---------- */
   var Z = 2.6, scale = 1, tx = 0, ty = 0, drag = null;
@@ -105,6 +125,7 @@
   function paint(anim) {
     zoom.classList.toggle('is-anim', !!anim);
     zoom.style.transform = scale === 1 ? '' : 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    zoom.style.setProperty('--z', scale);
     zoom.classList.toggle('is-zoomed', scale > 1);
     zoom.setAttribute('aria-pressed', scale > 1);
     hintText();
@@ -117,7 +138,7 @@
   }
   function localPoint(e) {   // 화면에 맞춰 줄여 보일 때도 칸 안 좌표로
     var r = box.getBoundingClientRect(), k = r.width / box.offsetWidth || 1;
-    return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k, k: k };
+    return { x: (e.clientX - r.left) / k - box.clientLeft, y: (e.clientY - r.top) / k - box.clientTop, k: k };
   }
   zoom.addEventListener('pointerdown', function (e) {
     drag = { x: e.clientX, y: e.clientY, tx: tx, ty: ty, moved: false };
@@ -136,13 +157,76 @@
     if (!drag) return;
     var d = drag; drag = null;
     if (d.moved || e.type === 'pointercancel') return;
-    var p = localPoint(e); toggle(p.x, p.y);
+    var p = localPoint(e);
+    if (pickMode) pickAt(p.x, p.y); else toggle(p.x, p.y);
   }
   zoom.addEventListener('pointerup', release);
   zoom.addEventListener('pointercancel', release);
   zoom.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(box.clientWidth / 2, box.clientHeight / 2); }
   });
+  document.getElementById('zoomBtn').addEventListener('click', function () { toggle(box.clientWidth / 2, box.clientHeight / 2); });
+
+  /* ---------- 색 뽑기: 사진을 눌러 그 자리의 색을 알아내요 ---------- */
+  var pix = null, map = null;
+  (function loadPix() {
+    var im = new Image();
+    im.onload = function () {
+      try {
+        var sc = Math.min(1, 640 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(im.naturalWidth * sc)); c.height = Math.max(1, Math.round(im.naturalHeight * sc));
+        var g = c.getContext('2d'); g.drawImage(im, 0, 0, c.width, c.height);
+        pix = { w: c.width, h: c.height, d: g.getImageData(0, 0, c.width, c.height).data };
+        map = L.cover(box.clientWidth || 333, box.clientHeight || 333, c.width, c.height);
+      } catch (e) { pix = null; }
+    };
+    im.src = (window.PicoPhoto && PicoPhoto.get()) || (window.PicoPhoto ? PicoPhoto.FALLBACK : '');
+  })();
+  function hsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn, h = 0, s = 0;
+    if (d) { s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
+    return { h: h, s: s, l: l };
+  }
+  // 뽑은 색 → 이름 · 가까운 8색 번호(없으면 -1) · 글
+  function colorName(r, g, b) {
+    var c = hsl(r, g, b), h = c.h, s = c.s, l = c.l, n, base = -1;
+    if (l < 0.12) { n = '검정'; base = 6; }
+    else if (s < 0.12) { if (l > 0.85) { n = '흰색'; base = 7; } else if (l < 0.3) { n = '검정'; base = 6; } else { n = '회색'; } }
+    else if (l > 0.9) { n = '흰색'; base = 7; }
+    else if (h < 25 || h >= 345) { if (l < 0.3 || (l < 0.4 && s < 0.5)) { n = '갈색'; base = 5; } else if (l > 0.72) { n = '분홍'; } else { n = '빨강'; base = 0; } }   // 어둡고 탁한 빨강·주황은 갈색
+    else if (h < 45) { if (l < 0.3 || (l < 0.5 && s < 0.55)) { n = '갈색'; base = 5; } else { n = '주황'; base = 1; } }
+    else if (h < 70) { if (l < 0.3 || (l < 0.4 && s < 0.5)) { n = '갈색'; base = 5; } else { n = '노랑'; base = 2; } }
+    else if (h < 100) { n = '연두'; base = 3; }
+    else if (h < 170) { n = '초록'; base = 3; }
+    else if (h < 205) { n = '하늘'; base = 4; }
+    else if (h < 260) { n = '파랑'; base = 4; }
+    else if (h < 300) { n = '보라'; }
+    else { n = l > 0.45 ? '분홍' : '보라'; }
+    var exact = base > -1 && L.COLORS[base].n === n;
+    var sent = exact ? L.COLORS[base].s : (n === '하늘' ? '하늘색이에요.' : n + (n === '연두' || n === '보라' || n === '분홍' || n === '회색' ? '색이에요.' : '이에요.'));
+    return { name: n, base: base, sent: sent, exact: exact };
+  }
+  function pickAt(px, py) {
+    if (!pix || !map) { hint.textContent = '사진을 불러오는 중이에요'; return; }
+    var bx = (px - tx) / scale, by = (py - ty) / scale;               // 확대한 사진 위의 자리 → 원래 칸 안 좌표
+    var uv = map.toImg(bx, by), u = clamp(uv.u, 0, 1), v = clamp(uv.v, 0, 1);
+    var cxp = Math.min(pix.w - 1, Math.round(u * (pix.w - 1))), cyp = Math.min(pix.h - 1, Math.round(v * (pix.h - 1)));
+    var R = 0, G = 0, B = 0, n = 0;
+    for (var yy = -2; yy <= 2; yy++) for (var xx = -2; xx <= 2; xx++) {   // 5×5칸 평균으로 한 점의 잡티를 줄여요
+      var X = clamp(cxp + xx, 0, pix.w - 1), Y = clamp(cyp + yy, 0, pix.h - 1), o = (Y * pix.w + X) * 4;
+      R += pix.d[o]; G += pix.d[o + 1]; B += pix.d[o + 2]; n++;
+    }
+    R = Math.round(R / n); G = Math.round(G / n); B = Math.round(B / n);
+    var hex = '#' + [R, G, B].map(function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+    var c = colorName(R, G, B);
+    answers[COLOR] = c.base > -1 ? c.base : -1;
+    custom[COLOR] = { t: c.sent, hex: hex, name: c.name, exact: c.exact };   // 8색과 같으면 그 칸을 눌린 것으로, 아니면 "사진에서 뽑기" 칸에 뽑은 색을 보여 줘요
+    save();
+    if (!ring) { ring = document.createElement('i'); ring.className = 'pick-ring'; zoom.appendChild(ring); }
+    ring.style.left = bx + 'px'; ring.style.top = by + 'px'; ring.style.setProperty('--c', hex);
+    renderSteps(); renderOptions(''); syncNext(); hintText(c.name);
+  }
 
   /* ---------- 움직임 따라 그리기 ---------- */
   var strokes = [], cur = null, moveMsg = '';
@@ -192,7 +276,7 @@
     return v < 250 ? 0 : 1;
   }
   function pickMove(i) {
-    answers[MOVE] = i; L.saveAnswers(answers);
+    answers[MOVE] = i; delete custom[MOVE]; save();
     moveMsg = L.OPTIONS[MOVE][i];
     opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', i === +o.dataset.i); });
     renderSteps(); syncNext(); hintText();
@@ -220,15 +304,17 @@
   cv.addEventListener('pointercancel', endStroke);
   document.getElementById('clear').addEventListener('click', function () {
     strokes = []; cur = null; moveMsg = ''; redraw();
-    delete answers[MOVE]; L.saveAnswers(answers);
+    delete answers[MOVE]; delete custom[MOVE]; save();
     opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
     renderSteps(); syncNext(); hintText();
   });
   document.getElementById('nextQ').addEventListener('click', function () { var n = nextOpen(); activate(n > -1 ? n : (active + 1) % N); });
+  document.getElementById('other').addEventListener('click', function () { showOther(MOVE); });
   window.addEventListener('resize', sizeCanvas);
 
-  function hintText() {
-    if (active === MOVE) hint.textContent = moveMsg || '손가락으로 그려 보세요';
+  function hintText(extra) {
+    if (active === MOVE) hint.textContent = moveMsg || '그려 보세요';
+    else if (active === COLOR && pickMode) hint.textContent = extra ? extra + ' · 다시 눌러 바꿀 수 있어요' : '곤충을 눌러 색을 뽑아요';
     else hint.textContent = scale > 1 ? '끌어서 옮기기 · 다시 누르면 돌아와요' : '눌러서 크게 보기';
   }
 
@@ -245,25 +331,52 @@
       stepsEl.appendChild(b);
     }
   }
+  function btn(cls, attrs, html) { return '<button type="button" class="opt ' + cls + '" ' + attrs + '>' + html + '</button>'; }
   function renderOptions(state) {
-    opts.className = 'options' + (state ? ' ' + state : '');
-    opts.innerHTML = L.OPTIONS[active].map(function (o, i) {
-      return '<button type="button" class="opt" data-i="' + i + '" aria-pressed="' + (answers[active] === i) + '">' + o + '</button>';
-    }).join('');
+    var k = active, a = answers[k], c = custom[k], html = '';
+    opts.className = 'options' + (k === COLOR ? ' colors' : '') + (state ? ' ' + state : '');
+    if (k === COLOR) {
+      L.COLORS.forEach(function (col, i) {
+        html += btn('sw', 'data-i="' + i + '" aria-pressed="' + (a === i && !(c && !c.exact)) + '"', '<i style="--c:' + col.hex + '"></i>' + col.n);
+      });
+      var shown = c && !c.exact;   // 8색에 없는 색을 뽑았으면 이 칸에 그 색이 나와요
+      html += btn('pick' + (shown ? ' has' : ''), 'data-act="pick" aria-pressed="' + (!!shown || pickMode) + '"' + (shown ? ' style="--c:' + c.hex + '"' : ''),
+        '<i></i><span>' + (shown ? c.name : '사진에서 뽑기') + '</span>');
+    } else {
+      L.OPTIONS[k].forEach(function (o, i) { html += btn('', 'data-i="' + i + '" aria-pressed="' + (a === i) + '"', o); });
+      if (k === PLACE) html += btn('', 'data-act="other" aria-pressed="' + (a === -1) + '"', (a === -1 && c && c.t) || L.OTHER[PLACE]);
+    }
+    opts.innerHTML = html;
+  }
+  // 보기에 없을 때 직접 쓰기
+  function showOther(k) {
+    var c = custom[k], def = L.OTHER[k];
+    opts.className = 'options';
+    opts.innerHTML = '<div class="other"><input type="text" maxlength="16" aria-label="직접 쓰기" placeholder="' + def.replace('.', '') + ' · 직접 써 보세요" value="' + (c && c.t && answers[k] === -1 ? c.t.replace(/"/g, '&quot;') : '') + '">' +
+      '<button type="button" class="ok" data-act="ok">확인</button><button type="button" data-act="cancel">취소</button></div>';
+    var inp = opts.querySelector('input'); inp.focus();
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); opts.querySelector('.ok').click(); } });
   }
   function fit() {   // 질문이 길어도 한 줄에 들어오게 글씨를 조금 줄여요
     var row = promptEl.parentNode; row.style.fontSize = '';
     var size = 14; while (row.scrollWidth > row.clientWidth && size > 11) { size -= 1; row.style.fontSize = size + 'px'; }
   }
+  function mode() { return active === MOVE ? 'move' : (active === COLOR && pickMode) ? 'pick' : ''; }
   function activate(k) {
     var changed = active !== -1 && active !== k;
-    active = k;
-    var move = k === MOVE;
-    cv.classList.toggle('on', move); tools.hidden = !move;
-    if (move) { scale = 1; tx = ty = 0; paint(false); sizeCanvas(); moveMsg = answers[MOVE] != null && strokes.length ? L.OPTIONS[MOVE][answers[MOVE]] : ''; }
+    active = k; pickMode = false;
+    var m = mode();
+    cv.classList.toggle('on', k === MOVE);
+    zoom.classList.remove('picking');
+    if (k === MOVE) { scale = 1; tx = ty = 0; paint(false); sizeCanvas(); moveMsg = answers[MOVE] != null && strokes.length ? L.OPTIONS[MOVE][answers[MOVE]] : (answers[MOVE] === -1 && custom[MOVE] ? custom[MOVE].t : ''); }
+    updateTools();
     countEl.textContent = (k + 1) + '/' + N;
     promptEl.textContent = L.PROMPTS[k];
     fit(); renderSteps(); renderOptions(changed ? 'ready' : ''); hintText();
+  }
+  function updateTools() {
+    var m = mode(); tools.hidden = !m; tools.dataset.mode = m || 'move';
+    zoom.classList.toggle('picking', m === 'pick');
   }
   function nextOpen() {   // 지금 다음 번호부터, 없으면 처음부터 아직 안 답한 질문
     for (var i = 1; i <= N; i++) { var k = (active + i) % N; if (answers[k] == null) return k; }
@@ -273,14 +386,29 @@
 
   stepsEl.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) activate(+b.dataset.k); });
   opts.addEventListener('click', function (e) {
-    var b = e.target.closest('.opt'); if (!b) return;
-    var i = +b.dataset.i;
-    if (answers[active] === i) delete answers[active]; else answers[active] = i;
-    L.saveAnswers(answers);
-    opts.querySelectorAll('.opt').forEach(function (o) { o.setAttribute('aria-pressed', answers[active] === +o.dataset.i); });
-    if (active === MOVE) moveMsg = answers[MOVE] != null ? L.OPTIONS[MOVE][answers[MOVE]] : '';
-    renderSteps(); syncNext(); hintText();
-    if (answers[active] == null) return;
+    var b = e.target.closest('button'); if (!b) return;
+    var act = b.dataset.act, k = active;
+    if (act === 'pick') {                               // 사진에서 색 뽑기 켜고 끄기
+      pickMode = !pickMode; updateTools(); renderOptions(''); hintText(); return;
+    }
+    if (act === 'other') { showOther(k); return; }
+    if (act === 'cancel') { renderOptions(''); return; }
+    if (act === 'ok') {                                 // 직접 쓴 글 저장
+      var txt = (opts.querySelector('input').value || '').trim() || L.OTHER[k];
+      answers[k] = -1; custom[k] = { t: txt }; save();
+      if (k === MOVE) { moveMsg = txt; renderOptions(''); }
+      else renderOptions('');
+      renderSteps(); syncNext(); hintText();
+      var nx = nextOpen(); if (nx > -1 && k !== MOVE) setTimeout(function () { activate(nx); }, (window.picoDur ? picoDur() : 300) + 50);
+      return;
+    }
+    var i = +b.dataset.i; if (isNaN(i)) return;
+    pickMode = false; updateTools();
+    if (answers[k] === i) { delete answers[k]; delete custom[k]; } else { answers[k] = i; delete custom[k]; }
+    save();
+    if (k === MOVE) moveMsg = answers[MOVE] != null ? L.OPTIONS[MOVE][answers[MOVE]] : '';
+    renderOptions(''); renderSteps(); syncNext(); hintText();
+    if (answers[k] == null) return;
     var next = nextOpen();
     if (next > -1) setTimeout(function () { activate(next); }, (window.picoDur ? picoDur() : 300) + 50);
   });
