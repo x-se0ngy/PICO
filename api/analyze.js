@@ -124,10 +124,13 @@ function geminiKey() {
 }
 
 // Google Gemini (무료 사용량 있음). 같은 프롬프트로 같은 JSON을 받아요.
-async function askGemini(image, prompt) {
-  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(GEMINI_MODEL) + ':generateContent', {
+// 한 모델이 붐비면(503)·한도에 걸리면(429)·오래 걸리면 다음 모델로 넘어가요.
+const GEMINI_FALLBACKS = ['gemini-flash-lite-latest'];
+async function askGeminiOnce(model, image, prompt) {
+  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-goog-api-key': geminiKey() },
+    signal: AbortSignal.timeout(9000),
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: STYLE }] },
       contents: [{ role: 'user', parts: [
@@ -137,10 +140,23 @@ async function askGemini(image, prompt) {
       generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 4096 }
     })
   });
-  if (!r.ok) throw new Error('gemini ' + r.status + ' ' + (await r.text()).slice(0, 200));
+  if (!r.ok) throw new Error('gemini ' + r.status + ' ' + model + ' ' + (await r.text()).slice(0, 160));
   const body = await r.json();
   const parts = (body.candidates && body.candidates[0] && body.candidates[0].content && body.candidates[0].content.parts) || [];
   return firstJson(parts.map(p => p.text || '').join(''));
+}
+async function askGemini(image, prompt) {
+  let last;
+  for (const model of [GEMINI_MODEL, ...GEMINI_FALLBACKS]) {
+    try { return await askGeminiOnce(model, image, prompt); }
+    catch (e) {
+      last = e;
+      const m = String(e && e.message);
+      const retry = e && (e.name === 'TimeoutError' || e.name === 'AbortError') || /^gemini (429|500|502|503|504)/.test(m);
+      if (!retry) throw e;     // 키 오류(400·403)나 잘못된 요청은 다른 모델로 가도 같아요
+    }
+  }
+  throw last;
 }
 
 // 키가 있는 쪽을 써요 (Claude 우선)
