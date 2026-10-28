@@ -116,8 +116,12 @@ async function askClaude(image, prompt) {
   return firstJson(text);
 }
 
-// Gemini 키: 이름은 GEMINI_API_KEY가 기본이고, GEMINI · GOOGLE_API_KEY 로 넣어도 읽어요. (앞뒤 공백은 지워요)
-function geminiKey() { return String(process.env.GEMINI_API_KEY || process.env.GEMINI || process.env.GOOGLE_API_KEY || '').trim(); }
+// Gemini 키: 이름은 GEMINI_API_KEY가 기본이고, GEMINI · GOOGLE_API_KEY 로 넣어도, 대소문자가 달라도(Gemini) 읽어요. (앞뒤 공백은 지워요)
+const GEMINI_NAMES = ['GEMINI_API_KEY', 'GEMINI', 'GOOGLE_API_KEY'];
+function geminiKey() {
+  const k = Object.keys(process.env).find(n => GEMINI_NAMES.includes(n.toUpperCase()) && String(process.env[n] || '').trim());
+  return k ? String(process.env[k]).trim() : '';
+}
 
 // Google Gemini (무료 사용량 있음). 같은 프롬프트로 같은 JSON을 받아요.
 async function askGemini(image, prompt) {
