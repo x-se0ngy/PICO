@@ -116,11 +116,14 @@ async function askClaude(image, prompt) {
   return firstJson(text);
 }
 
+// Gemini 키: 이름은 GEMINI_API_KEY가 기본이고, GEMINI · GOOGLE_API_KEY 로 넣어도 읽어요. (앞뒤 공백은 지워요)
+function geminiKey() { return String(process.env.GEMINI_API_KEY || process.env.GEMINI || process.env.GOOGLE_API_KEY || '').trim(); }
+
 // Google Gemini (무료 사용량 있음). 같은 프롬프트로 같은 JSON을 받아요.
 async function askGemini(image, prompt) {
   const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(GEMINI_MODEL) + ':generateContent', {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+    headers: { 'content-type': 'application/json', 'x-goog-api-key': geminiKey() },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: STYLE }] },
       contents: [{ role: 'user', parts: [
@@ -142,7 +145,7 @@ function ask(image, prompt) { return process.env.ANTHROPIC_API_KEY ? askClaude(i
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') { res.status(405).json({ ok: false, error: 'POST only' }); return; }
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.GEMINI_API_KEY) { res.status(501).json({ ok: false, error: 'ANTHROPIC_API_KEY or GEMINI_API_KEY is not set' }); return; }
+  if (!process.env.ANTHROPIC_API_KEY && !geminiKey()) { res.status(501).json({ ok: false, error: 'ANTHROPIC_API_KEY or GEMINI_API_KEY is not set' }); return; }
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
