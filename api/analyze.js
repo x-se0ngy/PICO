@@ -7,10 +7,13 @@
 //                               색(8색)·움직임(4가지)은 보기가 앱에 고정이라 AI는 번호만 알려 줘요.
 //   mode "stickers"  (예전 스티커 단계용, 지금 화면은 쓰지 않아요) : 스티커를 붙인 자리에 맞는 선택지 4개
 //
-// 준비: Vercel 프로젝트 Settings → Environment Variables 에 ANTHROPIC_API_KEY 를 넣어 주세요.
-// 키가 없으면 501을 돌려주고, 화면(app/ai.js)은 예시 분석으로 계속 진행해요.
+// 준비: Vercel 프로젝트 Settings → Environment Variables 에 아래 중 하나를 넣어 주세요.
+//   ANTHROPIC_API_KEY  Claude (유료, 사진 한 장에 아주 적은 비용)
+//   GEMINI_API_KEY     Google Gemini (Google AI Studio 무료 사용량으로 시작할 수 있어요)
+// 둘 다 있으면 Claude를 먼저 써요. 둘 다 없으면 501을 돌려주고, 화면(app/ai.js)은 예시 분석으로 계속 진행해요.
 
 const MODEL = process.env.PICO_AI_MODEL || 'claude-haiku-5-5';
+const GEMINI_MODEL = process.env.PICO_GEMINI_MODEL || 'gemini-flash-latest';   // 항상 최신 Flash
 const KINDS = ['색', '위치', '움직임', '특징'];          // 관찰 질문 (촬영 2)
 const FIXED = [0];                                         // 보기가 앱에 고정된 질문: 색 (움직임은 곤충에 맞춰 문구를 새로 만들어요)
 const STICKER_KINDS = ['모양', '장소', '움직임', '행동'];   // 예전 스티커 단계용
@@ -113,10 +116,33 @@ async function askClaude(image, prompt) {
   return firstJson(text);
 }
 
+// Google Gemini (무료 사용량 있음). 같은 프롬프트로 같은 JSON을 받아요.
+async function askGemini(image, prompt) {
+  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(GEMINI_MODEL) + ':generateContent', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: STYLE }] },
+      contents: [{ role: 'user', parts: [
+        { inline_data: { mime_type: image.media_type, data: image.data } },
+        { text: prompt }
+      ] }],
+      generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 4096 }
+    })
+  });
+  if (!r.ok) throw new Error('gemini ' + r.status + ' ' + (await r.text()).slice(0, 200));
+  const body = await r.json();
+  const parts = (body.candidates && body.candidates[0] && body.candidates[0].content && body.candidates[0].content.parts) || [];
+  return firstJson(parts.map(p => p.text || '').join(''));
+}
+
+// 키가 있는 쪽을 써요 (Claude 우선)
+function ask(image, prompt) { return process.env.ANTHROPIC_API_KEY ? askClaude(image, prompt) : askGemini(image, prompt); }
+
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') { res.status(405).json({ ok: false, error: 'POST only' }); return; }
-  if (!process.env.ANTHROPIC_API_KEY) { res.status(501).json({ ok: false, error: 'ANTHROPIC_API_KEY is not set' }); return; }
+  if (!process.env.ANTHROPIC_API_KEY && !process.env.GEMINI_API_KEY) { res.status(501).json({ ok: false, error: 'ANTHROPIC_API_KEY or GEMINI_API_KEY is not set' }); return; }
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
@@ -130,14 +156,14 @@ module.exports = async function handler(req, res) {
       const stickers = (Array.isArray(body.stickers) ? body.stickers : [])
         .filter(s => s && Number.isInteger(s.k) && s.k >= 0 && s.k < 4 && isFinite(s.u) && isFinite(s.v)).slice(0, 4);
       if (!stickers.length) { res.status(400).json({ ok: false, error: 'no stickers' }); return; }
-      const j = await askClaude(image, stickersPrompt(stickers, clean(body.insect, 30)));
+      const j = await ask(image, stickersPrompt(stickers, clean(body.insect, 30)));
       const options = {};
       stickers.forEach(s => { const o = four(j.options && j.options[String(s.k)], 14); if (o) options[s.k] = o; });
       res.status(200).json({ ok: true, options });
       return;
     }
 
-    const j = await askClaude(image, identifyPrompt());
+    const j = await ask(image, identifyPrompt());
     const options = {}, questions = {}, match = {};
     KINDS.forEach((k, i) => {
       const m = j.match && j.match[k];
