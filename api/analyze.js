@@ -191,6 +191,6 @@ module.exports = async function handler(req, res) {
     });
   } catch (e) {
     console.error(e);
-    res.status(502).json({ ok: false, error: 'analysis failed' });
+    res.status(502).json({ ok: false, error: 'analysis failed', detail: String(e && e.message || e).slice(0, 240) });   // 어느 단계에서 막혔는지 알 수 있게 (키는 들어 있지 않아요)
   }
 };
