@@ -49,11 +49,11 @@
   <div class="progress" aria-label="3단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span></div>
 
   <div class="step-title" style="top:162px">
-    <p class="q"><span>03.</span><span>곤충에 대해 얼마나 알아요?</span></p>
-    <p class="sub">알려 주면 관찰 질문과 TIP을 내 수준에 맞춰 줄게요.</p>
+    <p class="q"><span>03.</span><span>곤충을 만나면 어떤 기분이에요?</span></p>
+    <p class="sub">정답은 없어요. 내 마음에 맞춰 첫 탐험을 골라 줄게요.</p>
   </div>
 
-  <div class="explore-grid" id="cards" role="radiogroup" aria-label="곤충을 아는 정도 (하나 고르기)"></div>
+  <div class="explore-grid" id="cards" role="radiogroup" aria-label="곤충을 만날 때 기분 (하나 고르기)"></div>
 
   <div class="toast toast--info" id="toast" role="status" hidden><img src="assets/onboarding/toast-alert.png" alt=""><span>답변을 선택해주세요.</span></div>
 
@@ -66,10 +66,11 @@
 <script src="shared.js"></script>
 <script>
 (function () {
-  // 03 곤충에 대해 얼마나 알아요? (하나, 4단계) → 관찰 질문 · PICO TIP 난이도 (0 쉬움 ~ 3 어려움)
+  // 03 곤충을 만나면 어떤 기분이에요? (하나) → 첫 미션 고르기 (무서워요·징그러워요면 멀리서 보는 나비·잠자리부터)
   var CARDS = [
-    ['처음이에요', '곤충 이름을 잘 몰라요'], ['조금 알아요', '무당벌레, 나비는 알아요'],
-    ['꽤 알아요', '곤충 10가지는 말할 수 있어요'], ['곤충 박사예요', '어디 사는지도 알아요']
+    ['신기해요', '자꾸 들여다보고 싶어요'], ['귀여워요', '작고 동글동글해서요'],
+    ['궁금해요', '어디 사는지 알고 싶어요'], ['조금 무서워요', '갑자기 날아올까 봐요'],
+    ['징그러워요', '다리가 많아서요'], ['잘 모르겠어요', '아직 만나 본 적이 없어요']
   ];
   var state = document.documentElement.dataset.state;
   var picked = state === 'picked' ? [3] : []; // nothing picked until the child chooses → grey CTA
@@ -101,7 +102,7 @@
   next.addEventListener('click', function () {
     if (!picked.length) { showToast(false); return; }
     try {
-      localStorage.setItem('pico.level', String(picked[0]));   // 0 처음 ~ 3 곤충 박사
+      localStorage.setItem('pico.feel', CARDS[picked[0]][0]);
     } catch (e) {}
     location.href = 'setup-done.html';
   });
