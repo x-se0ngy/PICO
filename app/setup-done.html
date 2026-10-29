@@ -58,7 +58,10 @@
     var e = JSON.parse(localStorage.getItem('pico.explore') || 'null'); if (e && e.length) explore = e;
   } catch (err) {}
   document.getElementById('short').textContent = name.trim().split(/\s+/).pop();
-  document.getElementById('av').src = 'assets/profile/' + (ICON[explore[0]] || 'flower') + '.svg';
+  // 03에서 고른 자연 친구(pico.avatar)가 우선, 예전 방식(좋아하는 탐험)도 받아요
+  var av = null; try { av = localStorage.getItem('pico.avatar'); } catch (err) {}
+  if (!/^(flower|grass|river|tree|cloud|moon)$/.test(av || '')) av = ICON[explore[0]] || 'grass';
+  document.getElementById('av').src = 'assets/profile/' + av + '.svg';
 })();
 </script>
 </body></html>
