@@ -66,11 +66,10 @@
 <script src="shared.js"></script>
 <script>
 (function () {
-  // 03 곤충에 대해 얼마나 알아요? (하나) → 관찰 질문 · PICO TIP 난이도 (0 쉬움 ~ 5 어려움)
+  // 03 곤충에 대해 얼마나 알아요? (하나, 4단계) → 관찰 질문 · PICO TIP 난이도 (0 쉬움 ~ 3 어려움)
   var CARDS = [
-    ['처음이에요', '곤충 탐험이 처음이에요'], ['몇 개 알아요', '무당벌레, 나비 정도요'],
-    ['많이 알아요', '이름을 꽤 알아요'], ['도감을 자주 봐요', '곤충 책을 좋아해요'],
-    ['키워 본 적 있어요', '장수풍뎅이, 사슴벌레'], ['곤충 박사예요', '뭐든 물어보세요!']
+    ['처음이에요', '곤충 이름을 잘 몰라요'], ['조금 알아요', '무당벌레, 나비는 알아요'],
+    ['꽤 알아요', '곤충 10가지는 말할 수 있어요'], ['곤충 박사예요', '어디 사는지도 알아요']
   ];
   var state = document.documentElement.dataset.state;
   var picked = state === 'picked' ? [3] : []; // nothing picked until the child chooses → grey CTA
@@ -102,7 +101,7 @@
   next.addEventListener('click', function () {
     if (!picked.length) { showToast(false); return; }
     try {
-      localStorage.setItem('pico.level', String(picked[0]));   // 0 처음 ~ 5 곤충 박사
+      localStorage.setItem('pico.level', String(picked[0]));   // 0 처음 ~ 3 곤충 박사
     } catch (e) {}
     location.href = 'setup-done.html';
   });
