@@ -22,11 +22,6 @@
     display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; padding: 15.95px 0 15.01px 13.14px; }
   .explore-card[aria-pressed="true"] { background: var(--brand); }
   /* Figma 탐험 버튼 (2821:44235): 25px 프로필 아이콘 + 제목 (gap 4) */
-  /* 03 내 자연 친구: 40px 프로필 아이콘 + 이름/한 줄 (하나만 골라요) */
-  .explore-card { flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; gap: 10px !important; padding: 0 10px !important; }
-  .explore-card .ic { width: 40px; height: 40px; flex: none; }
-  .explore-card .tx { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .explore-card .s { white-space: normal !important; word-break: keep-all; }
   .explore-card .t { display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 20px; line-height: 23.8px; white-space: nowrap; }
   .explore-card .t img { width: 25px; height: 25px; flex: none; }
   .explore-card .s { font-size: 12px; line-height: 14px; white-space: nowrap; }
@@ -54,11 +49,11 @@
   <div class="progress" aria-label="3단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span></div>
 
   <div class="step-title" style="top:162px">
-    <p class="q"><span>03.</span><span>어떤 자연 친구로 탐험할까요?</span></p>
-    <p class="sub">고른 친구가 내 프로필이 돼요. 나중에 바꿀 수 있어요.</p>
+    <p class="q"><span>03.</span><span>언제 탐험할 수 있나요?</span></p>
+    <p class="sub">탐험하기 좋은 때를 고르면 그 시간에 맞는 미션을 알려 줄게요.</p>
   </div>
 
-  <div class="explore-grid" id="cards" role="radiogroup" aria-label="내 자연 친구 (하나 고르기)"></div>
+  <div class="explore-grid" id="cards" aria-label="탐험할 수 있는 때 (여러 개 선택 가능)"></div>
 
   <div class="toast toast--info" id="toast" role="status" hidden><img src="assets/onboarding/toast-alert.png" alt=""><span>답변을 선택해주세요.</span></div>
 
@@ -71,11 +66,11 @@
 <script src="shared.js"></script>
 <script>
 (function () {
-  // 내 자연 친구 = 프로필 아이콘 (Figma 프로필 6종). 고른 친구가 마이 · 친구 목록 · QR · 탐험가 카드에 나와요.
+  // 03 언제 탐험할 수 있나요? (여러 개) → 홈 미션 · 알림 시간에 써요
   var CARDS = [
-    ['꽃 친구', '알록달록 꽃밭이 좋아요', 'flower'], ['풀 친구', '풀숲에서 폴짝폴짝', 'grass'],
-    ['강 친구', '물가를 따라 첨벙첨벙', 'river'], ['나무 친구', '나무 그늘에서 쉬어요', 'tree'],
-    ['구름 친구', '비 온 뒤가 좋아요', 'cloud'], ['밤 친구', '해 질 녘이 좋아요', 'moon']
+    ['등굣길', '아침 학교 가는 길'], ['쉬는 시간', '학교 화단 · 운동장'],
+    ['방과 후', '오후 3시 ~ 5시'], ['저녁 산책', '보호자와 함께'],
+    ['주말 아침', '토 · 일 오전'], ['주말 오후', '공원 · 숲길 나들이']
   ];
   var state = document.documentElement.dataset.state;
   var picked = state === 'picked' ? [3] : []; // nothing picked until the child chooses → grey CTA
@@ -85,11 +80,11 @@
   function openQuit() { if (!document.querySelector('.phone > .ox')) window.picoConfirm(QUIT, 'home.html'); }
 
   grid.innerHTML = CARDS.map(function (c, i) {
-    return '<button type="button" class="explore-card" role="radio" data-i="' + i + '"><img class="ic" src="assets/profile/' + c[2] + '-m.svg" alt=""><span class="tx"><span class="t">' + c[0] + '</span><span class="s">' + c[1] + '</span></span></button>';
+    return '<button type="button" class="explore-card" data-i="' + i + '"><span class="t">' + c[0] + '</span><span class="s">' + c[1] + '</span></button>';
   }).join('');
 
   function render() {
-    grid.querySelectorAll('.explore-card').forEach(function (b) { var on = picked.indexOf(+b.dataset.i) > -1; b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-checked', String(on)); });
+    grid.querySelectorAll('.explore-card').forEach(function (b) { b.setAttribute('aria-pressed', String(picked.indexOf(+b.dataset.i) > -1)); });
     var off = picked.length === 0;
     next.classList.toggle('is-off', off);
     if (!off) toast.hidden = true;
@@ -101,14 +96,14 @@
 
   grid.addEventListener('click', function (e) {
     var b = e.target.closest('.explore-card'); if (!b) return;
-    picked = [+b.dataset.i];   // 하나만 골라요
+    var i = +b.dataset.i, k = picked.indexOf(i);
+    if (k > -1) picked.splice(k, 1); else picked.push(i);
     render();
   });
   next.addEventListener('click', function () {
     if (!picked.length) { showToast(false); return; }
     try {
-      localStorage.setItem('pico.avatar', CARDS[picked[0]][2]);   // 내 프로필 아이콘
-      localStorage.removeItem('pico.explore');
+      localStorage.setItem('pico.when', JSON.stringify(picked.map(function (i) { return CARDS[i][0]; })));
     } catch (e) {}
     location.href = 'setup-done.html';
   });
