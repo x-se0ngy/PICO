@@ -49,11 +49,11 @@
   <div class="progress" aria-label="3단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span></div>
 
   <div class="step-title" style="top:162px">
-    <p class="q"><span>03.</span><span>언제 탐험할 수 있나요?</span></p>
-    <p class="sub">탐험하기 좋은 때를 고르면 그 시간에 맞는 미션을 알려 줄게요.</p>
+    <p class="q"><span>03.</span><span>곤충에 대해 얼마나 알아요?</span></p>
+    <p class="sub">알려 주면 관찰 질문과 TIP을 내 수준에 맞춰 줄게요.</p>
   </div>
 
-  <div class="explore-grid" id="cards" aria-label="탐험할 수 있는 때 (여러 개 선택 가능)"></div>
+  <div class="explore-grid" id="cards" role="radiogroup" aria-label="곤충을 아는 정도 (하나 고르기)"></div>
 
   <div class="toast toast--info" id="toast" role="status" hidden><img src="assets/onboarding/toast-alert.png" alt=""><span>답변을 선택해주세요.</span></div>
 
@@ -66,11 +66,11 @@
 <script src="shared.js"></script>
 <script>
 (function () {
-  // 03 언제 탐험할 수 있나요? (여러 개) → 홈 미션 · 알림 시간에 써요
+  // 03 곤충에 대해 얼마나 알아요? (하나) → 관찰 질문 · PICO TIP 난이도 (0 쉬움 ~ 5 어려움)
   var CARDS = [
-    ['등굣길', '아침 학교 가는 길'], ['쉬는 시간', '학교 화단 · 운동장'],
-    ['방과 후', '오후 3시 ~ 5시'], ['저녁 산책', '보호자와 함께'],
-    ['주말 아침', '토 · 일 오전'], ['주말 오후', '공원 · 숲길 나들이']
+    ['처음이에요', '곤충 탐험이 처음이에요'], ['몇 개 알아요', '무당벌레, 나비 정도요'],
+    ['많이 알아요', '이름을 꽤 알아요'], ['도감을 자주 봐요', '곤충 책을 좋아해요'],
+    ['키워 본 적 있어요', '장수풍뎅이, 사슴벌레'], ['곤충 박사예요', '뭐든 물어보세요!']
   ];
   var state = document.documentElement.dataset.state;
   var picked = state === 'picked' ? [3] : []; // nothing picked until the child chooses → grey CTA
@@ -80,11 +80,11 @@
   function openQuit() { if (!document.querySelector('.phone > .ox')) window.picoConfirm(QUIT, 'home.html'); }
 
   grid.innerHTML = CARDS.map(function (c, i) {
-    return '<button type="button" class="explore-card" data-i="' + i + '"><span class="t">' + c[0] + '</span><span class="s">' + c[1] + '</span></button>';
+    return '<button type="button" class="explore-card" role="radio" data-i="' + i + '"><span class="t">' + c[0] + '</span><span class="s">' + c[1] + '</span></button>';
   }).join('');
 
   function render() {
-    grid.querySelectorAll('.explore-card').forEach(function (b) { b.setAttribute('aria-pressed', String(picked.indexOf(+b.dataset.i) > -1)); });
+    grid.querySelectorAll('.explore-card').forEach(function (b) { var on = picked.indexOf(+b.dataset.i) > -1; b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-checked', String(on)); });
     var off = picked.length === 0;
     next.classList.toggle('is-off', off);
     if (!off) toast.hidden = true;
@@ -96,14 +96,13 @@
 
   grid.addEventListener('click', function (e) {
     var b = e.target.closest('.explore-card'); if (!b) return;
-    var i = +b.dataset.i, k = picked.indexOf(i);
-    if (k > -1) picked.splice(k, 1); else picked.push(i);
+    picked = [+b.dataset.i];   // 하나만 골라요
     render();
   });
   next.addEventListener('click', function () {
     if (!picked.length) { showToast(false); return; }
     try {
-      localStorage.setItem('pico.when', JSON.stringify(picked.map(function (i) { return CARDS[i][0]; })));
+      localStorage.setItem('pico.level', String(picked[0]));   // 0 처음 ~ 5 곤충 박사
     } catch (e) {}
     location.href = 'setup-done.html';
   });
