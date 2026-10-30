@@ -58,16 +58,24 @@
   #error h2 { top: 90px; }
   #error .lead { top: 122px; }
 
-  .rules { position: absolute; left: 20px; top: 141px; width: 335px; display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
-  .rule { width: 335px; height: 55px; padding: 0 10px; border: 1px dashed var(--ink); background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; }
-  .rule .box { position: relative; flex: none; width: 35px; height: 35px; background: #fff; border: 1px dashed var(--ink); }
-  .rule .box img { position: absolute; left: .5px; top: .5px; width: 32px; height: 32px; display: none; }
-  .rule[aria-checked="true"] { background: var(--surface); border-style: solid; }
+  /* 약속 = 피코 노트의 첫 장: 관찰 기록과 같은 노트(탭 + 줄 노트)에 약속을 적고, 하나씩 펜으로 체크해요 */
+  .csheet h2 { top: 56px; }
+  .csheet .lead { top: 88px; }
+  .promise-tab { position: absolute; left: 20px; top: 118px; width: 96.127px; height: 35px; background: var(--brand-soft); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; }
+  .rules { position: absolute; left: 20px; top: 158px; width: 335px; height: 172px; padding: 9px 12px 0 12px; display: flex; flex-direction: column; gap: 4px; margin: 0; list-style: none; background: var(--surface); border: 1px solid var(--ink); }
+  .rules li { display: flex; flex-direction: column; gap: 3px; }
+  .rules li > img { width: 309px; margin-left: 1px; }
+  .rule { width: 309px; height: 44px; padding: 0 2px; border: 0; background: transparent; display: flex; align-items: center; gap: 12px; text-align: left; color: var(--ink); -webkit-tap-highlight-color: transparent; }
+  .rule .box { position: relative; flex: none; width: 24px; height: 24px; border: 1px dashed var(--ink); background: transparent; transition: border-color var(--dur) var(--ease); }
+  /* 펜으로 긋는 체크: 칸 밖으로 살짝 삐져나가요 */
+  .rule .box svg { position: absolute; left: -3px; top: -11px; width: 34px; height: 34px; overflow: visible; pointer-events: none; }
+  .rule .box path { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; }
   .rule[aria-checked="true"] .box { border-style: solid; }
-  .rule[aria-checked="true"] .box img { display: block; }
-  .rule .t { display: flex; flex-direction: column; justify-content: center; height: 33px; }
-  .rule b { font-weight: 700; font-size: 14px; line-height: 19px; white-space: nowrap; }
-  .rule small { font-size: 12px; line-height: 19px; white-space: nowrap; }
+  .rule[aria-checked="true"] .box path { stroke-dashoffset: 0; transition: stroke-dashoffset .32s cubic-bezier(.5, 0, .3, 1); }
+  .rule .t { display: flex; flex-direction: column; gap: 1px; }
+  .rule b { font-family: var(--font-hand); font-weight: 400; font-size: 16px; line-height: 21px; white-space: nowrap; }
+  .rule small { font-size: 11px; line-height: 15px; white-space: nowrap; color: rgba(33, 27, 23, .62); }
+  @media (prefers-reduced-motion: reduce) { .rule[aria-checked="true"] .box path { transition: none; } }
 
   .csheet .cta { left: 19.5px; }
   .csheet .cta::before { left: 3.5px; top: 8.64px; }
@@ -124,6 +132,7 @@
     <span class="sheet-handle" aria-hidden="true"></span>
     <h2 id="safetyTitle">곤충 친구들을 만나기 전에</h2>
     <p class="lead">세 가지만 약속해요!</p>
+    <div class="promise-tab" aria-hidden="true">탐험 약속</div>
     <ul class="rules" id="rules"></ul>
     <button class="cta cta--yellow" type="button" id="promise" style="top:346px" aria-disabled="true"><span class="cta-face">약속했어요! <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
   </div>
@@ -157,8 +166,11 @@
     ['안전한 곳에서 탐험하기', '위험한 곳에선 멈추고, 주변을 살핀 뒤 촬영해요.']
   ];
   var list = document.getElementById('rules');
-  list.innerHTML = rules.map(function (r) {
-    return '<li><button type="button" class="rule" role="checkbox" aria-checked="false"><span class="box"><img src="assets/icons/outline/check.svg" alt=""></span><span class="t"><b>' + r[0] + '</b><small>' + r[1] + '</small></span></button></li>';
+  var LINES = [['line-a', 2], ['line-b', 3], ['line-c', 3]];   // 관찰 기록 노트와 같은 손그림 줄
+  var CHECK = '<svg viewBox="0 0 34 34" aria-hidden="true"><path d="M7 19.5 C9.5 21.5 11.5 24 13 26.5 C16.5 18.5 22 10.5 30.5 3.5"/></svg>';
+  list.innerHTML = rules.map(function (r, i) {
+    return '<li><button type="button" class="rule" role="checkbox" aria-checked="false"><span class="box">' + CHECK + '</span><span class="t"><b>' + r[0] + '</b><small>' + r[1] + '</small></span></button>' +
+      '<img src="assets/tabs/' + LINES[i][0] + '.png" style="height:' + LINES[i][1] + 'px" alt=""></li>';
   }).join('');
   var rows = list.querySelectorAll('.rule');
   function sync() {
