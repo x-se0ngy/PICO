@@ -38,8 +38,10 @@
   --font-ui: 'Inter', -apple-system, sans-serif;
   /* Figma Warm-Up 새 토큰 */
   --paper: #fffce4;          /* 종이 바탕 */
-  --lime: #c1ff30;           /* accent/highlight · 큰 버튼 · 고른 카드 */
-  --lime-bar: #b8ff46;       /* 진행 표시 */
+  --lime: #c1f8ad;           /* Figma Warm-Up 아이덴티티 (3245:…): 부드러운 연두 · 큰 버튼 · 고른 카드 · 진행 표시 */
+  --lime-bar: #c1f8ad;
+  --rule-cyan: #add2f8;      /* 노트 가로줄 (연하게) */
+  --rule-pink: #f8addb;      /* 노트 여백 줄 (연하게) */
   --note-cyan: #2cfbff;      /* 노트 가로줄 */
   --note-pink: #f537ff;      /* 노트 여백 세로줄 */
 }

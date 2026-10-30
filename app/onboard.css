@@ -19,7 +19,7 @@
 /* 몇 번째인지: 지금 = 라임 막대, 나머지 = 네모 */
 .ob-dots { position: absolute; left: 20px; top: 653px; display: flex; gap: 14px; align-items: center; }
 .ob-dots a { display: block; width: 10px; height: 10px; background: #fffce4; border: 1px solid #211b17; }
-.ob-dots a.on { width: 30px; background: #b8ff46; }
+.ob-dots a.on { width: 30px; background: var(--lime); }
 
 /* 건너뛰기: 종이 오른쪽 위 모서리를 점선 대각선을 따라 접어요. 누르면 접히면서 홈으로 가요.
    접힌 삼각형은 뒷면(라임)이 보이고, 접혀서 비워진 자리에는 종이 아래의 어두운 면이 드러나요. */
