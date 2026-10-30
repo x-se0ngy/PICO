@@ -54,10 +54,10 @@
   var FOLD_OVERLAP = 60, FOLD_LEAD = 100;
   function foldMs() { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fold-ms')) || 380; }
   function paperHTML() {
-    var face = '<rect x="0" y="0" width="50" height="50" fill="#F4D159" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/>' +
+    var face = '<rect x="0" y="0" width="50" height="50" fill="#FFFCE4" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/>' +
       '<path d="M25 0V50M0 25H50" stroke="black" stroke-dasharray="2 2"/>' +
       '<g transform="translate(25 25) rotate(-60) translate(-34.83 -34.83)">' +
-      '<path fill-rule="evenodd" clip-rule="evenodd" d="M38.6641 22.4565L38.7744 22.3931L42.2314 28.3813L45.5312 29.2651L45.6445 28.3638L48.6211 28.7358L48.457 30.0493L49.6152 30.3599L48.8389 33.2583L48.082 33.0552L46.4736 45.9526L46.4707 45.9517V46.4995H21.8838V43.313H23.4453L22.1641 33.0396L20.8809 33.3843L20.0557 30.3052L22.3379 29.6929L21.8838 26.0522L25.0469 25.6577L25.4463 28.8608L27.8633 28.2134L29.5098 25.3628H29.1338V22.3628H38.6641V22.4565ZM37.4102 33.9985L37.8633 37.2896L33.9502 38.1929L32.1387 35.0396L33.3389 32.3491L37.4102 33.9985Z" fill="#F4D159"/>' +
+      '<path fill-rule="evenodd" clip-rule="evenodd" d="M38.6641 22.4565L38.7744 22.3931L42.2314 28.3813L45.5312 29.2651L45.6445 28.3638L48.6211 28.7358L48.457 30.0493L49.6152 30.3599L48.8389 33.2583L48.082 33.0552L46.4736 45.9526L46.4707 45.9517V46.4995H21.8838V43.313H23.4453L22.1641 33.0396L20.8809 33.3843L20.0557 30.3052L22.3379 29.6929L21.8838 26.0522L25.0469 25.6577L25.4463 28.8608L27.8633 28.2134L29.5098 25.3628H29.1338V22.3628H38.6641V22.4565ZM37.4102 33.9985L37.8633 37.2896L33.9502 38.1929L32.1387 35.0396L33.3389 32.3491L37.4102 33.9985Z" fill="#FFFCE4"/>' +
       '<path d="M38.6641 22.457L38.7744 22.3936L42.2314 28.3818L45.5312 29.2656L45.6445 28.3643L48.6211 28.7363L48.457 30.0498L49.6152 30.3604L48.8389 33.2588L48.082 33.0557L46.4736 45.9531L46.4707 45.9521V46.5H21.8838V43.3135H23.4453L22.1641 33.04L20.8809 33.3848L20.0557 30.3057L22.3379 29.6934L21.8838 26.0527L25.0469 25.6582L25.4463 28.8613L27.8633 28.2139L29.5098 25.3633H29.1338V22.3633H38.6641V22.457ZM29.9453 30.9824L29.8311 30.916L29.8486 30.9814L25.2725 32.207L26.6572 43.3135H43.7803L45.1562 32.2715L39.668 30.8008L39.8242 30.2139L37.0244 25.3633H33.1895L29.9453 30.9824ZM37.4102 33.999L37.8633 37.29L33.9502 38.1934L32.1387 35.04L33.3389 32.3496L37.4102 33.999Z" fill="black"/></g>';
     function q(qx, qy, side) {
       // 바깥쪽 테두리 선은 반쯤 바깥에 그려지니, 바깥 가장자리만 1px 넉넉히 보여줘요
@@ -65,7 +65,7 @@
       return '<span class="q ' + side + '"><span class="pface front" style="clip-path:inset(' + clip + ')">' +
         '<svg width="52" height="52" viewBox="-1 -1 52 52" style="left:' + (-qx - 1) + 'px;top:' + (-qy - 1) + 'px" fill="none">' + face + '</svg></span>' +
         '<span class="pface back"><svg width="26" height="26" viewBox="-0.5 -0.5 26 26" style="left:-0.5px;top:-0.5px" fill="none">' +
-        '<rect x="0" y="0" width="25" height="25" fill="#FBEAA4" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/></svg></span></span>';
+        '<rect x="0" y="0" width="25" height="25" fill="#F1ECBF" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/></svg></span></span>';
     }
     return '<span class="origami" aria-hidden="true"><span class="paper">' +
       '<span class="half top">' + q(0, 0, 'left') + q(25, 0, 'right') + '</span>' +

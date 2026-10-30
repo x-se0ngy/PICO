@@ -19,72 +19,43 @@
   @media (min-width: 500px) { body { padding-bottom: 0; } }
   .abs { position: absolute; }
 
-  /* summary card */
-  .card-shadow { left: 29.5px; top: 167.54px; width: 325px; height: 229px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 20.5px; top: 157.1px; width: 325px; height: 229px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-inner { left: 28px; top: 253.19px; width: 310px; height: 125px; background: var(--brand-soft); }
-  .summary { left: 28px; top: 173.19px; width: 310px; white-space: nowrap; display: flex; justify-content: space-between; align-items: center; }
-  .summary .t { font-size: 20px; }
-  .summary .n { display: flex; gap: 4px; align-items: baseline; }
-  .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
-  /* 단계별로 몇 종을 만났는지 — 다음 목표가 보여요 */
-  .tiers { left: 28px; top: 205px; width: 310px; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 8px; }
-  .tier { min-width: 0; white-space: nowrap; }
-  .tier .tn { font-size: 12px; line-height: 15px; }
-  .tier .tc { font-size: 12px; line-height: 16px; } .tier .tc b { font-weight: 400; font-size: 16px; }
-  .tier .bar { display: block; height: 7px; margin-top: 3px; background: var(--surface); border: 1px solid var(--ink); }
-  .tier .bar i { display: block; height: 100%; background: var(--reward); }
-  .tier .bar i:not([style*="width:0%"]) { border-right: 1px solid var(--ink); }
-
-  .weekly { left: 36px; top: 262.19px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
-  .weekly > p { font-size: 14px; line-height: 19px; }
-  .weekly-row { display: flex; gap: 15px; justify-content: center; padding: 0 5px; }
-  .weekly-row a { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 10px; line-height: 12px; white-space: nowrap; }
-  /* Figma now draws these with a solid 1px stroke: clip the old dashed rim off the 3x photo and draw the stroke in CSS */
-  .weekly-row .ph { position: relative; width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--ink); overflow: hidden; }
-  .weekly-row .ph img { position: absolute; left: -1px; top: -1px; width: 60px; height: 60px; }
-
-  /* list section: one flowing column, matches Figma auto-layout (Frame 2147203380) */
-  .list { left: 0; top: 416.54px; width: 375px; display: flex; flex-direction: column; align-items: center; }
-  .list-head { width: 335px; height: 19px; display: flex; justify-content: space-between; align-items: flex-start; }
-  .list-head p { font-size: 16px; line-height: 19px; }
-  .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
-  .sort img { width: 18px; height: 18px; transition: transform var(--dur) var(--ease); }
-  .sort[aria-pressed="true"] img { transform: rotate(180deg); }
-
-  /* insect cards */
-  .cards { display: grid; grid-template-columns: 1fr 1fr; column-gap: 15px; }
-  .cards--top { margin-top: 10px; width: 335px; row-gap: 15px; }
-  .cards--rest { margin-top: 25px; width: 336px; row-gap: 14px; }
+  /* 도감 (Figma Warm-Up 3244:5262): 상단바 아래 점선부터 바로 곤충 카드.
+     카드 = 사진(160.5×141.6) 위에 이름표 라임 종이가 1.97° 기울어 붙고, 오른쪽에 내가 그린 그림을 끼운 작은 액자. */
+  .top[data-fixed]::after { content: ''; position: absolute; left: 0; right: 0; top: 118px; border-top: 1px dashed var(--ink); }
+  .list { left: 0; top: 149.5px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  .cards { display: grid; grid-template-columns: 160.54px 160.54px; column-gap: 10.2px; row-gap: 16.7px; width: 331.3px; }
+  .cards--rest { margin-top: 36px; }
   .cards:empty { display: none; }
-  /* Figma 곤충 카드 (2942:5905): 위 50px 올리브 띠(점선) + 아래 88px 사진, 오른쪽 위에 내가 그린 그림을 끼운 작은 사진첩 */
-  .icard { position: relative; height: 138.3px; display: block; }
-  .icard .photo { position: absolute; left: 0; top: 50px; width: 100%; height: 88.3px; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); border-top: 0; }
-  .icard .band { position: absolute; left: 0; top: 0; width: 100%; height: 50px; background: #b1bd35; border: 1px dashed var(--ink); }
-  .icard .gr { top: 56px; }
-  .icard .meta { position: absolute; left: 10px; top: 7.5px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
-  .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: 19px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .icard .meta span { display: block; font-size: 12px; line-height: 14px; white-space: nowrap; }
-  /* 사진첩 (Group 2147203403): 45×51 올리브 액자 + 검은 그림자(2, 3.2), 안쪽 40×39 크림 칸, 8° 기울임 */
-  .icard .album { position: absolute; left: 103px; top: 9px; width: 45.3px; height: 51px; transform: rotate(8deg); transform-origin: 0 0; z-index: 1; }
-  .icard .album::before { content: ''; position: absolute; left: 2.6px; top: 2.9px; width: 100%; height: 100%; background: var(--ink); border: .8px solid var(--ink); box-sizing: border-box; }
-  .icard .album::after { content: ''; position: absolute; inset: 0; background: #b1bd35; border: .8px solid var(--ink); box-sizing: border-box; }
-  .icard .album .pic { position: absolute; left: 2.8px; top: 2.9px; width: 39.7px; height: 38.9px; background: var(--bg); border: .8px solid var(--ink); box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .icard .album .pic img, .icard .album .pic svg { width: 34px; height: 34px; display: block; }
+  .icard { position: relative; width: 160.54px; height: 141.6px; display: block; }
+  .icard .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); transform: rotate(.18deg); }
+  .icard .label { position: absolute; left: -.66px; top: -.07px; width: 162.5px; height: 53.14px; transform: rotate(1.97deg); border: 1px solid var(--ink);
+    background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--lime); background-blend-mode: multiply; }
+  .icard .meta { position: absolute; left: 12px; top: 7px; width: 84px; display: flex; flex-direction: column; gap: 2px; }
+  .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .icard .meta span { display: block; font-size: 12px; line-height: normal; white-space: nowrap; }
+  .icard .gr { top: auto; bottom: 6px; left: 6px; }
+  /* 액자: 라임 45.3×51 + 검정 그림자, 안쪽 크림 칸, 9.94° 기울임 */
+  .icard .album > * { position: absolute; display: block; border: .811px solid var(--ink); box-sizing: border-box; transform: rotate(9.94deg); }
+  .icard .album .sh { left: 100.84px; top: 26.68px; width: 45.32px; height: 50.98px; background: var(--ink); }
+  .icard .album .fc { left: 98.96px; top: 23.38px; width: 45.32px; height: 50.98px; background: var(--lime); }
+  .icard .album .pic { left: 102.5px; top: 26.87px; width: 39.67px; height: 38.93px; background: var(--paper); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .icard .album .pic img, .icard .album .pic svg { width: 32px; height: 32px; display: block; transform: rotate(-7.97deg); }
   .empty { margin-top: 30px; width: 335px; text-align: center; font-size: 14px; }
 
-  /* PICO TIP banner (Figma "TIP 배너") */
-  .tip { margin-top: 25px; width: 375px; height: 110px; padding: 16px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+  /* PICO TIP: 종이 띠 (위·아래 점선) */
+  .tip { margin-top: 20px; width: 375px; height: 110px; padding: 0 20px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
+    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply;
+    display: flex; flex-direction: column; justify-content: center; gap: 5px; }
   .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; white-space: nowrap; }
   .tip .h img { width: 32px; height: 32px; }
   .tip .d { font-size: 14px; line-height: 1.3; white-space: nowrap; }
 
-  /* not-yet-met tiles */
-  .utile { position: relative; height: 138.3px; background: var(--brand-soft); border: 1px dashed var(--ink); font-size: 14px; }
+  /* 아직 못 만난 곤충: 같은 크기의 점선 빈 칸 */
+  .utile { position: relative; width: 160.54px; height: 141.6px; border: 1px dashed var(--ink); font-size: 14px; }
   .utile .gr { top: 6px; left: 6px; }
-  .utile img { position: absolute; left: 63.2px; top: 29px; width: 32px; height: 32.1px; }
-  .utile .no { position: absolute; left: 0; right: 0; top: 71.07px; text-align: center; }
-  .utile .msg { position: absolute; left: 0; right: 0; top: 93.07px; text-align: center; }
+  .utile img { position: absolute; left: 64.27px; top: 34px; width: 32px; height: 32px; }
+  .utile .no { position: absolute; left: 0; right: 0; top: 78px; text-align: center; }
+  .utile .msg { position: absolute; left: 0; right: 0; top: 100px; text-align: center; }
   /* top bar (Figma "top" Property 1=3): big logo + search; search opens a field in place of the logo */
   .nav .logo.lg { width: 32px; height: 33.62px; }
   .nav-btn, .nav-btn img { display: block; width: 32px; height: 32px; }
@@ -95,7 +66,7 @@
   .nav-q[hidden] { display: none; }
 </style>
 </head><body>
-<div class="phone" style="--h:1974px">
+<div class="phone warm" style="--h:1974px">
 
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
@@ -107,24 +78,8 @@
     </div>
   </div>
 
-  <!-- 나의 수집 현황 -->
-  <div class="abs card-shadow"></div>
-  <div class="abs card-face"></div>
-  <div class="abs card-inner"></div>
-  <div class="abs summary">
-    <p class="t">내가 만난 곤충</p>
-    <div class="n"><b id="allGot">24종</b><span id="allTotal">/ 80종</span></div>
-  </div>
-  <div class="abs tiers" id="tiers"></div>
-  <div class="abs weekly">
-    <p>이번주 새로 만난 곤충</p>
-    <div class="weekly-row" id="weekly"></div>
-  </div>
-
-  <!-- 검색 + 목록 + TIP + 나머지 곤충 -->
+  <!-- 곤충 카드 + TIP + 나머지 곤충 -->
   <div class="abs list" id="list">
-    <div class="list-head"><p>곤충 목록</p>
-      <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button></div>
     <div class="cards cards--top" id="cards"></div>
     <p class="empty" id="empty" hidden>찾는 곤충이 없어요.</p>
 
@@ -138,8 +93,8 @@
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
-      <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/icons/outline/home.svg" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감" aria-current="page"><img src="assets/icons/filled/tag.svg" alt=""><span>도감</span></a></div>
-      <a class="tab-cam" href="capture-1.html" aria-label="촬영"><img src="assets/common/tab-camera.png" alt=""></a>
+      <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/icons/outline/home.svg" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감" aria-current="page"><img src="assets/icons/outline/tag.svg" alt=""><span>도감</span></a></div>
+      <a class="tab-cam" href="capture-1.html" aria-label="관찰"><img src="assets/common/tab-camera.png" alt=""><span class="tab-cam-label">관찰</span></a>
       <div class="tabbar-group"><a href="badge.html" aria-label="배지"><img src="assets/icons/outline/bookmark.svg" alt=""><span>배지</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
     </div></nav>
 
@@ -150,31 +105,11 @@
 <script src="grade.js"></script>
 <script>
 (function () {
-  // 단계별 진행 (자주 만나는 · 조금 찾아야 하는 · 관찰하기 어려운)
-  var G = PicoGrade, gotAll = 0, totalAll = 0;
-  document.getElementById('tiers').innerHTML = G.ORDER.map(function (k) {
-    var t = G.TIERS[k]; gotAll += t.got; totalAll += t.total;
-    return '<div class="tier"><p class="tn">' + t.name + '</p><p class="tc"><b>' + t.got + '</b> / ' + t.total + '종</p>' +
-      '<span class="bar" role="img" aria-label="' + t.name + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
-  }).join('');
-  document.getElementById('allGot').textContent = gotAll + '종';
-  document.getElementById('allTotal').textContent = '/ ' + totalAll + '종';
-
-  var weekly = [
-    { name: '칠성무당벌레', img: 'new-ladybug' },
-    { name: '고추잠자리', img: 'new-dragonfly' },
-    { name: '방아깨비', img: 'new-grasshopper' },
-    { name: '배추흰나비', img: 'new-butterfly' }
-  ];
-  document.getElementById('weekly').innerHTML = weekly.map(function (w) {
-    return '<a href="dogam-detail.html"><span class="ph"><img src="assets/tabs/' + w.img + '.png" alt=""></span><span>' + w.name + '</span></a>';
-  }).join('');
-
   // newest first (Figma order). First 4 sit above the TIP banner, the rest below it.
   var insects = [
     { name: '방아깨비', doodle: 'hop', date: '2027.11.22', img: 'card-grasshopper' },
+    { name: '칠성무당벌레', doodle: 'ladybug', date: '2027.11.02', img: 'card-ladybug' },
     { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly' },
-    { name: '칠성무당벌레', doodle: 'ladybug', date: '2027.11.01', img: 'card-ladybug' },
     { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly' },
     { name: '소금쟁이', doodle: 'strider', date: '2027.10.18', img: 'card-waterstrider' },
     { name: '물방개', doodle: 'beetle', date: '2027.10.11', img: 'card-divingbeetle' },
@@ -195,9 +130,9 @@
   }
   function cardHTML(it) {
     return '<a class="icard" href="dogam-detail.html" data-name="' + it.name + '">' +
-      '<span class="band"></span><img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' + PicoGrade.tag(it.name) +
-      '<span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span>' +
-      '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><span class="pic">' + drawing(it) + '</span></span></a>';
+      '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' + PicoGrade.tag(it.name) +
+      '<span class="label"><span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span></span>' +
+      '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="sh"></i><i class="fc"></i><span class="pic">' + drawing(it) + '</span></span></a>';
   }
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
   var UNMET = { '025': 'common', '028': 'common', '029': 'normal', '030': 'normal', '033': 'normal', '035': 'rare', '037': 'rare', '038': 'rare' };
@@ -216,8 +151,8 @@
     // unmet insects (Figma 곤충목록: same order for 최근순 and 오래된순)
     cards2.innerHTML = shown.slice(4).map(cardHTML).join('') + (v ? '' : ['025', '028', '029', '030', '033', '035', '037', '038'].map(utile).join(''));
     empty.hidden = shown.length > 0;
-    // page grows with the list; keep 20px above the tab bar's yellow band
-    phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 120)) + 'px');
+    // page grows with the list; keep it clear of the tab bar
+    phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px');
   }
   render();
 
@@ -235,14 +170,6 @@
     else if (q.value) { q.value = ''; render(); }
   });
 
-  // sort: 최근순 <-> 오래된순
-  var sort = document.getElementById('sort');
-  sort.addEventListener('click', function () {
-    oldest = !oldest;
-    sort.setAttribute('aria-pressed', oldest);
-    sort.querySelector('span').textContent = oldest ? '오래된순' : '최근순';
-    render();
-  });
 })();
 </script>
 </body></html>
