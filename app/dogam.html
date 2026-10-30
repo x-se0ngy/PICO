@@ -23,35 +23,26 @@
      카드 = 사진(160.5×141.6) 위에 이름표 라임 종이가 1.97° 기울어 붙고, 오른쪽에 내가 그린 그림을 끼운 작은 액자. */
   .top[data-fixed] { height: 118px; background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px, var(--paper); background-blend-mode: multiply; }   /* 스크롤해도 상단바 뒤로 카드가 비치지 않게 */
   .top[data-fixed]::after { content: ''; position: absolute; left: 0; right: 0; top: 118px; border-top: 1px dashed var(--ink); }
-  /* 수집 현황 (Warm-Up 언어로): 종이 노트 한 장 위에 라임 이름표가 기울어 붙어요 — 곤충 카드 이름표와 같은 모양 */
-  .card-shadow { display: none; }
-  .card-face { left: 20px; top: 150px; width: 335px; height: 236px; border: 1px solid var(--ink);
-    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
-  .card-inner { left: 20px; top: 252.19px; width: 335px; height: 1px; border-top: 1px dashed var(--ink); }
-  .summary { left: 20px; top: 136px; width: 335px; padding-right: 14px; white-space: nowrap; display: flex; justify-content: space-between; align-items: flex-end; }
-  .summary .t { margin-left: -4px; padding: 8px 16px; font-size: 20px; line-height: normal; border: 1px solid var(--ink); transform: rotate(-1.97deg);
-    background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--lime); background-blend-mode: multiply; }
-  .summary .n { display: flex; gap: 4px; align-items: baseline; padding-bottom: 6px; }
-  .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
-  /* 단계별로 몇 종을 만났는지 — 다음 목표가 보여요 */
-  .tiers { left: 32px; top: 197px; width: 311px; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; }
-  .tier { min-width: 0; white-space: nowrap; }
-  .tier .tn { font-size: 12px; line-height: 15px; }
-  .tier .tc { font-size: 12px; line-height: 16px; } .tier .tc b { font-weight: 400; font-size: 16px; }
-  .tier .bar { display: block; height: 8px; margin-top: 4px; background: var(--paper); border: 1px solid var(--ink); }
-  .tier .bar i { display: block; height: 100%; background: var(--lime-bar); }
-  .tier .bar i:not([style*="width:0%"]) { border-right: 1px solid var(--ink); }
-
-  .weekly { left: 40px; top: 264px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
-  .weekly > p { font-size: 14px; line-height: 19px; }
-  .weekly-row { display: flex; gap: 15px; justify-content: center; padding: 0 5px; }
-  .weekly-row a { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 10px; line-height: 12px; white-space: nowrap; }
-  /* Figma now draws these with a solid 1px stroke: clip the old dashed rim off the 3x photo and draw the stroke in CSS */
-  .weekly-row .ph { position: relative; width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--ink); overflow: hidden; }
-  .weekly-row .ph img { position: absolute; left: -1px; top: -1px; width: 60px; height: 60px; }
+  /* 수집 현황 (Figma 3261:7422): 종이 두 장 — 앞장 종이 + 뒤에 -1.8° 기울어진 연두 장 (큰 버튼·고른 카드와 같은 "내 것" 표시).
+     접는 모서리는 넣지 않아요. 단계는 PICO 마크(오각형) 색 + 한 줄 설명 + 막대. */
+  .sum-back { left: 20px; top: 144.74px; width: 335px; height: 134px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
+  .sum { left: 20px; top: 144.74px; width: 335px; height: 134px; background: var(--paper); border: 1px solid var(--ink); }
+  .sum-in { left: 31.49px; top: 157.53px; width: 312px; display: flex; flex-direction: column; gap: 8px; }
+  .sum-t { font-size: 16px; line-height: normal; }
+  .sum-n { display: flex; align-items: flex-end; gap: 6px; margin-top: 5px; white-space: nowrap; }
+  .sum-n b { font-size: 40px; line-height: 40px; }
+  .sum-n span { font-size: 15px; line-height: normal; }
+  .tiers { display: flex; gap: 10px; }
+  .tier { display: flex; flex-direction: column; gap: 5px; width: 97.34px; }
+  .tier .th { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .tier .mk { width: 18.23px; height: 19.62px; flex: none; transform: rotate(-5.97deg); overflow: visible; }
+  .tier .tn { width: 55.17px; font-size: 12px; line-height: normal; }
+  .tier .tc { font-weight: 700; font-size: 13px; line-height: normal; }
+  .tier .bar { display: block; height: 10px; border: 1px solid var(--ink); background: transparent; }
+  .tier .bar i { display: block; height: 100%; background: var(--tc); }
 
   /* list section: one flowing column, matches Figma auto-layout (Frame 2147203380) */
-  .list { left: 0; top: 416.54px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  .list { left: 0; top: 300px; width: 375px; display: flex; flex-direction: column; align-items: center; }
   .list-head { width: 335px; height: 19px; display: flex; justify-content: space-between; align-items: flex-start; }
   .list-head p { font-size: 16px; line-height: 19px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
@@ -65,8 +56,9 @@
   .icard { position: relative; width: 160.54px; height: 141.6px; display: block; }
   .icard .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); transform: rotate(.18deg); }
   /* Figma 곤충 카드 (3251:17793 …): 이름표는 종이색, 단계 색은 오른쪽 위 깃발 + 그림 액자에만 (라임 · 하늘 · 분홍) */
-  .icard, .utile { --tc: #c1ff30; }   /* 도감 카드 깃발은 Figma 도감 색 그대로 */
-  .icard.c-cyan { --tc: var(--note-cyan); } .icard.c-pink { --tc: var(--note-pink); }
+  /* 단계 색 (Figma 3261:7422): 연두 쉽게 만나요 · 하늘 찾아야 해요 · 분홍 어려워요 */
+  .icard, .utile { --tc: var(--lime); }
+  .c-cyan { --tc: var(--rule-cyan); } .c-pink { --tc: var(--rule-pink); }
   .icard .label, .utile .label { position: absolute; left: -.66px; top: -.07px; width: 162.5px; height: 53.14px; transform: rotate(1.97deg); border: 1px solid var(--ink);
     background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--paper); background-blend-mode: multiply; }
   .icard .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; }
@@ -120,17 +112,14 @@
   </div>
 
   <!-- 나의 수집 현황 -->
-  <div class="abs card-shadow"></div>
-  <div class="abs card-face"></div>
-  <div class="abs card-inner"></div>
-  <div class="abs summary">
-    <p class="t">내가 만난 곤충</p>
-    <div class="n"><b id="allGot">24종</b><span id="allTotal">/ 80종</span></div>
-  </div>
-  <div class="abs tiers" id="tiers"></div>
-  <div class="abs weekly">
-    <p>이번주 새로 만난 곤충</p>
-    <div class="weekly-row" id="weekly"></div>
+  <div class="abs sum-back" aria-hidden="true"></div>
+  <div class="abs sum"></div>
+  <div class="abs sum-in">
+    <div>
+      <p class="sum-t">내가 만난 곤충</p>
+      <p class="sum-n"><b id="allGot">24</b><span id="allTotal">/ 567종</span></p>
+    </div>
+    <div class="tiers" id="tiers"></div>
   </div>
 
   <!-- 검색 + 목록 + TIP + 나머지 곤충 -->
@@ -162,25 +151,15 @@
 <script src="grade.js"></script>
 <script>
 (function () {
-  // 단계별 진행 (자주 만나는 · 조금 찾아야 하는 · 관찰하기 어려운)
-  var G = PicoGrade, gotAll = 0, totalAll = 0;
+  // 단계별 진행: PICO 마크 색 + 한 줄 설명 + 만난 수 + 막대 (막대 = 그 단계 곤충 중 만난 비율)
+  var G = PicoGrade, gotAll = 0, TC = { common: 'var(--lime)', normal: 'var(--rule-cyan)', rare: 'var(--rule-pink)' };
+  var MARK = '<svg class="mk" viewBox="0 0 18.23 19.62" aria-hidden="true"><polygon points="3.79,0.5 16.59,5.53 17.73,16.48 5.74,19.12 0.5,8.89" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
   document.getElementById('tiers').innerHTML = G.ORDER.map(function (k) {
-    var t = G.TIERS[k]; gotAll += t.got; totalAll += t.total;
-    return '<div class="tier"><p class="tn">' + t.name + '</p><p class="tc"><b>' + t.got + '</b> / ' + t.total + '종</p>' +
-      '<span class="bar" role="img" aria-label="' + t.name + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
+    var t = G.TIERS[k]; gotAll += t.got;
+    return '<div class="tier" style="--tc:' + TC[k] + '"><p class="th">' + MARK + '<span class="tn">' + t.label + '</span><span class="tc">' + t.got + '</span></p>' +
+      '<span class="bar" role="img" aria-label="' + t.label + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
   }).join('');
-  document.getElementById('allGot').textContent = gotAll + '종';
-  document.getElementById('allTotal').textContent = '/ ' + totalAll + '종';
-
-  var weekly = [
-    { name: '칠성무당벌레', img: 'new-ladybug' },
-    { name: '고추잠자리', img: 'new-dragonfly' },
-    { name: '방아깨비', img: 'new-grasshopper' },
-    { name: '배추흰나비', img: 'new-butterfly' }
-  ];
-  document.getElementById('weekly').innerHTML = weekly.map(function (w) {
-    return '<a href="dogam-detail.html"><span class="ph"><img src="assets/tabs/' + w.img + '.png" alt=""></span><span>' + w.name + '</span></a>';
-  }).join('');
+  document.getElementById('allGot').textContent = gotAll;
 
   // newest first (Figma order). First 4 sit above the TIP banner, the rest below it.
   var insects = [

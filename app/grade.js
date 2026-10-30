@@ -6,9 +6,9 @@
 // 어려운 단계는 "위험한 곳"이 아니라 "계절·시간을 기다리거나 움직임이 빨라 찍기 어려운" 곤충으로 잡았어요.
 (function () {
   var TIERS = {
-    common: { name: '자주 만나는', short: '자주 만나요', total: 30, got: 14 },
-    normal: { name: '조금 찾아야 하는', short: '찾아야 해요', total: 30, got: 7 },
-    rare:   { name: '관찰하기 어려운', short: '어려워요', total: 20, got: 3 }
+    common: { name: '자주 만나는', short: '쉽게 만나요', label: '쉽게 만나요', total: 30, got: 14 },
+    normal: { name: '조금 찾아야 하는', short: '찾아야 해요', label: '찾아야 해요', total: 30, got: 7 },
+    rare:   { name: '관찰하기 어려운', short: '어려워요', label: '어려워요', total: 20, got: 3 }
   };   // got = 프로토타입에서 보여 줄 내가 만난 수 (14 + 7 + 3 = 24종 / 80종)
   var ORDER = ['common', 'normal', 'rare'];
   var RARE = ['반딧불이', '장수풍뎅이', '긴수염대벌레', '붉은점모시나비', '상제나비'];
