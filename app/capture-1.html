@@ -80,13 +80,16 @@
 
   .csheet button.cta { padding: 0; }
 
-  /* 오류 팁: 95px 네모(실선 테두리) 세 개를 315 안에 양끝 맞춤 */
-  .tips { position: absolute; left: 30px; top: 157px; width: 315px; display: flex; justify-content: space-between; }
-  .tip { width: 95px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  .tip .box { width: 95px; height: 95px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; }
-  .tip .box img { width: 32px; height: 32px; }
-  .tip p { font-size: 14px; line-height: normal; text-align: center; white-space: nowrap; }
-  .use-photo { position: absolute; left: 0; right: 0; top: 414.1px; text-align: center; font-size: 12px; line-height: normal; text-decoration: underline; text-underline-position: from-font; }
+  /* 오류 팁 = 이름 노트와 같은 노트 한 장 (하늘 가로줄 · 분홍 여백 줄).
+     여백 칸에는 분홍 번호, 줄마다 아이콘 + 한 줄 팁. 포인트 색은 줄과 번호에만 써요. */
+  .tips { position: absolute; left: 20px; top: 157px; width: 335px; height: 132px; margin: 0; padding: 0; list-style: none; border: 1px solid var(--ink); }
+  .tips::before { content: ''; position: absolute; left: 27.1px; top: 0; bottom: 0; width: 1px; background: var(--note-pink); }
+  .tip { position: relative; height: 43.33px; display: flex; align-items: center; gap: 10px; padding-left: 38px; }
+  .tip + .tip { border-top: 1px solid var(--note-cyan); }
+  .tip .n { position: absolute; left: 0; width: 27px; text-align: center; font-family: var(--font-hand); font-size: 16px; line-height: 1; color: var(--note-pink); }
+  .tip img { width: 24px; height: 24px; flex: none; }
+  .tip p { font-size: 16px; line-height: normal; white-space: nowrap; }
+  .use-photo { position: absolute; left: 0; right: 0; top: 405.1px; text-align: center; font-size: 12px; line-height: normal; text-decoration: underline; text-underline-position: from-font; }
 </style>
 </head><body>
 <div class="phone warm" style="--h:812px">
@@ -141,8 +144,8 @@
     <span class="sheet-handle" aria-hidden="true"></span>
     <h2 id="errorTitle">앗, 곤충이 잘 안 보여요</h2>
     <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
-    <div class="tips" id="tips"></div>
-    <button class="cta" type="button" data-close style="top:328px; left:18.05px"><span class="cta-face">다시 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
+    <ol class="tips" id="tips"></ol>
+    <button class="cta" type="button" data-close style="top:319px; left:18.05px"><span class="cta-face">다시 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
     <a class="use-photo" href="capture-3.html">이 곤충이 맞아요! 이 사진으로 할래요</a>
   </div>
 
@@ -185,9 +188,9 @@
   });
 
   // error tips
-  var tips = [['video', '확대해서<br>크게 보기'], ['radar', '흔들리지<br>않게 잡기'], ['refresh', '밝은 곳에서<br>찍기']];
-  document.getElementById('tips').innerHTML = tips.map(function (t) {
-    return '<div class="tip"><span class="box"><img src="assets/icons/outline/' + t[0] + '.svg" alt=""></span><p>' + t[1] + '</p></div>';
+  var tips = [['video', '확대해서 크게 보기'], ['radar', '흔들리지 않게 잡기'], ['refresh', '밝은 곳에서 찍기']];
+  document.getElementById('tips').innerHTML = tips.map(function (t, i) {
+    return '<li class="tip"><span class="n" aria-hidden="true">' + (i + 1) + '</span><img src="assets/icons/outline/' + t[0] + '.svg" alt=""><p>' + t[1] + '</p></li>';
   }).join('');
 
   function open(s) { dim.hidden = false; s.hidden = false; }
