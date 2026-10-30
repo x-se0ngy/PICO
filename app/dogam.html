@@ -21,6 +21,7 @@
 
   /* 도감 (Figma Warm-Up 3244:5262): 상단바 아래 점선부터 바로 곤충 카드.
      카드 = 사진(160.5×141.6) 위에 이름표 라임 종이가 1.97° 기울어 붙고, 오른쪽에 내가 그린 그림을 끼운 작은 액자. */
+  .top[data-fixed] { height: 118px; background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px, var(--paper); background-blend-mode: multiply; }   /* 스크롤해도 상단바 뒤로 카드가 비치지 않게 */
   .top[data-fixed]::after { content: ''; position: absolute; left: 0; right: 0; top: 118px; border-top: 1px dashed var(--ink); }
   /* 수집 현황 (Warm-Up 언어로): 종이 노트 한 장 위에 라임 이름표가 기울어 붙어요 — 곤충 카드 이름표와 같은 모양 */
   .card-shadow { display: none; }
@@ -63,16 +64,19 @@
   .cards:empty { display: none; }
   .icard { position: relative; width: 160.54px; height: 141.6px; display: block; }
   .icard .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); transform: rotate(.18deg); }
-  .icard .label { position: absolute; left: -.66px; top: -.07px; width: 162.5px; height: 53.14px; transform: rotate(1.97deg); border: 1px solid var(--ink);
-    background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--lime); background-blend-mode: multiply; }
-  .icard .meta { position: absolute; left: 12px; top: 7px; width: 84px; display: flex; flex-direction: column; gap: 2px; }
+  /* Figma 곤충 카드 (3251:17793 …): 이름표는 종이색, 단계 색은 오른쪽 위 깃발 + 그림 액자에만 (라임 · 하늘 · 분홍) */
+  .icard, .utile { --tc: var(--lime); }
+  .icard.c-cyan { --tc: var(--note-cyan); } .icard.c-pink { --tc: var(--note-pink); }
+  .icard .label, .utile .label { position: absolute; left: -.66px; top: -.07px; width: 162.5px; height: 53.14px; transform: rotate(1.97deg); border: 1px solid var(--ink);
+    background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .icard .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; }
+  .icard .meta { position: absolute; left: 12px; top: 7px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
   .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .icard .meta span { display: block; font-size: 12px; line-height: normal; white-space: nowrap; }
-  .icard .gr { top: auto; bottom: 6px; left: 6px; }
   /* 액자: 라임 45.3×51 + 검정 그림자, 안쪽 크림 칸, 9.94° 기울임 */
   .icard .album > * { position: absolute; display: block; border: .811px solid var(--ink); box-sizing: border-box; transform: rotate(9.94deg); }
   .icard .album .sh { left: 100.84px; top: 26.68px; width: 45.32px; height: 50.98px; background: var(--ink); }
-  .icard .album .fc { left: 98.96px; top: 23.38px; width: 45.32px; height: 50.98px; background: var(--lime); }
+  .icard .album .fc { left: 98.96px; top: 23.38px; width: 45.32px; height: 50.98px; background: var(--tc); }
   .icard .album .pic { left: 102.5px; top: 26.87px; width: 39.67px; height: 38.93px; background: var(--paper); display: flex; align-items: center; justify-content: center; overflow: hidden; }
   .icard .album .pic img, .icard .album .pic svg { width: 32px; height: 32px; display: block; transform: rotate(-7.97deg); }
   .empty { margin-top: 30px; width: 335px; text-align: center; font-size: 14px; }
@@ -85,12 +89,14 @@
   .tip .h img { width: 32px; height: 32px; }
   .tip .d { font-size: 14px; line-height: 1.3; white-space: nowrap; }
 
-  /* 아직 못 만난 곤충: 같은 크기의 점선 빈 칸 */
-  .utile { position: relative; width: 160.54px; height: 141.6px; border: 1px dashed var(--ink); font-size: 14px; }
-  .utile .gr { top: 6px; left: 6px; }
-  .utile img { position: absolute; left: 64.27px; top: 34px; width: 32px; height: 32px; }
-  .utile .no { position: absolute; left: 0; right: 0; top: 78px; text-align: center; }
-  .utile .msg { position: absolute; left: 0; right: 0; top: 100px; text-align: center; }
+  /* 아직 못 만난 곤충 (Figma 3251:17793): 같은 카드에 사진 대신 빈 종이 + 물음표, 이름표엔 번호 */
+  .utile { position: relative; width: 160.54px; height: 141.6px; }
+  .utile .blank { position: absolute; inset: 0; border: 1px solid var(--ink); transform: rotate(.18deg);
+    background: url('assets/onboarding/ob-paper-bottom.jpg') -100px -60px / 375px 390px, var(--paper); background-blend-mode: multiply; }
+  .utile .meta { position: absolute; left: 12px; top: 8px; display: flex; flex-direction: column; gap: 4px; white-space: nowrap; }
+  .utile .meta b { font-weight: 400; font-size: 14px; line-height: normal; } .utile .meta span { font-size: 12px; line-height: normal; }
+  .utile img { position: absolute; left: 64.3px; top: 67.2px; width: 32px; height: 32px; }
+
   /* top bar (Figma "top" Property 1=3): big logo + search; search opens a field in place of the logo */
   .nav .logo.lg { width: 32px; height: 33.62px; }
   .nav-btn, .nav-btn img { display: block; width: 32px; height: 32px; }
@@ -181,15 +187,15 @@
     { name: '방아깨비', doodle: 'hop', date: '2027.11.22', img: 'card-grasshopper' },
     { name: '칠성무당벌레', doodle: 'ladybug', date: '2027.11.02', img: 'card-ladybug' },
     { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly' },
-    { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly' },
+    { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly', c: 'cyan' },
     { name: '소금쟁이', doodle: 'strider', date: '2027.10.18', img: 'card-waterstrider' },
-    { name: '물방개', doodle: 'beetle', date: '2027.10.11', img: 'card-divingbeetle' },
-    { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito' },
-    { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid' },
-    { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect' },
-    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.05', img: 'card-moth' },
-    { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo' },
-    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.23', img: 'card-blackveined' }
+    { name: '물방개', doodle: 'beetle', date: '2027.10.11', img: 'card-divingbeetle', c: 'cyan' },
+    { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito', c: 'cyan' },
+    { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid', c: 'pink' },
+    { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect', c: 'cyan' },
+    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.05', img: 'card-moth', c: 'pink' },
+    { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo', c: 'pink' },
+    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.23', img: 'card-blackveined', c: 'cyan' }
   ];
   // 사진첩 안 그림: 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있으면 그걸, 없으면 예시 그림
   var mine = {};
@@ -199,16 +205,18 @@
     if (src) return '<img src="' + src + '" alt="내가 그린 ' + it.name + '">';
     return window.PicoField ? PicoField.doodle(it.doodle) : '';
   }
+  // 오른쪽 위 깃발 (Figma Rectangle 556): 단계 색 삼각형
+  var FLAG = '<svg class="flag" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
   function cardHTML(it) {
-    return '<a class="icard" href="dogam-detail.html" data-name="' + it.name + '">' +
-      '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' + PicoGrade.tag(it.name) +
-      '<span class="label"><span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span></span>' +
+    return '<a class="icard' + (it.c ? ' c-' + it.c : '') + '" href="dogam-detail.html" data-name="' + it.name + '">' +
+      '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
+      '<span class="label"><span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span></span>' + FLAG +
       '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="sh"></i><i class="fc"></i><span class="pic">' + drawing(it) + '</span></span></a>';
   }
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
   var UNMET = { '025': 'common', '028': 'common', '029': 'normal', '030': 'normal', '033': 'normal', '035': 'rare', '037': 'rare', '038': 'rare' };
   function utile(n) {
-    return '<div class="utile">' + PicoGrade.tagOf(UNMET[n]) + '<img src="assets/icons/outline/help.svg" alt=""><p class="no">No. ' + n + '</p><p class="msg">아직 못 만난 곤충</p></div>';
+    return '<div class="utile"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span><img src="assets/icons/outline/help.svg" alt=""></div>';
   }
   var cards = document.getElementById('cards'), cards2 = document.getElementById('cards2');
   var q = document.getElementById('q'), empty = document.getElementById('empty');
