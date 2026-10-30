@@ -35,11 +35,16 @@
   .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
   /* 단계별로 몇 종을 만났는지 — 다음 목표가 보여요 */
   .tiers { left: 32px; top: 197px; width: 311px; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; }
-  .tier { min-width: 0; white-space: nowrap; }
+  /* 단계 = 카드 깃발 색의 범례. 누르면 그 단계 곤충만 보여요 (한 번 더 누르면 전체) */
+  .tier { min-width: 0; white-space: nowrap; text-align: left; padding: 4px 5px 5px; margin: -4px -5px -5px; border: 1px solid transparent; }
+  .tier[aria-pressed="true"] { border-color: var(--ink); background: var(--paper); }
+  .tiers.is-filtered .tier[aria-pressed="false"] { opacity: .45; }
+  .tier .tn { display: flex; align-items: center; gap: 3px; }
+  .tier .tf { width: 9px; height: 12px; flex: none; overflow: visible; }
   .tier .tn { font-size: 12px; line-height: 15px; }
   .tier .tc { font-size: 12px; line-height: 16px; } .tier .tc b { font-weight: 400; font-size: 16px; }
   .tier .bar { display: block; height: 8px; margin-top: 4px; background: var(--paper); border: 1px solid var(--ink); }
-  .tier .bar i { display: block; height: 100%; background: var(--lime-bar); }
+  .tier .bar i { display: block; height: 100%; background: var(--tc); }
   .tier .bar i:not([style*="width:0%"]) { border-right: 1px solid var(--ink); }
 
   .weekly { left: 40px; top: 264px; width: 295px; display: flex; flex-direction: column; gap: 8px; }
@@ -66,10 +71,10 @@
   .icard .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); transform: rotate(.18deg); }
   /* Figma 곤충 카드 (3251:17793 …): 이름표는 종이색, 단계 색은 오른쪽 위 깃발 + 그림 액자에만 (라임 · 하늘 · 분홍) */
   .icard, .utile { --tc: var(--lime); }
-  .icard.c-cyan { --tc: var(--note-cyan); } .icard.c-pink { --tc: var(--note-pink); }
+  .c-cyan { --tc: var(--note-cyan); } .c-pink { --tc: var(--note-pink); }
   .icard .label, .utile .label { position: absolute; left: -.66px; top: -.07px; width: 162.5px; height: 53.14px; transform: rotate(1.97deg); border: 1px solid var(--ink);
     background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--paper); background-blend-mode: multiply; }
-  .icard .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; }
+  .icard .flag, .utile .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; }
   .icard .meta { position: absolute; left: 12px; top: 7px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
   .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .icard .meta span { display: block; font-size: 12px; line-height: normal; white-space: nowrap; }
@@ -166,8 +171,10 @@
   var G = PicoGrade, gotAll = 0, totalAll = 0;
   document.getElementById('tiers').innerHTML = G.ORDER.map(function (k) {
     var t = G.TIERS[k]; gotAll += t.got; totalAll += t.total;
-    return '<div class="tier"><p class="tn">' + t.name + '</p><p class="tc"><b>' + t.got + '</b> / ' + t.total + '종</p>' +
-      '<span class="bar" role="img" aria-label="' + t.name + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
+    return '<button type="button" class="tier" data-k="' + k + '" aria-pressed="false" style="--tc:' + t.color + '">' +
+      '<p class="tn"><svg class="tf" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--tc)" stroke="#211b17" stroke-width="1.4" stroke-linejoin="round"/></svg>' + t.name + '</p>' +
+      '<p class="tc"><b>' + t.got + '</b> / ' + t.total + '종</p>' +
+      '<span class="bar" role="img" aria-label="' + t.name + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></button>';
   }).join('');
   document.getElementById('allGot').textContent = gotAll + '종';
   document.getElementById('allTotal').textContent = '/ ' + totalAll + '종';
@@ -187,15 +194,15 @@
     { name: '방아깨비', doodle: 'hop', date: '2027.11.22', img: 'card-grasshopper' },
     { name: '칠성무당벌레', doodle: 'ladybug', date: '2027.11.02', img: 'card-ladybug' },
     { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly' },
-    { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly', c: 'cyan' },
+    { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly' },
     { name: '소금쟁이', doodle: 'strider', date: '2027.10.18', img: 'card-waterstrider' },
-    { name: '물방개', doodle: 'beetle', date: '2027.10.11', img: 'card-divingbeetle', c: 'cyan' },
-    { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito', c: 'cyan' },
-    { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid', c: 'pink' },
-    { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect', c: 'cyan' },
-    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.05', img: 'card-moth', c: 'pink' },
-    { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo', c: 'pink' },
-    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.23', img: 'card-blackveined', c: 'cyan' }
+    { name: '물방개', doodle: 'beetle', date: '2027.10.11', img: 'card-divingbeetle' },
+    { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito' },
+    { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid' },
+    { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect' },
+    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.05', img: 'card-moth' },
+    { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo' },
+    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.23', img: 'card-blackveined' }
   ];
   // 사진첩 안 그림: 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있으면 그걸, 없으면 예시 그림
   var mine = {};
@@ -206,9 +213,12 @@
     return window.PicoField ? PicoField.doodle(it.doodle) : '';
   }
   // 오른쪽 위 깃발 (Figma Rectangle 556): 단계 색 삼각형
+  var TC = { common: '', normal: 'c-cyan', rare: 'c-pink' };
   var FLAG = '<svg class="flag" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
+  // 못 만난 곤충의 깃발: 단계 색 점선 테두리만 (아직 채우지 못한 칸)
+  var FLAG_OPEN = '<svg class="flag" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--paper);stroke:var(--tc)" stroke-width="2" stroke-dasharray="2.5 2" stroke-linejoin="round"/></svg>';
   function cardHTML(it) {
-    return '<a class="icard' + (it.c ? ' c-' + it.c : '') + '" href="dogam-detail.html" data-name="' + it.name + '">' +
+    return '<a class="icard ' + TC[PicoGrade.of(it.name)] + '" href="dogam-detail.html" data-name="' + it.name + '">' +
       '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
       '<span class="label"><span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span></span>' + FLAG +
       '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="sh"></i><i class="fc"></i><span class="pic">' + drawing(it) + '</span></span></a>';
@@ -216,19 +226,19 @@
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
   var UNMET = { '025': 'common', '028': 'common', '029': 'normal', '030': 'normal', '033': 'normal', '035': 'rare', '037': 'rare', '038': 'rare' };
   function utile(n) {
-    return '<div class="utile"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span><img src="assets/icons/outline/help.svg" alt=""></div>';
+    return '<div class="utile ' + TC[UNMET[n]] + '"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span>' + FLAG_OPEN + '<img src="assets/icons/outline/help.svg" alt=""></div>';
   }
   var cards = document.getElementById('cards'), cards2 = document.getElementById('cards2');
   var q = document.getElementById('q'), empty = document.getElementById('empty');
-  var oldest = false, phone = document.querySelector('.phone'), list = document.getElementById('list');
+  var tier = null, oldest = false, phone = document.querySelector('.phone'), list = document.getElementById('list');
   function render() {
     var v = q.value.replace(/\s+/g, '');
-    var shown = insects.filter(function (it) { return !v || it.name.replace(/\s+/g, '').indexOf(v) !== -1; });
+    var shown = insects.filter(function (it) { return (!v || it.name.replace(/\s+/g, '').indexOf(v) !== -1) && (!tier || PicoGrade.of(it.name) === tier); });
     if (oldest) shown = shown.slice().reverse();
     cards.innerHTML = shown.slice(0, 4).map(cardHTML).join('');
     // Figma order of the unmet tiles: No.25, No.27 in the last card grid, then No.26, No.28
     // unmet insects (Figma 곤충목록: same order for 최근순 and 오래된순)
-    cards2.innerHTML = shown.slice(4).map(cardHTML).join('') + (v ? '' : ['025', '028', '029', '030', '033', '035', '037', '038'].map(utile).join(''));
+    cards2.innerHTML = shown.slice(4).map(cardHTML).join('') + (v ? '' : ['025', '028', '029', '030', '033', '035', '037', '038'].filter(function (n) { return !tier || UNMET[n] === tier; }).map(utile).join(''));
     empty.hidden = shown.length > 0;
     // page grows with the list; keep it clear of the tab bar
     phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px');
@@ -236,6 +246,17 @@
   render();
 
   q.addEventListener('input', render);
+
+  // 단계 범례를 누르면 그 단계만 (같은 걸 또 누르면 전체)
+  var tiersEl = document.getElementById('tiers'), listTitle = document.querySelector('.list-head p');
+  tiersEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.tier'); if (!b) return;
+    tier = tier === b.dataset.k ? null : b.dataset.k;
+    tiersEl.querySelectorAll('.tier').forEach(function (t) { t.setAttribute('aria-pressed', String(t.dataset.k === tier)); });
+    tiersEl.classList.toggle('is-filtered', !!tier);
+    listTitle.textContent = tier ? '곤충 목록 · ' + PicoGrade.TIERS[tier].name : '곤충 목록';
+    window.picoSwap(render);
+  });
 
   // search lives in the top bar: the icon opens a field in place of the logo, tapping again closes and clears it
   var searchBtn = document.getElementById('searchBtn'), navQ = document.getElementById('navQ'), logo = document.getElementById('logo');

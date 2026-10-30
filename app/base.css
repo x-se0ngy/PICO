@@ -112,7 +112,12 @@ img { display: block; }
 .tabbar-group a { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 32px; }
 .tabbar-group img { position: relative; width: 32px; height: 32px; }
 .tabbar-group span { position: relative; font-size: 14px; line-height: 14px; white-space: nowrap; }
-.tabbar-group a[aria-current="page"]::before { content: ''; position: absolute; left: 50%; top: 16px; width: 45.92px; height: 31.39px; margin: -15.7px 0 0 -22.96px; background: var(--lime); transform: rotate(-7.11deg); }
+/* 지금 탭 = 아이콘 밑에 붙인 라임 종이 조각 (이름표와 같은 언어: 테두리 + 종이 질감 + 기울기). 눌러 들어오면 살짝 붙는 느낌으로 */
+.tabbar-group a[aria-current="page"]::before { content: ''; position: absolute; left: 50%; top: 16px; width: 44px; height: 30px; margin: -15px 0 0 -22px; border: 1px solid var(--ink);
+  background: url('assets/onboarding/ob-paper-full.jpg') -60px -400px / 375px 812px, var(--lime); background-blend-mode: multiply; transform: rotate(-6deg); animation: tab-stick var(--dur) var(--ease) both; }
+.tabbar-group a[aria-current="page"] span { font-weight: 700; }
+@keyframes tab-stick { from { opacity: 0; transform: rotate(-14deg) scale(.7); } }
+@media (prefers-reduced-motion: reduce) { .tabbar-group a[aria-current="page"]::before { animation: none; } }
 .tab-cam { position: relative; width: 68.3px; height: 68.3px; display: block; align-self: flex-start; margin-top: -30px; }
 .tab-cam::before { content: ''; position: absolute; left: 9.15px; top: 9.15px; width: 50px; height: 50px; background: var(--paper); border: 1px dashed var(--ink); transform: rotate(60deg); }
 .tab-cam img { position: absolute; left: 18.15px; top: 17.75px; width: 32px; height: 32px; }
@@ -299,5 +304,6 @@ img { display: block; }
 
 /* ---------- 곤충 단계 이름표 (grade.js) · 사진 왼쪽 위에 붙는 작은 종이 라벨 ---------- */
 .gr { position: absolute; left: 6px; top: 6px; z-index: 1; height: 18px; padding: 0 6px; display: flex; align-items: center; font-size: 11px; line-height: 1; white-space: nowrap; background: var(--surface); border: 1px solid var(--ink); }
-.gr-normal { background: var(--brand-soft); }
-.gr-rare { background: var(--reward); font-weight: 700; }
+.gr-common { background: var(--lime); }
+.gr-normal { background: var(--note-cyan); }
+.gr-rare { background: var(--note-pink); font-weight: 700; }
