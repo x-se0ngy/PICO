@@ -18,78 +18,78 @@
   .nav a, .nav button { display: block; width: 32px; height: 32px; }
   .step-title .q, .step-title .sub { white-space: nowrap; }
 
-  /* viewfinder */
-  /* Figma 3.1.1 (2847:3144): 가로 전체 375×445 at y 205.63, 위·아래 점선. 배율 칩(y 601)은 뷰파인더 안에 떠 있어요 */
-  .finder { position: absolute; left: 0; top: 205.63px; width: 375px; height: 445px; background: transparent; border: 0 dashed var(--ink); border-width: 1px 0; overflow: hidden; }
+  /* viewfinder · Figma Warm-Up 촬영 5~9 (3198:17975 …): 가로 전체 375×468 at y 214.5, 위·아래 점선, 종이색 바탕.
+     배율 칩(y 622.5)은 뷰파인더 안에 떠 있어요 */
+  .finder { position: absolute; left: 0; top: 214.5px; width: 375px; height: 468px; background: var(--paper); border: 0 dashed var(--ink); border-width: 1px 0; overflow: hidden; }
   .finder video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
   .finder video.live { opacity: 1; }
 
-  .zoom { position: absolute; left: 50%; top: 601px; transform: translateX(-50%); display: flex; gap: 15px; }
-  .chip { position: relative; width: 40px; height: 40px; font-size: 12px; text-align: center; }
-  .chip img { position: absolute; left: -.5px; top: -.5px; width: 41px; height: 41px; }
-  .chip .on { display: none; }
-  .chip[aria-pressed="true"] .on { display: block; }
-  .chip[aria-pressed="true"] .off { display: none; }
-  .chip span { position: relative; line-height: 40px; }
+  /* 배율 칩 40px: 고른 칩 = 라임 + 실선, 나머지 = 종이색 + 점선 */
+  .zoom { position: absolute; left: 50%; top: 622.5px; transform: translateX(-50%); display: flex; gap: 15px; z-index: 1; }
+  .chip { width: 40px; height: 40px; border-radius: 50%; border: 1px dashed var(--ink); background: var(--surface); font-size: 12px; line-height: 1; text-align: center; }
+  .chip[aria-pressed="true"] { background: var(--lime); border-style: solid; }
 
-  .controls { position: absolute; left: 58.5px; top: 682.14px; display: flex; align-items: center; gap: 57px; }
-  .gallery { width: 32px; height: 32px; background: var(--brand) center / cover no-repeat; border: 1px solid var(--ink); }
+  /* 아래 줄: 사진첩 · 셔터(55) · 카메라 전환, 간격 60 · y 713 */
+  .controls { position: absolute; left: 0; top: 713px; width: 375px; height: 55px; display: flex; align-items: center; justify-content: center; gap: 60px; }
+  .gallery, .gallery img, .flip, .flip img { width: 32px; height: 32px; }
   .file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   /* shutter feedback: white flash, then the frame freezes on the taken photo */
   .finder .shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .finder .flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
   .finder .flash.go { animation: shot-flash var(--dur) var(--ease); }
   @keyframes shot-flash { 0% { opacity: .9; } 100% { opacity: 0; } }
-  .finder .hint { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-size: 14px; line-height: 20px; }
+  .finder .hint { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-size: 14px; line-height: 20px; color: rgba(33, 27, 23, .55); }
   .finder video.live ~ .hint { display: none; }
-  .shutter { position: relative; display: block; width: 80px; height: 80px; }
-  .shutter img { position: absolute; left: -.5px; top: -.5px; width: 81px; height: 81px; }
-  .shutter:active img { transform: scale(.96); }
-  .flip, .flip img { width: 32px; height: 32px; }
+  /* 셔터: 종이색 동그라미(점선) 안에 검정 동그라미 38px */
+  .shutter { position: relative; display: block; width: 55px; height: 55px; border-radius: 50%; background: var(--surface); border: 1px dashed var(--ink); }
+  .shutter::after { content: ''; position: absolute; left: 50%; top: 50%; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; background: var(--ink); transition: transform 120ms ease-out; }
+  .shutter:active::after { transform: scale(.9); }
 
   /* sheets */
   .dim.scrim { background: rgba(44, 44, 44, .57); }
-  .csheet { top: 357px; height: 455px; }
+  .csheet { top: 360px; height: 452px; }
+  #error { top: 362px; height: 450px; }
   .home-ind { z-index: 45; }
   /* Figma 3.2.2 / 3.2.3: drag handle (80x5) in a 34px strip at the top instead of an X */
   .csheet .sheet-handle { position: absolute; left: 147.5px; top: 17px; margin: 0; }
   .csheet h2 { position: absolute; left: 0; right: 0; top: 68px; text-align: center; font-size: 22px; line-height: normal; }
-  .csheet .lead { position: absolute; left: 0; right: 0; top: 100px; text-align: center; font-size: 14px; line-height: 16px; }
-  #error h2 { top: 90px; }
-  #error .lead { top: 122px; }
+  .csheet .lead { position: absolute; left: 0; right: 0; top: 99px; text-align: center; font-size: 14px; line-height: 16px; }
+  #error h2 { top: 85px; }
+  #error .lead { top: 116px; }
 
-  /* 약속 = 피코 노트의 첫 장: 관찰 기록과 같은 노트(탭 + 줄 노트)에 약속을 적고, 하나씩 펜으로 체크해요 */
-  .csheet h2 { top: 56px; }
-  .csheet .lead { top: 88px; }
-  .promise-tab { position: absolute; left: 20px; top: 118px; width: 96.127px; height: 35px; background: var(--brand-soft); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; }
-  .rules { position: absolute; left: 20px; top: 158px; width: 335px; height: 172px; padding: 9px 12px 0 12px; display: flex; flex-direction: column; gap: 4px; margin: 0; list-style: none; background: var(--surface); border: 1px solid var(--ink); }
-  .rules li { display: flex; flex-direction: column; gap: 3px; }
-  .rules li > img { width: 309px; margin-left: 1px; }
-  .rule { width: 309px; height: 44px; padding: 0 2px; border: 0; background: transparent; display: flex; align-items: center; gap: 12px; text-align: left; color: var(--ink); -webkit-tap-highlight-color: transparent; }
-  .rule .box { position: relative; flex: none; width: 24px; height: 24px; border: 1px dashed var(--ink); background: transparent; transition: border-color var(--dur) var(--ease); }
-  /* 펜으로 긋는 체크: 칸 밖으로 살짝 삐져나가요 */
-  .rule .box svg { position: absolute; left: -3px; top: -11px; width: 34px; height: 34px; overflow: visible; pointer-events: none; }
+  /* 약속 = 피코 노트 (Figma 3.2.3 + 노트 조각들 3244:5210 …):
+     335×153.8 노트에 하늘색 가로줄 두 줄, 약속 세 줄이 손으로 적은 듯 조금씩 어긋나 있어요.
+     체크하면 칸에 PICO 마크(라임 · 하늘 · 분홍)가 찍히고, 그 위로 펜 체크가 그어져요. */
+  .rules { position: absolute; left: 20px; top: 170.46px; width: 335px; height: 153.8px; margin: 0; padding: 0; list-style: none; border: 1px solid var(--ink); }
+  .rules .ln { position: absolute; left: .25px; width: 334.75px; height: 1px; background: var(--note-cyan); }
+  .rules li { position: absolute; }
+  .rule { width: 287px; height: 35px; padding: 0 0 0 10px; border: 0; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; color: var(--ink); -webkit-tap-highlight-color: transparent; }
+  .rule .box { position: relative; flex: none; width: 35px; height: 35px; border: 1px dashed var(--ink); }
+  .rule .mark { position: absolute; left: 1.5px; top: 1px; width: 31px; height: 31.5px; background: var(--mk, var(--lime));
+    clip-path: polygon(20.8% 0, 91% 28.2%, 98.9% 84%, 31.5% 99.4%, 0 45.3%); transform: scale(.2) rotate(-25deg); opacity: 0;
+    transition: transform .28s cubic-bezier(.3, 1.6, .5, 1), opacity .12s linear; }
+  .rule .box svg { position: absolute; left: 1px; top: -6px; width: 36px; height: 36px; overflow: visible; pointer-events: none; }
   .rule .box path { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; }
   .rule[aria-checked="true"] .box { border-style: solid; }
-  .rule[aria-checked="true"] .box path { stroke-dashoffset: 0; transition: stroke-dashoffset .32s cubic-bezier(.5, 0, .3, 1); }
-  .rule .t { display: flex; flex-direction: column; gap: 1px; }
-  .rule b { font-family: var(--font-hand); font-weight: 400; font-size: 16px; line-height: 21px; white-space: nowrap; }
-  .rule small { font-size: 11px; line-height: 15px; white-space: nowrap; color: rgba(33, 27, 23, .62); }
-  @media (prefers-reduced-motion: reduce) { .rule[aria-checked="true"] .box path { transition: none; } }
+  .rule[aria-checked="true"] .mark { transform: none; opacity: 1; }
+  .rule[aria-checked="true"] .box path { stroke-dashoffset: 0; transition: stroke-dashoffset .3s cubic-bezier(.5, 0, .3, 1) .12s; }
+  .rule .t { display: flex; flex-direction: column; justify-content: center; height: 33px; }
+  .rule b { font-weight: 700; font-size: 14px; line-height: 19px; white-space: nowrap; }
+  .rule small { font-size: 12px; line-height: 14px; white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { .rule .mark, .rule[aria-checked="true"] .box path { transition: none; } }
 
-  .csheet .cta { left: 19.5px; }
-  .csheet .cta::before { left: 3.5px; top: 8.64px; }
   .csheet button.cta { padding: 0; }
 
-  .tips { position: absolute; left: 30px; top: 163px; display: flex; gap: 15px; }
+  /* 오류 팁: 95px 네모(실선 테두리) 세 개를 315 안에 양끝 맞춤 */
+  .tips { position: absolute; left: 30px; top: 157px; width: 315px; display: flex; justify-content: space-between; }
   .tip { width: 95px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  .tip .box { width: 95px; height: 95px; background: var(--surface); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+  .tip .box { width: 95px; height: 95px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; }
   .tip .box img { width: 32px; height: 32px; }
   .tip p { font-size: 14px; line-height: normal; text-align: center; white-space: nowrap; }
-  .use-photo { position: absolute; left: 0; right: 0; top: 407.5px; text-align: center; font-size: 12px; text-decoration: underline; }
+  .use-photo { position: absolute; left: 0; right: 0; top: 414.1px; text-align: center; font-size: 12px; line-height: normal; text-decoration: underline; text-underline-position: from-font; }
 </style>
 </head><body>
-<div class="phone" style="--h:812px">
+<div class="phone warm" style="--h:812px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -113,14 +113,14 @@
   </div>
 
   <div class="zoom" role="group" aria-label="확대">
-    <button class="chip" type="button" data-zoom="0.5" aria-pressed="true"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>0.5X</span></button>
-    <button class="chip" type="button" data-zoom="1" aria-pressed="false"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>1X</span></button>
-    <button class="chip" type="button" data-zoom="2" aria-pressed="false"><img class="off" src="assets/capture/zoom-chip-off.png" alt=""><img class="on" src="assets/capture/zoom-chip-on.png" alt=""><span>2X</span></button>
+    <button class="chip" type="button" data-zoom="0.5" aria-pressed="true">0.5X</button>
+    <button class="chip" type="button" data-zoom="1" aria-pressed="false">1X</button>
+    <button class="chip" type="button" data-zoom="2" aria-pressed="false">2X</button>
   </div>
 
   <div class="controls">
-    <button class="gallery" type="button" id="gallery" aria-label="사진첩에서 고르기"></button>
-    <button class="shutter" type="button" id="shutter" aria-label="촬영하기"><img src="assets/capture/shutter.png" alt=""></button>
+    <button class="gallery" type="button" id="gallery" aria-label="사진첩에서 고르기"><img src="assets/icons/outline/photo.svg" alt=""></button>
+    <button class="shutter" type="button" id="shutter" aria-label="촬영하기"></button>
     <input class="file" type="file" id="pickCam" accept="image/*" capture="environment" tabindex="-1" aria-hidden="true">
     <input class="file" type="file" id="pickAlbum" accept="image/*" tabindex="-1" aria-hidden="true">
     <button class="flip" type="button" id="flip" aria-label="카메라 전환"><img src="assets/icons/outline/image.svg" alt=""></button>
@@ -132,9 +132,8 @@
     <span class="sheet-handle" aria-hidden="true"></span>
     <h2 id="safetyTitle">곤충 친구들을 만나기 전에</h2>
     <p class="lead">세 가지만 약속해요!</p>
-    <div class="promise-tab" aria-hidden="true">탐험 약속</div>
     <ul class="rules" id="rules"></ul>
-    <button class="cta cta--yellow" type="button" id="promise" style="top:346px" aria-disabled="true"><span class="cta-face">약속했어요! <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
+    <button class="cta" type="button" id="promise" style="top:347.57px" aria-disabled="true"><span class="cta-face">약속했어요! <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
   </div>
 
   <!-- ===== photo error sheet (3.2.2) ===== -->
@@ -143,7 +142,7 @@
     <h2 id="errorTitle">앗, 곤충이 잘 안 보여요</h2>
     <p class="lead">이렇게 해 보면 더 잘 찾을 수 있어요.</p>
     <div class="tips" id="tips"></div>
-    <button class="cta cta--yellow" type="button" data-close style="top:334px"><span class="cta-face">다시 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
+    <button class="cta" type="button" data-close style="top:328px; left:18.05px"><span class="cta-face">다시 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
     <a class="use-photo" href="capture-3.html">이 곤충이 맞아요! 이 사진으로 할래요</a>
   </div>
 
@@ -166,12 +165,15 @@
     ['안전한 곳에서 탐험하기', '위험한 곳에선 멈추고, 주변을 살핀 뒤 촬영해요.']
   ];
   var list = document.getElementById('rules');
-  var LINES = [['line-a', 2], ['line-b', 3], ['line-c', 3]];   // 관찰 기록 노트와 같은 손그림 줄
+  // 손으로 적은 노트처럼 줄마다 조금씩 어긋나요 (Figma 노트 조각 그대로) · 체크 마크 색은 PICO 세 가지 색
+  var POS = [[10.25, 6.84], [13.25, 48.52], [4.25, 101.9]];
+  var MARK = ['var(--lime)', 'var(--note-cyan)', 'var(--note-pink)'];
   var CHECK = '<svg viewBox="0 0 34 34" aria-hidden="true"><path d="M7 19.5 C9.5 21.5 11.5 24 13 26.5 C16.5 18.5 22 10.5 30.5 3.5"/></svg>';
-  list.innerHTML = rules.map(function (r, i) {
-    return '<li><button type="button" class="rule" role="checkbox" aria-checked="false"><span class="box">' + CHECK + '</span><span class="t"><b>' + r[0] + '</b><small>' + r[1] + '</small></span></button>' +
-      '<img src="assets/tabs/' + LINES[i][0] + '.png" style="height:' + LINES[i][1] + 'px" alt=""></li>';
-  }).join('');
+  list.innerHTML = '<span class="ln" style="top:43.53px" aria-hidden="true"></span><span class="ln" style="top:97.68px" aria-hidden="true"></span>' +
+    rules.map(function (r, i) {
+      return '<li style="left:' + POS[i][0] + 'px;top:' + POS[i][1] + 'px"><button type="button" class="rule" role="checkbox" aria-checked="false" style="--mk:' + MARK[i] + '">' +
+        '<span class="box"><span class="mark"></span>' + CHECK + '</span><span class="t"><b>' + r[0] + '</b><small>' + r[1] + '</small></span></button></li>';
+    }).join('');
   var rows = list.querySelectorAll('.rule');
   function sync() {
     var all = Array.prototype.every.call(rows, function (r) { return r.getAttribute('aria-checked') === 'true'; });
@@ -183,9 +185,9 @@
   });
 
   // error tips
-  var tips = [['icon-video', '확대해서<br>크게 보기'], ['icon-steady', '흔들리지<br>않게 잡기'], ['icon-refresh', '밝은 곳에서<br>찍기']];
+  var tips = [['video', '확대해서<br>크게 보기'], ['radar', '흔들리지<br>않게 잡기'], ['refresh', '밝은 곳에서<br>찍기']];
   document.getElementById('tips').innerHTML = tips.map(function (t) {
-    return '<div class="tip"><span class="box"><img src="assets/capture/' + t[0] + '.png" alt=""></span><p>' + t[1] + '</p></div>';
+    return '<div class="tip"><span class="box"><img src="assets/icons/outline/' + t[0] + '.svg" alt=""></span><p>' + t[1] + '</p></div>';
   }).join('');
 
   function open(s) { dim.hidden = false; s.hidden = false; }
@@ -239,12 +241,10 @@
     var track = stream && stream.getVideoTracks()[0], caps = track && track.getCapabilities ? track.getCapabilities() : {};
     return caps.zoom ? 1 : parseFloat(on ? on.getAttribute('data-zoom') : '1');   // CSS zoom only when the camera can't
   }
-  function showGallery() { var u = PicoPhoto.get(); if (u) gallery.style.backgroundImage = 'url("' + u + '")'; }
-  showGallery();
   var busy = false;
   function done(url) {
     if (busy) return; busy = true;
-    PicoPhoto.set(url); showGallery();
+    PicoPhoto.set(url);
     // a new photo starts a fresh observation: clear picks, diary and the last AI analysis
     ['pico.capture.lenses', 'pico.capture.answers2', 'pico.capture.diary', 'pico.capture.options', 'pico.capture.optionsFor', 'pico.capture.match', 'pico.capture.custom']
       .forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} });
@@ -255,7 +255,7 @@
     if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
     // 찍은 사진이 잠깐 멈춰 보인 뒤 "AI가 분석중이에요" → 곤충이 보이면 다음 단계, 안 보이면 다시 찍기 안내
     setTimeout(function () {
-      var w = PicoAI.wait('AI가 분석중이에요', '사진 속 친구를 살펴보고 있어요');
+      var w = PicoAI.wait('AI가 분석중이에요.', '사진 속 친구를 살펴보고 있어요.');
       PicoAI.analyze(url).then(function (r) {
         if (r.is_insect === false) { w.done().then(function () { busy = false; open(error); }); }
         else { w.done(true).then(function () { location.href = 'capture-3.html'; }); }

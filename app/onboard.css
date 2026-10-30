@@ -48,18 +48,6 @@
 .ob-fold.is-folding .ob-fold-hit { pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .ob-flap, .ob-fold-line, .ob-fold-shadow { transition: none; } }
 
-/* 큰 버튼: 335×65, 오른쪽 위가 접힌 모서리 + 검정 그림자 */
-.ob-cta { position: absolute; left: 17.205px; top: 705.5px; width: 340.59px; height: 69.99px; display: block; z-index: 2; }
-.ob-cta > img, .ob-cta-face { position: absolute; }
-.ob-cta-shadow { left: 5.59px; top: 4.99px; width: 335px; height: 65px; }
-.ob-cta-face { left: 0; top: 0; width: 335px; height: 65px; transition: transform 120ms ease-out; }
-.ob-cta-face > img { position: absolute; inset: 0; width: 335px; height: 65px; }
-.ob-cta-face .flap { inset: auto; left: 314.6px; top: 0; width: 20.395px; height: 18.448px; }
-.ob-cta-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 16px; line-height: normal; white-space: nowrap; color: #211b17; }
-.ob-cta-label img { position: static; width: 24px; height: 24px; }
-.ob-cta:active .ob-cta-face { transform: translate(5px, 4px); }
-.ob-cta:focus-visible { outline: 2px solid #211b17; outline-offset: 3px; }
-
 /* 스플래시 */
 .ob-splash-union { position: absolute; left: 149.66px; top: 362.73px; width: 81.698px; height: 86.561px; }
 .ob-splash-logo { position: absolute; left: 154.27px; top: 370.08px; width: 71.877px; height: 75.516px; }

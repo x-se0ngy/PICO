@@ -36,6 +36,12 @@
   --dim: rgba(0, 0, 0, .45);
   --font: 'Allimjang', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
   --font-ui: 'Inter', -apple-system, sans-serif;
+  /* Figma Warm-Up 새 토큰 */
+  --paper: #fffce4;          /* 종이 바탕 */
+  --lime: #c1ff30;           /* accent/highlight · 큰 버튼 · 고른 카드 */
+  --lime-bar: #b8ff46;       /* 진행 표시 */
+  --note-cyan: #2cfbff;      /* 노트 가로줄 */
+  --note-pink: #f537ff;      /* 노트 여백 세로줄 */
 }
 
 * { box-sizing: border-box; }
@@ -73,6 +79,9 @@ img { display: block; }
 .phone > .top[data-fixed] { z-index: 15; }
 @media (min-width: 500px) { body { padding: 24px 0; } .phone { box-shadow: 0 10px 40px rgba(0,0,0,.4); } }
 @media (max-width: 499px) { body { overflow: hidden; height: 100vh; height: 100dvh; } }
+
+/* Figma Warm-Up 종이 바탕: 회색조 종이 질감을 #FFFCE4 위에 multiply (온보딩과 같은 방식) */
+.phone.warm { background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px no-repeat, var(--paper); background-blend-mode: multiply; }
 
 /* ---------- status bar + top nav ---------- */
 .top { position: absolute; left: 0; top: 0; width: 375px; z-index: 5; }
@@ -128,25 +137,30 @@ img { display: block; }
 .tab-cam .paper.f2 { --ty: 12.5px; }
 .tab-cam .paper.f2 .half.bottom { transform: translateZ(3px) rotateX(180deg); }
 
-/* ---------- primary CTA (330x54 + offset black shadow) ---------- */
-.cta { position: absolute; left: 20px; width: 330px; height: 54px; display: block; }
-.cta::before { content: ""; position: absolute; left: 5.42px; top: 9.5px; width: 330px; height: 54px; background: var(--ink); border: 1px solid var(--ink); box-sizing: border-box; }
-.cta-face { position: absolute; inset: 0; background: var(--brand); border: 1px dashed var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 16px; }
+/* ---------- primary CTA · Figma 큰 버튼 (Warm-Up) ----------
+   라임 종이 두 장: 똑바른 앞장(335×65.13) 뒤에 같은 크기의 종이가 -1.8° 기울어 살짝 비쳐요.
+   위치는 화면마다 style="top:…"으로 (Figma 기본 708.07). */
+.cta { position: absolute; left: 21.06px; width: 335px; height: 65.13px; display: block; }
+.cta::before { content: ""; position: absolute; left: -1.1px; top: 0; width: 335px; height: 65.13px; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box; transform: rotate(-1.8deg); }
+.cta-face { position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 16px; transition: transform 120ms ease-out; }
 .cta-face img { width: 24px; height: 24px; }
-.cta--yellow .cta-face { background: var(--reward); }
-/* disabled CTA (Figma 큰 버튼 · 비활성, 2822:44300): grey face, #676767 dashed border + shadow + label.
-   Every selection screen starts here until the child picks something.
+.cta:active .cta-face { transform: rotate(-1.8deg); }
+.cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+/* disabled CTA: 같은 두 장 종이를 회색으로.
    aria-disabled blocks the tap; .is-off only changes the look (the page can still show a hint toast). */
 .cta[aria-disabled="true"], .cta.is-off { cursor: default; }
 .cta[aria-disabled="true"] { pointer-events: none; }
-.cta[aria-disabled="true"]::before, .cta.is-off::before { background: #676767; border-color: #676767; }
+.cta[aria-disabled="true"]::before, .cta.is-off::before { background: #dbdbdb; border-color: #676767; }
 .cta[aria-disabled="true"] .cta-face, .cta.is-off .cta-face { background: #dbdbdb; border-color: #676767; color: #676767; }
 .cta[aria-disabled="true"] .cta-face img, .cta.is-off .cta-face img { content: url('assets/onboarding/arrow-right-disabled.png'); }
 
 /* ---------- step progress + step title ---------- */
 .progress { position: absolute; left: 20px; top: 129px; width: 335px; display: flex; gap: 7px; }
-.progress span { flex: 1; height: 10px; background: var(--bg); border: 1px dashed var(--ink); }
-.progress span.on { background: var(--brand); }
+.progress span { flex: 1; height: 10px; border: 1px dashed var(--ink);
+  background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px, var(--paper); background-blend-mode: multiply; }   /* Figma: 종이 질감(image 3216)을 multiply */
+.progress span.on { background-color: var(--lime-bar); }
+/* 개인 설정 (Figma 1.2.1~1.2.3): 로고 아래 y 114, 칸 3개 */
+.phone.setup > .progress { top: 114px; }
 
 .step-title { position: absolute; left: 20px; top: 161.4px; width: 335px; display: flex; flex-direction: column; gap: 4px; }
 .step-title .q { display: flex; gap: 14px; font-weight: 700; font-size: 18px; }
@@ -217,7 +231,6 @@ img { display: block; }
   font-size: 12px; line-height: 1; background: var(--bg); border: 1px solid var(--ink); pointer-events: none; }
 /* step CTA (Figma 큰 버튼 in 촬영 frames): face at top 702, shadow +5.42 / +9.5 */
 .cta.step { top: 702px; }
-.cta.step::before { left: 5.42px; top: 9.5px; }
 
 /* ---------- 중단 확인 팝업 (Figma .ox팝업 2825:2860) ----------
    Any <a data-confirm="관찰을 중단할까요?" href="..."> asks first; 네 follows the link.
@@ -239,30 +252,26 @@ img { display: block; }
   .status-time, .status-icons, .home-ind, .proto-index { visibility: hidden; }
 }
 
-/* ---------- AI가 분석중이에요 (app/ai.js) ----------
-   사진 위를 연두 띠가 위아래로 훑고, 네모 점 세 개가 차례로 깜빡여요. 나타날 때·사라질 때 모두 디졸브. */
-.ai-wait { position: absolute; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
-  background: rgba(253, 244, 177, .96); animation: pico-dissolve var(--dissolve) var(--ease-slow) both; transition: opacity var(--dissolve) var(--ease-slow); }
+/* ---------- AI가 분석중이에요 (app/ai.js · Figma Warm-Up 촬영 8, 3198:18036) ----------
+   촬영 화면 위에 어두운 막(scrim)을 덮고, 점선 판 위의 사진을 어두운 초록 띠가 위아래로 훑어요.
+   아래 네모 점 세 개가 차례로 라임이 되며 살짝 내려앉아요. 나타날 때·사라질 때 모두 디졸브. */
+.ai-wait { position: absolute; inset: 0; z-index: 60; background: rgba(44, 44, 44, .57);
+  animation: pico-dissolve var(--dissolve) var(--ease-slow) both; transition: opacity var(--dissolve) var(--ease-slow); }
 .ai-wait.is-out { opacity: 0; }
-.ai-card { display: flex; flex-direction: column; align-items: center; gap: 0; transform: translateY(-20px); }
-.ai-photo { position: relative; width: 200px; height: 200px; background: var(--surface) center / cover no-repeat; border: 1px solid var(--ink);
-  box-shadow: 5px 7px 0 var(--ink); overflow: hidden; }
-.ai-scan { position: absolute; left: 0; right: 0; top: 0; height: 46px; transform: translateY(-46px);
-  background: linear-gradient(to bottom, rgba(177, 189, 53, 0), rgba(177, 189, 53, .55) 85%, var(--brand) 85%, var(--brand) 100%);
+.ai-card { position: absolute; left: 23.5px; top: 296.2px; width: 327px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.ai-photo { position: relative; width: 205.717px; height: 211.45px; background: var(--surface) center / cover no-repeat; border: .631px dashed var(--ink); overflow: hidden; }
+.ai-scan { position: absolute; left: 0; right: 0; top: 0; height: 119.146px;
+  background: linear-gradient(179.87deg, rgba(25, 35, 11, .2) 26%, rgba(23, 36, 6, .52) 52.4%, rgba(22, 38, 0, .5) 78.8%, rgba(23, 36, 6, 0) 99.8%);
   animation: ai-scan 1.8s cubic-bezier(.45, .05, .2, 1) infinite alternate; }
-@keyframes ai-scan { from { transform: translateY(-46px); } to { transform: translateY(200px); } }
-.ai-corner { position: absolute; width: 18px; height: 18px; border: 0 solid var(--surface); }
-.ai-corner.tl { left: 10px; top: 10px; border-left-width: 3px; border-top-width: 3px; }
-.ai-corner.tr { right: 10px; top: 10px; border-right-width: 3px; border-top-width: 3px; }
-.ai-corner.bl { left: 10px; bottom: 10px; border-left-width: 3px; border-bottom-width: 3px; }
-.ai-corner.br { right: 10px; bottom: 10px; border-right-width: 3px; border-bottom-width: 3px; }
-.ai-title { margin-top: 30px; font-weight: 700; font-size: 20px; line-height: normal; white-space: nowrap; }
-.ai-sub { margin-top: 6px; font-size: 14px; line-height: normal; white-space: nowrap; }
-.ai-dots { display: flex; gap: 8px; margin-top: 16px; }
-.ai-dots i { display: block; width: 8px; height: 8px; background: var(--brand); border: 1px solid var(--ink); animation: ai-dot 1.2s ease-in-out infinite; }
-.ai-dots i:nth-child(2) { animation-delay: .2s; } .ai-dots i:nth-child(3) { animation-delay: .4s; }
-@keyframes ai-dot { 0%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
-@media (prefers-reduced-motion: reduce) { .ai-scan, .ai-dots i { animation: none; } .ai-scan { transform: translateY(77px); } }
+@keyframes ai-scan { from { transform: translateY(-40px); } to { transform: translateY(132px); } }
+.ai-text { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ai-title { font-weight: 700; font-size: 18px; line-height: normal; white-space: nowrap; }
+.ai-sub { font-size: 14px; line-height: normal; white-space: nowrap; }
+.ai-dots { display: flex; gap: 14px; height: 12.11px; margin-top: 10px; }
+.ai-dots i { display: block; width: 10px; height: 10px; background: var(--bg); border: 1px solid var(--ink); animation: ai-dot 1.5s steps(1, end) infinite; }
+.ai-dots i:nth-child(2) { animation-delay: .5s; } .ai-dots i:nth-child(3) { animation-delay: 1s; }
+@keyframes ai-dot { 0% { background-color: #afff4c; transform: translateY(2.11px); } 33.34%, 100% { background-color: var(--bg); transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ai-scan, .ai-dots i { animation: none; } .ai-dots i:first-child { background-color: #afff4c; transform: translateY(2.11px); } }
 
 /* ---------- 종이로 접는 중이에요 (app/origami.js · 관찰 카드, Figma Warm-Up 촬영 8~10) ----------
    카드 위에 종이 질감을 85%로 덮어 카드가 희미하게 비치고, 가운데 종이 판 위에서 그림이 삼각형 면으로 접혀요.

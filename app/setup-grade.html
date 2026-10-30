@@ -15,20 +15,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  .grade-grid { position: absolute; left: 20px; top: 231.85px; width: 335px; display: grid;
-    grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 8.97px; }
-  .grade-chip { height: 74px; background: var(--surface); border: .938px solid var(--ink); text-align: left;
-    display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 15.95px 0 15.01px 13.14px; }
-  .grade-chip[aria-checked="true"] { background: var(--brand); }
-  .grade-chip .k { font-size: 14px; line-height: 12.19px; height: 12.19px; }
-  .grade-chip .v { font-size: 20px; line-height: 28.15px; white-space: nowrap; }
-  .info-bar { position: absolute; left: 20px; top: 565.71px; width: 335px; height: 55px; background: transparent; border: 1px dashed var(--ink);
+  /* Figma 1.2.2 / 1.2.3 선택 카드: 162.5×74, 테두리만 있는 종이.
+     고르면 라임 종이가 되고, 뒤에 -1.8° 기울어진 종이 한 장이 비쳐요 (큰 버튼과 같은 두 장 종이). */
+  .pick-grid { position: absolute; left: 20px; top: 228.02px; width: 335px; display: grid; grid-template-columns: 162.5px 162.5px; column-gap: 9.92px; row-gap: 10px; }
+  .pick { position: relative; width: 162.5px; height: 74px; text-align: left; border: 1px solid var(--ink); background: transparent;
+    display: flex; flex-direction: column; align-items: flex-start; padding: 0 0 0 11.8px; }
+  .pick::before { content: ''; position: absolute; left: -1.62px; top: -1px; width: 160.541px; height: 74px; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box;
+    transform: rotate(-1.8deg); z-index: -1; opacity: 0; transition: opacity var(--dur) var(--ease); }
+  .pick[aria-checked="true"] { background: var(--lime); transform: translate(1.93px, -.3px); }
+  .pick[aria-checked="true"]::before { opacity: 1; }
+  .pick-grid { isolation: isolate; }
+  .pick { padding-top: 16.34px; gap: 4px; }
+  .pick .k { font-size: 14px; line-height: 12.19px; height: 12.19px; }
+  .pick .v { font-size: 20px; line-height: 28.15px; white-space: nowrap; }
+  .info-bar { position: absolute; left: 20px; top: 581px; width: 335px; height: 55px; border: 1px dashed var(--ink);
     display: flex; align-items: center; gap: 8px; padding-left: 11px; font-size: 14px; line-height: 16px; white-space: nowrap; }
-  .setup-skip { position: absolute; left: 313.61px; top: 669.64px; font-size: 12px; line-height: normal; text-decoration: underline; white-space: nowrap; }
   .info-bar img { width: 18px; height: 18px; }
+  .step-title { top: 159px; }
 </style>
 </head><body>
-<div class="phone" style="--h:812px">
+<div class="phone warm setup" style="--h:812px">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
@@ -37,18 +43,16 @@
 
   <div class="progress" aria-label="3단계 중 2단계"><span class="on"></span><span class="on"></span><span></span></div>
 
-  <div class="step-title" style="top:162px">
+  <div class="step-title">
     <p class="q"><span>02.</span><span>몇 학년 탐험가인가요?</span></p>
     <p class="sub">학년에 맞춰 탐험 질문과 설명을 조금씩 다르게 보여 줄게요.</p>
   </div>
 
-  <div class="grade-grid" id="grades" role="radiogroup" aria-label="학년"></div>
+  <div class="pick-grid" id="grades" role="radiogroup" aria-label="학년"></div>
 
-  <div class="info-bar"><img src="assets/onboarding/icon-lock.png" alt=""><span>학년은 나만 볼 수 있어요. 친구에게는 보이지 않아요.</span></div>
+  <div class="info-bar"><img src="assets/icons/outline/calendar-check.svg" alt=""><span>학년은 나만 볼 수 있어요. 친구에게는 보이지 않아요.</span></div>
 
-  <a class="setup-skip" href="home.html">건너뛰기</a>
-
-  <a class="cta" id="next" aria-disabled="true" href="setup-explore.html" style="top:702px"><span class="cta-face">다음 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+  <a class="cta" id="next" aria-disabled="true" href="setup-explore.html" style="top:708.07px"><span class="cta-face">다음 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
@@ -59,15 +63,15 @@
   var selected = document.documentElement.dataset.state === 'picked' ? 3 : null; // grey CTA until a grade is picked
   var grid = document.getElementById('grades');
   grid.innerHTML = GRADES.map(function (g, i) {
-    return '<button type="button" class="grade-chip" role="radio" data-i="' + i + '"><span class="k">초등학교</span><span class="v">' + g + '</span></button>';
+    return '<button type="button" class="pick" role="radio" data-i="' + i + '"><span class="k">초등학교</span><span class="v">' + g + '</span></button>';
   }).join('');
   var next = document.getElementById('next');
   function render() {
-    grid.querySelectorAll('.grade-chip').forEach(function (b) { b.setAttribute('aria-checked', String(+b.dataset.i === selected)); });
+    grid.querySelectorAll('.pick').forEach(function (b) { b.setAttribute('aria-checked', String(+b.dataset.i === selected)); });
     next.setAttribute('aria-disabled', selected == null ? 'true' : 'false');
   }
   grid.addEventListener('click', function (e) {
-    var b = e.target.closest('.grade-chip'); if (!b) return;
+    var b = e.target.closest('.pick'); if (!b) return;
     selected = +b.dataset.i; render();
   });
   next.addEventListener('click', function (e) {

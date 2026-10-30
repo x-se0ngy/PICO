@@ -15,53 +15,53 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="base.css">
 <style>
-  /* 1.2.4 완료 (Figma Warm-Up 3090:29362): 종이 위에 큰 프로필 + 흩뿌린 색종이, 한 줄 안내, 큰 버튼 */
-  .pf-big { position: absolute; left: 120.2px; top: 249.35px; width: 130px; height: 130px; animation: pf-pop var(--dur) var(--ease) both; }
+  /* 1.2.4 완료 (Figma Warm-Up 3198:21422): 기울어진 빈 탐험가 카드(폴라로이드) + 흩뿌린 색종이, 두 줄 안내, 큰 버튼.
+     카드는 아직 비어 있어요 — 첫 탐험에서 채워질 자리라서요. */
+  .card-pop { position: absolute; left: 0; top: 0; width: 375px; height: 812px; pointer-events: none; animation: card-pop var(--dur) var(--ease) both; transform-origin: 193.2px 353.5px; }
+  .card-pop > i { position: absolute; display: block; border: 1.347px solid var(--ink); box-sizing: border-box; transform: rotate(7.96deg); }
+  .pc-shadow { left: 156.58px; top: 314.03px; width: 75.286px; height: 84.696px; background: var(--ink); }
+  .pc-face { left: 155.54px; top: 311.13px; width: 75.286px; height: 84.696px; background: var(--lime); }
+  .pc-win { left: 161.28px; top: 314.97px; width: 65.905px; height: 64.665px; background: var(--surface); }
   .cf { position: absolute; display: flex; align-items: center; justify-content: center; animation: pico-dissolve var(--dur) .15s var(--ease) both; }
-  .cf i { display: block; border: 1px solid var(--ink); flex: none; }
-  .cf-dot { position: absolute; width: 12.294px; height: 12.294px; border: 1px solid var(--ink); border-radius: 50%; animation: pico-dissolve var(--dur) .25s var(--ease) both; }
-  .done-title { position: absolute; left: 196.92px; top: 418px; transform: translateX(-50%); margin: 0; text-align: center; white-space: pre; font-size: 22px; line-height: 35px; }
-  @keyframes pf-pop { from { opacity: 0; transform: scale(.7); } }
-  @media (prefers-reduced-motion: reduce) { .pf-big, .cf, .cf-dot { animation: none; } }
+  .cf i { display: block; border: 1px solid var(--ink); flex: none; box-sizing: border-box; }
+  .cf-dot { position: absolute; display: flex; align-items: center; justify-content: center; animation: pico-dissolve var(--dur) .25s var(--ease) both; }
+  .cf-dot i { display: block; width: 12.294px; height: 12.294px; border: 1px solid var(--ink); border-radius: 50%; box-sizing: border-box; }
+  .done-title { position: absolute; left: 185.17px; top: 422.09px; transform: translateX(-50%); margin: 0; text-align: center; white-space: pre; font-size: 22px; line-height: 35px; }
+  @keyframes card-pop { from { opacity: 0; transform: scale(.7) rotate(-6deg); } }
+  @media (prefers-reduced-motion: reduce) { .card-pop, .cf, .cf-dot { animation: none; } }
 </style>
 </head><body>
 <!-- 1.2.4 완료 -->
-<div class="phone" style="--h:812px">
+<div class="phone warm" style="--h:812px">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav nav--center"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
   </div>
 
-  <img class="pf-big" id="av" src="assets/profile/grass.svg" alt="내 프로필">
+  <span class="cf" style="left:92.64px;top:243.4px;width:24.01px;height:21.52px" aria-hidden="true"><i style="width:9.755px;height:22.74px;background:#ffdc00;transform:rotate(-52.79deg)"></i></span>
+  <span class="cf" style="left:272.23px;top:271.85px;width:22.317px;height:28.206px" aria-hidden="true"><i style="width:9.755px;height:27.053px;background:#7aff3c;transform:scaleY(-1) rotate(31.07deg)"></i></span>
+  <span class="cf" style="left:68.38px;top:300.05px;width:26.883px;height:25.019px" aria-hidden="true"><i style="width:9.755px;height:27.053px;background:#7aff3c;transform:scaleY(-1) rotate(49.37deg)"></i></span>
+  <span class="cf" style="left:281.2px;top:228.62px;width:16.865px;height:10.491px" aria-hidden="true"><i style="width:9.755px;height:16.439px;background:#2affec;transform:rotate(87.4deg)"></i></span>
+  <span class="cf" style="left:68.17px;top:399.12px;width:24.476px;height:35.53px" aria-hidden="true"><i style="width:9.755px;height:34.89px;background:#2affec;transform:rotate(26.88deg)"></i></span>
+  <span class="cf-dot" style="left:148.12px;top:267.85px;width:13.195px;height:13.195px" aria-hidden="true"><i style="background:#e180ff"></i></span>
+  <span class="cf-dot" style="left:295.68px;top:366.35px;width:13.195px;height:13.195px" aria-hidden="true"><i style="background:#e180ff"></i></span>
+  <span class="cf-dot" style="left:231.34px;top:231.67px;width:14.892px;height:14.892px" aria-hidden="true"><i style="background:#60c8ff"></i></span>
 
-  <span class="cf" style="left:100.14px;top:224.95px;width:20.527px;height:24.396px" aria-hidden="true"><i style="width:9.755px;height:22.74px;background:#d3c77c;transform:rotate(147.16deg)"></i></span>
-  <span class="cf" style="left:245.1px;top:372.45px;width:26.027px;height:26.027px" aria-hidden="true"><i style="width:9.755px;height:27.053px;background:#b1d4a1;transform:rotate(-45deg)"></i></span>
-  <span class="cf" style="left:58.02px;top:292.23px;width:23.55px;height:27.736px" aria-hidden="true"><i style="width:9.755px;height:27.053px;background:#9ebfc7;transform:rotate(35.15deg)"></i></span>
-  <span class="cf" style="left:245.1px;top:224.95px;width:12.794px;height:18.035px" aria-hidden="true"><i style="width:9.755px;height:16.439px;background:#9ad1cc;transform:rotate(11.33deg)"></i></span>
-  <span class="cf-dot" style="left:100.14px;top:367.06px;background:#c4aacc" aria-hidden="true"></span>
-  <span class="cf-dot" style="left:290.42px;top:258.71px;background:#96b8ca" aria-hidden="true"></span>
+  <div class="card-pop" aria-hidden="true"><i class="pc-shadow"></i><i class="pc-face"></i><i class="pc-win"></i></div>
 
   <p class="done-title"><span id="short">선우</span>의 탐험가 카드가 
 완성됐어요!</p>
 
-  <a class="cta" href="home.html" style="top:702px"><span class="cta-face">첫 탐험하러 가기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+  <a class="cta" href="home.html" style="top:708.07px"><span class="cta-face">첫 탐험하러 가기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
 <script>
 (function () {
-  var ICON = { '꽃밭 탐험': 'flower', '풀숲 탐험': 'grass', '물가 탐험': 'river', '나무 탐험': 'tree', '비 온 뒤 탐험': 'cloud', '해 질 녘 탐험': 'moon' };
-  var name = '초고속 탐험가 선우', explore = ['꽃밭 탐험'];
-  try {
-    name = localStorage.getItem('pico.name') || name;
-    var e = JSON.parse(localStorage.getItem('pico.explore') || 'null'); if (e && e.length) explore = e;
-  } catch (err) {}
+  var name = '초고속 탐험가 선우';
+  try { name = localStorage.getItem('pico.name') || name; } catch (err) {}
   document.getElementById('short').textContent = name.trim().split(/\s+/).pop();
-  // 03에서 고른 자연 친구(pico.avatar)가 우선, 예전 방식(좋아하는 탐험)도 받아요
-  var av = null; try { av = localStorage.getItem('pico.avatar'); } catch (err) {}
-  if (!/^(flower|grass|river|tree|cloud|moon)$/.test(av || '')) av = ICON[explore[0]] || 'grass';
-  document.getElementById('av').src = 'assets/profile/' + av + '.svg';
 })();
 </script>
 </body></html>
