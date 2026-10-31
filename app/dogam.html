@@ -244,13 +244,14 @@
   q.addEventListener('input', render);
 
   // 돋보기 → 찾기 화면 (로고 자리에 종이 칸, 도감 위·하단바는 숨김).
-  // 돋보기는 그대로 두고: 찾기 중에 다시 누르면 언제든 도감으로 돌아가요 (쓴 글은 지워져요). 뒤로 가기·Esc로도 닫혀요.
+  // 찾기 중엔 돋보기가 X로 바뀌고, 누르면 언제든 도감으로 돌아가요 (쓴 글은 지워져요). 뒤로 가기·Esc로도 닫혀요.
   var searchBtn = document.getElementById('searchBtn'), navQ = document.getElementById('navQ'), logo = document.getElementById('logo');
   function setSearch(open) {
     phone.classList.toggle('searching', open);
     navQ.hidden = !open; logo.hidden = open;
     searchBtn.setAttribute('aria-expanded', open);
     searchBtn.setAttribute('aria-label', open ? '찾기 닫기' : '곤충 이름 찾기');
+    searchBtn.querySelector('img').src = 'assets/icons/outline/' + (open ? 'close' : 'search') + '.svg';   // 찾기 중엔 X = 나가기가 눈에 보이게
     var sc = document.querySelector('.phone > .scroll'); if (sc) sc.scrollTop = 0; window.scrollTo(0, 0);
     if (open) q.focus(); else q.value = '';
     render();
@@ -259,7 +260,8 @@
     if (!phone.classList.contains('searching')) { history.pushState({ s: 1 }, ''); setSearch(true); }
     else closeSearch();   // 찾기 중엔 돋보기 = 나가기 (결과는 쓰는 대로 바로 나와서 따로 '찾기' 누를 필요가 없어요)
   });
-  function closeSearch() { if (history.state && history.state.s) history.back(); else setSearch(false); }
+  // 바로 닫고(폰에서 뒤로 가기가 안 먹어도 확실히 나가게), 찾기 때 쌓은 기록은 그다음에 정리해요
+  function closeSearch() { var pushed = history.state && history.state.s; setSearch(false); if (pushed) history.back(); }
   q.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') q.blur();
     if (e.key === 'Escape' && phone.classList.contains('searching')) closeSearch();
