@@ -72,7 +72,7 @@
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var layer = document.createElement('div'); layer.className = 'pop-layer'; layer.setAttribute('aria-hidden', 'true'); phone.appendChild(layer);
   var mine = [].slice.call(document.querySelectorAll('.cf, .cf-dot'));
-  var EXTRA = 6;    // 같이 쏟아지는 복사본 수 (0이면 그려 둔 8장만)
+  var EXTRA = 0;    // 복사본 없이 그려 둔 8장만 (0)
   function rnd(a, b) { return a + Math.random() * (b - a); }
   function fall(el, fromY, toY, dur, delay, keep) {
     var sway = rnd(14, 26) * (Math.random() < .5 ? -1 : 1), spin = rnd(-200, 200);
