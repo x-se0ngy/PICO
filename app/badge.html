@@ -20,54 +20,62 @@
   .abs { position: absolute; }
   .nw { white-space: nowrap; }
 
-  /* 내가 획득한 배지 card (Figma 5.1.1, 2847:3795) */
-  .card-shadow { left: 29.59px; top: 138.77px; width: 325px; height: 215px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 20.59px; top: 128.32px; width: 325px; height: 215px; background: var(--brand); border: 1px dashed var(--ink); }
-  .deco { left: 221.35px; top: 86px; width: 110px; height: 110px; z-index: 1; }
-  .card-col { left: 20.59px; top: 144.42px; width: 325px; display: flex; flex-direction: column; gap: 12px; }
-  .summary { padding: 0 20px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
-  .summary .t { font-size: 20px; }
-  .summary .n { display: flex; gap: 4px; align-items: center; } .summary .n b { font-weight: 400; font-size: 16px; } .summary .n span { font-size: 12px; }
-  .card-inner { height: 140px; background: var(--brand-soft); border: 1px dashed var(--ink); padding: 8px 16px 14px 14px; }
-  .reco { width: 295px; display: flex; flex-direction: column; gap: 8px; }
-  .reco > p { font-size: 14px; line-height: 19px; }
-  .reco-list { display: flex; flex-direction: column; gap: 8px; }
-  .reco-row { display: flex; flex-direction: column; gap: 7px; width: 295px; cursor: pointer; }
-  .reco-row .r { display: flex; justify-content: space-between; align-items: flex-end; white-space: nowrap; }
-  .reco-row:first-child .r { align-items: center; }
-  .reco-row .l { display: flex; gap: 14px; align-items: flex-end; }
-  .reco-row .chk { width: 16px; height: 16px; background: var(--bg); border: 1px dashed var(--ink); flex: none; cursor: pointer; }
-  .reco-row .chk[aria-checked="true"] { background: var(--ink); }
-  .reco-row .lab { font-size: 12px; line-height: 19px; height: 16px; width: 55px; display: flex; align-items: center; }
-  .reco-row .s { font-size: 10px; }
-  .reco-row .line { width: 295px; height: 2px; margin-top: -1px; }
-
-  /* friends feed */
-  .sec-h { left: 19.72px; top: 373.77px; width: 335px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
+  /* 배지북 (도감 3261:7422와 같은 재료 · 다른 구성): 바탕 크림 한 가지, 잉크 1px, 고른 것 = 종이 두 장, 아직 = 점선.
+     도감은 사진 카드 2칸, 배지북은 PICO 마크 자리에 스티커를 붙여 채우는 3칸. */
+  .phone.flat { background: var(--paper); }
+  .top[data-fixed] { height: 118px; background: var(--paper); }
+  .main { left: 0; top: 124px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  .head { width: 335px; display: flex; flex-direction: column; gap: 6px; }
+  .head h1 { margin: 0; font-weight: 700; font-size: 22px; line-height: 1.2; }
+  .head p { margin: 0; font-size: 13px; } .head p b { font-weight: 700; }
+  .ftabs { width: 335px; margin-top: 16px; display: flex; gap: 10px; }
+  .ftab { position: relative; height: 36px; flex: 1; border: 1px dashed var(--ink); background: var(--paper); font: inherit; font-size: 14px; color: var(--ink);
+    display: flex; align-items: center; justify-content: center; gap: 3px; white-space: nowrap; cursor: pointer; padding: 0; }
+  .ftab .mk { width: 12px; height: 13px; flex: none; }
+  /* 고른 탭 = 종이 두 장 (뒤 연두 장 -2.5° + 앞 종이) — 큰 버튼 · 고른 카드와 같은 표시 */
+  .ftab[aria-selected="true"] { border-color: transparent; font-weight: 700; background: none; isolation: isolate; }
+  .ftab[aria-selected="true"]::before, .ftab[aria-selected="true"]::after { content: ''; position: absolute; inset: -1px; z-index: -1; border: 1px solid var(--ink); }
+  .ftab[aria-selected="true"]::before { background: var(--lime); transform: rotate(-2.5deg); }
+  .ftab[aria-selected="true"]::after { background: url('assets/onboarding/ob-paper-full.jpg') -20px -185px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .sec { width: 335px; margin-top: 26px; display: flex; justify-content: space-between; align-items: baseline; white-space: nowrap; }
+  .sec p { margin: 0; font-size: 16px; line-height: 19px; }
+  .sec .more { display: flex; align-items: center; gap: 2px; font-size: 12px; }
+  .sec .more img { width: 18px; height: 18px; }
+  /* 다음에 받을 수 있어요: 도감 단계 막대와 같은 막대 (점선 = 아직) */
+  .reco { width: 335px; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .reco-row { display: grid; grid-template-columns: 22px 1fr auto; column-gap: 8px; align-items: center; cursor: pointer; }
+  .reco-row .mk { width: 20px; height: 21.5px; }
+  .reco-row .t { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .reco-row .t b { font-weight: 400; font-size: 14px; } .reco-row .t span { font-size: 11.5px; opacity: .75; }
+  .reco-row .bar { width: 110px; height: 10px; border: 1px dashed var(--ink); background: var(--paper); }
+  .reco-row .bar i { display: block; height: 100%; background: var(--tc); }
+  /* 친구 소식: 종이 띠 */
+  .feed { width: 335px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .feed a { height: 50px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 9px; white-space: nowrap;
+    background: url('assets/onboarding/ob-paper-full.jpg') -20px -420px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .feed .l { display: flex; gap: 6px; align-items: center; font-size: 12px; line-height: 19px; }
+  .feed .l img { width: 36px; height: 36px; }
+  .feed .l b { font-size: 13px; }
   .chev { width: 18px; height: 18px; }
-  /* rows 50px with 프로필 중간 40px (Figma 2847:3844, 2962:7678 강 · 2962:7693 나무) */
-  .feed { left: 20px; top: 402.77px; width: 335px; display: flex; flex-direction: column; gap: 10px; }
-  .feed a { height: 50px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 9px; white-space: nowrap; }
-  .feed .l { display: flex; gap: 5px; align-items: center; font-size: 12px; line-height: 19px; }
-  .feed .l img { width: 40.4px; height: 40.4px; margin: -0.2px; }
-  .feed .l b { font-size: 14px; }
-
-  /* badge list → TIP banner → more badges (Figma column 2847:3863, gap 10) */
-  .list { left: 0; top: 532.77px; width: 375px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .list-h { width: 335px; display: flex; justify-content: space-between; align-items: flex-start; }
-  .list-h p { font-size: 16px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
   .sort img { width: 18px; height: 18px; transition: transform var(--dur) var(--ease); }
   .sort[aria-pressed="true"] img { transform: rotate(180deg); }
-  .grid { display: grid; grid-template-columns: repeat(3, 93.67px); column-gap: 27px; row-gap: 20px; }
-  .bdg { height: 139.1px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; white-space: nowrap; }
-  .bdg img { width: 90px; height: 90px; }
-  .bdg b { display: block; font-weight: 400; font-size: 16px; line-height: 19px; }
-  .bdg span { display: block; font-size: 12px; line-height: 19px; }
-  .grid2 { grid-template-columns: repeat(3, 93.244px); column-gap: 27.64px; }
-
-  /* PICO TIP banner (Figma "TIP 배너"); tapping it opens 친구 추가 QR */
-  .tip { position: relative; width: 375px; height: 110px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 5px; text-align: left; }
+  /* 배지 칸: 점선 PICO 마크 자리 + 받으면 스티커 (종이접기 면으로 접은 사물) */
+  .grid { width: 335px; margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 18px; }
+  .grid:empty { display: none; }
+  .bdg { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0; border: 0; background: none; font: inherit; color: var(--ink); cursor: pointer; text-align: center; }
+  .bdg .slot { position: relative; width: 88px; height: 94px; }
+  .bdg .slot > svg.sl { position: absolute; inset: 0; overflow: visible; }
+  .bdg .art { position: absolute; left: 9px; top: 12px; width: 70px; height: 70px; overflow: visible;
+    filter: drop-shadow(2.5px 0 0 #fffdf2) drop-shadow(-2.5px 0 0 #fffdf2) drop-shadow(0 2.5px 0 #fffdf2) drop-shadow(0 -2.5px 0 #fffdf2) drop-shadow(1.5px 2px 0 rgba(33,27,23,.3)); }
+  .bdg b { display: block; font-weight: 400; font-size: 13px; line-height: 1.3; white-space: nowrap; }
+  .bdg small { display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 11px; opacity: .75; white-space: nowrap; }
+  .bdg small .mk { width: 11px; height: 12px; }
+  .bdg.locked b, .bdg.locked small { opacity: .5; }
+  /* PICO TIP: 도감 TIP과 같은 종이 띠 */
+  .tip { position: relative; margin-top: 26px; width: 375px; height: 110px; padding: 0 20px; border: 0; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
+    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 5px; text-align: left; font: inherit; color: var(--ink); cursor: pointer; }
   .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; white-space: nowrap; }
   .tip .h img { width: 32px; height: 32px; }
   .tip .d { display: flex; flex-direction: column; font-size: 14px; line-height: 1.3; white-space: nowrap; }
@@ -79,8 +87,9 @@
   .x { position: absolute; width: 32px; height: 32px; z-index: 2; }
   .x img { width: 32px; height: 32px; }
 
-  .bsheet { position: absolute; left: 0; right: 0; bottom: 0; height: 600px; max-height: calc(100% - 64px); background: var(--bg); border-top: 1px dashed var(--ink); }
-  .bsheet .hero { position: absolute; left: 132px; top: -57.6px; width: 130px; height: 130px; z-index: 2; }
+  .bsheet { position: absolute; left: 0; right: 0; bottom: 0; height: 600px; max-height: calc(100% - 64px); background: var(--paper); border-top: 1px dashed var(--ink); }
+  .bsheet .hero { position: absolute; left: 122.5px; top: -64px; width: 130px; height: 139px; z-index: 2; overflow: visible; }
+  .bsheet .hero .art { left: 13px; top: 17px; width: 104px; height: 104px; }
   .bsheet .scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; }
   .bsheet .inner { position: relative; height: 600px; }
   /* sheet body: Figma column anchored 74px above the sheet bottom (34 home indicator + 40 gap) */
@@ -111,19 +120,23 @@
   .pf-stack { position: relative; flex: none; height: 40px; }
   .pf-stack img { position: absolute; top: -0.2px; width: 40.4px; height: 40.4px; }
 
-  .bmodal { position: absolute; left: 37.5px; top: 50%; margin-top: -250px; width: 300px; height: 500px; background: var(--bg); border: 1px solid var(--ink); }
+  .bmodal { position: absolute; left: 37.5px; top: 50%; margin-top: -250px; width: 300px; height: 500px; background: var(--paper); border: 1px solid var(--ink); }
   .bmodal .x { left: 253px; top: 9px; }
   .bmodal .hand { position: absolute; font-family: var(--font-hand); font-size: 16px; line-height: 20px; white-space: nowrap; }
-  .new-badge { position: absolute; left: 55px; top: 65px; width: 190px; height: 190px; }
+  .new-badge { position: absolute; left: 60px; top: 60px; width: 180px; height: 192px; overflow: visible; }
+  .new-badge .art { left: 22px; top: 26px; width: 136px; height: 136px; }
+  .new-badge, .bsheet .hero { pointer-events: none; }
+  .new-badge .art, .bsheet .hero .art { position: absolute; overflow: visible;
+    filter: drop-shadow(3px 0 0 #fffdf2) drop-shadow(-3px 0 0 #fffdf2) drop-shadow(0 3px 0 #fffdf2) drop-shadow(0 -3px 0 #fffdf2) drop-shadow(2px 3px 0 rgba(33,27,23,.3)); }
   .new-row { position: absolute; left: 0; right: 0; top: 320px; display: flex; gap: 15px; align-items: center; justify-content: center; font-size: 20px; white-space: nowrap; }
   .new-desc { position: absolute; left: 0; right: 0; top: 348.5px; text-align: center; font-size: 12px; line-height: 16px; white-space: nowrap; }
   .btn-shadow { position: absolute; left: 25.59px; top: 381.35px; width: 265px; height: 45px; background: var(--ink); }
-  .btn-main { position: absolute; left: 20.42px; top: 375.85px; width: 265px; height: 45px; background: var(--brand); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 14px; }
+  .btn-main { position: absolute; left: 20.42px; top: 375.85px; width: 265px; height: 45px; background: var(--lime); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: 700; font-size: 14px; }
   .btn-main img { width: 24px; height: 24px; }
-  .btn-sub { position: absolute; left: 18.09px; top: 435.88px; width: 270px; height: 45px; background: var(--bg); border: 1px solid var(--ink); font-weight: 700; font-size: 14px; }
+  .btn-sub { position: absolute; left: 18.09px; top: 435.88px; width: 270px; height: 45px; background: var(--paper); border: 1px solid var(--ink); font-weight: 700; font-size: 14px; }
 
   .qr-shadow { position: absolute; left: 69.92px; top: 78.39px; width: 170.219px; height: 170.219px; background: var(--ink); }
-  .qr-face { position: absolute; left: 59.86px; top: 68.43px; width: 170.219px; height: 170.219px; background: var(--brand); border: 1.261px dashed var(--ink); }
+  .qr-face { position: absolute; left: 59.86px; top: 68.43px; width: 170.219px; height: 170.219px; background: var(--lime); border: 1.261px dashed var(--ink); }
   .qr-code { position: absolute; left: 78.3px; top: 89.06px; width: 133.3px; height: 124.5px; }
   .qr-who { position: absolute; left: 57px; top: 311.7px; width: 185px; display: flex; flex-direction: column; gap: 0; align-items: center; }
   .qr-who .p { display: flex; gap: 5px; align-items: center; font-size: 16px; white-space: nowrap; }
@@ -135,38 +148,35 @@
   .qr-info img { width: 18px; height: 18px; }
 </style>
 </head><body>
-<div class="phone" style="--h:1749px">
+<div class="phone flat" style="--h:1749px">
 
-  <div class="top">
+  <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
   </div>
 
-  <div class="abs card-shadow"></div>
-  <div class="abs card-face"></div>
-  <div class="abs card-col">
-    <div class="summary"><p class="t">내가 획득한 배지</p><div class="n"><b>07개</b><span>/ 36개</span></div></div>
-    <div class="card-inner"><div class="reco"><p>다음 탐험 추천</p><div class="reco-list" id="reco"></div></div></div>
-  </div>
-  <img class="abs deco" src="assets/tabs/profile-circle.png" alt="">
+  <div class="abs main" id="main">
+    <div class="head"><h1>내 배지북</h1><p>스티커 <b id="gotN">7개</b>를 모았어요 · 36개 중</p></div>
+    <div class="ftabs" role="tablist" id="ftabs"></div>
 
-  <div class="abs sec-h"><p>친구들은 어떤 탐험을 했을까요?</p><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></div>
-  <div class="abs feed">
-    <a href="friend.html?friend=seongyu"><span class="l"><img src="assets/profile/river-m.svg" alt=""><span>09.19</span><span>선규가 <b>나비 박사</b> 배지를 받았어요.</span></span><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></a>
-    <a href="friend.html"><span class="l"><img src="assets/profile/tree-m.svg" alt=""><span>09.21</span><span>민지가 <b>공원 탐험가</b> 배지를 받았어요.</span></span><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></a>
-  </div>
+    <div class="sec"><p>다음에 받을 수 있어요</p></div>
+    <div class="reco" id="reco"></div>
 
-  <div class="abs list">
-    <div class="list-h"><p>배지 목록</p>
-      <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button></div>
+    <div class="sec"><p>친구들은 어떤 탐험을 했을까요?</p><span class="more">더 보기<img src="assets/icons/outline/arrow-right.svg" alt=""></span></div>
+    <div class="feed">
+      <a href="friend.html?friend=seongyu"><span class="l"><img src="assets/profile/river-m.svg" alt=""><span>09.19</span><span>선규가 <b>나비 박사</b> 배지를 받았어요.</span></span><img class="chev" src="assets/icons/outline/arrow-right.svg" alt=""></a>
+      <a href="friend.html"><span class="l"><img src="assets/profile/tree-m.svg" alt=""><span>09.21</span><span>민지가 <b>공원 탐험가</b> 배지를 받았어요.</span></span><img class="chev" src="assets/icons/outline/arrow-right.svg" alt=""></a>
+    </div>
+
+    <div class="sec"><p>배지 목록</p>
+      <button class="sort" id="sort" aria-pressed="false" style="border:0;background:none;font:inherit;color:inherit;padding:0"><span>최근순</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button></div>
     <div class="grid" id="grid1"></div>
-    <!-- Figma TIP 배너 has no "QR 찍기" burst any more: the whole banner opens the QR popup instead -->
     <button class="tip" type="button" data-open="qr" aria-label="PICO TIP · 친구 QR 찍기">
       <span class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO TIP</span>
       <span class="d"><span>친구와 직접 만나서 QR을 찍어 보세요.</span><span>친구랑 같이 관찰하면 '함께 발견' 배지를 받아요.</span></span>
     </button>
-    <div class="grid grid2" id="grid2"></div>
+    <div class="grid" id="grid2"></div>
   </div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
@@ -182,7 +192,7 @@
   <div class="ov" id="ov-earned" hidden role="dialog" aria-modal="true" aria-label="획득 배지">
     <div class="dim" data-close></div>
     <div class="bsheet">
-      <img class="hero" src="assets/tabs/badge-earned-lg.png" alt="">
+      <div class="hero" id="heroE"></div>
       <div class="scroll"><div class="inner"><div class="bcol">
         <div class="bhead"><p class="date">2027.09.28</p><button class="x" data-close aria-label="닫기"><img src="assets/icons/outline/close.svg" alt=""></button></div>
         <div class="bbody">
@@ -210,7 +220,7 @@
   <div class="ov" id="ov-locked" hidden role="dialog" aria-modal="true" aria-label="미획득 배지">
     <div class="dim" data-close></div>
     <div class="bsheet">
-      <img class="hero" src="assets/tabs/badge-locked-lg.png" alt="" style="left:131.8px;top:-57.99px">
+      <div class="hero" id="heroL"></div>
       <div class="scroll"><div class="inner"><div class="bcol" style="width:335.4px">
         <div class="bhead end"><button class="x" data-close aria-label="닫기"><img src="assets/icons/outline/close.svg" alt=""></button></div>
         <div class="bbody">
@@ -239,7 +249,7 @@
     <div class="dim" data-close></div>
     <div class="bmodal">
       <button class="x" data-close aria-label="닫기"><img src="assets/icons/outline/close.svg" alt=""></button>
-      <img class="new-badge" src="assets/tabs/badge-new.png" alt="">
+      <div class="new-badge" id="heroN"></div>
       <p class="hand" style="left:0;right:0;top:285px;text-align:center">새 배지를 받았어요!</p>
       <div class="new-row"><span>물가 탐험가</span></div>
       <p class="new-desc">연못이나 개울 근처에서 곤충을 발견했어요</p>
@@ -258,7 +268,7 @@
       <img class="qr-code" src="assets/tabs/qr-code.png" alt="내 QR 코드">
       <p class="hand" style="left:0;right:0;top:276.7px;text-align:center">친구를 추가해 보세요!</p>
       <div class="qr-who"><p class="p"><img src="assets/profile/grass-s.svg" alt=""><span>민지혁 <b>•</b> 새싹 탐험가</span></p><p class="code">PICO • 4 3 9 1</p></div>
-      <a class="qr-btn" href="capture-1.html" style="left:18.09px;background:var(--brand)"><img src="assets/common/tab-camera.png" alt="">QR 찍기</a>
+      <a class="qr-btn" href="capture-1.html" style="left:18.09px;background:var(--lime)"><img src="assets/common/tab-camera.png" alt="">QR 찍기</a>
       <button class="qr-btn" style="left:158.09px">코드 입력하기</button>
       <div class="qr-info"><img src="assets/icons/outline/presentation.svg" alt=""><span>QR 코드를 보여주고 탐험할 친구를 만나 보세요!
 서로의 기록을 확인하고 탐험을 할 수 있어요.</span></div>
@@ -268,45 +278,71 @@
 <script src="shared.js"></script>
 <script>
 (function () {
-  var reco = [
-    { name: '나비 박사', desc: '나비류 10종 만 더', line: 1, w: 45 },
-    { name: '렌즈 마스터', desc: '한 장소에서 5종', line: 2, w: 55 },
-    { name: '공원 탐험가', desc: '새로운 공원 3곳 더', line: 1, w: 55 }
-  ];
-  document.getElementById('reco').innerHTML = reco.map(function (r) {
-    return '<div class="reco-row" data-open="locked"><div class="r"><div class="l"><span class="chk" role="checkbox" tabindex="0" aria-checked="false" aria-label="' + r.name + '"></span>' +
-      '<span class="lab" style="width:' + r.w + 'px">' + r.name + '</span><span class="s">' + r.desc + '</span></div><img class="chev" src="assets/tabs/chevron-right-18.png" alt=""></div>' +
-      '<img class="line" src="assets/tabs/reco-line-' + r.line + '.png" alt=""></div>';
-  }).join('');
-  document.getElementById('reco').addEventListener('click', function (e) {
-    var c = e.target.closest('.chk'); if (!c) return;
-    e.stopPropagation(); c.setAttribute('aria-checked', c.getAttribute('aria-checked') !== 'true');
-  });
+  // 배지 그림: 종이접기 면으로 접은 사물 (곤충 그림은 도감 · 들판의 몫이라 배지엔 쓰지 않아요)
+  var ART = {"drop": "<polygon points=\"30.0,36.0 30.0,4.0 40.0,20.0\" fill=\"#8fd4ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 40.0,20.0 46.0,33.0\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 46.0,33.0 44.0,45.0\" fill=\"#b9e5ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 44.0,45.0 37.0,53.0\" fill=\"#4ab8f0\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 37.0,53.0 27.0,55.0\" fill=\"#8fd4ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 27.0,55.0 18.0,50.0\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 18.0,50.0 14.0,40.0\" fill=\"#b9e5ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 14.0,40.0 16.0,28.0\" fill=\"#4ab8f0\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 16.0,28.0 22.0,16.0\" fill=\"#8fd4ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,36.0 22.0,16.0 30.0,4.0\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,4.0 40.0,20.0 46.0,33.0 44.0,45.0 37.0,53.0 27.0,55.0 18.0,50.0 14.0,40.0 16.0,28.0 22.0,16.0\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/>", "sun": "<polygon points=\"45.7,36.5 57.0,30.0 45.0,30.0\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"45.0,30.0 57.0,30.0 45.7,23.5\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"45.7,36.5 57.0,30.0 45.7,23.5\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"36.5,45.7 49.1,49.1 40.6,40.6\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"40.6,40.6 49.1,49.1 45.7,36.5\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"36.5,45.7 49.1,49.1 45.7,36.5\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"23.5,45.7 30.0,57.0 30.0,45.0\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,45.0 30.0,57.0 36.5,45.7\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"23.5,45.7 30.0,57.0 36.5,45.7\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"14.3,36.5 10.9,49.1 19.4,40.6\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"19.4,40.6 10.9,49.1 23.5,45.7\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"14.3,36.5 10.9,49.1 23.5,45.7\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"14.3,23.5 3.0,30.0 15.0,30.0\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"15.0,30.0 3.0,30.0 14.3,36.5\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"14.3,23.5 3.0,30.0 14.3,36.5\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"23.5,14.3 10.9,10.9 19.4,19.4\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"19.4,19.4 10.9,10.9 14.3,23.5\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"23.5,14.3 10.9,10.9 14.3,23.5\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"36.5,14.3 30.0,3.0 30.0,15.0\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,15.0 30.0,3.0 23.5,14.3\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"36.5,14.3 30.0,3.0 23.5,14.3\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"45.7,23.5 49.1,10.9 40.6,19.4\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"40.6,19.4 49.1,10.9 36.5,14.3\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"45.7,23.5 49.1,10.9 36.5,14.3\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"30.0,30.0 43.9,35.7 35.7,43.9\" fill=\"#ffe866\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 35.7,43.9 24.3,43.9\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 24.3,43.9 16.1,35.7\" fill=\"#fff19a\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 16.1,35.7 16.1,24.3\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 16.1,24.3 24.3,16.1\" fill=\"#ffe866\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 24.3,16.1 35.7,16.1\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 35.7,16.1 43.9,24.3\" fill=\"#fff19a\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 43.9,24.3 43.9,35.7\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"43.9,35.7 35.7,43.9 24.3,43.9 16.1,35.7 16.1,24.3 24.3,16.1 35.7,16.1 43.9,24.3\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/>", "dusk": "<polygon points=\"30.0,44.0 4.0,44.0 10.0,30.0\" fill=\"#ffb36b\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,44.0 10.0,30.0 20.0,20.0\" fill=\"#ff9a4a\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,44.0 20.0,20.0 30.0,17.0\" fill=\"#ffc98f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,44.0 30.0,17.0 40.0,20.0\" fill=\"#ffb36b\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,44.0 40.0,20.0 50.0,30.0\" fill=\"#ff9a4a\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,44.0 50.0,30.0 56.0,44.0\" fill=\"#ffc98f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,44.0 56.0,44.0 4.0,44.0\" fill=\"#ffb36b\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"4.0,44.0 10.0,30.0 20.0,20.0 30.0,17.0 40.0,20.0 50.0,30.0 56.0,44.0\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><line x1=\"2\" y1=\"48\" x2=\"58\" y2=\"48\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linecap=\"round\"/><line x1=\"10\" y1=\"54\" x2=\"50\" y2=\"54\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linecap=\"round\"/>", "pond": "<polygon points=\"44,30 47,6 50,8 48,30\" fill=\"#7aff3c\" stroke=\"#211b17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polygon points=\"38,28 34,10 37,9 41,28\" fill=\"#5ee020\" stroke=\"#211b17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polygon points=\"30.0,38.0 6.0,38.0 12.0,30.0\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 12.0,30.0 24.0,26.0\" fill=\"#9edcff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 24.0,26.0 38.0,26.0\" fill=\"#3aaee8\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 38.0,26.0 50.0,30.0\" fill=\"#b9e5ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 50.0,30.0 55.0,38.0\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 55.0,38.0 50.0,46.0\" fill=\"#9edcff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 50.0,46.0 36.0,50.0\" fill=\"#3aaee8\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 36.0,50.0 22.0,50.0\" fill=\"#b9e5ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 22.0,50.0 10.0,46.0\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,38.0 10.0,46.0 6.0,38.0\" fill=\"#9edcff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"6.0,38.0 12.0,30.0 24.0,26.0 38.0,26.0 50.0,30.0 55.0,38.0 50.0,46.0 36.0,50.0 22.0,50.0 10.0,46.0\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/>", "lens": "<polygon points=\"36,36 41,33 56,50 51,55\" fill=\"#b5713a\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"26.0,25.0 42.7,28.4 35.4,39.2\" fill=\"#c1f8ad\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"26.0,25.0 35.4,39.2 22.6,41.7\" fill=\"#e6fcdc\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"26.0,25.0 22.6,41.7 11.8,34.4\" fill=\"#a6ea8f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"26.0,25.0 11.8,34.4 9.3,21.6\" fill=\"#d4fbc4\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"26.0,25.0 9.3,21.6 16.6,10.8\" fill=\"#c1f8ad\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"26.0,25.0 16.6,10.8 29.4,8.3\" fill=\"#e6fcdc\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"26.0,25.0 29.4,8.3 40.2,15.6\" fill=\"#a6ea8f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"26.0,25.0 40.2,15.6 42.7,28.4\" fill=\"#d4fbc4\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"42.7,28.4 35.4,39.2 22.6,41.7 11.8,34.4 9.3,21.6 16.6,10.8 29.4,8.3 40.2,15.6\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/>", "star": "<polygon points=\"30.0,31.0 30.0,5.0 36.5,22.1\" fill=\"#7aff3c\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 36.5,22.1 54.7,23.0\" fill=\"#c1f8ad\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 54.7,23.0 40.5,34.4\" fill=\"#5ee020\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 40.5,34.4 45.3,52.0\" fill=\"#a6ea8f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 45.3,52.0 30.0,42.0\" fill=\"#7aff3c\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 30.0,42.0 14.7,52.0\" fill=\"#c1f8ad\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 14.7,52.0 19.5,34.4\" fill=\"#5ee020\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 19.5,34.4 5.3,23.0\" fill=\"#a6ea8f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 5.3,23.0 23.5,22.1\" fill=\"#7aff3c\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,31.0 23.5,22.1 30.0,5.0\" fill=\"#c1f8ad\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,5.0 36.5,22.1 54.7,23.0 40.5,34.4 45.3,52.0 30.0,42.0 14.7,52.0 19.5,34.4 5.3,23.0 23.5,22.1\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/>", "heart": "<polygon points=\"30.0,28.0 30.0,54.0 10.0,34.0\" fill=\"#f8addb\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 10.0,34.0 6.0,22.0\" fill=\"#e180ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 6.0,22.0 10.0,12.0\" fill=\"#fbcde9\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 10.0,12.0 20.0,8.0\" fill=\"#d66ae8\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 20.0,8.0 30.0,16.0\" fill=\"#f8addb\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 30.0,16.0 40.0,8.0\" fill=\"#e180ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 40.0,8.0 50.0,12.0\" fill=\"#fbcde9\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 50.0,12.0 54.0,22.0\" fill=\"#d66ae8\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 54.0,22.0 50.0,34.0\" fill=\"#f8addb\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,28.0 50.0,34.0 30.0,54.0\" fill=\"#e180ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,54.0 10.0,34.0 6.0,22.0 10.0,12.0 20.0,8.0 30.0,16.0 40.0,8.0 50.0,12.0 54.0,22.0 50.0,34.0\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/>", "pencil": "<polygon points=\"30.0,33.0 12.0,48.0 40.0,10.0\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,33.0 40.0,10.0 50.0,18.0\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,33.0 50.0,18.0 22.0,56.0\" fill=\"#ffe866\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,33.0 22.0,56.0 10.0,58.0\" fill=\"#ffdc00\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,33.0 10.0,58.0 12.0,48.0\" fill=\"#f2c200\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"12.0,48.0 40.0,10.0 50.0,18.0 22.0,56.0 10.0,58.0\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"12,48 22,56 10,58\" fill=\"#f6d7b0\" stroke=\"#211b17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/>", "leaf": "<polygon points=\"30.0,32.0 8.0,52.0 12.0,30.0\" fill=\"#7aff3c\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,32.0 12.0,30.0 24.0,14.0\" fill=\"#a6ea8f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,32.0 24.0,14.0 44.0,8.0\" fill=\"#5ee020\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,32.0 44.0,8.0 52.0,10.0\" fill=\"#c1f8ad\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,32.0 52.0,10.0 48.0,30.0\" fill=\"#7aff3c\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,32.0 48.0,30.0 36.0,46.0\" fill=\"#a6ea8f\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,32.0 36.0,46.0 20.0,52.0\" fill=\"#5ee020\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,32.0 20.0,52.0 8.0,52.0\" fill=\"#c1f8ad\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"8.0,52.0 12.0,30.0 24.0,14.0 44.0,8.0 52.0,10.0 48.0,30.0 36.0,46.0 20.0,52.0\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><line x1=\"8\" y1=\"52\" x2=\"44\" y2=\"16\" stroke=\"#211b17\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>", "eye": "<polygon points=\"30.0,30.0 4.0,30.0 14.0,20.0\" fill=\"#fffdf2\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 14.0,20.0 30.0,15.0\" fill=\"#f1ecbf\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 30.0,15.0 46.0,20.0\" fill=\"#fffdf2\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 46.0,20.0 56.0,30.0\" fill=\"#e8e3b5\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 56.0,30.0 46.0,40.0\" fill=\"#fffdf2\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 46.0,40.0 30.0,45.0\" fill=\"#f1ecbf\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 30.0,45.0 14.0,40.0\" fill=\"#fffdf2\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 14.0,40.0 4.0,30.0\" fill=\"#e8e3b5\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"4.0,30.0 14.0,20.0 30.0,15.0 46.0,20.0 56.0,30.0 46.0,40.0 30.0,45.0 14.0,40.0\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><polygon points=\"30.0,30.0 39.0,30.0 34.5,37.8\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 34.5,37.8 25.5,37.8\" fill=\"#3aaee8\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 25.5,37.8 21.0,30.0\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 21.0,30.0 25.5,22.2\" fill=\"#3aaee8\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 25.5,22.2 34.5,22.2\" fill=\"#60c8ff\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"30.0,30.0 34.5,22.2 39.0,30.0\" fill=\"#3aaee8\" stroke=\"#211b17\" stroke-width=\".6\"/><polygon points=\"39.0,30.0 34.5,37.8 25.5,37.8 21.0,30.0 25.5,22.2 34.5,22.2\" fill=\"none\" stroke=\"#211b17\" stroke-width=\"2\" stroke-linejoin=\"round\"/><circle cx=\"30\" cy=\"30\" r=\"3.4\" fill=\"#211b17\"/>"};
+  var PENT = '5.28,0.5 23.1,7.7 24.88,22.94 8,26.81 0.5,12.37';
+  var CAT = { find: ['발견', 'var(--lime)'], explore: ['탐험', 'var(--rule-cyan)'], special: ['특별', 'var(--rule-pink)'] };
+  function mk(cat) { return '<svg class="mk" viewBox="0 0 25.38 27.31" aria-hidden="true"><polygon points="' + PENT + '" style="fill:' + CAT[cat][1] + '" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/></svg>'; }
+  function slot(art, got, big) {
+    return '<svg class="sl" viewBox="-2 -2 29.4 31.3" width="100%" height="100%" aria-hidden="true"><polygon points="' + PENT + '" fill="#fffce4" stroke="#211b17" stroke-width="' + (big ? .45 : .55) + '" stroke-dasharray="1.4 1.1" stroke-linejoin="round" opacity="' + (got ? .45 : 1) + '"/></svg>' +
+      (got ? '<svg class="art" viewBox="0 0 60 60" aria-hidden="true" style="transform:rotate(' + (Math.random() * 16 - 8).toFixed(1) + 'deg)">' + ART[art] + '</svg>' : '');
+  }
+  // [이름, 종류, 그림, 날짜 또는 얻는 방법]
+  var earned = [['첫 발견', 'find', 'leaf', '09.12'], ['10종 탐험가', 'find', 'star', '09.19'], ['LOOK 관찰자', 'special', 'eye', '09.20'], ['첫 그림', 'special', 'pencil', '09.21'],
+    ['비 온 뒤', 'explore', 'drop', '10.04'], ['함께 발견', 'special', 'heart', '10.06'], ['25종 탐험가', 'find', 'star', '10.09']];
+  var lockedTop = [['나비 박사', 'find', '나비류 10종만 더'], ['렌즈 마스터', 'explore', '한 장소에서 5종']];
+  var lockedBottom = [['아침 탐험가', 'explore', '아침 10시 전 탐험'], ['새로운 장소', 'explore', '새로운 장소 1곳 더'], ['그림 15장', 'special', '6장 더 그려요'],
+    ['해 질 녘 탐험가', 'explore', '오후 5시 이후 탐험'], ['공원 탐험가', 'explore', '새로운 공원 3곳 더'], ['물가 탐험가', 'explore', '연못, 개울 근처'],
+    ['사계절 탐험가', 'explore', '모든 계절 탐험'], ['가을 탐험', 'explore', '가을에 곤충 3번 더'], ['학교 탐험가', 'explore', '학교 안에서 탐험']];
+  document.getElementById('gotN').textContent = earned.length + '개';
 
-  var earned = [['첫 발견', '2027.09.12'], ['10종 탐험가', '2027.09.19'], ['LOOK 관찰자', '2027.09.20'], ['첫 그림', '2027.09.21'],
-    ['비오는 날 탐험', '2027.10.04'], ['함께 발견', '2027.10.06'], ['25종 탐험가', '2027.10.09']];
-  var lockedTop = [['나비 박사', '나비류 10종만 더'], ['렌즈 마스터', '한 장소에서 5종']];
-  var lockedBottom = [['아침 탐험가', '아침 10시 전 탐험'], ['새로운 장소', '새로운 장소 1곳 더'], ['그림 15장', '6장 더 그려요'],
-    ['해 질 녘 탐험가', '오후 5시 이후 탐험'], ['공원 탐험가', '새로운 공원 3곳 더'], ['물가 탐험가', '연못, 개울 근처'],
-    ['사계절 탐험가', '모든 계절 탐험'], ['가을 탐험', '가을에 곤충 3번 더'], ['학교 탐험가', '학교 안에서 탐험']];
-  function tile(b, state) {
-    return '<button class="bdg" data-open="' + state + '"><img src="assets/tabs/badge-' + state + '.png" alt=""><span><b>' + b[0] + '</b><span>' + b[1] + '</span></span></button>';
+  // 다음에 받을 수 있어요 (얻는 중인 배지)
+  var reco = [['나비 박사', 'find', '나비류 10종 만나기', 6, 10], ['렌즈 마스터', 'explore', '한 장소에서 5종 만나기', 3, 5], ['공원 탐험가', 'explore', '새로운 공원 3곳 가 보기', 1, 3]];
+  document.getElementById('reco').innerHTML = reco.map(function (r) {
+    return '<div class="reco-row" data-open="locked" style="--tc:' + CAT[r[1]][1] + '">' + mk(r[1]) + '<span class="t"><b>' + r[0] + '</b><span>' + r[2] + '</span></span>' +
+      '<span class="bar" role="img" aria-label="' + r[4] + '번 중 ' + r[3] + '번"><i style="width:' + Math.round(r[3] / r[4] * 100) + '%"></i></span></div>';
+  }).join('');
+
+  // 전체 · 발견 · 탐험 · 특별
+  var filter = 'all', oldest = false;
+  var tabs = [['all', '전체'], ['find', '발견'], ['explore', '탐험'], ['special', '특별']];
+  var ft = document.getElementById('ftabs');
+  function count(c) { return earned.filter(function (b) { return c === 'all' || b[1] === c; }).length; }
+  function drawTabs() {
+    ft.innerHTML = tabs.map(function (t) {
+      return '<button class="ftab" role="tab" aria-selected="' + (filter === t[0]) + '" data-f="' + t[0] + '">' + (t[0] === 'all' ? '' : mk(t[0])) + t[1] + ' ' + count(t[0]) + '</button>';
+    }).join('');
   }
-  var g1 = document.getElementById('grid1');
-  function renderTop(order) {
-    var e = order ? earned.slice().reverse() : earned;
-    g1.innerHTML = e.map(function (b) { return tile(b, 'earned'); }).join('') + lockedTop.map(function (b) { return tile(b, 'locked'); }).join('');
+  ft.addEventListener('click', function (e) { var b = e.target.closest('.ftab'); if (!b) return; filter = b.getAttribute('data-f'); drawTabs(); render(); });
+  function tileE(b) {
+    return '<button class="bdg" data-open="earned" data-art="' + b[2] + '" data-name="' + b[0] + '"><span class="slot">' + slot(b[2], true) + '</span><span><b>' + b[0] + '</b><small>' + mk(b[1]) + CAT[b[1]][0] + ' · ' + b[3] + '</small></span></button>';
   }
-  renderTop(false);
-  document.getElementById('grid2').innerHTML = lockedBottom.map(function (b) { return tile(b, 'locked'); }).join('');
+  function tileL(b) {
+    return '<button class="bdg locked" data-open="locked" data-name="' + b[0] + '"><span class="slot">' + slot(null, false) + '</span><span><b>' + b[0] + '</b><small>' + b[2] + '</small></span></button>';
+  }
+  var g1 = document.getElementById('grid1'), g2 = document.getElementById('grid2'), phone = document.querySelector('.phone'), main = document.getElementById('main');
+  function keep(b) { return filter === 'all' || b[1] === filter; }
+  function render() {
+    var e = (oldest ? earned.slice().reverse() : earned).filter(keep);
+    g1.innerHTML = e.map(tileE).join('') + lockedTop.filter(keep).map(tileL).join('');
+    g2.innerHTML = lockedBottom.filter(keep).map(tileL).join('');
+    phone.style.setProperty('--h', Math.max(812, Math.ceil(main.offsetTop + main.offsetHeight + 130)) + 'px');
+  }
+  drawTabs(); render();
 
   var sort = document.getElementById('sort');
   sort.addEventListener('click', function () {
-    var old = sort.getAttribute('aria-pressed') !== 'true';
-    sort.setAttribute('aria-pressed', old);
-    sort.querySelector('span').textContent = old ? '오래된순' : '최근순';
-    renderTop(old);
+    oldest = !oldest;
+    sort.setAttribute('aria-pressed', oldest);
+    sort.querySelector('span').textContent = oldest ? '오래된순' : '최근순';
+    render();
   });
+  // 상세 · 새 배지 창의 큰 스티커
+  function hero(id, art, got) { var h = document.getElementById(id); if (h) h.innerHTML = slot(art, got, true); }
+  hero('heroE', 'pond', true); hero('heroL', null, false); hero('heroN', 'pond', true);
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('.bdg[data-art]'); if (t) hero('heroE', t.getAttribute('data-art'), true);
+  }, true);
 
   // overlays
   var names = ['earned', 'locked', 'new', 'qr'];
