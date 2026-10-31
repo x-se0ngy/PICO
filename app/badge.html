@@ -24,11 +24,13 @@
      도감은 사진 카드 2칸, 배지북은 PICO 마크 자리에 스티커를 붙여 채우는 3칸. */
   .phone.flat { background: var(--paper); }
   .top[data-fixed] { height: 118px; background: var(--paper); }
-  .main { left: 0; top: 124px; width: 375px; display: flex; flex-direction: column; align-items: center; }
-  .head { width: 335px; display: flex; flex-direction: column; gap: 6px; }
-  .head h1 { margin: 0; font-weight: 700; font-size: 22px; line-height: 1.2; }
-  .head p { margin: 0; font-size: 13px; } .head p b { font-weight: 700; }
-  .ftabs { width: 335px; margin-top: 16px; display: flex; gap: 10px; }
+  .main { left: 0; top: 129.87px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  /* 위: 도감 "함께 만난 곤충"과 같은 글자 크기 · 같은 자리, 다만 카드 상자 없이 */
+  .head { width: 335px; display: flex; flex-direction: column; gap: 5px; }
+  .head .t { margin: 0; font-size: 16px; }
+  .head .n { margin: 0; display: flex; align-items: flex-end; gap: 6px; white-space: nowrap; }
+  .head .n b { font-weight: 700; font-size: 40px; line-height: 40px; } .head .n span { font-size: 15px; }
+  .ftabs { width: 335px; margin-top: 18px; display: flex; gap: 10px; }
   .ftab { position: relative; height: 36px; flex: 1; border: 1px dashed var(--ink); background: var(--paper); font: inherit; font-size: 14px; color: var(--ink);
     display: flex; align-items: center; justify-content: center; gap: 3px; white-space: nowrap; cursor: pointer; padding: 0; }
   .ftab .mk { width: 12px; height: 13px; flex: none; }
@@ -37,43 +39,40 @@
   .ftab[aria-selected="true"]::before, .ftab[aria-selected="true"]::after { content: ''; position: absolute; inset: -1px; z-index: -1; border: 1px solid var(--ink); }
   .ftab[aria-selected="true"]::before { background: var(--lime); transform: rotate(-2.5deg); }
   .ftab[aria-selected="true"]::after { background: url('assets/onboarding/ob-paper-full.jpg') -20px -185px / 375px 812px, var(--paper); background-blend-mode: multiply; }
-  .sec { width: 335px; margin-top: 26px; display: flex; justify-content: space-between; align-items: baseline; white-space: nowrap; }
+  /* 줄 제목: 도감 "곤충 목록"과 같은 줄 */
+  .sec { width: 335px; margin-top: 28px; display: flex; justify-content: space-between; align-items: center; white-space: nowrap; }
   .sec p { margin: 0; font-size: 16px; line-height: 19px; }
-  .sec .more { display: flex; align-items: center; gap: 2px; font-size: 12px; }
+  .sec .more { display: flex; align-items: center; gap: 2px; font-size: 12px; color: inherit; text-decoration: none; }
   .sec .more img { width: 18px; height: 18px; }
-  /* 다음에 받을 수 있어요: 도감 단계 막대와 같은 막대 (점선 = 아직) */
-  .reco { width: 335px; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
-  .reco-row { display: grid; grid-template-columns: 22px 1fr auto; column-gap: 8px; align-items: center; cursor: pointer; }
-  .reco-row .mk { width: 20px; height: 21.5px; }
-  .reco-row .t { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .reco-row .t b { font-weight: 400; font-size: 14px; } .reco-row .t span { font-size: 11.5px; opacity: .75; }
-  .reco-row .bar { width: 110px; height: 10px; border: 1px dashed var(--ink); background: var(--paper); }
-  .reco-row .bar i { display: block; height: 100%; background: var(--tc); }
-  /* 친구 소식: 종이 띠 */
-  .feed { width: 335px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
-  .feed a { height: 50px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 9px; white-space: nowrap;
-    background: url('assets/onboarding/ob-paper-full.jpg') -20px -420px / 375px 812px, var(--paper); background-blend-mode: multiply; }
-  .feed .l { display: flex; gap: 6px; align-items: center; font-size: 12px; line-height: 19px; }
-  .feed .l img { width: 36px; height: 36px; }
-  .feed .l b { font-size: 13px; }
-  .chev { width: 18px; height: 18px; }
-  .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+  .sort { display: flex; align-items: center; gap: 5px; font: inherit; font-size: 12px; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
   .sort img { width: 18px; height: 18px; transition: transform var(--dur) var(--ease); }
   .sort[aria-pressed="true"] img { transform: rotate(180deg); }
-  /* 배지 칸: 점선 PICO 마크 자리 + 받으면 스티커 (종이접기 면으로 접은 사물) */
-  .grid { width: 335px; margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 18px; }
+  /* 친구 소식: 종이 띠, 날짜는 오른쪽 */
+  .feed { width: 335px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .feed a { height: 50px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 8px; white-space: nowrap; color: inherit; text-decoration: none;
+    background: url('assets/onboarding/ob-paper-full.jpg') -20px -420px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .feed .l { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+  .feed .l img { width: 34px; height: 34px; }
+  .feed .d { font-size: 12px; opacity: .7; }
+  /* 배지 칸 3줄: 점선 PICO 마크 자리 + 받으면 스티커. 이름 아래 한 줄 (받음: 종류 · 날짜 / 아직: 진행 막대) */
+  .grid { width: 335px; margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 20px; }
   .grid:empty { display: none; }
   .bdg { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0; border: 0; background: none; font: inherit; color: var(--ink); cursor: pointer; text-align: center; }
   .bdg .slot { position: relative; width: 88px; height: 94px; }
   .bdg .slot > svg.sl { position: absolute; inset: 0; overflow: visible; }
   .bdg .art { position: absolute; left: 9px; top: 12px; width: 70px; height: 70px; overflow: visible;
     filter: drop-shadow(2.5px 0 0 #fffdf2) drop-shadow(-2.5px 0 0 #fffdf2) drop-shadow(0 2.5px 0 #fffdf2) drop-shadow(0 -2.5px 0 #fffdf2) drop-shadow(1.5px 2px 0 rgba(33,27,23,.3)); }
-  .bdg b { display: block; font-weight: 400; font-size: 13px; line-height: 1.3; white-space: nowrap; }
-  .bdg small { display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 11px; opacity: .75; white-space: nowrap; }
+  .bdg .tx { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100px; }
+  .bdg b { display: block; font-weight: 400; font-size: 13px; line-height: 16px; white-space: nowrap; }
+  .bdg small { display: flex; align-items: center; justify-content: center; gap: 3px; height: 12px; font-size: 11px; opacity: .75; white-space: nowrap; }
   .bdg small .mk { width: 11px; height: 12px; }
-  .bdg.locked b, .bdg.locked small { opacity: .5; }
+  .bdg .bar { display: flex; align-items: center; gap: 4px; height: 12px; font-size: 10.5px; }
+  .bdg .bar span { display: block; width: 52px; height: 8px; border: 1px dashed var(--ink); }
+  .bdg .bar span i { display: block; height: 100%; background: var(--tc); }
+  .bdg.locked b { opacity: .6; }
+
   /* PICO TIP: 도감 TIP과 같은 종이 띠 */
-  .tip { position: relative; margin-top: 26px; width: 375px; height: 110px; padding: 0 20px; border: 0; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
+  .tip { position: relative; margin-top: 30px; width: 375px; height: 110px; padding: 0 20px; border: 0; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
     background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply;
     display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 5px; text-align: left; font: inherit; color: var(--ink); cursor: pointer; }
   .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; white-space: nowrap; }
@@ -157,25 +156,23 @@
   </div>
 
   <div class="abs main" id="main">
-    <div class="head"><h1>내 배지북</h1><p>스티커 <b id="gotN">7개</b>를 모았어요 · 36개 중</p></div>
+    <div class="head"><p class="t">내 배지북</p><p class="n"><b id="gotN">7</b><span>/ 36개</span></p></div>
     <div class="ftabs" role="tablist" id="ftabs"></div>
-
-    <div class="sec"><p>다음에 받을 수 있어요</p></div>
-    <div class="reco" id="reco"></div>
-
-    <div class="sec"><p>친구들은 어떤 탐험을 했을까요?</p><span class="more">더 보기<img src="assets/icons/outline/arrow-right.svg" alt=""></span></div>
-    <div class="feed">
-      <a href="friend.html?friend=seongyu"><span class="l"><img src="assets/profile/river-m.svg" alt=""><span>09.19</span><span>선규가 <b>나비 박사</b> 배지를 받았어요.</span></span><img class="chev" src="assets/icons/outline/arrow-right.svg" alt=""></a>
-      <a href="friend.html"><span class="l"><img src="assets/profile/tree-m.svg" alt=""><span>09.21</span><span>민지가 <b>공원 탐험가</b> 배지를 받았어요.</span></span><img class="chev" src="assets/icons/outline/arrow-right.svg" alt=""></a>
-    </div>
-
-    <div class="sec"><p>배지 목록</p>
-      <button class="sort" id="sort" aria-pressed="false" style="border:0;background:none;font:inherit;color:inherit;padding:0"><span>최근순</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button></div>
+    <div class="sec"><p id="secT">모은 배지</p>
+      <button class="sort" id="sort" aria-pressed="false"><span>최근순</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button></div>
     <div class="grid" id="grid1"></div>
+
     <button class="tip" type="button" data-open="qr" aria-label="PICO TIP · 친구 QR 찍기">
       <span class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO TIP</span>
       <span class="d"><span>친구와 직접 만나서 QR을 찍어 보세요.</span><span>친구랑 같이 관찰하면 '함께 발견' 배지를 받아요.</span></span>
     </button>
+    <div class="sec"><p>친구 소식</p><a class="more" href="friend.html">더 보기<img src="assets/icons/outline/arrow-right.svg" alt=""></a></div>
+    <div class="feed">
+      <a href="friend.html?friend=seongyu"><span class="l"><img src="assets/profile/river-m.svg" alt=""><span><b>선규</b>가 <b>나비 박사</b> 배지를 받았어요.</span></span><span class="d">09.19</span></a>
+      <a href="friend.html"><span class="l"><img src="assets/profile/tree-m.svg" alt=""><span><b>민지</b>가 <b>공원 탐험가</b> 배지를 받았어요.</span></span><span class="d">09.21</span></a>
+    </div>
+
+    <div class="sec"><p>아직 못 받은 배지</p></div>
     <div class="grid" id="grid2"></div>
   </div>
 
@@ -290,18 +287,13 @@
   // [이름, 종류, 그림, 날짜 또는 얻는 방법]
   var earned = [['첫 발견', 'find', 'leaf', '09.12'], ['10종 탐험가', 'find', 'star', '09.19'], ['LOOK 관찰자', 'special', 'eye', '09.20'], ['첫 그림', 'special', 'pencil', '09.21'],
     ['비 온 뒤', 'explore', 'drop', '10.04'], ['함께 발견', 'special', 'heart', '10.06'], ['25종 탐험가', 'find', 'star', '10.09']];
-  var lockedTop = [['나비 박사', 'find', '나비류 10종만 더'], ['렌즈 마스터', 'explore', '한 장소에서 5종']];
-  var lockedBottom = [['아침 탐험가', 'explore', '아침 10시 전 탐험'], ['새로운 장소', 'explore', '새로운 장소 1곳 더'], ['그림 15장', 'special', '6장 더 그려요'],
-    ['해 질 녘 탐험가', 'explore', '오후 5시 이후 탐험'], ['공원 탐험가', 'explore', '새로운 공원 3곳 더'], ['물가 탐험가', 'explore', '연못, 개울 근처'],
-    ['사계절 탐험가', 'explore', '모든 계절 탐험'], ['가을 탐험', 'explore', '가을에 곤충 3번 더'], ['학교 탐험가', 'explore', '학교 안에서 탐험']];
-  document.getElementById('gotN').textContent = earned.length + '개';
 
-  // 다음에 받을 수 있어요 (얻는 중인 배지)
-  var reco = [['나비 박사', 'find', '나비류 10종 만나기', 6, 10], ['렌즈 마스터', 'explore', '한 장소에서 5종 만나기', 3, 5], ['공원 탐험가', 'explore', '새로운 공원 3곳 가 보기', 1, 3]];
-  document.getElementById('reco').innerHTML = reco.map(function (r) {
-    return '<div class="reco-row" data-open="locked" style="--tc:' + CAT[r[1]][1] + '">' + mk(r[1]) + '<span class="t"><b>' + r[0] + '</b><span>' + r[2] + '</span></span>' +
-      '<span class="bar" role="img" aria-label="' + r[4] + '번 중 ' + r[3] + '번"><i style="width:' + Math.round(r[3] / r[4] * 100) + '%"></i></span></div>';
-  }).join('');
+  // 아직 못 받은 배지: [이름, 종류, 얻는 방법, 지금, 목표] — 가까운 것부터
+  var locked = [['나비 박사', 'find', '나비류 10종 만나기', 6, 10], ['그림 15장', 'special', '그림 15장 그리기', 9, 15], ['렌즈 마스터', 'explore', '한 장소에서 5종', 3, 5],
+    ['공원 탐험가', 'explore', '새로운 공원 3곳', 1, 3], ['가을 탐험', 'explore', '가을에 곤충 3번', 1, 3], ['아침 탐험가', 'explore', '아침 10시 전 탐험', 0, 1],
+    ['해 질 녘 탐험가', 'explore', '오후 5시 이후 탐험', 0, 1], ['물가 탐험가', 'explore', '연못, 개울 근처', 0, 1], ['사계절 탐험가', 'explore', '모든 계절 탐험', 1, 4],
+    ['학교 탐험가', 'explore', '학교 안에서 탐험', 0, 1], ['새로운 장소', 'explore', '새로운 장소 1곳', 0, 1]];
+  document.getElementById('gotN').textContent = earned.length;
 
   // 전체 · 발견 · 탐험 · 특별
   var filter = 'all', oldest = false;
@@ -315,17 +307,18 @@
   }
   ft.addEventListener('click', function (e) { var b = e.target.closest('.ftab'); if (!b) return; filter = b.getAttribute('data-f'); drawTabs(); render(); });
   function tileE(b) {
-    return '<button class="bdg" data-open="earned" data-art="' + b[2] + '" data-name="' + b[0] + '"><span class="slot">' + slot(b[2], true) + '</span><span><b>' + b[0] + '</b><small>' + mk(b[1]) + CAT[b[1]][0] + ' · ' + b[3] + '</small></span></button>';
+    return '<button class="bdg" data-open="earned" data-art="' + b[2] + '" data-name="' + b[0] + '"><span class="slot">' + slot(b[2], true) + '</span><span class="tx"><b>' + b[0] + '</b><small>' + mk(b[1]) + CAT[b[1]][0] + ' · ' + b[3] + '</small></span></button>';
   }
   function tileL(b) {
-    return '<button class="bdg locked" data-open="locked" data-name="' + b[0] + '"><span class="slot">' + slot(null, false) + '</span><span><b>' + b[0] + '</b><small>' + b[2] + '</small></span></button>';
+    return '<button class="bdg locked" data-open="locked" data-name="' + b[0] + '" style="--tc:' + CAT[b[1]][1] + '" aria-label="' + b[0] + ' · ' + b[2] + ' · ' + b[4] + '번 중 ' + b[3] + '번"><span class="slot">' + slot(null, false) + '</span><span class="tx"><b>' + b[0] + '</b>' +
+      '<span class="bar"><span><i style="width:' + Math.round(b[3] / b[4] * 100) + '%"></i></span>' + b[3] + '/' + b[4] + '</span></span></button>';
   }
   var g1 = document.getElementById('grid1'), g2 = document.getElementById('grid2'), phone = document.querySelector('.phone'), main = document.getElementById('main');
   function keep(b) { return filter === 'all' || b[1] === filter; }
   function render() {
     var e = (oldest ? earned.slice().reverse() : earned).filter(keep);
-    g1.innerHTML = e.map(tileE).join('') + lockedTop.filter(keep).map(tileL).join('');
-    g2.innerHTML = lockedBottom.filter(keep).map(tileL).join('');
+    g1.innerHTML = e.map(tileE).join('');
+    g2.innerHTML = locked.filter(keep).map(tileL).join('');
     phone.style.setProperty('--h', Math.max(812, Math.ceil(main.offsetTop + main.offsetHeight + 130)) + 'px');
   }
   drawTabs(); render();
