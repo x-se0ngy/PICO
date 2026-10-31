@@ -124,7 +124,12 @@ img { display: block; }
    누르면 세로 접는 선을 따라 ½, 가로 접는 선을 따라 ¼로 접힌 뒤 촬영 화면으로 넘어가요.
    종이 = 50×50 정사각형을 60° 돌린 것, 4조각(q)으로 나눠 각 조각이 앞·뒷면을 가져요. */
 :root { --fold-ms: 400ms; --fold-ease: ease-in-out; }   /* 두 번 접고 약 0.7초 · ease in-out */
-.tab-cam.is-origami::before, .tab-cam.is-origami > img { display: none; }
+.tab-cam.is-origami > img { display: none; }
+/* 뒤에 한 장 더 (Figma 3261:7742): 71.61° 기울어진 종이가 접을 종이 밑에 깔려 있어요 — 앱 곳곳의 "종이 두 장"과 같은 언어.
+   접기 시작하면 밑장은 살짝 사라지고 위 종이만 접혀요. */
+.tab-cam.is-origami::before { transform: rotate(71.61deg); transition: opacity 200ms ease;
+  background: url('assets/onboarding/ob-paper-full.jpg') -150px -700px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+.tab-cam.is-origami:has(.paper.f1)::before { opacity: 0; }
 .tab-cam .origami { position: absolute; left: -0.683px; top: -0.683px; width: 70px; height: 70px; perspective: 240px; transition: transform 120ms ease; }
 .tab-cam:active .origami { transform: scale(.95); }
 .tab-cam .paper { position: absolute; left: 9.83px; top: 9.83px; width: 50px; height: 50px; transform-style: preserve-3d;
