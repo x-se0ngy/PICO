@@ -84,6 +84,8 @@ img { display: block; }
 
 /* Figma Warm-Up 종이 바탕: 회색조 종이 질감을 #FFFCE4 위에 multiply (온보딩과 같은 방식) */
 .phone.warm { background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px no-repeat, var(--paper); background-blend-mode: multiply; }
+/* 설정 · 도감처럼 바탕은 종이 결 없이 크림색 한 가지 (Figma 3198:8826 · 3245:16807 …). 종이 결은 버튼 · 카드 · 진행 칸 같은 '종이'에만 */
+.phone.flat { background: var(--paper); }
 
 /* ---------- status bar + top nav ---------- */
 .top { position: absolute; left: 0; top: 0; width: 375px; z-index: 5; }
