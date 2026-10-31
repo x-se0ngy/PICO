@@ -61,7 +61,8 @@
   .c-cyan { --tc: var(--rule-cyan); } .c-pink { --tc: var(--rule-pink); }
   .icard .label, .utile .label { position: absolute; left: -.66px; top: -.07px; width: 162.5px; height: 53.14px; transform: rotate(1.97deg); border: 1px solid var(--ink);
     background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--paper); background-blend-mode: multiply; }
-  .icard .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; }
+  /* 오른쪽 위 단계 표시 (Figma 3279:22931): 세모 깃발 → PICO 마크(오각형). 위 수집 현황의 단계 마크와 같은 모양이라 카드 색 = 단계로 읽혀요 */
+  .icard .flag { position: absolute; left: 138.53px; top: 3.99px; width: 25.38px; height: 27.31px; overflow: visible; transform: rotate(4.21deg); }
   .icard .meta { position: absolute; left: 12px; top: 7px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
   .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .icard .meta span { display: block; font-size: 12px; line-height: normal; white-space: nowrap; }
@@ -205,8 +206,8 @@
     if (src) return '<img src="' + src + '" alt="내가 그린 ' + it.name + '">';
     return window.PicoField ? PicoField.doodle(it.doodle) : '';
   }
-  // 오른쪽 위 깃발 (Figma Rectangle 556): 단계 색 삼각형
-  var FLAG = '<svg class="flag" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
+  // 오른쪽 위 단계 마크 (Figma Mark/Center): 단계 색 오각형
+  var FLAG = '<svg class="flag" viewBox="0 0 25.38 27.31" aria-hidden="true"><polygon points="5.28,0.5 23.1,7.7 24.88,22.94 8,26.81 0.5,12.37" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
   function cardHTML(it) {
     return '<a class="icard' + (it.c ? ' c-' + it.c : '') + '" href="dogam-detail.html" data-name="' + it.name + '">' +
       '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
