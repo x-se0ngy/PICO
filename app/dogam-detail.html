@@ -73,7 +73,8 @@
   .rel .q { position: absolute; left: 24px; top: 24px; width: 32px; height: 32.1px; }
   /* 내가 그린 그림이 화면을 돌아다녀요. 누르면 놀라서 도망가요 */
   .roam { position: absolute; inset: 0; z-index: 12; pointer-events: none; overflow: hidden; }
-  .bug { position: absolute; left: 0; top: 0; width: 64px; height: 64px; padding: 0; pointer-events: auto; will-change: transform; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .bug { position: absolute; left: 0; top: 0; width: 64px; height: 64px; padding: 0; pointer-events: auto; will-change: transform; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: none; }   /* 버튼 공통 0.5초 전환이 위치에 걸리면 처음에 왼쪽 위에서 한 번 더 뛰어 들어와요 → 위치는 매 프레임 직접 움직이니 전환 없음
   .bug .body { display: block; width: 64px; height: 64px; animation: bug-bob 1.6s ease-in-out infinite; }
   .bug .flip { display: block; width: 64px; height: 64px; transition: transform .18s ease; }
   .bug svg, .bug img { display: block; width: 64px; height: 64px; filter: drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
@@ -199,7 +200,7 @@
     function rnd(a, b) { return a + Math.random() * (b - a); }
     function area() { var w = layer.clientWidth || 375, h = layer.clientHeight || 812; return { x0: 8, x1: w - 72, y0: 112, y1: h - 100 }; }
     function rand() { var A = area(); return { x: rnd(A.x0, A.x1), y: rnd(A.y0, A.y1) }; }
-    var pos = FROM || { x: 230, y: 330 }, to = rand(), wait = FROM ? 1100 : 700, speed = 20, fleeing = false;   // 막 내려앉았으면 잠깐 숨 돌리고 출발
+    var pos = FROM || { x: 230, y: 330 }, to = rand(), wait = FROM ? 250 : 700, speed = 20, fleeing = false;   // 목록에서 내려앉은 자리에서 바로 기어가기 시작
     function place() { el.style.transform = 'translate(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px)'; }
     place();
 
