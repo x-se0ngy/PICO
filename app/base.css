@@ -4,16 +4,14 @@
 @font-face {
   font-family: 'Allimjang';
   font-weight: 400;
-  font-display: swap;
-  src: url('fonts/HakgyoansimAllimjangTTF-R.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimAllimjangTTF-R.woff2') format('woff2');
+  font-display: block;   /* 화면마다 기본 글꼴이 먼저 보였다 바뀌는 깜빡임 없이: 미리 받아 둔(preload) 글꼴로 바로 그려요 */
+  src: url('fonts/HakgyoansimAllimjangTTF-R.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Allimjang';
   font-weight: 700;
-  font-display: swap;
-  src: url('fonts/HakgyoansimAllimjangTTF-B.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimAllimjangTTF-B.woff2') format('woff2');
+  font-display: block;
+  src: url('fonts/HakgyoansimAllimjangTTF-B.woff2') format('woff2');
 }
 
 /* 손글씨 (Figma SejongGeulggot): 관찰 일기 · 도감 기록 · 달력 기록 · 팝업 손글씨 제목 */
@@ -25,7 +23,7 @@
 }
 
 :root {
-  --font-hand: 'SejongGeulggot', 'Allimjang', 'Pretendard', sans-serif;
+  --font-hand: 'SejongGeulggot', 'Allimjang', 'Apple SD Gothic Neo', sans-serif;
   --bg: #fdf4b1;            /* background/default */
   --surface: #fffad7;       /* surface/default */
   --brand: #b1bd35;         /* surface/brand, olive/500 */
@@ -34,8 +32,8 @@
   --ink: #211b17;             /* text/primary, border/strong */
   --ink-950: #121212;
   --dim: rgba(0, 0, 0, .45);
-  --font: 'Allimjang', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-  --font-ui: 'Inter', -apple-system, sans-serif;
+  --font: 'Allimjang', 'Apple SD Gothic Neo', sans-serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;   /* 상태바 9:41 — 밖에서 글꼴을 받아 오지 않게 기기 글꼴 */
   /* Figma Warm-Up 새 토큰 */
   --paper: #fffce4;          /* 종이 바탕 */
   --lime: #c1f8ad;           /* Figma Warm-Up 아이덴티티 (3245:…): 부드러운 연두 · 큰 버튼 · 고른 카드 · 진행 표시 */
