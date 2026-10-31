@@ -110,6 +110,14 @@
   .nav-q input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }   /* 파란 기본 X 대신 돋보기로 닫아요 */
   .phone.searching .nav-q input::placeholder { color: transparent; }
   .phone.searching .list { top: 130px; }
+
+  /* 카드를 누르면: 사진첩 속 그림이 폴라로이드에서 톡 튀어나와 스티커가 되고, 그대로 상세 화면으로 넘어가 돌아다녀요.
+     목록에서는 가만히(찾고 고르는 화면), 열었을 때만 살아나요. 두 화면의 그림은 같은 이름(pico-bug)이라 화면이 바뀌어도 이어져요. */
+  .hop-out { position: absolute; left: 0; top: 0; width: 64px; height: 64px; z-index: 14; pointer-events: none; will-change: transform; }
+  .hop-out svg, .hop-out img { display: block; width: 64px; height: 64px; filter: drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
+  .hop-out img { object-fit: contain;
+    filter: drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff) drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
+  .icard.hopping .album .pic > * { opacity: 0; transition: opacity .1s; }
 </style>
 </head><body>
 <div class="phone warm" style="--h:1974px">
@@ -254,6 +262,44 @@
     if (e.key === 'Escape' && phone.classList.contains('searching')) history.back();
   });
   window.addEventListener('popstate', function () { if (phone.classList.contains('searching')) setSearch(false); });
+
+  // ---------- 카드 누르기: 그림이 폴라로이드에서 튀어나와 상세로 ----------
+  var reduceMo = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  list.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.icard'); if (!a) return;
+    var name = a.getAttribute('data-name'), it = insects.filter(function (x) { return x.name === name; })[0]; if (!it) return;
+    var url = 'dogam-detail.html?name=' + encodeURIComponent(name) + '&bug=' + it.doodle;
+    var art = a.querySelector('.album .pic > *');
+    if (reduceMo || !art || !window.PicoField) { a.href = url; return; }
+    e.preventDefault();
+    if (a.classList.contains('hopping')) return;
+    var R = phone.getBoundingClientRect(), k = R.width / 375 || 1, r = art.getBoundingClientRect();
+    var sx = (r.left + r.width / 2 - R.left) / k - 32, sy = (r.top + r.height / 2 - R.top) / k - 32;
+    // 폴라로이드에서 위로 톡 튀어 올랐다가 카드 앞쪽에 착 내려앉아요
+    var lx = clamp(sx - 56, 12, 300), ly = clamp(sy + 46, 130, 640);
+    var src = mine[name.replace(/\s+/g, '')];
+    var fly = document.createElement('div'); fly.className = 'hop-out'; fly.setAttribute('aria-hidden', 'true');
+    fly.innerHTML = src ? '<img src="' + src + '" alt="">' : PicoField.sticker(it.doodle);
+    phone.appendChild(fly); a.classList.add('hopping');
+    function T(x, y, r, s, sy2) { return { transform: 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + r + 'deg) scale(' + s + ',' + (sy2 || s) + ')' }; }
+    var anim = fly.animate([
+      T(sx, sy, 2, .5),
+      T(sx - 4, sy - 22, -10, .82, .9),                                   // 쏙 빠져나오며 커져요
+      T((sx + lx) / 2, Math.min(sy, ly) - 40, -16, 1),                    // 위로 톡
+      Object.assign(T(lx, ly, 0, 1.08, .9), { offset: .82 }),            // 착지 (살짝 눌려요)
+      T(lx, ly, 0, 1)
+    ], { duration: 560, easing: 'ease-in-out', fill: 'forwards' });
+    anim.onfinish = function () {
+      fly.style.viewTransitionName = 'pico-bug';
+      location.href = url + '&x=' + Math.round(lx) + '&y=' + Math.round(ly);
+    };
+  });
+  // 상세에서 뒤로 돌아왔을 때(페이지 캐시) 그림을 사진첩에 되돌려 놓아요
+  window.addEventListener('pageshow', function () {
+    document.querySelectorAll('.hop-out').forEach(function (n) { n.remove(); });
+    document.querySelectorAll('.icard.hopping').forEach(function (n) { n.classList.remove('hopping'); });
+  });
 
   // sort: 최근순 <-> 오래된순
   var sort = document.getElementById('sort');
