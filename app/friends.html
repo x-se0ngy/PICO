@@ -79,37 +79,20 @@
   .tipx .h img { width: 32px; height: 32px; }
   .tipx ol { margin: 0; padding-left: 21px; font-size: 14px; line-height: 1.21; }
 
-  /* 같은 곤충, 다른 관찰: 친구도 만난 곤충만 줄에 · 고르면 친구 쪽지 ↔ 내 관찰 */
-  .same { margin-top: 25px; }
-  .ins-row { margin-top: 14px; display: flex; gap: 14px; padding: 6px 20px 2px; overflow-x: auto; scrollbar-width: none; }
-  .ins-row::-webkit-scrollbar { display: none; }
-  .ins { flex: none; width: 54px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; }
-  .ins .ph { position: relative; width: 54px; height: 54px; border: 1px solid var(--ink); overflow: hidden; background: #fff; }
-  .ins.on .ph { box-shadow: none; }
-  .ins .wrap, .ins .ph { display: block; }
-  .ins .wrap { position: relative; width: 54px; height: 54px; }
-  .ins.on .wrap::before { content: ''; position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-5deg); }
-  .ins span { font-size: 11px; white-space: nowrap; }
-  .ins.on span { font-weight: 700; }
-  .cmp { margin: 16px 20px 0; display: flex; justify-content: space-between; }
-  .cmp .card { position: relative; width: 160px; height: 196px; }
-  .cmp .card::before { content: ''; position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.4deg); display: none; }
-  .cmp .card.mine::before { display: block; }
-  .cmp .paper { position: absolute; inset: 0; background: #fff; border: 1px solid var(--ink); overflow: hidden; }
-  .cmp .card:first-child .paper { transform: rotate(-1.5deg); }
-  .cmp .card.mine .paper { transform: rotate(1.2deg); }
-  .cmp .paper i { position: absolute; left: 0; right: 0; border-top: 1px solid var(--rule-cyan); }
-  .cmp .paper b { position: absolute; top: 0; bottom: 0; left: 21px; border-left: 1px solid var(--rule-pink); }
-  .cmp .who { position: absolute; left: 30px; top: 8px; display: flex; gap: 4px; align-items: center; font-size: 12px; }
-  .cmp .who svg { width: 13px; height: 14px; transform: rotate(-6deg); }
-  .cmp .dt { position: absolute; right: 10px; top: 10px; font-size: 11px; }
-  .cmp .ph { position: absolute; left: 30px; top: 38px; width: 64px; height: 64px; border: 1px solid var(--ink); overflow: hidden; transform: rotate(-3deg); }
-  .cmp .hd { position: absolute; left: 30px; top: 110px; right: 8px; font-family: var(--font-hand); font-size: 15px; line-height: 28px; }
-  .cmp .pl { position: absolute; left: 30px; top: 172px; font-size: 11px; display: flex; align-items: center; gap: 2px; }
-  .cmp .pl img { width: 12px; height: 12px; }
+  /* 함께 하는 탐험: 종이 두 장 카드 + 점선 칸에 라임으로 채우는 막대 */
+  .coop { margin-top: 24px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 140px; }
+  .coop .sec-h { margin-bottom: 9px; }
+  .mis { position: relative; margin: 0 20px; height: 87px; }
+  .mis .back { position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.59deg) skewX(-1.36deg); }
+  .mis .pp { position: absolute; inset: 0; border: 1px solid var(--ink); background: url('assets/onboarding/ob-paper-full.jpg') -20px -300px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .mis .who { position: absolute; left: 17px; top: 15.6px; font-size: 11px; }
+  .mis .ttl { position: absolute; left: 17px; top: 32.8px; font-weight: 700; font-size: 15px; white-space: nowrap; }
+  .mis .cnt { position: absolute; right: 17px; top: 32.8px; font-size: 15px; }
+  .mis .bar { position: absolute; left: 18.4px; right: 18.4px; top: 58.8px; height: 13px; border: 1px dashed var(--ink); }
+  .mis .bar i { display: block; height: 100%; background: var(--lime); }
 </style>
 </head><body>
-<div class="phone flat" style="--h:1340px">
+<div class="phone flat" style="--h:1300px">
 
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
@@ -145,11 +128,21 @@
       <ol><li>쪽지는 직접 만난 친구와만 주고받아요.</li><li>쪽지를 펼치면 친구가 간 곳이 생겨요.</li><li>오늘 본 곤충으로 먼저 쪽지를 접어 보세요.</li></ol>
     </div></div>
 
-    <!-- 같은 곤충, 다른 관찰 -->
-    <div class="same">
-      <div class="sec-h"><span>같은 곤충, 다른 관찰</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></div>
-      <div class="ins-row" id="ins"></div>
-      <div class="cmp" id="cmp"></div>
+    <!-- 함께 하는 탐험 (Figma 3355:6661 · 3359:5854~5856) -->
+    <div class="coop">
+      <div class="sec-h"><span>함께 하는 탐험</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></div>
+      <div class="mis"><span class="back" aria-hidden="true"></span><div class="pp">
+        <p class="who">민지와 함께</p><p class="ttl">꽃밭에서 나비 3마리 함께 찾기</p><b class="cnt">1 / 3</b>
+        <div class="bar" role="img" aria-label="3마리 중 1마리"><i style="width:33.3%"></i></div>
+      </div></div>
+      <div class="mis"><span class="back" aria-hidden="true"></span><div class="pp">
+        <p class="who">지혁와 함께</p><p class="ttl">비 온 뒤 달팽이 2마리 함께 찾기</p><b class="cnt">0 / 2</b>
+        <div class="bar" role="img" aria-label="2마리 중 0마리"><i style="width:0.0%"></i></div>
+      </div></div>
+      <div class="mis"><span class="back" aria-hidden="true"></span><div class="pp">
+        <p class="who">지혁와 함께</p><p class="ttl">잠자리 5마리 함께 찾기</p><b class="cnt">2 / 5</b>
+        <div class="bar" role="img" aria-label="5마리 중 2마리"><i style="width:40.0%"></i></div>
+      </div></div>
     </div>
   </div>
 
@@ -179,12 +172,12 @@
   try { var s = JSON.parse(localStorage.getItem('pico.friendsOpened') || 'null'); if (s) opened = s; } catch (e) {}
   var cur = 'seongyu';
 
-  function closedEnv(c, dashed) {
+  function closedEnv(c, dashed, plain) {
     var d = dashed ? ' stroke-dasharray="7 5"' : '', f = dashed ? 'none' : c, b = dashed ? 'none' : '#fffce4';
     return '<svg class="c" viewBox="0 0 120 88" aria-hidden="true"><rect x="4" y="4" width="112" height="80" fill="' + b + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"' + d + '/>' +
       '<polyline points="4,84 60,46 116,84" fill="none" stroke="' + INK + '" stroke-width="2.2" stroke-linejoin="round"' + d + '/>' +
       '<polygon points="4,4 116,4 60,52" fill="' + f + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"' + d + '/>' +
-      (dashed ? '<path d="M60 58v18M51 67h18" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/>' :
+      (plain ? '' : dashed ? '<path d="M60 58v18M51 67h18" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/>' :
       '<g transform="translate(60,52) rotate(-8)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="' + c + '" stroke="' + INK + '" stroke-width="1.8" stroke-linejoin="round"/></g>') + '</svg>';
   }
   function openEnv(f) {
@@ -202,7 +195,7 @@
       var isCur = f.id === cur, isNew = !opened[f.id];
       return '<button class="fr' + (isNew ? ' new' : '') + (isCur ? ' on' : '') + '" data-id="' + f.id + '" aria-pressed="' + isCur + '">' +
         '<span class="pic">' + (isCur ? openEnv(f) : closedEnv(f.c)) + '</span><span>' + f.name + '</span></button>';
-    }).join('') + '<a class="fr add" href="badge.html?state=qr"><span class="pic">' + closedEnv(null, true) + '</span><span>친구 추가</span></a>';
+    }).join('') + '<a class="fr add new" href="badge.html?state=qr"><span class="pic">' + closedEnv('#fffce4', false, true) + '</span><span>친구 추가</span></a>';
     var f = FRIENDS.filter(function (x) { return x.id === cur; })[0];
     var lines = '<span class="lines">' + [30.6, 58.6, 86.6, 114.6, 142.6].map(function (t) { return '<i style="top:' + t + 'px"></i>'; }).join('') + '<b></b></span>';
     letter.innerHTML = '<span class="tail"></span>' + lines +
@@ -220,31 +213,7 @@
     render(true);
   });
 
-  // 같은 곤충, 다른 관찰 — 친구도 만난 곤충만
-  var SAME = [
-    { img: 'card-butterfly', bug: '배추흰나비', f: FRIENDS[0], fs: ['날개 끝이', '까매'], fp: '학교 화단', fd: '10.31', ms: ['두 마리가', '같이 날았어'], mp: '우리 집 앞', md: '10.28' },
-    { img: 'card-ladybug', bug: '칠성무당벌레', f: FRIENDS[1], fs: ['점이', '일곱 개!'], fp: '놀이터 옆', fd: '10.30', ms: ['손등에', '올라왔어'], mp: '학교 화단', md: '10.21' },
-    { img: 'card-dragonfly', bug: '고추잠자리', f: FRIENDS[3], fs: ['꼬리가', '빨개'], fp: '개울가', fd: '10.27', ms: ['막대 끝에', '앉아 있었어'], mp: '공원', md: '10.19' },
-    { img: 'card-grasshopper', bug: '방아깨비', f: FRIENDS[2], fs: ['다리가', '엄청 길어'], fp: '풀숲', fd: '10.29', ms: ['초록색이라', '안 보였어'], mp: '할머니 댁', md: '10.12' },
-    { img: 'card-waterstrider', bug: '소금쟁이', f: FRIENDS[0], fs: ['물 위를', '걸어 다녀'], fp: '연못', fd: '10.18', ms: ['다리 여섯 개', '세어 봤어'], mp: '연못', md: '10.18' }
-  ];
-  var si = 0, ins = document.getElementById('ins'), cmp = document.getElementById('cmp');
-  var RULES = [38, 66, 94, 122, 150, 178].map(function (t) { return '<i style="top:' + t + 'px"></i>'; }).join('') + '<b></b>';
-  function card(mine, who, c, s, p, d, img) {
-    return '<div class="card' + (mine ? ' mine' : '') + '"><div class="paper">' + RULES +
-      '<p class="who">' + mark(c) + who + '</p><p class="dt">' + d + '</p><span class="ph">' + photo(img) + '</span>' +
-      '<p class="hd">' + s.join('<br>') + '</p><p class="pl"><img src="assets/icons/outline/location.svg" alt="">' + p + '</p></div></div>';
-  }
-  function renderSame() {
-    ins.innerHTML = SAME.map(function (x, i) {
-      return '<button class="ins' + (i === si ? ' on' : '') + '" data-i="' + i + '" aria-pressed="' + (i === si) + '"><span class="wrap"><span class="ph">' + photo(x.img) + '</span></span><span>' + x.bug + '</span></button>';
-    }).join('');
-    var x = SAME[si];
-    cmp.innerHTML = card(false, x.f.name, x.f.c, x.fs, x.fp, x.fd, x.img) + card(true, '나', LIME, x.ms, x.mp, x.md, x.img);
-  }
-  ins.addEventListener('click', function (e) { var b = e.target.closest('.ins'); if (!b) return; si = +b.dataset.i; renderSame(); });
-
-  function boot() { render(false); renderSame(); }
+  function boot() { render(false); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 0); }); else boot();
   window.addEventListener('resize', function () { render(false); });
 })();
