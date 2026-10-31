@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="/app/manifest.json">
+<meta name="theme-color" content="#fffad3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PICO">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>PICO · 친구</title>
+<link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="base.css">
+<style>
+  @media (min-width: 500px) { body { padding-bottom: 0; } }
+  .abs { position: absolute; }
+  .phone.flat { background: var(--paper); }
+  .top[data-fixed] { height: 118px; background: var(--paper); }
+
+  /* 친구 탭 (Figma 3355:5792) — 위: 종이 두 장 현황 + 쪽지 접기 / 가운데: 친구들의 발견 / 아래: PICO가 알려줘요 */
+  .st-back { left: 20px; top: 125.5px; width: 335px; height: 194.3px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.61deg) skewX(-1.36deg); }
+  .st { left: 20px; top: 125.5px; width: 335px; height: 194.3px; border: 1px solid var(--ink);
+    background: url('assets/onboarding/ob-paper-full.jpg') -20px -130px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .stat { top: 156.4px; display: flex; flex-direction: column; gap: 4px; white-space: nowrap; }
+  .stat .n { display: flex; align-items: flex-end; gap: 4px; }
+  .stat b { font-weight: 700; font-size: 36px; line-height: 36px; }
+  .stat .u { font-size: 14px; line-height: 20px; }
+  .stat .l { font-size: 12px; }
+  .s1 { left: 45.4px; } .s2 { left: 110.4px; } .s3 { left: 196.6px; }
+  .rule { left: 31.1px; top: 243.1px; width: 309.8px; border-top: 1px dashed var(--ink); }
+  /* 접는 선이 그어진 종이 = 쪽지를 접을 준비 */
+  .fold { left: 22.1px; top: 259px; width: 46.6px; height: 46.5px; display: flex; align-items: center; justify-content: center; }
+  .fold i { position: relative; width: 33px; height: 33px; background: #fff; border: 1px solid var(--ink); transform: rotate(-42.11deg); }
+  .fold i::before, .fold i::after { content: ''; position: absolute; left: 50%; top: -1px; bottom: -1px; border-left: 1px dashed var(--ink); }
+  .fold i::after { transform: rotate(90deg); }
+  .ask { left: 75.6px; top: 259.2px; font-weight: 700; font-size: 17px; line-height: normal; white-space: nowrap; }
+  .ask-d { left: 70.2px; top: 284.2px; font-size: 12px; white-space: nowrap; }
+  .fold-btn { left: 259.2px; top: 257.2px; width: 104px; height: 28px; }
+  .fold-btn::before { content: ''; position: absolute; inset: -1.6px -.4px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
+  .fold-btn span { position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; font-size: 12px; }
+  .fold-btn img { width: 14px; height: 14px; }
+
+  .finds { left: 0; top: 359.8px; width: 375px; display: flex; flex-direction: column; gap: 14px; }
+  .finds-h { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 16px; }
+  .finds-h img { width: 18px; height: 18px; transform: rotate(-90deg); }
+  .finds-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 0 25px; }
+  .fr { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; line-height: 19px; white-space: nowrap; }
+  .fr .env { display: block; width: 68px; height: 64px; overflow: visible; }
+  .fr.qr { height: 97px; justify-content: flex-end; gap: 23px; }
+  .fr .env-c { display: block; width: 58px; height: 43px; }
+
+  .tipx { left: 0; top: 554.4px; width: 375px; height: 129px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
+    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
+  .tipx-in { position: absolute; left: 21.8px; top: 15.6px; display: flex; flex-direction: column; gap: 5px; }
+  .tipx .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 16px; line-height: 1.3; }
+  .tipx .h img { width: 32px; height: 32px; }
+  .tipx ol { margin: 0; padding-left: 21px; font-size: 14px; line-height: 1.21; }
+</style>
+</head><body>
+<div class="phone flat" style="--h:812px">
+
+  <div class="top" data-fixed>
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="nav">
+      <img class="logo lg" src="assets/common/logo-mark.png" alt="PICO">
+      <img class="icon" src="assets/icons/outline/search.svg" alt="">
+    </div>
+  </div>
+
+  <!-- 현황 + 쪽지 접기 -->
+  <div class="abs st-back" aria-hidden="true"></div>
+  <div class="abs st"></div>
+  <div class="abs stat s1"><p class="n"><b>3</b><span class="u">명</span></p><p class="l">탐험 친구</p></div>
+  <div class="abs stat s2"><p class="n"><b>12</b><span class="u">장</span></p><p class="l">주고받은 쪽지</p></div>
+  <div class="abs stat s3"><p class="n"><b>5</b><span class="u">종</span></p><p class="l">같이 만난 곤충</p></div>
+  <div class="abs rule" aria-hidden="true"></div>
+  <div class="abs fold" aria-hidden="true"><i></i></div>
+  <p class="abs ask">먼저 쪽지를 접어 볼까요?</p>
+  <p class="abs ask-d">오늘 본 곤충을 담아 친구에게 보내요</p>
+  <a class="abs fold-btn" href="capture-card.html"><span>쪽지 접기<img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+
+  <!-- 친구들의 발견 -->
+  <section class="abs finds" aria-label="친구들의 발견">
+    <a class="finds-h" href="my.html"><span>친구들의 발견</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
+    <div class="finds-row"><a class="fr" href="friend.html?friend=seongyu"><svg class="env" viewBox="0 0 160 150" style="transform:rotate(8deg)" aria-hidden="true"><defs><clipPath id="ecseongyu"><rect x="0" y="0" width="94" height="80"/></clipPath></defs><polygon points="8,62 152,62 80,8" fill="#f8addb" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><rect x="8" y="62" width="144" height="80" fill="#f8addb" stroke="#211b17" stroke-width="2.4"/><g transform="translate(36,24) rotate(-9 47 40)"><g clip-path="url(#ecseongyu)"><image href="assets/tabs/card-butterfly.png" x="-20" y="-40" width="134" height="120" preserveAspectRatio="xMidYMax slice"/></g><rect x="0" y="0" width="94" height="80" fill="none" stroke="#211b17" stroke-width="2.2"/></g><polygon points="8,62 80,110 152,62 152,142 8,142" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><line x1="8" y1="142" x2="68" y2="102" stroke="#211b17" stroke-width="2"/><line x1="152" y1="142" x2="92" y2="102" stroke="#211b17" stroke-width="2"/><g transform="translate(80,110) rotate(-8) scale(1.1)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#f8addb" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg><span>유선규</span></a><a class="fr" href="friend.html?friend=saon"><svg class="env" viewBox="0 0 160 150" style="transform:rotate(-7deg)" aria-hidden="true"><defs><clipPath id="ecsaon"><rect x="0" y="0" width="94" height="80"/></clipPath></defs><polygon points="8,62 152,62 80,8" fill="#add2f8" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><rect x="8" y="62" width="144" height="80" fill="#add2f8" stroke="#211b17" stroke-width="2.4"/><g transform="translate(36,24) rotate(-9 47 40)"><g clip-path="url(#ecsaon)"><image href="assets/tabs/card-ladybug.png" x="-20" y="-40" width="134" height="120" preserveAspectRatio="xMidYMax slice"/></g><rect x="0" y="0" width="94" height="80" fill="none" stroke="#211b17" stroke-width="2.2"/></g><polygon points="8,62 80,110 152,62 152,142 8,142" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><line x1="8" y1="142" x2="68" y2="102" stroke="#211b17" stroke-width="2"/><line x1="152" y1="142" x2="92" y2="102" stroke="#211b17" stroke-width="2"/><g transform="translate(80,110) rotate(-8) scale(1.1)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#add2f8" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg><span>민사온</span></a><a class="fr" href="friend.html?friend=haram"><svg class="env" viewBox="0 0 160 150" style="transform:rotate(9deg)" aria-hidden="true"><defs><clipPath id="echaram"><rect x="0" y="0" width="94" height="80"/></clipPath></defs><polygon points="8,62 152,62 80,8" fill="#c1f8ad" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><rect x="8" y="62" width="144" height="80" fill="#c1f8ad" stroke="#211b17" stroke-width="2.4"/><g transform="translate(36,24) rotate(-9 47 40)"><g clip-path="url(#echaram)"><image href="assets/tabs/card-grasshopper.png" x="-20" y="-40" width="134" height="120" preserveAspectRatio="xMidYMax slice"/></g><rect x="0" y="0" width="94" height="80" fill="none" stroke="#211b17" stroke-width="2.2"/></g><polygon points="8,62 80,110 152,62 152,142 8,142" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><line x1="8" y1="142" x2="68" y2="102" stroke="#211b17" stroke-width="2"/><line x1="152" y1="142" x2="92" y2="102" stroke="#211b17" stroke-width="2"/><g transform="translate(80,110) rotate(-8) scale(1.1)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#c1f8ad" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg><span>정하람</span></a><a class="fr qr" href="badge.html?state=qr"><svg class="env-c" viewBox="0 0 120 88" aria-hidden="true"><rect x="4" y="4" width="112" height="80" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><polyline points="4,84 60,46 116,84" fill="none" stroke="#211b17" stroke-width="2.2" stroke-linejoin="round"/><polygon points="4,4 116,4 60,52" fill="#add2f8" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(60,52) rotate(-8) scale(1.0)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#add2f8" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg><span>QR로 추가</span></a></div>
+  </section>
+
+  <!-- PICO가 알려줘요 -->
+  <div class="abs tipx"><div class="tipx-in">
+    <p class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO가 알려줘요 !</p>
+    <ol><li>쪽지는 직접 만난 친구와만 주고받아요.</li><li>쪽지를 펼치면 친구가 간 곳이 생겨요.</li><li>오늘 본 곤충으로 먼저 쪽지를 접어 보세요.</li></ol>
+  </div></div>
+
+  <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
+    <div class="tabbar-row">
+      <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/icons/outline/home.svg" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감"><img src="assets/icons/outline/tag.svg" alt=""><span>도감</span></a></div>
+      <a class="tab-cam" href="capture-1.html" aria-label="관찰"><img src="assets/common/tab-camera.png" alt=""><span class="tab-cam-label">관찰</span></a>
+      <div class="tabbar-group"><a href="friends.html" aria-label="배지" aria-current="page"><img src="assets/icons/outline/bookmark.svg" alt=""><span>배지</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
+    </div></nav>
+
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+</body></html>
