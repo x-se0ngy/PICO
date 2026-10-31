@@ -244,26 +244,25 @@
   q.addEventListener('input', render);
 
   // 돋보기 → 찾기 화면 (로고 자리에 종이 칸, 도감 위·하단바는 숨김).
-  // 돋보기는 그대로 두고: 칸이 비었을 때 누르면 닫히고, 이름을 썼으면 키보드만 내려요. 뒤로 가기·Esc로도 닫혀요.
+  // 돋보기는 그대로 두고: 찾기 중에 다시 누르면 언제든 도감으로 돌아가요 (쓴 글은 지워져요). 뒤로 가기·Esc로도 닫혀요.
   var searchBtn = document.getElementById('searchBtn'), navQ = document.getElementById('navQ'), logo = document.getElementById('logo');
   function setSearch(open) {
     phone.classList.toggle('searching', open);
     navQ.hidden = !open; logo.hidden = open;
     searchBtn.setAttribute('aria-expanded', open);
-    searchBtn.setAttribute('aria-label', open ? (q.value ? '찾기' : '찾기 닫기') : '곤충 이름 찾기');
+    searchBtn.setAttribute('aria-label', open ? '찾기 닫기' : '곤충 이름 찾기');
     var sc = document.querySelector('.phone > .scroll'); if (sc) sc.scrollTop = 0; window.scrollTo(0, 0);
     if (open) q.focus(); else q.value = '';
     render();
   }
   searchBtn.addEventListener('click', function () {
     if (!phone.classList.contains('searching')) { history.pushState({ s: 1 }, ''); setSearch(true); }
-    else if (q.value) q.blur();
-    else history.back();
+    else closeSearch();   // 찾기 중엔 돋보기 = 나가기 (결과는 쓰는 대로 바로 나와서 따로 '찾기' 누를 필요가 없어요)
   });
-  q.addEventListener('input', function () { searchBtn.setAttribute('aria-label', q.value ? '찾기' : '찾기 닫기'); });
+  function closeSearch() { if (history.state && history.state.s) history.back(); else setSearch(false); }
   q.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') q.blur();
-    if (e.key === 'Escape' && phone.classList.contains('searching')) history.back();
+    if (e.key === 'Escape' && phone.classList.contains('searching')) closeSearch();
   });
   window.addEventListener('popstate', function () { if (phone.classList.contains('searching')) setSearch(false); });
 
