@@ -21,7 +21,9 @@
 
   /* 도감 (Figma Warm-Up 3244:5262): 상단바 아래 점선부터 바로 곤충 카드.
      카드 = 사진(160.5×141.6) 위에 이름표 라임 종이가 1.97° 기울어 붙고, 오른쪽에 내가 그린 그림을 끼운 작은 액자. */
-  .top[data-fixed] { height: 118px; background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px, var(--paper); background-blend-mode: multiply; }   /* 스크롤해도 상단바 뒤로 카드가 비치지 않게 */
+  /* 바탕은 종이 결 없이 크림색 한 가지 (Figma 3279:24356 Rectangle 86). 종이 결은 카드 이름표 · 수집 현황 · TIP · 하단바 같은 '종이'에만 */
+  .phone.flat { background: var(--paper); }
+  .top[data-fixed] { height: 118px; background: var(--paper); }   /* 스크롤해도 상단바 뒤로 카드가 비치지 않게 */   /* 스크롤해도 상단바 뒤로 카드가 비치지 않게 */
   /* 상단 아래 점선은 없어요 (Figma 3261:7422) — 종이 바탕만 깔아서 스크롤할 때 카드가 비치지 않게 */
   /* 수집 현황 (Figma 3261:7422): 종이 두 장 — 앞장 종이 + 뒤에 -1.8° 기울어진 연두 장 (큰 버튼·고른 카드와 같은 "내 것" 표시).
      접는 모서리는 넣지 않아요. 단계는 PICO 마크(오각형) 색 + 한 줄 설명 + 막대. */
@@ -131,7 +133,7 @@
   .icard.hopping .album .pic > * { opacity: 0; transition: opacity .1s; }
 </style>
 </head><body>
-<div class="phone warm" style="--h:1974px">
+<div class="phone flat" style="--h:1974px">
 
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
