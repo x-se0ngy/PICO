@@ -106,7 +106,7 @@ img { display: block; }
 /* Figma 하단바 (Warm-Up 3244:5262): 종이 바탕 위 점선 한 줄(y 700), 아이콘 + 이름.
    지금 탭은 아이콘 뒤에 라임 종이 조각(-7.11°)이 붙고, 가운데 관찰 네모는 선 위로 30px 올라와 있어요. */
 .tabbar { position: absolute; left: 0; bottom: 0; width: 375px; height: 120px; z-index: 20; pointer-events: none; }
-.tabbar-bg { position: absolute; left: 0; right: 0; top: 8.24px; bottom: 0; border-top: 1px dashed var(--ink);
+.tabbar-bg { position: absolute; left: 0; right: 0; top: 2px; bottom: 0; border-top: 1px dashed var(--ink);
   background: url('assets/onboarding/ob-paper-full.jpg') 0 -700px / 375px 812px, var(--paper); background-blend-mode: multiply; }
 .tabbar-row { position: absolute; left: 21.5px; top: 0; width: 332px; height: 72.3px; display: flex; align-items: flex-end; justify-content: space-between; }
 .tabbar-row a { pointer-events: auto; }
@@ -114,7 +114,7 @@ img { display: block; }
 .tabbar-group a { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 32px; }
 .tabbar-group img { position: relative; width: 32px; height: 32px; }
 .tabbar-group span { position: relative; font-size: 14px; line-height: 14px; white-space: nowrap; }
-.tabbar-group a[aria-current="page"]::before { content: ''; position: absolute; left: 50%; top: 16px; width: 45.92px; height: 31.39px; margin: -15.7px 0 0 -22.96px; background: var(--lime); transform: rotate(-7.11deg); }
+/* 고른 탭 (Figma 3261:7422): 아이콘을 꽉 채운 모양으로 — shared.js가 outline → filled로 바꿔요. 바탕 조각은 없어요 */
 .tab-cam { position: relative; width: 68.3px; height: 68.3px; display: block; align-self: flex-start; margin-top: -30px; }
 .tab-cam::before { content: ''; position: absolute; left: 9.15px; top: 9.15px; width: 50px; height: 50px; background: var(--paper); border: 1px dashed var(--ink); transform: rotate(60deg); }
 .tab-cam img { position: absolute; left: 18.15px; top: 17.75px; width: 32px; height: 32px; }

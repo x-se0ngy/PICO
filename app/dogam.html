@@ -22,12 +22,13 @@
   /* 도감 (Figma Warm-Up 3244:5262): 상단바 아래 점선부터 바로 곤충 카드.
      카드 = 사진(160.5×141.6) 위에 이름표 라임 종이가 1.97° 기울어 붙고, 오른쪽에 내가 그린 그림을 끼운 작은 액자. */
   .top[data-fixed] { height: 118px; background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px, var(--paper); background-blend-mode: multiply; }   /* 스크롤해도 상단바 뒤로 카드가 비치지 않게 */
-  .top[data-fixed]::after { content: ''; position: absolute; left: 0; right: 0; top: 118px; border-top: 1px dashed var(--ink); }
+  /* 상단 아래 점선은 없어요 (Figma 3261:7422) — 종이 바탕만 깔아서 스크롤할 때 카드가 비치지 않게 */
   /* 수집 현황 (Figma 3261:7422): 종이 두 장 — 앞장 종이 + 뒤에 -1.8° 기울어진 연두 장 (큰 버튼·고른 카드와 같은 "내 것" 표시).
      접는 모서리는 넣지 않아요. 단계는 PICO 마크(오각형) 색 + 한 줄 설명 + 막대. */
-  .sum-back { left: 20px; top: 144.74px; width: 335px; height: 134px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
-  .sum { left: 20px; top: 144.74px; width: 335px; height: 134px; background: var(--paper); border: 1px solid var(--ink); }
-  .sum-in { left: 31.49px; top: 157.53px; width: 312px; display: flex; flex-direction: column; gap: 8px; }
+  .sum-back { left: 20px; top: 129.87px; width: 335px; height: 134px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
+  .sum { left: 20px; top: 129.87px; width: 335px; height: 134px; border: 1px solid var(--ink);
+    background: url('assets/onboarding/ob-paper-full.jpg') -20px -130px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .sum-in { left: 31.49px; top: 142.66px; width: 312px; display: flex; flex-direction: column; gap: 8px; }
   .sum-t { font-size: 16px; line-height: normal; }
   .sum-n { display: flex; align-items: flex-end; gap: 6px; margin-top: 5px; white-space: nowrap; }
   .sum-n b { font-size: 40px; line-height: 40px; }
@@ -42,16 +43,16 @@
   .tier .bar i { display: block; height: 100%; background: var(--tc); }
 
   /* list section: one flowing column, matches Figma auto-layout (Frame 2147203380) */
-  .list { left: 0; top: 300px; width: 375px; display: flex; flex-direction: column; align-items: center; }
+  .list { left: 0; top: 285.3px; width: 375px; display: flex; flex-direction: column; align-items: center; }
   .list-head { width: 335px; height: 19px; display: flex; justify-content: space-between; align-items: flex-start; }
   .list-head p { font-size: 16px; line-height: 19px; }
   .sort { display: flex; align-items: center; gap: 5px; font-size: 12px; }
   .sort img { width: 18px; height: 18px; transition: transform var(--dur) var(--ease); }
   .sort[aria-pressed="true"] img { transform: rotate(180deg); }
 
-  .cards { display: grid; grid-template-columns: 160.54px 160.54px; column-gap: 10.2px; row-gap: 16.7px; width: 331.3px; }
-  .cards--top { margin-top: 10px; }
-  .cards--rest { margin-top: 36px; }
+  .cards { display: grid; grid-template-columns: 160.54px 160.54px; column-gap: 14.4px; row-gap: 27.56px; width: 335.48px; }   /* Figma 3279:24356: 줄 간격 169.16 */
+  .cards--top { margin-top: 17.03px; }
+  .cards--rest { margin-top: 22.03px; }
   .cards:empty { display: none; }
   .icard { position: relative; width: 160.54px; height: 141.6px; display: block; }
   .icard .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); transform: rotate(.18deg); }
@@ -63,8 +64,8 @@
     background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--paper); background-blend-mode: multiply; }
   /* 오른쪽 위 (Figma 3251:17848): 이름표 귀퉁이를 접어 내린 모양. 이름표 모서리는 접힌 선을 따라 잘려 사진이 보이고,
      접힌 세모(뒷면 = 단계 색)의 긴 변이 그 선과 딱 겹쳐요. 붙인 도형이 아니라 접은 종이로 읽혀요. */
-  .icard .label { clip-path: polygon(0 0, 145.33px 0, 162.5px 13.65px, 162.5px 100%, 0 100%); }
-  .icard .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; filter: drop-shadow(1px 2px 1.5px rgba(33,27,23,.22)); }
+  .icard .label, .utile .label { clip-path: polygon(0 0, 145.33px 0, 162.5px 13.65px, 162.5px 100%, 0 100%); }
+  .icard .flag, .utile .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; filter: drop-shadow(1px 2px 1.5px rgba(33,27,23,.22)); }
   .icard .meta { position: absolute; left: 12px; top: 7px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
   .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .icard .meta span { display: block; font-size: 12px; line-height: normal; white-space: nowrap; }
@@ -78,7 +79,7 @@
   .empty { margin-top: 30px; width: 335px; text-align: center; font-size: 14px; }
 
   /* PICO TIP: 종이 띠 (위·아래 점선) */
-  .tip { margin-top: 20px; width: 375px; height: 110px; padding: 0 20px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
+  .tip { margin-top: 22.86px; width: 375px; height: 110px; padding: 0 20px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
     background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply;
     display: flex; flex-direction: column; justify-content: center; gap: 5px; }
   .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; white-space: nowrap; }
@@ -106,14 +107,20 @@
      아이가 이름을 다 쓰기 전엔 아무것도 띄우지 않고, 쓰는 대로 맞는 카드만 아래에 나와요. */
   .phone.searching .sum-back, .phone.searching .sum, .phone.searching .sum-in,
   .phone.searching .list-head, .phone.searching .tip, .phone.searching .tabbar { display: none; }
-  .phone.searching .top[data-fixed]::after { display: none; }
-  .phone.searching .nav-q { flex: none; width: 287px; height: 37px; margin-right: 0; padding: 0 12px; gap: 0;
-    background: url('assets/onboarding/ob-paper-full.jpg') -20px -68px / 375px 812px, #f3f0d4; background-blend-mode: multiply; }
-  .phone.searching .nav-q img { display: none; }
+  /* 찾기 화면 (Figma 3263:7893): 왼쪽 ← = 도감으로 돌아가기, 오른쪽 종이 칸 287.5×48 안에 돋보기. 칸 높이만큼 상단 줄이 78px로 */
+  .phone.searching .top[data-fixed] { height: 138px; }
+  .phone.searching .nav { height: 78px; padding: 0 20px; }
+  .phone.searching #searchBtn { display: none; }
+  .phone.searching .nav-q { flex: none; width: 287.5px; height: 48px; margin-right: 0; padding: 0 0 0 12px; gap: 0; box-sizing: border-box;
+    background: url('assets/onboarding/ob-paper-full.jpg') -67px -75px / 375px 812px, var(--paper); background-blend-mode: multiply; }
   .phone.searching .nav-q input { font-size: 16px; }
-  .nav-q input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }   /* 파란 기본 X 대신 돋보기로 닫아요 */
+  .nav-q input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
   .phone.searching .nav-q input::placeholder { color: transparent; }
-  .phone.searching .list { top: 130px; }
+  .q-go { flex: none; width: 32px; height: 32px; margin: 0 15px 0 8px; padding: 0; border: 0; background: none; }
+  .q-go img { display: block; width: 32px; height: 32px; }
+  .phone.searching .empty { margin-top: 0; font-size: 14px; line-height: 1.3; }
+  .phone.searching .list { top: 151.16px; }
+  .phone.searching .cards--top { margin-top: 0; }
 
   /* 카드를 누르면: 사진첩 속 그림이 폴라로이드에서 톡 튀어나와 스티커가 되고, 그대로 상세 화면으로 넘어가 돌아다녀요.
      목록에서는 가만히(찾고 고르는 화면), 열었을 때만 살아나요. 두 화면의 그림은 같은 이름(pico-bug)이라 화면이 바뀌어도 이어져요. */
@@ -131,7 +138,8 @@
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav">
       <img class="logo lg" id="logo" src="assets/common/logo-mark.png" alt="PICO">
-      <label class="nav-q" id="navQ" hidden><img src="assets/icons/outline/search.svg" alt=""><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off"></label>
+      <button class="nav-btn" id="searchBack" type="button" aria-label="도감으로 돌아가기" hidden><img src="assets/icons/outline/arrow-left.svg" alt=""></button>
+      <label class="nav-q" id="navQ" hidden><input id="q" type="search" placeholder="곤충 이름 찾기" aria-label="곤충 이름 찾기" autocomplete="off" enterkeyhint="search"><button class="q-go" id="qGo" type="button" aria-label="찾기"><img src="assets/icons/outline/search.svg" alt=""></button></label>
       <button class="nav-btn" id="searchBtn" type="button" aria-label="곤충 이름 찾기" aria-expanded="false"><img src="assets/icons/outline/search.svg" alt=""></button>
     </div>
   </div>
@@ -141,7 +149,7 @@
   <div class="abs sum"></div>
   <div class="abs sum-in">
     <div>
-      <p class="sum-t">내가 만난 곤충</p>
+      <p class="sum-t">함께 만난 곤충</p>
       <p class="sum-n"><b id="allGot">24</b><span id="allTotal">/ 567종</span></p>
     </div>
     <div class="tiers" id="tiers"></div>
@@ -220,7 +228,8 @@
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
   var UNMET = { '025': 'common', '028': 'common', '029': 'normal', '030': 'normal', '033': 'normal', '035': 'rare', '037': 'rare', '038': 'rare' };
   function utile(n) {
-    return '<div class="utile"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span><img src="assets/icons/outline/help.svg" alt=""></div>';
+    var k = UNMET[n], c = k === 'normal' ? ' c-cyan' : k === 'rare' ? ' c-pink' : '';   // 아직 못 만났어도 단계 색은 보여 줘요
+    return '<div class="utile' + c + '"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span>' + FLAG + '<img src="assets/icons/outline/help.svg" alt=""></div>';
   }
   var cards = document.getElementById('cards'), cards2 = document.getElementById('cards2');
   var q = document.getElementById('q'), empty = document.getElementById('empty');
@@ -231,10 +240,10 @@
     var searching = phone.classList.contains('searching');
     if (searching && !v) shown = [];   // 찾기 화면은 쓰기 전엔 비워 둬요
     if (oldest) shown = shown.slice().reverse();
-    cards.innerHTML = shown.slice(0, 4).map(cardHTML).join('');
+    cards.innerHTML = shown.slice(0, 8).map(cardHTML).join('');   // TIP 위에 8장 (Figma 3279:24356)
     // Figma order of the unmet tiles: No.25, No.27 in the last card grid, then No.26, No.28
     // unmet insects (Figma 곤충목록: same order for 최근순 and 오래된순)
-    cards2.innerHTML = shown.slice(4).map(cardHTML).join('') + (v || searching ? '' : ['025', '028', '029', '030', '033', '035', '037', '038'].map(utile).join(''));
+    cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : ['025', '028', '029', '030', '033', '035', '037', '038'].map(utile).join(''));
     empty.hidden = shown.length > 0 || (searching && !v);
     // page grows with the list; keep it clear of the tab bar
     phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px');
@@ -244,23 +253,25 @@
   q.addEventListener('input', render);
 
   // 돋보기 → 찾기 화면 (로고 자리에 종이 칸, 도감 위·하단바는 숨김).
-  // 찾기 중엔 돋보기가 X로 바뀌고, 누르면 언제든 도감으로 돌아가요 (쓴 글은 지워져요). 뒤로 가기·Esc로도 닫혀요.
-  var searchBtn = document.getElementById('searchBtn'), navQ = document.getElementById('navQ'), logo = document.getElementById('logo');
+  // 찾기 화면: 왼쪽 ← 를 누르면 도감으로 돌아가요 (쓴 글은 지워져요). 뒤로 가기·Esc로도 닫혀요. 칸 안 돋보기는 키보드 내리기.
+  var searchBtn = document.getElementById('searchBtn'), navQ = document.getElementById('navQ'), logo = document.getElementById('logo'), searchBack = document.getElementById('searchBack');
   function setSearch(open) {
     phone.classList.toggle('searching', open);
     navQ.hidden = !open; logo.hidden = open;
     searchBtn.setAttribute('aria-expanded', open);
     searchBtn.setAttribute('aria-label', open ? '찾기 닫기' : '곤충 이름 찾기');
-    searchBtn.querySelector('img').src = 'assets/icons/outline/' + (open ? 'close' : 'search') + '.svg';   // 찾기 중엔 X = 나가기가 눈에 보이게
+    searchBack.hidden = !open;
     var sc = document.querySelector('.phone > .scroll'); if (sc) sc.scrollTop = 0; window.scrollTo(0, 0);
     if (open) q.focus(); else q.value = '';
     render();
   }
   searchBtn.addEventListener('click', function () {
     if (!phone.classList.contains('searching')) { history.pushState({ s: 1 }, ''); setSearch(true); }
-    else closeSearch();   // 찾기 중엔 돋보기 = 나가기 (결과는 쓰는 대로 바로 나와서 따로 '찾기' 누를 필요가 없어요)
+    else closeSearch();
   });
   // 바로 닫고(폰에서 뒤로 가기가 안 먹어도 확실히 나가게), 찾기 때 쌓은 기록은 그다음에 정리해요
+  searchBack.addEventListener('click', function () { closeSearch(); });          // ← = 도감으로 (화면 이동은 언제나 왼쪽 ←)
+  document.getElementById('qGo').addEventListener('click', function () { q.blur(); });   // 칸 안 돋보기 = 찾기 (결과는 쓰는 대로 나와서 키보드만 내려요)
   function closeSearch() { var pushed = history.state && history.state.s; setSearch(false); if (pushed) history.back(); }
   q.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') q.blur();

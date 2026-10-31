@@ -79,6 +79,13 @@
     });
   }
   document.addEventListener('DOMContentLoaded', setupOrigami);
+  // 하단바: 지금 화면 탭은 채운 아이콘 (Figma 3261:7422 — 도감 = Filled/Tag)
+  function fillCurrentTab() {
+    document.querySelectorAll('.tabbar a[aria-current="page"] img').forEach(function (img) {
+      img.src = img.getAttribute('src').replace('/outline/', '/filled/');
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fillCurrentTab); else fillCurrentTab();
   document.addEventListener('click', function (e) {
     var a = e.target.closest('a.tab-cam.is-origami'); if (!a) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
