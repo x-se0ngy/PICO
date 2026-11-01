@@ -15,62 +15,60 @@
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="base.css">
 <style>
-  :root { --font-hand: 'SejongGeulggot', var(--font); }
+  :root { --font-hand: 'SejongGeulggot', var(--font); --grey56: #8e8e8e; --pink-rule: #facade; --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 310 3' preserveAspectRatio='none'%3E%3Cpath d='M0 1.6C38 .7 78 2.5 118 1.5S200 .8 242 1.8 292 1 310 1.5' fill='none' stroke='%23c2ddf4' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
   .abs { position: absolute; }
   .nav { padding: 0 24px 5px; }
   .nav-actions { display: flex; gap: 10px; align-items: center; }
   .nav a img, .nav button img { width: 32px; height: 32px; }
 
-  .card-shadow { left: 28px; top: 128.44px; width: 325px; height: 380px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 19px; top: 118px; width: 325px; height: 380px; background: var(--brand); border: 1px dashed var(--ink); }
-  .photo { left: 27px; top: 197.09px; width: 310px; height: 150px; background: var(--brand-soft); object-fit: cover; }
-  .title { left: 27px; top: 134.09px; display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
-  .title .k { display: flex; gap: 4px; font-size: 16px; }
-  .title .nm { font-size: 20px; }
-  .met { left: 250px; top: 134.45px; width: 103.01px; height: 24.3px; background: #fff; border: 1px dashed var(--ink); font-size: 12px; line-height: 16px; text-align: center; padding-top: 3.15px; white-space: nowrap; }
-  .date-pick { left: 250px; top: 163.74px; width: 83px; display: flex; gap: 5px; align-items: center; justify-content: flex-end; font-size: 12px; white-space: nowrap; }
-  .date-pick img { width: 18px; height: 18px; }
+  /* 도감 카드: 연두 종이 두 장 (Figma 3338:5876) */
+  .sheet-b { left: 18.2px; top: 139.77px; width: 338.57px; height: 393.47px; display: flex; align-items: center; justify-content: center; }
+  .sheet-b::before { content: ''; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid var(--grey56); transform: rotate(2.46deg); }
+  .sheet-f { left: 26.19px; top: 146.5px; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid var(--grey56); }
+  .dcard { left: 32.5px; top: 166.5px; width: 310px; display: flex; flex-direction: column; gap: 8px; color: var(--grey56); }
+  .dhead { display: flex; justify-content: space-between; align-items: flex-end; }
+  .dhead .nm { display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
+  .dhead .no { display: flex; gap: 4px; font-size: 16px; line-height: normal; }
+  .dhead .name { font-size: 20px; line-height: normal; }
+  .date-pick { display: flex; align-items: center; justify-content: flex-end; gap: 5px; width: 83px; font-size: 12px; line-height: normal; white-space: nowrap; color: var(--grey56); }
+  .date-pick img { width: 18px; height: 18px; flex: none; filter: brightness(0) invert(.56); }
+  .photo { display: block; width: 310px; height: 150px; border: 1px solid var(--ink); object-fit: cover; }
+  .rec { height: 126px; display: flex; flex-direction: column; justify-content: flex-end; gap: 13px; }
+  .rec h3 { padding: 0 10px; font-size: 16px; line-height: normal; }
+  .rec .rows { display: flex; flex-direction: column; gap: 8px; }
+  .rec .row { display: flex; flex-direction: column; gap: 7px; }
+  .rec .row > div { display: flex; align-items: flex-end; justify-content: space-between; padding: 0 10px; white-space: nowrap; }
+  .rec .row .l { display: flex; align-items: center; gap: 14px; }
+  .rec .row .d { font-size: 14px; line-height: normal; } .rec .row .pl { font-size: 12px; line-height: 19px; } .rec .row .w { font-size: 10px; line-height: normal; }
+  .rec .row hr { margin: 0; border: 0; border-top: 1px dashed var(--grey56); height: 0; }
 
-  .log { left: 27px; top: 362.09px; width: 310px; display: flex; flex-direction: column; gap: 5px; }
-  .log > p { font-size: 16px; }
-  .log-list { position: relative; display: flex; flex-direction: column; gap: 8px; }
-  .log-row { display: flex; flex-direction: column; gap: 7px; }
-  .log-row .r { display: flex; justify-content: space-between; align-items: flex-end; padding: 0 10px; white-space: nowrap; }
-  .log-row .l { display: flex; gap: 14px; align-items: center; }
-  .log-row .d { font-size: 14px; } .log-row .pl { font-size: 12px; line-height: 19px; } .log-row .w { font-size: 10px; }
-  .log-row hr { margin: 0 0 -1px; border: 0; border-top: 1px dashed var(--ink); width: 310px; }
-  .first { position: absolute; left: 170.29px; top: 66.63px; width: 61.614px; height: 30.551px; display: flex; align-items: center; justify-content: center; }
-  .first span { width: 59.158px; height: 19.981px; background: var(--brand-soft); border: 1px solid var(--ink); transform: rotate(10.59deg) skewX(.61deg); font-size: 10px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+  /* 아래 묶음: 내 관찰 기록 · 관찰 정보 · PICO가 알려줘요 · 더 알아보기 */
+  .col { left: 0; top: 553.24px; width: 375px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+  .sec { width: 337px; display: flex; flex-direction: column; gap: 15px; }
+  .blk { display: flex; flex-direction: column; gap: 5px; }
+  .blk > h3 { font-size: 14px; line-height: normal; }
+  /* 줄 공책: 분홍 여백 줄 + 하늘색 가로줄 */
+  .nb { position: relative; width: 337px; height: 117.4px; border: 1px solid var(--ink); padding: 12px; display: flex; align-items: center; justify-content: center; }
+  .nb .in { position: relative; width: 310px; height: 102.24px; }
+  .nb .in::before { content: ''; position: absolute; left: 12px; top: 0; width: 2px; height: 102.24px; background: var(--pink-rule); border-radius: 1px; }
+  .nb .ls { position: absolute; left: 0; top: 3.4px; width: 310px; display: flex; flex-direction: column; gap: 5px; }
+  .nb .ls p { padding: 0 26px; font-family: var(--font-hand); font-size: 14px; line-height: 20px; white-space: nowrap; }
+  .nb .ls i { display: block; height: 3px; background: var(--wave) 0 0 / 100% 100% no-repeat; }
+  .info { width: 337px; height: 95px; border: 1px solid var(--ink); padding: 17px 14px; }
+  .info .g { width: 305.13px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; row-gap: 6px; }
+  .info .c { display: flex; flex-direction: column; gap: 5px; }
+  .info .c .r { display: flex; align-items: center; gap: 10px; padding: 0 12px; white-space: nowrap; font-size: 14px; }
+  .info .c .r b { font-weight: 400; line-height: 13px; }
+  .info .c .r span { font-family: var(--font-hand); line-height: 20px; }
+  .info .c i { display: block; width: 146.74px; height: 3px; background: var(--wave) 0 0 / 100% 100% no-repeat; }
+  .tip { position: relative; width: 375px; height: 129px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink);
+    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
+  .tip .h { position: absolute; left: 21.5px; top: 14.6px; display: flex; align-items: center; gap: 2px; }
+  .tip .h img { width: 32px; height: 32px; }
+  .tip .h b { font-weight: 700; font-size: 16px; line-height: 1.3; white-space: nowrap; }
+  .tip ol { position: absolute; left: 21.5px; top: 52.6px; margin: 0; padding: 0 0 0 21px; font-size: 14px; line-height: normal; white-space: nowrap; }
+  .tip li { height: 16.92px; margin-bottom: 5px; }
 
-  .tab { height: 35px; width: 96.127px; background: var(--brand-soft); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; }
-  .note { background: var(--surface); border: 1px solid var(--ink); }
-  .lines { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
-  .lines p { padding: 0 12px; font-family: var(--font-hand); font-size: 14px; line-height: 20px; white-space: nowrap; }
-  .lines img { width: 310px; }
-  .mine { left: 19px; top: 528.44px; width: 337px; display: flex; flex-direction: column; gap: 5px; }
-  .mine .note { height: 117.4px; padding: 13px 10px 11px 14px; }
-  .info-tab { left: 19px; top: 700.84px; }
-  .info { left: 19px; top: 740.84px; width: 337px; height: 95px; padding: 17px 14px; }
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; row-gap: 6px; width: 305.13px; }
-  .info-grid > div { display: flex; flex-direction: column; gap: 5px; }
-  .info-grid .kv { display: flex; gap: 10px; align-items: center; padding: 0 12px; font-size: 14px; white-space: nowrap; }
-  .info-grid .kv b { font-weight: 400; line-height: 13px; } .info-grid .kv span { font-family: var(--font-hand); line-height: 20px; }
-  .info-grid img { width: 146.738px; }
-  .more-tab { left: 19px; top: 850.84px; }
-  .more { left: 19px; top: 890.84px; width: 337px; height: 117.4px; padding: 12px; }
-
-  .pico { left: 0; top: 1028.24px; width: 375px; height: 130px; background: #00b7ff; border: 1px dashed var(--ink); }
-  .pico-ic { left: 16.76px; top: 1041.98px; width: 32px; height: 31.853px; }
-  .pico-h { left: 53.79px; top: 1048.45px; font-weight: 700; font-size: 16px; white-space: nowrap; }
-  .pico-list { left: 20.76px; top: 1080.97px; margin: 0; padding: 0 0 0 21px; font-size: 14px; white-space: nowrap; }
-  .pico-list li { height: 21.9px; }
-
-  .rel-h { left: 20px; top: 1183.24px; width: 335px; display: flex; justify-content: space-between; align-items: flex-end; white-space: nowrap; }
-  .rel-h p:first-child { font-size: 20px; } .rel-h p:last-child { font-size: 14px; }
-  .rel { left: 20px; top: 1222.24px; display: flex; gap: 15px; }
-  .rel a { position: relative; width: 80px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; white-space: nowrap; }
-  .rel .c { width: 81px; height: 81px; margin: -0.5px; }
-  .rel .q { position: absolute; left: 24px; top: 24px; width: 32px; height: 32.1px; }
   /* 내가 그린 그림이 화면을 돌아다녀요. 누르면 놀라서 도망가요 */
   .roam { position: absolute; inset: 0; z-index: 12; pointer-events: none; overflow: hidden; }
   .bug { position: absolute; left: 0; top: 0; width: 64px; height: 64px; padding: 0; pointer-events: auto; will-change: transform; cursor: pointer; -webkit-tap-highlight-color: transparent;
@@ -89,7 +87,7 @@
   @media (prefers-reduced-motion: reduce) { .bug .body { animation: none !important; } .bug.is-poke .flip { animation: none; } }
 </style>
 </head><body>
-<div class="phone" style="--h:1398px">
+<div class="phone flat" style="--h:1305px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -103,56 +101,45 @@
     </div>
   </div>
 
-  <div class="abs card-shadow"></div>
-  <div class="abs card-face"></div>
-  <img class="abs photo" src="assets/tabs/detail-ladybug.png" alt="칠성무당벌레 사진">
-  <div class="abs title"><div class="k"><p>NO.023</p><p>딱정벌레류</p></div><p class="nm">칠성무당벌레</p></div>
-  <p class="abs met">3번 만났어요</p>
-  <button class="abs date-pick"><span>2027.11.01</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button>
-
-  <div class="abs log">
-    <p>발견 기록</p>
-    <div class="log-list" id="log"></div>
-  </div>
-
-  <div class="abs mine">
-    <div class="tab">내 관찰 기록</div>
-    <div class="note lines">
-      <p>나뭇잎 위를 천천히 기어가던 칠성무당벌레의</p><img src="assets/tabs/line-a.png" alt="" style="height:2px">
-      <p>빨간 등에 검은 점이 또렷하게 보였어요.</p><img src="assets/tabs/line-b.png" alt="" style="height:3px">
-      <p>가까이 다가가자 날개를 펴고 날아갔어요.</p><img src="assets/tabs/line-c.png" alt="" style="height:3px">
+  <div class="abs sheet-b"></div>
+  <div class="abs sheet-f"></div>
+  <article class="abs dcard">
+    <div class="dhead">
+      <div class="nm"><p class="no"><span>NO.023</span><span>딱정벌레류</span></p><p class="name">칠성무당벌레</p></div>
+      <button class="date-pick" type="button" aria-label="발견한 날 고르기"><span>2027.11.01</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button>
     </div>
-  </div>
+    <img class="photo" src="assets/tabs/detail-ladybug.png" alt="칠성무당벌레 사진">
+    <div class="rec">
+      <h3>발견 기록</h3>
+      <div class="rows">
+        <div class="row"><div><span class="l"><span class="d">27.09.28</span><span class="pl">동네 공원 화단</span></span><span class="w">맑음 21º</span></div><hr></div>
+        <div class="row"><div><span class="l"><span class="d">27.08.06</span><span class="pl">학교 텃밭</span></span><span class="w">흐림 19º</span></div><hr></div>
+        <div class="row"><div><span class="l"><span class="d">27.08.03</span><span class="pl">동네 공원 화단</span></span><span class="w">흐림 16º</span></div><hr></div>
+      </div>
+    </div>
+  </article>
 
-  <div class="abs tab info-tab">관찰 정보</div>
-  <div class="abs note info"><div class="info-grid">
-    <div><p class="kv"><b>먹이</b><span>꽃꿀 · 꽃가루</span></p><img src="assets/tabs/line-s1.png" alt="" style="height:2px"></div>
-    <div><p class="kv"><b>활동시기</b><span>봄–가을</span></p><img src="assets/tabs/line-s2.png" alt="" style="height:2.125px"></div>
-    <div><p class="kv"><b>서식지</b><span>꽃밭 · 풀숲</span></p><img src="assets/tabs/line-s3.png" alt="" style="height:3px"></div>
-    <div><p class="kv"><b>크기</b><span>약 1.5–2.5cm</span></p><img src="assets/tabs/line-s4.png" alt="" style="height:3px"></div>
-  </div></div>
-
-  <div class="abs tab more-tab">더 알아보기</div>
-  <div class="abs note more lines">
-    <p>칠성무당벌레는 빨간 날개에 일곱 개의 검은 점이 있는</p><img src="assets/tabs/line-a.png" alt="" style="height:2px">
-    <p>곤충이에요. 주로 식물 주변에서 볼 수 있고,</p><img src="assets/tabs/line-b.png" alt="" style="height:3px">
-    <p>위험을 느끼면 다리에서 노란색 액체를 내기도 해요.</p><img src="assets/tabs/line-c.png" alt="" style="height:3px">
-  </div>
-
-  <div class="abs pico"></div>
-  <img class="abs pico-ic" src="assets/icons/outline/presentation.svg" alt="">
-  <p class="abs pico-h">PICO가 알려줘요 !</p>
-  <ol class="abs pico-list">
-    <li>몸길이 5~8mm 정도의 작은 딱정벌레예요.</li>
-    <li>진딧물을 잡아먹어서 식물을 지켜 주는 곤충이에요.</li>
-    <li>위험을 느끼면 다리 마디에서 노란 즙을 내요.</li>
-  </ol>
-
-  <div class="abs rel-h"><p>관련 뱃지</p><p>2개 획득</p></div>
-  <div class="abs rel">
-    <a href="badge.html?state=earned"><img class="c" src="assets/tabs/circle-solid.png" alt=""><span>첫 딱정벌레</span></a>
-    <a href="badge.html?state=earned"><img class="c" src="assets/tabs/circle-solid.png" alt=""><span>3번째 만남</span></a>
-    <a href="badge.html?state=locked"><img class="c" src="assets/tabs/circle-dashed.png" alt=""><img class="q" src="assets/icons/outline/help.svg" alt=""><span>더 관찰하기</span></a>
+  <div class="abs col">
+    <div class="sec">
+      <div class="blk"><h3>내 관찰 기록</h3><div class="nb"><div class="in"><div class="ls"><p>나뭇잎 위를 천천히 기어가던 칠성무당벌레의</p><i></i><p>빨간 등에 검은 점이 또렷하게 보였어요.</p><i></i><p>가까이 다가가자 날개를 펴고 날아갔어요.</p><i></i></div></div></div></div>
+      <div class="blk"><h3>관찰 정보</h3>
+        <div class="info"><div class="g">
+          <div class="c"><div class="r"><b>먹이</b><span>꽃꿀 · 꽃가루</span></div><i></i></div>
+          <div class="c"><div class="r"><b>활동시기</b><span>봄–가을</span></div><i></i></div>
+          <div class="c"><div class="r"><b>서식지</b><span>꽃밭 · 풀숲</span></div><i></i></div>
+          <div class="c"><div class="r"><b>크기</b><span>약 1.5–2.5cm</span></div><i></i></div>
+        </div></div>
+      </div>
+    </div>
+    <section class="tip" aria-label="PICO가 알려줘요">
+      <p class="h"><img src="assets/icons/outline/presentation.svg" alt=""><b>PICO가 알려줘요 !</b></p>
+      <ol>
+        <li>몸길이 5~8mm 정도의 작은 딱정벌레예요.</li>
+        <li>진딧물을 잡아먹어서 식물을 지켜 주는 곤충이에요.</li>
+        <li>위험을 느끼면 다리 마디에서 노란 즙을 내요.</li>
+      </ol>
+    </section>
+    <div class="sec"><div class="blk"><h3>더 알아보기</h3><div class="nb"><div class="in"><div class="ls"><p>칠성무당벌레는 빨간 날개에 일곱 개의 검은 점이 있는</p><i></i><p>곤충이에요. 주로 식물 주변에서 볼 수 있고,</p><i></i><p>위험을 느끼면 다리에서 노란색 액체를 내기도 해요.</p><i></i></div></div></div></div></div>
   </div>
 
   <div class="roam" id="roam" data-fixed></div>
@@ -163,17 +150,6 @@
 <script src="field.js"></script>
 <script>
 (function () {
-  var log = [
-    { d: '27.09.28', pl: '동네 공원 화단', w: '맑음 21º' },
-    { d: '27.08.06', pl: '학교 텃밭', w: '흐림 19º' },
-    { d: '27.08.03', pl: '동네 공원 화단', w: '흐림 16º' }
-  ];
-  var el = document.getElementById('log');
-  el.innerHTML = log.map(function (r) {
-    return '<div class="log-row"><div class="r"><div class="l"><span class="d">' + r.d + '</span><span class="pl">' + r.pl +
-      '</span></div><span class="w">' + r.w + '</span></div><hr></div>';
-  }).join('') + '<div class="first"><span>첫 발견</span></div>';
-
   var bm = document.getElementById('bm');
   bm.addEventListener('click', function () {
     var on = bm.getAttribute('aria-pressed') !== 'true';
