@@ -79,20 +79,31 @@
   .tipx .h img { width: 32px; height: 32px; }
   .tipx ol { margin: 0; padding-left: 21px; font-size: 14px; line-height: 1.21; }
 
-  /* 함께 하는 탐험: 종이 두 장 카드 + 점선 칸에 라임으로 채우는 막대 */
-  .coop { margin-top: 24px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 140px; }
-  .coop .sec-h { margin-bottom: 9px; }
-  .mis { position: relative; margin: 0 20px; height: 87px; }
+  /* 함께 하는 탐험 (Figma 3382:9803): 한 장씩 옆으로 넘기는 종이 두 장 카드 · 아래 점 · 마지막 장 = 새 탐험 만들기(점선 = 아직) */
+  .coop { margin-top: 26px; }
+  .mis-row { margin-top: 14px; display: flex; gap: 20px; padding: 6px 20px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .mis-row::-webkit-scrollbar { display: none; }
+  .mis { position: relative; flex: none; width: 335px; height: 87px; scroll-snap-align: center; color: inherit; text-decoration: none; }
   .mis .back { position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.59deg) skewX(-1.36deg); }
   .mis .pp { position: absolute; inset: 0; border: 1px solid var(--ink); background: url('assets/onboarding/ob-paper-full.jpg') -20px -300px / 375px 812px, var(--paper); background-blend-mode: multiply; }
   .mis .who { position: absolute; left: 17px; top: 15.6px; font-size: 11px; }
+  .mis .go { position: absolute; right: 15px; top: 12px; width: 16px; height: 16px; }
   .mis .ttl { position: absolute; left: 17px; top: 32.8px; font-weight: 700; font-size: 15px; white-space: nowrap; }
   .mis .cnt { position: absolute; right: 17px; top: 32.8px; font-size: 15px; }
   .mis .bar { position: absolute; left: 18.4px; right: 18.4px; top: 58.8px; height: 13px; border: 1px dashed var(--ink); }
   .mis .bar i { display: block; height: 100%; background: var(--lime); }
+  .mis.new { border: 1px dashed var(--ink); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; font-weight: 700; box-sizing: border-box; }
+  .mis.new .plus { position: relative; width: 16px; height: 16px; }
+  .mis.new .plus::before, .mis.new .plus::after { content: ''; position: absolute; left: 7px; top: 0; width: 2px; height: 16px; background: var(--ink); }
+  .mis.new .plus::after { transform: rotate(90deg); }
+  .dots { display: flex; justify-content: center; gap: 8px; margin-top: 4px; }
+  .dots i { width: 10px; height: 10px; border: 1px solid var(--ink); box-sizing: border-box; transition: width var(--dur, .3s) var(--ease, ease); }
+  .dots i.on { width: 30px; background: var(--lime); }
+  .tipx { margin-bottom: 140px; }
+  .letter[hidden] { display: none; }
 </style>
 </head><body>
-<div class="phone flat" style="--h:1300px">
+<div class="phone flat" style="--h:930px">
 
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
@@ -117,40 +128,44 @@
   </div>
 
   <div class="abs flow">
-    <!-- 친구들의 발견 -->
+    <!-- 친구들의 발견: 편지를 누르면 바로 아래로 편지지가 펼쳐져요 (한 번 더 누르면 접혀요) -->
     <a class="sec-h" href="friend.html?friend=seongyu"><span>친구들의 발견</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
     <div class="envs" id="envs"></div>
-    <div class="letter" id="letter" aria-live="polite"></div>
+    <div class="letter" id="letter" aria-live="polite" hidden></div>
+
+    <!-- 함께 하는 탐험 -->
+    <div class="coop">
+      <div class="sec-h"><span>함께 하는 탐험</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></div>
+      <div class="mis-row" id="misRow">
+        <a class="mis" href="#"><span class="back" aria-hidden="true"></span><span class="pp">
+          <span class="who">민사온과 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">꽃밭에서 나비 5마리 함께 찾기</span><b class="cnt">2 / 5</b>
+          <span class="bar" role="img" aria-label="5마리 중 2마리"><i style="width:40.0%"></i></span>
+        </span></a>
+        <a class="mis" href="#"><span class="back" aria-hidden="true"></span><span class="pp">
+          <span class="who">정하람과 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">비 온 뒤 달팽이 2마리 함께 찾기</span><b class="cnt">0 / 2</b>
+          <span class="bar" role="img" aria-label="2마리 중 0마리"><i style="width:0.0%"></i></span>
+        </span></a>
+        <a class="mis" href="#"><span class="back" aria-hidden="true"></span><span class="pp">
+          <span class="who">유선규와 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">학교에서 잠자리 3마리 함께 찾기</span><b class="cnt">1 / 3</b>
+          <span class="bar" role="img" aria-label="3마리 중 1마리"><i style="width:33.3%"></i></span>
+        </span></a>
+        <a class="mis new" href="#"><span class="plus" aria-hidden="true"></span>친구와 새 탐험 만들기</a>
+      </div>
+      <div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
 
     <!-- PICO가 알려줘요 -->
     <div class="tipx"><div class="tipx-in">
       <p class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO가 알려줘요 !</p>
       <ol><li>쪽지는 직접 만난 친구와만 주고받아요.</li><li>쪽지를 펼치면 친구가 간 곳이 생겨요.</li><li>오늘 본 곤충으로 먼저 쪽지를 접어 보세요.</li></ol>
     </div></div>
-
-    <!-- 함께 하는 탐험 (Figma 3355:6661 · 3359:5854~5856) -->
-    <div class="coop">
-      <div class="sec-h"><span>함께 하는 탐험</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></div>
-      <div class="mis"><span class="back" aria-hidden="true"></span><div class="pp">
-        <p class="who">민사온과 함께</p><p class="ttl">꽃밭에서 나비 3마리 함께 찾기</p><b class="cnt">1 / 3</b>
-        <div class="bar" role="img" aria-label="3마리 중 1마리"><i style="width:33.3%"></i></div>
-      </div></div>
-      <div class="mis"><span class="back" aria-hidden="true"></span><div class="pp">
-        <p class="who">정하람과 함께</p><p class="ttl">비 온 뒤 달팽이 2마리 함께 찾기</p><b class="cnt">0 / 2</b>
-        <div class="bar" role="img" aria-label="2마리 중 0마리"><i style="width:0.0%"></i></div>
-      </div></div>
-      <div class="mis"><span class="back" aria-hidden="true"></span><div class="pp">
-        <p class="who">유선규와 함께</p><p class="ttl">잠자리 5마리 함께 찾기</p><b class="cnt">2 / 5</b>
-        <div class="bar" role="img" aria-label="5마리 중 2마리"><i style="width:40.0%"></i></div>
-      </div></div>
-    </div>
   </div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
       <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/icons/outline/home.svg" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감"><img src="assets/icons/outline/tag.svg" alt=""><span>도감</span></a></div>
       <a class="tab-cam" href="capture-1.html" aria-label="관찰"><img src="assets/common/tab-camera.png" alt=""><span class="tab-cam-label">관찰</span></a>
-      <div class="tabbar-group"><a href="friends.html" aria-label="배지" aria-current="page"><img src="assets/icons/outline/bookmark.svg" alt=""><span>배지</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
+      <div class="tabbar-group"><a href="friends.html" aria-label="친구" aria-current="page"><img src="assets/icons/outline/bookmark.svg" alt=""><span>친구</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
     </div></nav>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
@@ -168,9 +183,9 @@
     { id: 'haram', name: '정하람', c: LIME, img: 'card-grasshopper', bug: '방아깨비', say: ['풀숲에서 폴짝!', '다리가 엄청 길어'], date: '10월 29일' },
     { id: 'taeho', name: '민태호', c: SKY, img: 'card-dragonfly', bug: '고추잠자리', say: ['개울 위를 빙빙', '꼬리가 빨개'], date: '10월 27일' }
   ];
-  var opened = { seongyu: true };
+  var opened = {};
   try { var s = JSON.parse(localStorage.getItem('pico.friendsOpened') || 'null'); if (s) opened = s; } catch (e) {}
-  var cur = 'seongyu';
+  var cur = null;
 
   function closedEnv(c, dashed, plain) {
     var d = dashed ? ' stroke-dasharray="7 5"' : '', f = dashed ? 'none' : c, b = dashed ? 'none' : '#fffce4';
@@ -194,8 +209,9 @@
     envs.innerHTML = FRIENDS.map(function (f) {
       var isCur = f.id === cur, isNew = !opened[f.id];
       return '<button class="fr' + (isNew ? ' new' : '') + (isCur ? ' on' : '') + '" data-id="' + f.id + '" aria-pressed="' + isCur + '">' +
-        '<span class="pic">' + (isCur ? openEnv(f) : closedEnv(f.c)) + '</span><span>' + f.name + '</span></button>';
+        '<span class="pic">' + (opened[f.id] ? openEnv(f) : closedEnv(f.c)) + '</span><span>' + f.name + '</span></button>';
     }).join('') + '<a class="fr add new" href="badge.html?state=qr"><span class="pic">' + closedEnv('#fffce4', false, true) + '</span><span>친구 추가</span></a>';
+    letter.hidden = !cur; fit(); if (!cur) return;
     var f = FRIENDS.filter(function (x) { return x.id === cur; })[0];
     var lines = '<span class="lines">' + [30.6, 58.6, 86.6, 114.6, 142.6].map(function (t) { return '<i style="top:' + t + 'px"></i>'; }).join('') + '<b></b></span>';
     letter.innerHTML = '<span class="tail"></span>' + lines +
@@ -205,15 +221,23 @@
     var k = letter.offsetWidth / lb.width || 1;
     letter.querySelector('.tail').style.left = ((bb.left + bb.width / 2 - lb.left) * k) + 'px';
     if (anim) { letter.classList.remove('swap'); void letter.offsetWidth; letter.classList.add('swap'); }
+    fit();
   }
+  // 편지지가 펼쳐지면 화면 길이도 같이 늘어나요
+  function fit() { var fl = document.querySelector('.flow'); if (!fl) return; document.querySelector('.phone').style.setProperty('--h', Math.max(812, fl.offsetTop + fl.offsetHeight) + 'px'); }
   envs.addEventListener('click', function (e) {
-    var b = e.target.closest('button.fr'); if (!b || b.dataset.id === cur) return;
+    var b = e.target.closest('button.fr'); if (!b) return;
+    if (b.dataset.id === cur) { cur = null; render(false); return; }
     cur = b.dataset.id; opened[cur] = true;
     try { localStorage.setItem('pico.friendsOpened', JSON.stringify(opened)); } catch (x) {}
     render(true);
   });
 
-  function boot() { render(false); }
+  // 탐험 카드 점: 지금 보이는 장
+  var row = document.getElementById('misRow'), dots = document.querySelectorAll('#dots i');
+  function dot() { var i = Math.round(row.scrollLeft / 355); dots.forEach(function (d, k) { d.classList.toggle('on', k === i); }); }
+  row.addEventListener('scroll', dot, { passive: true });
+  function boot() { render(false); dot(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 0); }); else boot();
   window.addEventListener('resize', function () { render(false); });
 })();
