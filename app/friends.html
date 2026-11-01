@@ -15,42 +15,73 @@
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="base.css">
 <style>
-
   @media (min-width: 500px) { body { padding-bottom: 0; } }
   .abs { position: absolute; }
   .top[data-fixed] { height: 118px; background: var(--paper); }
   .nav .add { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-right: -6px; }
   .nav .add img { width: 32px; height: 32px; transform: rotate(45deg); }
 
-  /* 친구 탭 = 친구들의 들판: 종이 한 장을 여섯 칸으로 접은 자국 = 친구마다 한 칸 (빈 칸 = 친구 추가 · 아직 빈 땅) */
-  .flow { position: absolute; left: 0; top: 124px; width: 375px; display: flex; flex-direction: column; }
+  /* 친구 탭 (Figma 3355:5792) — 위: 종이 두 장(쪽지 접기 + 현황) */
+  .st-back { left: 20px; top: 145.3px; width: 335px; height: 169px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.59deg) skewX(-1.36deg); }
+  .st { left: 20px; top: 145.3px; width: 335px; height: 169px; border: 1px solid var(--ink);
+    background: url('assets/onboarding/ob-paper-full.jpg') -20px -150px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .ask-d { left: 40.3px; top: 170.1px; font-size: 11px; white-space: nowrap; }
+  .ask { left: 40.3px; top: 187.3px; font-weight: 700; font-size: 15px; white-space: nowrap; }
+  .fold-btn { left: 249.3px; top: 171.2px; width: 85px; height: 33px; }
+  .fold-btn::before { content: ''; position: absolute; inset: -1.2px -1.8px -1.5px -1.7px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
+  .fold-btn span { position: absolute; inset: 0 -1px; background: var(--lime); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 2px; font-weight: 700; font-size: 12px; }
+  .fold-btn img { width: 14px; height: 14px; }
+  .rule { left: 32.4px; top: 222.7px; width: 310px; border-top: 1px dashed var(--ink); }
+  .stats { left: 20px; top: 232.3px; width: 335px; display: flex; justify-content: center; align-items: center; gap: 25px; }
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; white-space: nowrap; }
+  .stat .n { display: flex; align-items: flex-end; gap: 1px; }
+  .stat b { font: 700 34px/41px Inter, -apple-system, sans-serif; }
+  .stat .u { font-size: 14px; line-height: 17px; padding-bottom: 4px; }
+  .stat .l { font-size: 12px; }
+  .stats i { width: 0; height: 48px; border-left: 1px dashed var(--ink); }
+
+  /* 아래는 흐름대로 쌓아요 */
+  .flow { left: 0; top: 341.4px; width: 375px; display: flex; flex-direction: column; }
   .sec-h { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 16px; }
   .sec-h img { width: 18px; height: 18px; transform: rotate(-90deg); }
-  .sec-h b { font-size: 12px; font-weight: 400; display: flex; align-items: center; gap: 4px; }
-  .sheet { position: relative; margin: 14px 20px 0; width: 335px; height: 330px; border: 1px solid var(--ink); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); background: var(--paper); overflow: hidden; }
-  .sheet::before, .sheet::after { content: ''; position: absolute; pointer-events: none; z-index: 3; }
-  .sheet::before { left: 50%; top: 0; bottom: 0; border-left: 1px dashed var(--ink); }
-  .sheet::after { left: 0; right: 0; top: 33.333%; height: 33.333%; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); }
-  .plot { position: relative; overflow: hidden; color: inherit; text-decoration: none; display: block; }
-  .plot:nth-child(4n+1), .plot:nth-child(4n) { background: rgba(33,27,23,.035); }   /* 접힌 면마다 빛이 달라요 */
-  .mini { position: absolute; left: 0; top: 0; width: 375px; height: 812px; transform-origin: 0 0; }
-  .mini img { position: absolute; display: block; }
-  .pic { position: absolute; z-index: 1; }
-  .face { position: absolute; left: 8px; bottom: 8px; z-index: 2; display: flex; align-items: center; gap: 5px; padding: 2px 8px 2px 2px; border: 1px solid var(--ink); background: #fffdf7; border-radius: 16px; font-size: 12px; font-weight: 700; white-space: nowrap; }
-  .face img { width: 22px; height: 22px; display: block; }
-  .pl-env { display: block; margin-left: 2px; }
-  .plot.add, .plot.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 700; }
-  .plot.empty { font-size: 12px; font-weight: 400; color: rgba(33,27,23,.5); }
-  /* 쪽지 날리기 + 현황 띠 */
-  .band { margin: 20px 20px 0; height: 58px; border: 1px dashed var(--ink); display: flex; align-items: center; gap: 14px; padding: 0 12px; }
-  .band p { display: flex; flex-direction: column; }
-  .band b { font-size: 19px; } .band small { font-size: 12px; } .band span { font-size: 11px; }
-  .send { margin-left: auto; position: relative; width: 100px; height: 32px; color: inherit; text-decoration: none; }
-  .send::before { content: ''; position: absolute; inset: -1px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
-  .send i { position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 12px; font-weight: 700; font-style: normal; }
+
+  /* 친구 편지 줄: 닫힌 편지 = 아직 안 펼친 쪽지(이름 굵게) · 누르면 열린 편지 + 아래로 편지지
+     맨 끝 점선 편지 = 친구 추가(점선 = 아직) */
+  .envs { margin-top: 15px; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 14px; }
+  .fr { width: 66px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; line-height: 19px; white-space: nowrap; background: none; border: 0; padding: 0; color: inherit; font-family: inherit; cursor: pointer; }
+  .fr .pic { height: 70px; display: flex; align-items: flex-end; justify-content: center; }
+  .fr.new span { font-weight: 700; }
+  .fr .c { width: 55px; height: 40px; display: block; margin-bottom: 8px; }
+  .fr .o { width: 64px; height: 60px; display: block; overflow: visible; }
+  .fr.add .c { width: 55px; }
+
+  /* 펼친 쪽지: 고른 편지에서 나온 편지지 (위 현황 종이와 다르게 흰 노트 + 위로 꼭지) */
+  .letter { position: relative; margin: 20px 20px 0; height: 162px; background: #fff; border: 1px solid var(--ink); transform: rotate(-.6deg); }
+  .letter .tail { position: absolute; top: -8px; width: 14px; height: 14px; background: #fff; border-left: 1px solid var(--ink); border-top: 1px solid var(--ink); transform: translateX(-50%) rotate(45deg); transition: left var(--dur, .3s) var(--ease, ease); }
+  .letter .lines { position: absolute; inset: 0; overflow: hidden;
+    background: repeating-linear-gradient(to bottom, transparent 0 29.6px, var(--rule-cyan) 29.6px 30.6px, transparent 30.6px 34.4px) 0 0 / 100% 28px; }
+  .letter .lines { background: none; }
+  .letter .lines i { position: absolute; left: 0; right: 0; border-top: 1px solid var(--rule-cyan); }
+  .letter .lines b { position: absolute; top: 0; bottom: 0; left: 21.4px; border-left: 1px solid var(--rule-pink); }
+  .letter .from { position: absolute; left: 33px; top: 9px; display: flex; align-items: center; gap: 4px; font-size: 15px; }
+  .letter .from svg { width: 14px; height: 15px; transform: rotate(-7deg); }
+  .letter .ph { position: absolute; left: 31.6px; top: 35px; width: 102.5px; height: 102.8px; border: 1px solid var(--ink); overflow: hidden; }
+  .ph img, .cmp .ph img, .ins .ph img { position: absolute; left: 50%; bottom: 0; height: 161%; width: auto; max-width: none; transform: translateX(-50%); }
+  .letter .nm { position: absolute; left: 144.3px; top: 63px; font-weight: 700; font-size: 16px; }
+  .letter .hd { position: absolute; left: 144.8px; top: 89px; font-family: var(--font-hand); font-size: 17px; line-height: 28px; }
+  .letter.swap { animation: unfold .45s var(--ease, ease) both; }
+  @keyframes unfold { from { opacity: 0; transform: translateY(-14px) rotate(-.6deg) scaleY(.6); } to { opacity: 1; transform: rotate(-.6deg); } }
+
+  .tipx { margin-top: 20px; height: 129px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); position: relative;
+    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
+  .tipx-in { position: absolute; left: 21.8px; top: 15.6px; display: flex; flex-direction: column; gap: 5px; }
+  .tipx .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 16px; line-height: 1.3; }
+  .tipx .h img { width: 32px; height: 32px; }
+  .tipx ol { margin: 0; padding-left: 21px; font-size: 14px; line-height: 1.21; }
+
   /* 함께 하는 탐험 (Figma 3382:9803): 한 장씩 옆으로 넘기는 종이 두 장 카드 · 아래 점 · 마지막 장 = 새 탐험 만들기(점선 = 아직) */
-  .coop { margin-top: 26px; }
-  .mis-row { margin-top: 14px; display: flex; gap: 20px; padding: 6px 20px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .coop { margin-top: 0; }
+  .mis-row { margin-top: 4px; display: flex; gap: 20px; padding: 6px 20px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .mis-row::-webkit-scrollbar { display: none; }
   .mis { position: relative; flex: none; width: 335px; height: 87px; scroll-snap-align: center; color: inherit; text-decoration: none; }
   .mis .back { position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.59deg) skewX(-1.36deg); }
@@ -68,16 +99,14 @@
   .dots { display: flex; justify-content: center; gap: 8px; margin-top: 4px; }
   .dots i { width: 10px; height: 10px; border: 1px solid var(--ink); box-sizing: border-box; transition: width var(--dur, .3s) var(--ease, ease); }
   .dots i.on { width: 30px; background: var(--lime); }
-  .tipx { margin-top: 30px; height: 129px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); position: relative;
-    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
-  .tipx-in { position: absolute; left: 21.8px; top: 15.6px; display: flex; flex-direction: column; gap: 5px; }
-  .tipx .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 16px; line-height: 1.3; }
-  .tipx .h img { width: 32px; height: 32px; }
-  .tipx ol { margin: 0; padding-left: 21px; font-size: 14px; line-height: 1.21; }
-  .tipx { margin-bottom: 140px; }
+  .notes { margin-top: 20px; padding-bottom: 150px; }
+  /* 펼친 쪽지 오른쪽 위: 이 친구 들판으로 (쪽지에서 바로 친구에게 놀러 가요) */
+  .letter .visit { position: absolute; right: 12px; top: 7px; display: flex; align-items: center; gap: 2px; padding: 3px 6px 3px 8px; font-size: 12px; font-weight: 700; color: inherit; text-decoration: none; background: var(--lime); border: 1px solid var(--ink); }
+  .letter .visit img { width: 13px; height: 13px; }
+  .letter[hidden] { display: none; }
 </style>
 </head><body>
-<div class="phone flat" style="--h:1010px">
+<div class="phone flat" style="--h:1000px">
 
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
@@ -88,20 +117,20 @@
     </div>
   </div>
 
+  <!-- 쪽지 접기 + 현황 (종이 두 장) -->
+  <div class="abs st-back" aria-hidden="true"></div>
+  <div class="abs st"></div>
+  <p class="abs ask-d">오늘 본 곤충을 담아 친구에게</p>
+  <p class="abs ask">먼저 쪽지를 접어 볼까요?</p>
+  <a class="abs fold-btn" href="capture-card.html"><span>쪽지 접기<img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+  <div class="abs rule" aria-hidden="true"></div>
+  <div class="abs stats">
+    <div class="stat"><p class="n"><b>4</b><span class="u">명</span></p><p class="l">탐험 친구</p></div><i></i>
+    <div class="stat"><p class="n"><b>12</b><span class="u">장</span></p><p class="l">주고받은 쪽지</p></div><i></i>
+    <div class="stat"><p class="n"><b>5</b><span class="u">종</span></p><p class="l">같이 만난 곤충</p></div>
+  </div>
 
-  <div class="flow">
-    <!-- 친구들의 들판: 칸을 누르면 그 친구 들판으로 놀러 가요 · 편지 = 새 쪽지 -->
-    <div class="sec-h"><span>친구들의 들판</span><b>새 쪽지 2<svg viewBox="0 0 120 88" width="18" height="13" style="display:block;overflow:visible;transform:rotate(0deg)"><rect x="4" y="4" width="112" height="80" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><polyline points="4,84 60,46 116,84" fill="none" stroke="#211b17" stroke-width="2.2" stroke-linejoin="round"/><polygon points="4,4 116,4 60,52" fill="#f8addb" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(60,52) rotate(-8) scale(1.0)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#f8addb" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg></b></div>
-    <div class="sheet"><a class="plot" href="friend-field.html?friend=seongyu" aria-label="유선규 들판 놀러 가기"><div class="mini" style="transform:translate(0,-134.0px) scale(0.4467)"><img src="assets/home/field-new/sun.png" alt="" style="position:absolute;left:199.89px;top:217.64px;width:175.11px;height:225.17px"><img src="assets/home/field-new/hill-back.png" alt="" style="position:absolute;left:0px;top:344.36px;width:375px;height:208.83px"><img src="assets/home/field-new/hill-front.png" alt="" style="position:absolute;left:0px;top:450.11px;width:375px;height:277.96px"><img src="assets/home/field-new/bush-patch.png" alt="" style="position:absolute;left:216.39px;top:494.99px;width:101.3px;height:34.13px"><img src="assets/home/field-new/tree-a.png" alt="" style="position:absolute;left:293.79px;top:381.45px;width:30.42px;height:47.67px"><img src="assets/home/field-new/tree-b.png" alt="" style="position:absolute;left:265px;top:359.2px;width:25.67px;height:40.23px"><img src="assets/home/field-new/tree-c.png" alt="" style="position:absolute;left:65.75px;top:354.45px;width:25.67px;height:39.84px"><img src="assets/home/field-new/tuft-b.png" alt="" style="position:absolute;left:339.79px;top:366.31px;width:27.41px;height:21.77px"><img src="assets/home/field-new/tuft-a.png" alt="" style="position:absolute;left:112.99px;top:445.25px;width:27.41px;height:21.77px"><svg viewBox="0 0 375 812" width="375" height="812" style="position:absolute;left:0;top:0"><polyline points="0,418 60,400 120,385 180,374 240,366 300,360 375,358" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/><polyline points="0,464 60,466 120,470 180,476 240,486 300,498 375,517" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/></svg></div><div class="pic" style="left:31px;top:18px"><svg viewBox="0 0 80 80" width="38" height="38" style="display:block;overflow:visible;transform:rotate(-10deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))"><polygon points="40,14 44,22 40,74 36,22" fill="#f28b7d" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="38,26 4,18 8,30" fill="#add2f8" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="42,26 76,18 72,30" fill="#9bbddf" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="38,32 8,40 12,48" fill="#9bbddf" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="42,32 72,40 68,48" fill="#add2f8" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><line x1="4" y1="18" x2="38" y2="26" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" fill="none"/></svg></div><div class="pic" style="left:92px;top:38px"><svg viewBox="0 0 80 80" width="38" height="38" style="display:block;overflow:visible;transform:rotate(8deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))"><polygon points="40,38 8,10 14,40" fill="#ffffff" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,38 72,10 66,40" fill="#eef0e6" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,42 14,44 22,68" fill="#eef0e6" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,42 66,44 58,68" fill="#ffffff" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><line x1="40" y1="30" x2="40" y2="62" stroke="#211b17" stroke-width="3" stroke-linecap="round"/><line x1="8" y1="10" x2="40" y2="38" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" fill="none"/></svg></div><span class="face"><img src="assets/profile/grass.svg" alt="">유선규<span class="pl-env"><svg viewBox="0 0 120 88" width="22" height="16" style="display:block;overflow:visible;transform:rotate(0deg)"><rect x="4" y="4" width="112" height="80" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><polyline points="4,84 60,46 116,84" fill="none" stroke="#211b17" stroke-width="2.2" stroke-linejoin="round"/><polygon points="4,4 116,4 60,52" fill="#f8addb" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(60,52) rotate(-8) scale(1.0)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#f8addb" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg></span></span></a><a class="plot" href="friend-field.html?friend=saon" aria-label="민사온 들판 놀러 가기"><div class="mini" style="transform:translate(0,-134.0px) scale(0.4467)"><img src="assets/home/field-new/sun.png" alt="" style="position:absolute;left:199.89px;top:217.64px;width:175.11px;height:225.17px"><img src="assets/home/field-new/hill-back.png" alt="" style="position:absolute;left:0px;top:344.36px;width:375px;height:208.83px"><img src="assets/home/field-new/hill-front.png" alt="" style="position:absolute;left:0px;top:450.11px;width:375px;height:277.96px"><img src="assets/home/field-new/bush-patch.png" alt="" style="position:absolute;left:216.39px;top:494.99px;width:101.3px;height:34.13px"><img src="assets/home/field-new/tree-a.png" alt="" style="position:absolute;left:293.79px;top:381.45px;width:30.42px;height:47.67px"><img src="assets/home/field-new/tree-b.png" alt="" style="position:absolute;left:265px;top:359.2px;width:25.67px;height:40.23px"><img src="assets/home/field-new/tree-c.png" alt="" style="position:absolute;left:65.75px;top:354.45px;width:25.67px;height:39.84px"><img src="assets/home/field-new/tuft-b.png" alt="" style="position:absolute;left:339.79px;top:366.31px;width:27.41px;height:21.77px"><img src="assets/home/field-new/tuft-a.png" alt="" style="position:absolute;left:112.99px;top:445.25px;width:27.41px;height:21.77px"><svg viewBox="0 0 375 812" width="375" height="812" style="position:absolute;left:0;top:0"><polyline points="0,418 60,400 120,385 180,374 240,366 300,360 375,358" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/><polyline points="0,464 60,466 120,470 180,476 240,486 300,498 375,517" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/></svg></div><div class="pic" style="left:38px;top:43px"><svg viewBox="0 0 80 80" width="38" height="38" style="display:block;overflow:visible;transform:rotate(6deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))"><polygon points="40,20 58,28 64,46 56,64 40,70" fill="#f28b7d" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,20 22,28 16,46 24,64 40,70" fill="#e5705f" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="32,12 48,12 52,22 28,22" fill="#211b17"/><circle cx="30" cy="40" r="4" fill="#211b17"/><circle cx="50" cy="38" r="4" fill="#211b17"/><circle cx="28" cy="56" r="3.5" fill="#211b17"/><circle cx="52" cy="55" r="3.5" fill="#211b17"/><line x1="40" y1="20" x2="40" y2="70" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" fill="none"/></svg></div><div class="pic" style="left:92px;top:18px"><svg viewBox="0 0 80 80" width="38" height="38" style="display:block;overflow:visible;transform:rotate(-6deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))"><polygon points="40,38 8,10 14,40" fill="#fff1a8" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,38 72,10 66,40" fill="#f0dc6e" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,42 14,44 22,68" fill="#f0dc6e" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,42 66,44 58,68" fill="#fff1a8" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><line x1="40" y1="30" x2="40" y2="62" stroke="#211b17" stroke-width="3" stroke-linecap="round"/><line x1="8" y1="10" x2="40" y2="38" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" fill="none"/></svg></div><span class="face"><img src="assets/profile/flower.svg" alt="">민사온<span class="pl-env"><svg viewBox="0 0 120 88" width="22" height="16" style="display:block;overflow:visible;transform:rotate(0deg)"><rect x="4" y="4" width="112" height="80" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><polyline points="4,84 60,46 116,84" fill="none" stroke="#211b17" stroke-width="2.2" stroke-linejoin="round"/><polygon points="4,4 116,4 60,52" fill="#add2f8" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(60,52) rotate(-8) scale(1.0)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#add2f8" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg></span></span></a><a class="plot" href="friend-field.html?friend=haram" aria-label="정하람 들판 놀러 가기"><div class="mini" style="transform:translate(0,-134.0px) scale(0.4467)"><img src="assets/home/field-new/sun.png" alt="" style="position:absolute;left:199.89px;top:217.64px;width:175.11px;height:225.17px"><img src="assets/home/field-new/hill-back.png" alt="" style="position:absolute;left:0px;top:344.36px;width:375px;height:208.83px"><img src="assets/home/field-new/hill-front.png" alt="" style="position:absolute;left:0px;top:450.11px;width:375px;height:277.96px"><img src="assets/home/field-new/bush-patch.png" alt="" style="position:absolute;left:216.39px;top:494.99px;width:101.3px;height:34.13px"><img src="assets/home/field-new/tree-a.png" alt="" style="position:absolute;left:293.79px;top:381.45px;width:30.42px;height:47.67px"><img src="assets/home/field-new/tree-b.png" alt="" style="position:absolute;left:265px;top:359.2px;width:25.67px;height:40.23px"><img src="assets/home/field-new/tree-c.png" alt="" style="position:absolute;left:65.75px;top:354.45px;width:25.67px;height:39.84px"><img src="assets/home/field-new/tuft-b.png" alt="" style="position:absolute;left:339.79px;top:366.31px;width:27.41px;height:21.77px"><img src="assets/home/field-new/tuft-a.png" alt="" style="position:absolute;left:112.99px;top:445.25px;width:27.41px;height:21.77px"><svg viewBox="0 0 375 812" width="375" height="812" style="position:absolute;left:0;top:0"><polyline points="0,418 60,400 120,385 180,374 240,366 300,360 375,358" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/><polyline points="0,464 60,466 120,470 180,476 240,486 300,498 375,517" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/></svg></div><div class="pic" style="left:51px;top:36px"><svg viewBox="0 0 80 80" width="38" height="38" style="display:block;overflow:visible;transform:rotate(-4deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))"><polygon points="10,48 60,30 70,44 20,58" fill="#b7e39a" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="20,44 62,30 50,22" fill="#9ed37e" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="40,52 30,72 34,72 46,54" fill="#9ed37e" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="62,30 74,26 70,44" fill="#b7e39a" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><line x1="10" y1="48" x2="60" y2="30" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" fill="none"/></svg></div><span class="face"><img src="assets/profile/tree.svg" alt="">정하람</span></a><a class="plot" href="friend-field.html?friend=taeho" aria-label="민태호 들판 놀러 가기"><div class="mini" style="transform:translate(0,-134.0px) scale(0.4467)"><img src="assets/home/field-new/sun.png" alt="" style="position:absolute;left:199.89px;top:217.64px;width:175.11px;height:225.17px"><img src="assets/home/field-new/hill-back.png" alt="" style="position:absolute;left:0px;top:344.36px;width:375px;height:208.83px"><img src="assets/home/field-new/hill-front.png" alt="" style="position:absolute;left:0px;top:450.11px;width:375px;height:277.96px"><img src="assets/home/field-new/bush-patch.png" alt="" style="position:absolute;left:216.39px;top:494.99px;width:101.3px;height:34.13px"><img src="assets/home/field-new/tree-a.png" alt="" style="position:absolute;left:293.79px;top:381.45px;width:30.42px;height:47.67px"><img src="assets/home/field-new/tree-b.png" alt="" style="position:absolute;left:265px;top:359.2px;width:25.67px;height:40.23px"><img src="assets/home/field-new/tree-c.png" alt="" style="position:absolute;left:65.75px;top:354.45px;width:25.67px;height:39.84px"><img src="assets/home/field-new/tuft-b.png" alt="" style="position:absolute;left:339.79px;top:366.31px;width:27.41px;height:21.77px"><img src="assets/home/field-new/tuft-a.png" alt="" style="position:absolute;left:112.99px;top:445.25px;width:27.41px;height:21.77px"><svg viewBox="0 0 375 812" width="375" height="812" style="position:absolute;left:0;top:0"><polyline points="0,418 60,400 120,385 180,374 240,366 300,360 375,358" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/><polyline points="0,464 60,466 120,470 180,476 240,486 300,498 375,517" fill="none" stroke="#211b17" stroke-width="1.6" stroke-dasharray="7 5"/></svg></div><div class="pic" style="left:65px;top:25px"><svg viewBox="0 0 80 80" width="38" height="38" style="display:block;overflow:visible;transform:rotate(8deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))"><polygon points="40,14 44,22 40,74 36,22" fill="#f28b7d" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="38,26 4,18 8,30" fill="#add2f8" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="42,26 76,18 72,30" fill="#9bbddf" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="38,32 8,40 12,48" fill="#9bbddf" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><polygon points="42,32 72,40 68,48" fill="#add2f8" stroke="#211b17" stroke-width="1.5" stroke-linejoin="round"/><line x1="4" y1="18" x2="38" y2="26" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" fill="none"/></svg></div><span class="face"><img src="assets/profile/river.svg" alt="">민태호</span></a><a class="plot add" href="badge.html?state=qr"><svg viewBox="0 0 120 88" width="36" height="26" style="display:block;overflow:visible;transform:rotate(0deg)"><rect x="4" y="4" width="112" height="80" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><polyline points="4,84 60,46 116,84" fill="none" stroke="#211b17" stroke-width="2.2" stroke-linejoin="round"/><polygon points="4,4 116,4 60,52" fill="#fffce4" stroke="#211b17" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(60,52) rotate(-8) scale(1.0)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="#fffce4" stroke="#211b17" stroke-width="1.8" stroke-linejoin="round"/></g></svg><span>친구 추가</span></a><div class="plot empty"><span>아직 빈 땅</span></div></div>
-
-    <!-- 쪽지 날리기 + 현황 -->
-    <div class="band">
-      <p><span><b>4</b><small>명</small></span><span>탐험 친구</span></p>
-      <p><span><b>12</b><small>장</small></span><span>쪽지</span></p>
-      <p><span><b>5</b><small>종</small></span><span>같이 만남</span></p>
-      <a class="send" href="capture-card.html"><i>쪽지 날리기<svg viewBox="0 0 60 60" width="16" height="16" style="display:block;overflow:visible;transform:rotate(0deg)"><polygon points="4,14 56,28 22,28" fill="#c1f8ad" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="22,28 56,28 16,46" fill="#9fe885" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="22,28 16,46 12,34" fill="#f3eec8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><line x1="4" y1="14" x2="56" y2="28" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/></svg></i></a>
-    </div>
-
+  <div class="abs flow">
     <!-- 함께 하는 탐험 -->
     <div class="coop">
       <div class="sec-h"><span>함께 하는 탐험</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></div>
@@ -123,19 +152,25 @@
       <div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     </div>
 
-
     <!-- PICO가 알려줘요 -->
     <div class="tipx"><div class="tipx-in">
       <p class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO가 알려줘요 !</p>
-      <ol><li>쪽지는 직접 만난 친구와만 주고받아요.</li><li>보낸 쪽지는 친구 들판의 PICO 옆에 붙어요.</li><li>오늘 본 곤충으로 먼저 쪽지를 날려 보세요.</li></ol>
+      <ol><li>쪽지는 직접 만난 친구와만 주고받아요.</li><li>쪽지를 펼치면 친구 들판에 놀러 갈 수 있어요.</li><li>오늘 본 곤충으로 먼저 쪽지를 접어 보세요.</li></ol>
     </div></div>
+    <div class="notes">
+      <!-- 친구들의 쪽지: 편지를 누르면 바로 아래로 편지지가 펼쳐져요 (한 번 더 누르면 접혀요) -->
+      <a class="sec-h" href="friend.html?friend=seongyu"><span>친구들의 쪽지</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
+      <div class="envs" id="envs"></div>
+      <div class="letter" id="letter" aria-live="polite" hidden></div>
+
+    </div>
   </div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
     <div class="tabbar-row">
       <div class="tabbar-group"><a href="home.html" aria-label="홈"><img src="assets/icons/outline/home.svg" alt=""><span>홈</span></a><a href="dogam.html" aria-label="도감"><img src="assets/icons/outline/tag.svg" alt=""><span>도감</span></a></div>
       <a class="tab-cam" href="capture-1.html" aria-label="관찰"><img src="assets/common/tab-camera.png" alt=""><span class="tab-cam-label">관찰</span></a>
-      <div class="tabbar-group"><a href="friends.html" aria-label="친구" aria-current="page"><img src="assets/icons/outline/bookmark.svg" alt=""><span>친구</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
+      <div class="tabbar-group"><a href="friends.html" aria-label="친구" aria-current="page"><img src="assets/icons/outline/mail.svg" alt=""><span>친구</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
     </div></nav>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
@@ -143,10 +178,73 @@
 <script src="shared.js"></script>
 <script>
 (function () {
+  var PINK = '#f8addb', SKY = '#add2f8', LIME = '#c1f8ad', INK = '#211b17';
+  var PENT = '<polygon points="5.28,0.5 23.1,7.7 24.88,22.94 8,26.81 0.5,12.37" stroke="' + INK + '" stroke-width="1.6" stroke-linejoin="round"/>';
+  function mark(c) { return '<svg viewBox="0 0 25.38 27.31" aria-hidden="true"><g fill="' + c + '">' + PENT + '</g></svg>'; }
+  // 친구마다 가장 최근 쪽지 한 장
+  var FRIENDS = [
+    { id: 'seongyu', name: '유선규', c: PINK, img: 'card-butterfly', bug: '배추흰나비', say: ['학교 화단에서 봤어!', '날개 끝이 까매'], date: '10월 31일' },
+    { id: 'saon', name: '민사온', c: SKY, img: 'card-ladybug', bug: '칠성무당벌레', say: ['잎 뒤에 숨어 있었어', '점이 일곱 개!'], date: '10월 30일' },
+    { id: 'haram', name: '정하람', c: LIME, img: 'card-grasshopper', bug: '방아깨비', say: ['풀숲에서 폴짝!', '다리가 엄청 길어'], date: '10월 29일' },
+    { id: 'taeho', name: '민태호', c: SKY, img: 'card-dragonfly', bug: '고추잠자리', say: ['개울 위를 빙빙', '꼬리가 빨개'], date: '10월 27일' }
+  ];
+  var opened = {};
+  try { var s = JSON.parse(localStorage.getItem('pico.friendsOpened') || 'null'); if (s) opened = s; } catch (e) {}
+  var cur = null;
+
+  function closedEnv(c, dashed, plain) {
+    var d = dashed ? ' stroke-dasharray="7 5"' : '', f = dashed ? 'none' : c, b = dashed ? 'none' : '#fffce4';
+    return '<svg class="c" viewBox="0 0 120 88" aria-hidden="true"><rect x="4" y="4" width="112" height="80" fill="' + b + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"' + d + '/>' +
+      '<polyline points="4,84 60,46 116,84" fill="none" stroke="' + INK + '" stroke-width="2.2" stroke-linejoin="round"' + d + '/>' +
+      '<polygon points="4,4 116,4 60,52" fill="' + f + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"' + d + '/>' +
+      (plain ? '<path d="M60 60v16M52 68h16" stroke="' + INK + '" stroke-width="2.6" stroke-linecap="round"/>' : dashed ? '<path d="M60 58v18M51 67h18" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/>' :
+      '<g transform="translate(60,52) rotate(-8)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="' + c + '" stroke="' + INK + '" stroke-width="1.8" stroke-linejoin="round"/></g>') + '</svg>';
+  }
+  function openEnv(f) {
+    var id = 'ec' + f.id;
+    return '<svg class="o" viewBox="0 0 160 150" aria-hidden="true"><defs><clipPath id="' + id + '"><rect width="94" height="80"/></clipPath></defs>' +
+      '<polygon points="8,62 152,62 80,8" fill="' + f.c + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"/><rect x="8" y="62" width="144" height="80" fill="' + f.c + '" stroke="' + INK + '" stroke-width="2.4"/>' +
+      '<g transform="translate(36,24) rotate(-9 47 40)"><g clip-path="url(#' + id + ')"><image href="assets/tabs/' + f.img + '.png" x="-20" y="-40" width="134" height="120" preserveAspectRatio="xMidYMax slice"/></g><rect width="94" height="80" fill="none" stroke="' + INK + '" stroke-width="2.2"/></g>' +
+      '<polygon points="8,62 80,110 152,62 152,142 8,142" fill="#fffce4" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"/><line x1="8" y1="142" x2="68" y2="102" stroke="' + INK + '" stroke-width="2"/><line x1="152" y1="142" x2="92" y2="102" stroke="' + INK + '" stroke-width="2"/>' +
+      '<g transform="translate(80,110) rotate(-8) scale(1.1)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="' + f.c + '" stroke="' + INK + '" stroke-width="1.8" stroke-linejoin="round"/></g></svg>';
+  }
+  var envs = document.getElementById('envs'), letter = document.getElementById('letter');
+  function photo(img) { return '<img src="assets/tabs/' + img + '.png" alt="">'; }
+  function render(anim) {
+    envs.innerHTML = FRIENDS.map(function (f) {
+      var isCur = f.id === cur, isNew = !opened[f.id];
+      return '<button class="fr' + (isNew ? ' new' : '') + (isCur ? ' on' : '') + '" data-id="' + f.id + '" aria-pressed="' + isCur + '">' +
+        '<span class="pic">' + (opened[f.id] ? openEnv(f) : closedEnv(f.c)) + '</span><span>' + f.name + '</span></button>';
+    }).join('') + '<a class="fr add new" href="badge.html?state=qr"><span class="pic">' + closedEnv('#fffce4', false, true) + '</span><span>친구 추가</span></a>';
+    letter.hidden = !cur; fit(); if (!cur) return;
+    var f = FRIENDS.filter(function (x) { return x.id === cur; })[0];
+    var lines = '<span class="lines">' + [30.6, 58.6, 86.6, 114.6, 142.6].map(function (t) { return '<i style="top:' + t + 'px"></i>'; }).join('') + '<b></b></span>';
+    letter.innerHTML = '<span class="tail"></span>' + lines +
+      '<p class="from">' + mark(f.c) + f.name + ' · ' + f.date + '</p><a class="visit" href="friend-field.html?friend=' + f.id + '">들판 놀러 가기<img src="assets/icons/outline/arrow-right.svg" alt=""></a><span class="ph">' + photo(f.img) + '</span>' +
+      '<p class="nm">' + f.bug + '</p><p class="hd">' + f.say.join('<br>') + '</p>';
+    var btn = envs.querySelector('.fr.on'), lb = letter.getBoundingClientRect(), bb = btn.getBoundingClientRect();
+    var k = letter.offsetWidth / lb.width || 1;
+    letter.querySelector('.tail').style.left = ((bb.left + bb.width / 2 - lb.left) * k) + 'px';
+    if (anim) { letter.classList.remove('swap'); void letter.offsetWidth; letter.classList.add('swap'); }
+    fit();
+  }
+  // 편지지가 펼쳐지면 화면 길이도 같이 늘어나요
+  function fit() { var fl = document.querySelector('.flow'); if (!fl) return; document.querySelector('.phone').style.setProperty('--h', Math.max(812, fl.offsetTop + fl.offsetHeight) + 'px'); }
+  envs.addEventListener('click', function (e) {
+    var b = e.target.closest('button.fr'); if (!b) return;
+    if (b.dataset.id === cur) { cur = null; render(false); return; }
+    cur = b.dataset.id; opened[cur] = true;
+    try { localStorage.setItem('pico.friendsOpened', JSON.stringify(opened)); } catch (x) {}
+    render(true);
+  });
+
   // 탐험 카드 점: 지금 보이는 장
   var row = document.getElementById('misRow'), dots = document.querySelectorAll('#dots i');
   function dot() { var i = Math.round(row.scrollLeft / 355); dots.forEach(function (d, k) { d.classList.toggle('on', k === i); }); }
-  row.addEventListener('scroll', dot, { passive: true }); dot();
+  row.addEventListener('scroll', dot, { passive: true });
+  function boot() { render(false); dot(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 0); }); else boot();
+  window.addEventListener('resize', function () { render(false); });
 })();
 </script>
 </body></html>
