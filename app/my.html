@@ -15,133 +15,71 @@
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="base.css">
 <style>
-  :root { --font-hand: 'SejongGeulggot', var(--font); }
-  @media (min-width: 500px) { body { padding-bottom: 0; } }
   .abs { position: absolute; }
-
-  /* profile card (Figma 6.1.1, 2847:4004) */
-  .card-shadow { left: 29.5px; top: 158.44px; width: 325px; height: 229px; background: var(--ink); border: 1px solid var(--ink); }
-  .card-face { left: 20.5px; top: 148px; width: 325px; height: 229px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-col { left: 28px; top: 118px; width: 310px; display: flex; flex-direction: column; gap: 10px; }
-  /* name + 프로필 큰거 (2959:7143 · 풀, 91.1px) sit on one row, bottom-aligned (Figma 2847:4011) */
-  .me-row { padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-end; }
-  .me-row .pf { width: 92px; height: 92px; margin: -0.45px; flex: none; }
-  .me { display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
-  .me .t { font-weight: 700; font-size: 20px; } .me .t small { font-size: 14px; } .me .t span { font-weight: 400; font-size: 14px; }
-  .me .s { font-size: 14px; }
-  /* 개인 설정에서 정한 이름이 길면(최대 10자) 프로필 옆에서 줄을 바꿔요 */
-  .me { min-width: 0; } .me .t { white-space: normal; word-break: keep-all; }
-  .card-inner { width: 310px; height: 139px; background: var(--brand-soft); padding: 10px 7.5px; overflow: hidden; }
-
-  /* 내가 만난 곤충: 카드 안에서 옆으로 넘겨 봐요 (4번째 카드가 살짝 보여요) */
-  .mine-h { padding: 0 10px; display: flex; justify-content: space-between; align-items: flex-end; white-space: nowrap; }
-  .mine-h > p { font-size: 14px; line-height: 19px; }
-  .mine-h a { display: flex; align-items: center; gap: 2px; font-size: 12px; }
-  .mine-h a img { width: 18px; height: 18px; }
-  .mine-list { margin-top: 10px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
-  .mine-list::-webkit-scrollbar { display: none; }
-  .mi { flex: none; width: 88px; display: flex; flex-direction: column; gap: 5px; font-size: 12px; line-height: 16px; white-space: nowrap; }
-  .mi .ph { position: relative; width: 88px; height: 70px; border: 1px solid var(--ink); overflow: hidden; background: var(--surface); }
-  .mi .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
-
-  /* sections below the card: Figma column gap 20 */
-  .stack { left: 0; top: 407.44px; width: 375px; display: flex; flex-direction: column; gap: 20px; }
-  .sec { display: flex; flex-direction: column; gap: 10px; }
-  .sec-h { padding: 0 20px; width: 375px; display: flex; justify-content: space-between; align-items: flex-start; font-size: 16px; white-space: nowrap; }
-  .sec-h img { width: 18px; height: 18px; }
-  .saved { padding: 0 20px; display: flex; gap: 14.09px; }
-  .saved a { position: relative; width: 110.61px; height: 120px; display: block; flex: none; }
-  .saved img { position: absolute; left: -0.5px; top: -0.5px; width: 111.6px; height: 91px; }
-  /* 종이접기 모티프: 사진 오른쪽 위 모서리를 접은 것처럼 (배지의 접힌 코너와 같은 언어) */
-  .saved img { clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%); }
-  .saved a::after { content: ''; position: absolute; top: -0.5px; right: -0.5px; width: 18px; height: 18px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'%3E%3Cpath d='M.5 .5V17.5H17.5Z' fill='%23fffad7' stroke='%23000' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat; }
-  .saved a:nth-child(3)::after { right: 5px; }   /* 장수풍뎅이 사진은 폭이 106.1px라 접힌 코너도 그만큼 안쪽으로 */
-  .saved .band { position: absolute; left: 0; top: 90px; width: 110.61px; height: 30px; background: var(--brand); border: 1px solid var(--ink); }
-  .saved .nm { position: absolute; left: 6.12px; top: 96.5px; font-size: 14px; white-space: nowrap; }
-  /* badge row scrolls sideways; the 4th badge peeks past the edge */
-  .badges { display: flex; gap: 15px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
-  .badges::-webkit-scrollbar { display: none; }
-  .badges a { flex: none; display: flex; flex-direction: column; align-items: center; gap: 15px; font-size: 14px; white-space: nowrap; }
-  .badges a:last-child { margin-right: 20px; }
-  .badges img { width: 90px; height: 90px; }
-  .friends { padding: 0 20px; display: flex; gap: 15px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
-  .friends::-webkit-scrollbar { display: none; }
-  .friends a:last-child { margin-right: 20px; }
-  .friends a { min-width: 60px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; line-height: 19px; white-space: nowrap; }
-  .friends img { width: 60px; height: 60px; }
-  .friends .pf { width: 60.6px; height: 60.6px; margin: -0.3px; }
-  .friends .add img { width: 55px; align-self: flex-start; }
-
-  .tip { width: 375px; height: 110px; background: #00b7ff; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); padding: 16px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
-  .tip .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 20px; line-height: 1.3; }
-  .tip .h img { width: 32px; height: 32px; }
-  .tip .d { font-size: 14px; line-height: 1.3; white-space: nowrap; }
-
-  .settings { padding: 0 20px; width: 375px; display: flex; flex-direction: column; gap: 10px; }
-  .settings > p { font-size: 20px; }
-  .settings ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
-  .settings button { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 14px; text-align: left; }
-  .settings button img { width: 32px; height: 32px; }
+  .top[data-fixed] { height: 118px; background: var(--paper); }
+  .nav .gear img { width: 30px; height: 30px; display: block; }
+  .flow { position: absolute; left: 0; top: 124px; width: 375px; display: flex; flex-direction: column; }
+  /* 나 (종이 두 장 = 내 것) */
+  .me { position: relative; margin: 2px 20px 0; height: 116px; }
+  .me::before { content: ''; position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.59deg) skewX(-1.36deg); }
+  .me-in { position: absolute; inset: 0; border: 1px solid var(--ink); background: url('assets/onboarding/ob-paper-full.jpg') -20px -126px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .me img.av { position: absolute; left: 16px; top: 16px; width: 44px; height: 44px; }
+  .me .nm { position: absolute; left: 70px; top: 16px; display: flex; align-items: center; gap: 8px; }
+  .me .nm b { font-size: 22px; } .me .nm span { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+  .me .sub { position: absolute; left: 70px; top: 46px; font-size: 12px; }
+  .me .bar { position: absolute; left: 16px; right: 16px; top: 80px; height: 12px; border: 1px dashed var(--ink); }
+  .me .bar i { display: block; height: 100%; background: var(--lime); }
+  .sec-h { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-top: 30px; font-size: 16px; font-weight: 700; color: inherit; text-decoration: none; }
+  .sec-h span:last-child { font-size: 12px; font-weight: 400; display: flex; align-items: center; gap: 2px; }
+  .sec-h img { width: 16px; height: 16px; }
+  /* 배지 주머니: 종이 한 장의 아래를 접어 올린 주머니 (앞장 = 뒷면이라 한 톤 진함 · 아래 접힌 자리 점선) */
+  .pockets { margin: 14px 20px 0; display: grid; grid-template-columns: repeat(3, 100px); justify-content: space-between; row-gap: 16px; }
+  .pk { position: relative; width: 100px; height: 112px; color: inherit; text-decoration: none; display: block; }
+  .pk::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 112px; border: 1px solid var(--ink); background: url('assets/onboarding/ob-paper-full.jpg') -40px -400px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .pk-art { position: absolute; left: 0; right: 0; top: 4px; display: flex; justify-content: center; }
+  .pk-front { position: absolute; left: 0; right: 0; bottom: 0; height: 54px; background: #f0e9c4; border: 1px solid var(--ink); border-bottom: 1.4px dashed var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+  .pk-front b { font-size: 13px; } .pk-front small { font-size: 10.5px; }
+  .pk.yet .pk-front b, .pk.yet .pk-front small { color: rgba(33,27,23,.6); font-weight: 400; }
+  .tipx { margin-top: 30px; padding: 14px 20px 16px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
+  .tipx .h { margin: 0 0 4px; display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 16px; }
+  .tipx .h img { width: 30px; height: 30px; } .tipx p { margin: 0; font-size: 14px; line-height: 1.35; }
+  /* 앱 설정 = 피코 노트 줄 */
+  .set { position: relative; margin: 26px 20px 140px; background: #fff; border: 1px solid var(--ink); }
+  .set::before { content: ''; position: absolute; top: 0; bottom: 0; left: 22px; border-left: 1px solid var(--rule-pink); }
+  .set h2 { margin: 0; padding: 12px 0 10px 34px; font-size: 15px; }
+  .set ul { list-style: none; margin: 0; padding: 0; }
+  .set li a { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 16px 0 34px; border-top: 1px solid var(--rule-cyan); font-size: 14px; color: inherit; text-decoration: none; }
+  .set li img { width: 16px; height: 16px; }
 </style>
 </head><body>
-<div class="phone" style="--h:1413px">
-
-  <div class="top">
+<div class="phone flat" style="--h:1190px">
+  <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
-    <div class="nav"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
-  </div>
-
-  <div class="abs card-shadow"></div>
-  <div class="abs card-face"></div>
-  <div class="abs card-col">
-    <div class="me-row"><div class="me"><p class="t"><b id="myName">김선우</b> <small>•</small> <span>새싹 탐험가</span></p><p class="s">PICO와 연속 54일째</p></div>
-      <img class="pf" id="myAvatar" src="assets/profile/grass.svg" alt="내 프로필"></div>
-    <div class="card-inner">
-      <div class="mine-h"><p>내가 만난 곤충</p><a href="dogam.html"><span>24종 / 80종</span><img src="assets/tabs/chevron-right-18.png" alt=""></a></div>
-      <div class="mine-list" id="mineList"></div>
+    <div class="nav">
+      <img class="logo lg" src="assets/common/logo-mark.png" alt="PICO">
+      <a class="gear" href="#settings" aria-label="앱 설정"><img src="assets/icons/outline/sliders.svg" alt=""></a>
     </div>
   </div>
 
-  <div class="abs stack">
-    <div class="sec">
-      <a class="sec-h" href="dogam.html"><span>내가 저장한 곤충</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
-      <div class="saved">
-        <a href="dogam-detail.html"><img src="assets/tabs/my-waterstrider.png" alt=""><span class="band"></span><span class="nm">소금쟁이</span></a>
-        <a href="dogam-detail.html"><img src="assets/tabs/my-divingbeetle.png" alt=""><span class="band"></span><span class="nm">물방개</span></a>
-        <a href="dogam-detail.html"><img src="assets/tabs/my-rhinobeetle.png" alt="" style="width:106.1px"><span class="band"></span><span class="nm">장수풍뎅이</span></a>
-      </div>
-    </div>
+  <div class="flow">
+    <!-- 나 -->
+    <div class="me"><div class="me-in">
+      <img class="av" id="myAvatar" src="assets/profile/grass.svg" alt="">
+      <p class="nm"><b id="myName">선우</b><span><svg viewBox="0 0 25.38 27.31" width="14" height="15" aria-hidden="true"><polygon points="5.28,0.5 23.1,7.7 24.88,22.94 8,26.81 0.5,12.37" fill="#c1f8ad" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/></svg>새싹 탐험가</span></p>
+      <p class="sub">배지 18개 중 7개를 접었어요</p>
+      <span class="bar" role="img" aria-label="18개 중 7개"><i style="width:38.9%"></i></span>
+    </div></div>
 
-    <div class="sec">
-      <a class="sec-h" href="badge.html" style="height:17px"><span>내가 획득한 배지</span><img src="assets/tabs/chevron-right-18.png" alt=""></a>
-      <div class="badges">
-        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>첫 관찰</span></a>
-        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>10종 그림</span></a>
-        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>함께 발견</span></a>
-        <a href="badge.html?state=earned"><img src="assets/tabs/badge-earned.png" alt=""><span>첫 그림</span></a>
-      </div>
-    </div>
+    <!-- 내 배지: 받은 셋 + 다음에 접을 셋 (점선 = 아직) -->
+    <a class="sec-h" href="badges.html"><span>내 배지</span><span>전체 보기<img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+    <div class="pockets"><a class="pk" href="badges.html"><span class="pk-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="58" height="58" style="display:block;overflow:visible"><polygon points="30,26 14,4 26,30" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="30,26 48,6 36,30" fill="#86bdf2" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="18,34 30,26 42,34 30,44" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="18,34 6,14 10,13 22,32" fill="#86bdf2" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="6,14 2,18 9,17" fill="#86bdf2" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="42,34 58,22 54,26 40,38" fill="#f3eec8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><line x1="30" y1="26" x2="30" y2="44" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/></svg></span><span class="pk-front"><b>25종 탐험가</b><small>2027.10.09</small></span></a><a class="pk" href="badges.html"><span class="pk-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="58" height="58" style="display:block;overflow:visible"><polygon points="30,52 6,28 6,18 12,10 22,10 30,18" fill="#f8addb" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="30,52 54,28 54,18 48,10 38,10 30,18" fill="#ef8cc8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="6,18 12,10 14,20" fill="#f3eec8" stroke="#211b17" stroke-width="1.2" stroke-linejoin="round"/><polygon points="54,18 48,10 46,20" fill="#f3eec8" stroke="#211b17" stroke-width="1.2" stroke-linejoin="round"/><line x1="30" y1="18" x2="30" y2="52" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/></svg></span><span class="pk-front"><b>함께 발견</b><small>2027.10.06</small></span></a><a class="pk" href="badges.html"><span class="pk-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="58" height="58" style="display:block;overflow:visible"><polygon points="4,34 56,34 46,48 14,48" fill="#86bdf2" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="30,8 30,34 14,34" fill="#f3eec8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="30,8 46,34 30,34" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="4,34 14,34 14,40" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="56,34 46,34 46,40" fill="#f3eec8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><line x1="14" y1="41" x2="46" y2="41" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/><polygon points="14,6 17,13 11,13" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="30,2 33,9 27,9" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="46,8 49,15 43,15" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="pk-front"><b>비오는 날 탐험</b><small>2027.10.04</small></span></a><a class="pk yet" href="badges.html"><span class="pk-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="58" height="58" style="display:block;overflow:visible"><polygon stroke-dasharray="3 2.6" points="30,28 6,10 10,32" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><polygon stroke-dasharray="3 2.6" points="30,28 54,10 50,32" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><polygon stroke-dasharray="3 2.6" points="30,32 12,36 18,52" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><polygon stroke-dasharray="3 2.6" points="30,32 48,36 42,52" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><line stroke-dasharray="3 2.6" x1="6" y1="10" x2="30" y2="28" stroke="#211b17" stroke-width="1.3"  stroke-linecap="round"/><line stroke-dasharray="3 2.6" x1="30" y1="20" x2="30" y2="50" stroke="#211b17" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="pk-front"><b>나비 박사</b><small>나비류 10종만 더</small></span></a><a class="pk yet" href="badges.html"><span class="pk-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="58" height="58" style="display:block;overflow:visible"><polygon stroke-dasharray="3 2.6" points="34,34 38,30 54,48 50,52" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><line stroke-dasharray="3 2.6" x1="36" y1="32" x2="52" y2="50" stroke="#211b17" stroke-width="1.3"  stroke-linecap="round"/><polygon stroke-dasharray="3 2.6" points="24,8 35,12 40,23 36,34 24,39 13,35 8,24 12,12" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><polygon stroke-dasharray="3 2.6" points="16,16 22,12 18,22" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/></svg></span><span class="pk-front"><b>렌즈 마스터</b><small>한 장소에서 5종</small></span></a><a class="pk yet" href="badges.html"><span class="pk-art"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="58" height="58" style="display:block;overflow:visible"><polygon stroke-dasharray="3 2.6" points="4,42 56,42 52,48 8,48" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><polygon stroke-dasharray="3 2.6" points="14,42 18,30 30,24 42,30 46,42" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><line stroke-dasharray="3 2.6" x1="30" y1="24" x2="30" y2="42" stroke="#211b17" stroke-width="1.3"  stroke-linecap="round"/><polygon stroke-dasharray="3 2.6" points="30,8 33,17 27,17" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><polygon stroke-dasharray="3 2.6" points="11,20 19,25 14,29" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/><polygon stroke-dasharray="3 2.6" points="49,20 46,29 41,25" fill="none" stroke="#211b17" stroke-width="1.3" stroke-linejoin="round"/></svg></span><span class="pk-front"><b>아침 탐험가</b><small>아침 10시 전 탐험</small></span></a></div>
 
-    <!-- Figma 2847:4121 "함께 하는 친구들" (띄어쓰기만 "함께하는"으로) -->
-    <div class="sec">
-      <div class="sec-h"><span>함께하는 친구들</span><img src="assets/tabs/chevron-right-18.png" alt=""></div>
-      <div class="friends">
-        <a href="friend.html?friend=seongyu"><img class="pf" src="assets/profile/river-m.svg" alt=""><span>유선규</span></a>
-        <a href="friend.html?friend=saon"><img class="pf" src="assets/profile/flower-m.svg" alt=""><span>민사온</span></a>
-        <a href="friend.html?friend=haram"><img class="pf" src="assets/profile/moon-m.svg" alt=""><span>정하람</span></a>
-        <a href="friend.html?friend=jihyuk"><img class="pf" src="assets/profile/grass-m.svg" alt=""><span>민지혁</span></a>
-        <a class="add" href="badge.html?state=qr"><img src="assets/tabs/qr-add.png" alt=""><span>QR로 추가</span></a>
-      </div>
-    </div>
+    <!-- PICO가 알려줘요 -->
+    <div class="tipx"><p class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO가 알려줘요 !</p><p>잎 뒷면도 살펴보세요!<br>작은 알이 숨어 있을지도 몰라요.</p></div>
 
-    <div class="tip">
-      <div class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO TIP</div>
-      <div class="d"><p>잎 뒷면도 살펴보세요!</p><p>작은 알이 숨어 있을지도 몰라요.</p></div>
-    </div>
-
-    <div class="settings"><p>앱 설정</p><ul id="settings"></ul></div>
+    <!-- 앱 설정 -->
+    <div class="set" id="settings"><h2>앱 설정</h2><ul><li><a href="#">알림 관리<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">보호자 설정<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">위치 정보 설정<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">공지사항<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">고객센터<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">서비스 이용 약관<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">개인정보 처리방침<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li></ul></div>
   </div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
@@ -165,21 +103,5 @@
     try { full = (localStorage.getItem('pico.name') || '').trim() || full; } catch (e) {}
     document.getElementById('myName').textContent = full.split(/\s+/).pop();
   })();
-</script>
-<script>
-(function () {
-  // 내가 만난 곤충 (도감과 같은 곤충들, 최근에 만난 순)
-  var MINE = [['방아깨비', 'grasshopper'], ['배추흰나비', 'butterfly'], ['칠성무당벌레', 'ladybug'], ['고추 잠자리', 'dragonfly'],
-    ['소금쟁이', 'waterstrider'], ['물방개', 'divingbeetle'], ['흰줄숲모기', 'mosquito'], ['갈색 여치', 'katydid'],
-    ['긴수염대벌레', 'stickinsect'], ['큰자루긴수염나방', 'moth'], ['붉은점모시나비', 'apollo'], ['상제나비', 'blackveined']];
-  document.getElementById('mineList').innerHTML = MINE.map(function (m) {
-    return '<a class="mi" href="dogam-detail.html"><span class="ph"><img src="assets/tabs/card-' + m[1] + '.png" alt="">' + PicoGrade.tag(m[0]) + '</span><span>' + m[0] + '</span></a>';
-  }).join('');
-
-  var settings = ['알림 관리', '공지사항', '고객센터', '보호자 설정', '위치 정보 설정', '서비스 이용 약관', '개인정보 처리방침'];
-  document.getElementById('settings').innerHTML = settings.map(function (s) {
-    return '<li><button type="button"><span>' + s + '</span><img src="assets/tabs/chevron-right-32.png" alt=""></button></li>';
-  }).join('');
-})();
 </script>
 </body></html>

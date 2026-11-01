@@ -84,6 +84,7 @@
   .rec-txt span { font-size: 10px; line-height: 12px; }
   .rec-body .chev { width: 32px; height: 32px; transform: rotate(-90deg); }
 
+  .field-tex { left: 0; top: 0; width: 375px; height: 812px; pointer-events: none; background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px; mix-blend-mode: multiply; opacity: .9; }
   /* ---- mode toggle ---- */
   .modes { position: absolute; left: 283.03px; top: 495.63px; width: 73px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; z-index: 4; }
   .phone[data-mode="field"] .modes { left: 282.39px; top: 636.3px; }
@@ -197,11 +198,7 @@
 
   <div class="greet"><h1 id="greetName">초고속 탐험가 선우,</h1><p>오늘은 어떤 친구를 만나 볼까요?</p></div>
 
-  <!-- mode toggle -->
-  <div class="modes" role="tablist" aria-label="보기 모드">
-    <button class="mode on" type="button" role="tab" data-mode="radar" aria-selected="true"><img src="assets/icons/filled/radar.svg" alt=""><span>내 근처</span></button>
-    <button class="mode" type="button" role="tab" data-mode="field" aria-selected="false"><img src="assets/icons/outline/map.svg" alt=""><span>내 들판</span></button>
-  </div>
+  <!-- 내 근처(레이더) 토글은 뺐어요: 교수님 피드백 "장소보다 사람·소통 먼저" -->
 
   <!-- top: status + nav -->
   <div class="top">
@@ -294,7 +291,7 @@
   });
 
   // field illustration: exported layers, Figma render bounds, in Figma z-order
-  var F = 'assets/home/field/';
+  var F = 'assets/home/field-new/';  // 새 색 (모양은 그대로)
   var layers = [
     ['sun', 199.89, 217.64, 175.11, 225.17],
     ['hill-back', 0, 344.36, 375, 208.83],
@@ -316,7 +313,10 @@
       return '<button type="button" class="fpin" data-open-sheet style="left:' + l[1] + 'px;top:' + l[2] + 'px" aria-label="곤충 친구 보기"><img class="o" src="' + F + 'pin-' + c + '-outer.png" alt=""><img class="i" src="' + F + 'pin-' + c + '-inner.png" alt=""></button>';
     }
     return '<img class="abs" src="' + F + l[0] + '.png" alt="" style="left:' + l[1] + 'px;top:' + l[2] + 'px;width:' + l[3] + 'px;height:' + l[4] + 'px">';
-  }).join('');
+  }).join('')
+    // 언덕 능선마다 접는 선 + 종이 질감 (새 디자인 규칙)
+    + '<svg class="abs" viewBox="0 0 375 812" width="375" height="812" style="left:0;top:0;pointer-events:none" aria-hidden="true"><polyline points="0,418 6,416 12,414 18,412 24,410 30,408 36,406 42,404 48,403 54,402 60,400 66,398 72,396 78,395 84,394 90,392 96,390 102,389 108,388 114,386 120,385 126,384 132,382 138,382 144,380 150,379 156,378 162,377 168,376 174,375 180,374 186,373 192,372 198,371 204,370 210,370 216,368 222,368 228,367 234,366 240,366 246,365 252,364 258,364 264,363 270,362 276,362 282,362 288,361 294,361 300,360 306,360 312,360 318,360 324,359 330,359 336,359 342,358 348,358 354,358 360,358 366,358 372,358" fill="none" stroke="#211b17" stroke-width="1" stroke-dasharray="5 4"/><polyline points="0,464 6,464 12,464 18,464 24,464 30,464 36,464 42,465 48,465 54,466 60,466 66,466 72,466 78,466 84,467 90,467 96,468 102,468 108,468 114,469 120,470 126,470 132,470 138,472 144,472 150,472 156,474 162,474 168,475 174,476 180,476 186,477 192,478 198,479 204,480 210,481 216,482 222,483 228,484 234,485 240,486 246,487 252,488 258,490 264,490 270,492 276,493 282,494 288,496 294,497 300,498 306,500 312,501 318,502 324,504 330,506 336,507 342,509 348,510 354,512 360,514 366,516 372,517" fill="none" stroke="#211b17" stroke-width="1" stroke-dasharray="5 4"/></svg>'
+    + '<div class="abs field-tex" aria-hidden="true"></div>';
 
 
   // 내 들판: 예시 친구 + 내가 그린 PICO가 돌아다녀요 (field.js)
@@ -380,8 +380,7 @@
 
   var st = document.documentElement.dataset.state;
   // 홈은 항상 내 들판으로 열려요. 내 근처는 토글이나 ?state=radar|picked 로만.
-  if (st === 'radar' || st === 'picked') setMode('radar'); else setMode('field');
-  if (st === 'picked') select(0);
+  setMode('field');
   if (st === 'sheet') { setMode('field'); openSheet(); }
 })();
 </script>

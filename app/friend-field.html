@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="/app/manifest.json">
+<meta name="theme-color" content="#fffad3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PICO">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>PICO · 친구 들판</title>
+<link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="base.css">
+<style>
+  .abs { position: absolute; }
+  .top[data-fixed] { height: 118px; background: var(--paper); }
+  .ff-nav { position: relative; height: 58px; display: flex; align-items: center; justify-content: center; padding: 0 20px 5px; }
+  .ff-nav a { position: absolute; left: 16px; top: 13px; } .ff-nav a img { width: 28px; height: 28px; display: block; }
+  .ff-nav h1 { margin: 0; font-size: 17px; font-weight: 700; }
+  .who { left: 20px; top: 128px; display: flex; align-items: center; gap: 10px; }
+  .who img { width: 42px; height: 42px; display: block; }
+  .who b { font-size: 16px; } .who p { margin: 2px 0 0; font-size: 12px; }
+  .field-tex { left: 0; top: 0; width: 375px; height: 812px; pointer-events: none; background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px; mix-blend-mode: multiply; opacity: .9; }
+  .fp { position: absolute; z-index: 3; display: flex; flex-direction: column; align-items: center; }
+  .fp span { margin-top: -4px; font-size: 11px; line-height: 16px; padding: 0 6px; background: #fffdf7; border: 1.5px solid var(--ink); white-space: nowrap; }
+  /* 나에게 보낸 쪽지: 그 PICO 옆에 붙은 노트 종이 (편지지 대신) */
+  .tagnote { position: absolute; z-index: 4; width: 196px; height: 84px; background: #fff; border: 1px solid var(--ink); transform: rotate(-2deg); overflow: hidden;
+    background-image: linear-gradient(transparent 29px, var(--rule-cyan) 29px, var(--rule-cyan) 30px, transparent 30px), linear-gradient(transparent 53px, var(--rule-cyan) 53px, var(--rule-cyan) 54px, transparent 54px), linear-gradient(transparent 77px, var(--rule-cyan) 77px, var(--rule-cyan) 78px, transparent 78px); }
+  .tagnote::before { content: ''; position: absolute; top: 0; bottom: 0; left: 16px; border-left: 1px solid var(--rule-pink); }
+  .tagnote small { position: absolute; left: 24px; top: 8px; font-size: 11px; display: flex; gap: 4px; align-items: center; }
+  .tagnote p { position: absolute; left: 24px; top: 30px; margin: 0; font-family: var(--font-hand); font-size: 16px; line-height: 24px; }
+  .cta-send { left: 20px; top: 712px; width: 335px; height: 52px; z-index: 5; color: inherit; text-decoration: none; }
+  .cta-send::before { content: ''; position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
+  .cta-send i { position: absolute; inset: 0; background: url('assets/onboarding/ob-paper-full.jpg') -20px -712px / 375px 812px, var(--paper); background-blend-mode: multiply; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 6px; font-style: normal; font-weight: 700; font-size: 16px; }
+  .cta-send img { width: 18px; height: 18px; }
+</style>
+</head><body>
+<div class="phone flat" style="--h:812px">
+  <div class="top" data-fixed>
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="ff-nav"><a href="friends.html" aria-label="친구 탭으로"><img src="assets/icons/outline/arrow-left.svg" alt=""></a><h1 id="ffTitle">친구 들판</h1></div>
+  </div>
+  <div class="abs who"><img id="ffAv" src="" alt=""><div><b id="ffName"></b><p>새싹 탐험가 · PICO <span id="ffN"></span>마리</p></div></div>
+  <img class="abs" src="assets/home/field-new/sun.png" alt="" style="left:199.89px;top:217.64px;width:175.11px;height:225.17px"><img class="abs" src="assets/home/field-new/hill-back.png" alt="" style="left:0px;top:344.36px;width:375px;height:208.83px"><img class="abs" src="assets/home/field-new/hill-front.png" alt="" style="left:0px;top:450.11px;width:375px;height:277.96px"><img class="abs" src="assets/home/field-new/pond-outer.png" alt="" style="left:19.56px;top:609.91px;width:166.3px;height:56.04px"><img class="abs" src="assets/home/field-new/bush-patch.png" alt="" style="left:216.39px;top:494.99px;width:101.3px;height:34.13px"><img class="abs" src="assets/home/field-new/pond-inner.png" alt="" style="left:22.49px;top:623.75px;width:84.15px;height:28.35px"><img class="abs" src="assets/home/field-new/tuft-a.png" alt="" style="left:330.05px;top:580.96px;width:27.41px;height:21.77px"><img class="abs" src="assets/home/field-new/tuft-b.png" alt="" style="left:339.79px;top:366.31px;width:27.41px;height:21.77px"><img class="abs" src="assets/home/field-new/tuft-a.png" alt="" style="left:112.99px;top:445.25px;width:27.41px;height:21.77px"><img class="abs" src="assets/home/field-new/tree-tall.png" alt="" style="left:45.11px;top:459.12px;width:42.55px;height:84.78px"><img class="abs" src="assets/home/field-new/tree-mid.png" alt="" style="left:24.56px;top:495.78px;width:42.55px;height:66.69px"><img class="abs" src="assets/home/field-new/tree-a.png" alt="" style="left:293.79px;top:381.45px;width:30.42px;height:47.67px"><img class="abs" src="assets/home/field-new/tree-b.png" alt="" style="left:265px;top:359.2px;width:25.67px;height:40.23px"><img class="abs" src="assets/home/field-new/tree-c.png" alt="" style="left:65.75px;top:354.45px;width:25.67px;height:39.84px"><img class="abs" src="assets/home/field-new/path.png" alt="" style="left:204.04px;top:542.39px;width:170.96px;height:184.9px">
+  <svg class="abs" viewBox="0 0 375 812" width="375" height="812" style="left:0;top:0;pointer-events:none" aria-hidden="true"><polyline points="0,418 60,400 120,385 180,374 240,366 300,360 375,358" fill="none" stroke="#211b17" stroke-width="1" stroke-dasharray="5 4"/><polyline points="0,464 60,466 120,470 180,476 240,486 300,498 375,517" fill="none" stroke="#211b17" stroke-width="1" stroke-dasharray="5 4"/></svg>
+  <div class="abs field-tex" aria-hidden="true"></div>
+  <div id="ffPics"></div>
+  <a class="abs cta-send" href="capture-card.html"><i><span id="ffSend">쪽지 날리기</span><img src="assets/icons/outline/arrow-right.svg" alt=""></i></a>
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+<script>
+(function () {
+  var DATA = {"seongyu": {"name": "유선규", "av": "grass", "c": "#f8addb", "pics": [{"a": "<svg viewBox=\"0 0 80 80\" width=\"62\" height=\"62\" style=\"display:block;overflow:visible;transform:rotate(-10deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))\"><polygon points=\"40,14 44,22 40,74 36,22\" fill=\"#f28b7d\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"38,26 4,18 8,30\" fill=\"#add2f8\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"42,26 76,18 72,30\" fill=\"#9bbddf\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"38,32 8,40 12,48\" fill=\"#9bbddf\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"42,32 72,40 68,48\" fill=\"#add2f8\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><line x1=\"4\" y1=\"18\" x2=\"38\" y2=\"26\" stroke=\"#211b17\" stroke-width=\"1\" stroke-dasharray=\"2.4 2\" fill=\"none\"/></svg>", "x": 0.3, "y": 0.34, "n": "고추잠자리"}, {"a": "<svg viewBox=\"0 0 80 80\" width=\"62\" height=\"62\" style=\"display:block;overflow:visible;transform:rotate(8deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))\"><polygon points=\"40,38 8,10 14,40\" fill=\"#ffffff\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,38 72,10 66,40\" fill=\"#eef0e6\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,42 14,44 22,68\" fill=\"#eef0e6\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,42 66,44 58,68\" fill=\"#ffffff\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><line x1=\"40\" y1=\"30\" x2=\"40\" y2=\"62\" stroke=\"#211b17\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"8\" y1=\"10\" x2=\"40\" y2=\"38\" stroke=\"#211b17\" stroke-width=\"1\" stroke-dasharray=\"2.4 2\" fill=\"none\"/></svg>", "x": 0.66, "y": 0.52, "n": "배추흰나비"}], "note": {"on": 1, "date": "10월 31일", "say": ["학교 화단에서 봤어!", "날개 끝이 까매"]}}, "saon": {"name": "민사온", "av": "flower", "c": "#add2f8", "pics": [{"a": "<svg viewBox=\"0 0 80 80\" width=\"62\" height=\"62\" style=\"display:block;overflow:visible;transform:rotate(6deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))\"><polygon points=\"40,20 58,28 64,46 56,64 40,70\" fill=\"#f28b7d\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,20 22,28 16,46 24,64 40,70\" fill=\"#e5705f\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"32,12 48,12 52,22 28,22\" fill=\"#211b17\"/><circle cx=\"30\" cy=\"40\" r=\"4\" fill=\"#211b17\"/><circle cx=\"50\" cy=\"38\" r=\"4\" fill=\"#211b17\"/><circle cx=\"28\" cy=\"56\" r=\"3.5\" fill=\"#211b17\"/><circle cx=\"52\" cy=\"55\" r=\"3.5\" fill=\"#211b17\"/><line x1=\"40\" y1=\"20\" x2=\"40\" y2=\"70\" stroke=\"#211b17\" stroke-width=\"1\" stroke-dasharray=\"2.4 2\" fill=\"none\"/></svg>", "x": 0.34, "y": 0.56, "n": "칠성무당벌레"}, {"a": "<svg viewBox=\"0 0 80 80\" width=\"62\" height=\"62\" style=\"display:block;overflow:visible;transform:rotate(-6deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))\"><polygon points=\"40,38 8,10 14,40\" fill=\"#fff1a8\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,38 72,10 66,40\" fill=\"#f0dc6e\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,42 14,44 22,68\" fill=\"#f0dc6e\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,42 66,44 58,68\" fill=\"#fff1a8\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><line x1=\"40\" y1=\"30\" x2=\"40\" y2=\"62\" stroke=\"#211b17\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"8\" y1=\"10\" x2=\"40\" y2=\"38\" stroke=\"#211b17\" stroke-width=\"1\" stroke-dasharray=\"2.4 2\" fill=\"none\"/></svg>", "x": 0.66, "y": 0.34, "n": "노랑 날개"}], "note": {"on": 0, "date": "10월 30일", "say": ["잎 뒤에 숨어 있었어", "점이 일곱 개!"]}}, "haram": {"name": "정하람", "av": "tree", "c": "#c1f8ad", "pics": [{"a": "<svg viewBox=\"0 0 80 80\" width=\"62\" height=\"62\" style=\"display:block;overflow:visible;transform:rotate(-4deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))\"><polygon points=\"10,48 60,30 70,44 20,58\" fill=\"#b7e39a\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"20,44 62,30 50,22\" fill=\"#9ed37e\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"40,52 30,72 34,72 46,54\" fill=\"#9ed37e\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"62,30 74,26 70,44\" fill=\"#b7e39a\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><line x1=\"10\" y1=\"48\" x2=\"60\" y2=\"30\" stroke=\"#211b17\" stroke-width=\"1\" stroke-dasharray=\"2.4 2\" fill=\"none\"/></svg>", "x": 0.42, "y": 0.5, "n": "방아깨비"}], "note": null}, "taeho": {"name": "민태호", "av": "river", "c": "#add2f8", "pics": [{"a": "<svg viewBox=\"0 0 80 80\" width=\"62\" height=\"62\" style=\"display:block;overflow:visible;transform:rotate(8deg);filter:drop-shadow(1.6px 0 0 #fffdf2) drop-shadow(-1.6px 0 0 #fffdf2) drop-shadow(0 1.6px 0 #fffdf2) drop-shadow(0 -1.6px 0 #fffdf2) drop-shadow(1px 1.8px 0 rgba(33,27,23,.28))\"><polygon points=\"40,14 44,22 40,74 36,22\" fill=\"#f28b7d\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"38,26 4,18 8,30\" fill=\"#add2f8\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"42,26 76,18 72,30\" fill=\"#9bbddf\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"38,32 8,40 12,48\" fill=\"#9bbddf\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><polygon points=\"42,32 72,40 68,48\" fill=\"#add2f8\" stroke=\"#211b17\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><line x1=\"4\" y1=\"18\" x2=\"38\" y2=\"26\" stroke=\"#211b17\" stroke-width=\"1\" stroke-dasharray=\"2.4 2\" fill=\"none\"/></svg>", "x": 0.5, "y": 0.4, "n": "파랑 꼬리"}], "note": null}};
+  var id = new URLSearchParams(location.search).get('friend') || 'seongyu';
+  var f = DATA[id] || DATA.seongyu;
+  var given = f.name.slice(1);
+  document.getElementById('ffTitle').textContent = f.name + '의 들판';
+  document.getElementById('ffName').textContent = f.name;
+  document.getElementById('ffAv').src = 'assets/profile/' + f.av + '.svg';
+  document.getElementById('ffN').textContent = f.pics.length;
+  document.getElementById('ffSend').textContent = given + '에게 쪽지 날리기';
+  // 들판 위 PICO (y 360~600 구간)
+  var html = f.pics.map(function (p) {
+    var x = Math.round(p.x * 300 + 6), y = Math.round(360 + p.y * 240);
+    return '<div class="fp" style="left:' + x + 'px;top:' + y + 'px">' + p.a + '<span>' + p.n + '</span></div>';
+  }).join('');
+  if (f.note) {
+    var p = f.pics[f.note.on], x = Math.round(p.x * 300 + 6), y = Math.round(360 + p.y * 240);
+    var nx = Math.max(12, Math.min(167, x - 70)), ny = Math.max(186, y - 118);
+    html += '<div class="tagnote" style="left:' + nx + 'px;top:' + ny + 'px"><small><svg viewBox="0 0 25.38 27.31" width="11" height="12"><polygon points="5.28,0.5 23.1,7.7 24.88,22.94 8,26.81 0.5,12.37" fill="' + f.c + '" stroke="#211b17" stroke-width="1.6"/></svg>나에게 보낸 쪽지 · ' + f.note.date + '</small><p>' + f.note.say.join('<br>') + '</p></div>';
+  }
+  document.getElementById('ffPics').innerHTML = html;
+})();
+</script>
+</body></html>
