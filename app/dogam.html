@@ -37,11 +37,12 @@
   .sum-n span { font-size: 15px; line-height: normal; }
   .tiers { display: flex; gap: 10px; }
   .tier { display: flex; flex-direction: column; gap: 5px; width: 97.34px; }
-  .tier .th { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-  .tier .mk { width: 18.23px; height: 19.62px; flex: none; transform: rotate(-5.97deg); overflow: visible; }
+  /* Figma 3279:24356: 제목 줄 21.41px · 막대는 5px 아래 바깥 높이 10px (합 36.41px). 마크는 기울어진 상자(20.17×21.41) 기준으로 1.9px 아래 */
+  .tier .th { display: flex; align-items: center; gap: 4px; height: 21.41px; white-space: nowrap; }
+  .tier .mk { width: 18.23px; height: 19.62px; flex: none; margin: 0 1px; transform: translateY(1.9px) rotate(-5.97deg); overflow: visible; }
   .tier .tn { width: 55.17px; font-size: 12px; line-height: normal; }
   .tier .tc { font-weight: 700; font-size: 13px; line-height: normal; }
-  .tier .bar { display: block; height: 10px; border: 1px solid var(--ink); background: transparent; }
+  .tier .bar { display: block; box-sizing: border-box; height: 10px; border: 1px solid var(--ink); background: transparent; }
   .tier .bar i { display: block; height: 100%; background: var(--tc); }
 
   /* list section: one flowing column, matches Figma auto-layout (Frame 2147203380) */
@@ -53,7 +54,7 @@
   .sort[aria-pressed="true"] img { transform: rotate(180deg); }
 
   .cards { display: grid; grid-template-columns: 160.54px 160.54px; column-gap: 14.4px; row-gap: 27.56px; width: 335.48px; }   /* Figma 3279:24356: 줄 간격 169.16 */
-  .cards--top { margin-top: 17.03px; }
+  .cards--top { margin-top: 19px; }   /* 사진 윗변 = 목록 제목 아래 19px (시안 y 323.3) */
   .cards--rest { margin-top: 22.03px; }
   .cards:empty { display: none; }
   .icard { position: relative; width: 160.54px; height: 141.6px; display: block; }
@@ -68,7 +69,7 @@
      접힌 세모(뒷면 = 단계 색)의 긴 변이 그 선과 딱 겹쳐요. 붙인 도형이 아니라 접은 종이로 읽혀요. */
   .icard .label, .utile .label { clip-path: polygon(0 0, 145.33px 0, 162.5px 13.65px, 162.5px 100%, 0 100%); }
   .icard .flag, .utile .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; filter: drop-shadow(1px 2px 1.5px rgba(33,27,23,.22)); }
-  .icard .meta { position: absolute; left: 12px; top: 7px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
+  .icard .meta { position: absolute; left: 12px; top: 7px; width: 83px; display: flex; flex-direction: column; gap: 2px; }   /* 시안: 이름이 83px을 넘으면 … (긴수염대… · 큰자루긴수… · 붉은점모…) */
   .icard .meta b { display: block; font-weight: 400; font-size: 16px; line-height: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .icard .meta span { display: block; font-size: 12px; line-height: normal; white-space: nowrap; }
   /* 액자: 라임 45.3×51 + 검정 그림자, 안쪽 크림 칸, 9.94° 기울임 */
@@ -196,20 +197,21 @@
   }).join('');
   document.getElementById('allGot').textContent = gotAll;
 
-  // newest first (Figma order). First 4 sit above the TIP banner, the rest below it.
+  // 시안(Figma 3279:24356) 순서 그대로. 처음 8장은 TIP 위, 나머지는 TIP 아래. 카드 색 = 시안의 깃발·액자 색
+  //  (label = 카드에 쓰는 이름: 시안은 '무당벌레'. 이름(name)은 상세·내 그림과 이어지는 '칠성무당벌레' 그대로)
   var insects = [
     { name: '방아깨비', doodle: 'hop', date: '2027.11.22', img: 'card-grasshopper' },
-    { name: '칠성무당벌레', doodle: 'ladybug', date: '2027.11.02', img: 'card-ladybug' },
+    { name: '칠성무당벌레', label: '무당벌레', doodle: 'ladybug', date: '2027.11.22', img: 'card-ladybug' },
     { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly' },
     { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly', c: 'cyan' },
-    { name: '소금쟁이', doodle: 'strider', date: '2027.10.18', img: 'card-waterstrider' },
-    { name: '물방개', doodle: 'beetle', date: '2027.10.11', img: 'card-divingbeetle', c: 'cyan' },
     { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito', c: 'cyan' },
     { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid', c: 'pink' },
+    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.29', img: 'card-moth', c: 'pink' },
     { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect', c: 'cyan' },
-    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.05', img: 'card-moth', c: 'pink' },
+    { name: '소금쟁이', doodle: 'strider', date: '2027.09.23', img: 'card-waterstrider' },
     { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo', c: 'pink' },
-    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.23', img: 'card-blackveined', c: 'cyan' }
+    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.12', img: 'card-blackveined', c: 'cyan' },
+    { name: '물방개', doodle: 'beetle', date: '2027.09.05', img: 'card-divingbeetle' }
   ];
   // 사진첩 안 그림: 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있으면 그걸, 없으면 예시 그림
   var mine = {};
@@ -224,13 +226,14 @@
   function cardHTML(it) {
     return '<a class="icard' + (it.c ? ' c-' + it.c : '') + '" href="dogam-detail.html" data-name="' + it.name + '">' +
       '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
-      '<span class="label"><span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span></span>' + FLAG +
+      '<span class="label"><span class="meta"><b>' + (it.label || it.name) + '</b><span>' + it.date + '</span></span></span>' + FLAG +
       '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="sh"></i><i class="fc"></i><span class="pic">' + drawing(it) + '</span></span></a>';
   }
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
-  var UNMET = { '025': 'common', '028': 'common', '029': 'normal', '030': 'normal', '033': 'normal', '035': 'rare', '037': 'rare', '038': 'rare' };
-  function utile(n) {
-    var k = UNMET[n], c = k === 'normal' ? ' c-cyan' : k === 'rare' ? ' c-pink' : '';   // 아직 못 만났어도 단계 색은 보여 줘요
+  //  시안 순서대로 색: 하늘 · 분홍 · 분홍 · 하늘 · 연두 · 연두 · 연두 · 하늘 (Figma 3279:24356)
+  var UNMET = [['025', 'normal'], ['028', 'rare'], ['029', 'rare'], ['030', 'normal'], ['033', 'common'], ['035', 'common'], ['037', 'common'], ['038', 'normal']];
+  function utile(u) {
+    var n = u[0], k = u[1], c = k === 'normal' ? ' c-cyan' : k === 'rare' ? ' c-pink' : '';   // 아직 못 만났어도 단계 색은 보여 줘요
     return '<div class="utile' + c + '"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span>' + FLAG + '<img src="assets/icons/outline/help.svg" alt=""></div>';
   }
   var cards = document.getElementById('cards'), cards2 = document.getElementById('cards2');
@@ -245,7 +248,7 @@
     cards.innerHTML = shown.slice(0, 8).map(cardHTML).join('');   // TIP 위에 8장 (Figma 3279:24356)
     // Figma order of the unmet tiles: No.25, No.27 in the last card grid, then No.26, No.28
     // unmet insects (Figma 곤충목록: same order for 최근순 and 오래된순)
-    cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : ['025', '028', '029', '030', '033', '035', '037', '038'].map(utile).join(''));
+    cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : UNMET.map(utile).join(''));
     empty.hidden = shown.length > 0 || (searching && !v);
     // page grows with the list; keep it clear of the tab bar
     phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px');
