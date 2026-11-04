@@ -39,6 +39,24 @@
   }
   window.addEventListener('resize', fit);
   document.addEventListener('DOMContentLoaded', function () { wrap(); fit(); });
+  // 왼쪽 위 PICO 로고를 누르면 스플래시로 가요. 가운데 로고(설정 화면 .nav--center)와 이미 링크·버튼 안에 있는 로고는 그대로 둬요.
+  function logoOf(t) {
+    var l = t && t.closest ? t.closest('.nav .logo') : null;
+    return l && !l.closest('.nav--center, a, button') ? l : null;
+  }
+  function goSplash() {
+    // 보통 링크와 같은 길(떠나는 디졸브 포함)로 가도록 임시 링크를 눌러요
+    var a = document.createElement('a'); a.href = 'splash.html'; a.hidden = true;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.nav .logo').forEach(function (l) {
+      if (!logoOf(l)) return;
+      l.setAttribute('role', 'link'); l.setAttribute('tabindex', '0'); l.setAttribute('aria-label', 'PICO 처음 화면으로'); l.style.cursor = 'pointer';
+    });
+  });
+  document.addEventListener('click', function (e) { if (logoOf(e.target)) goSplash(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && logoOf(e.target)) { e.preventDefault(); goSplash(); } });
   // [data-go="page.html"] → navigate on click (for non-<a> elements)
   document.addEventListener('click', function (e) {
     var el = e.target.closest('[data-go]'); if (el) { location.href = el.getAttribute('data-go'); }

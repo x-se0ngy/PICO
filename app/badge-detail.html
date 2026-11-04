@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="/app/manifest.json">
+<meta name="theme-color" content="#fffad3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PICO">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>PICO · 배지 상세</title>
+<link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="base.css">
+<style>
+  /* Figma 1.2.1. 배지 상세 (3373:7192) — 375 × 1405, 위 118px(상태바+뒤로/더보기)는 고정 */
+  .top[data-fixed] { height: 118px; background: var(--paper); }
+  .bd-nav { position: relative; height: 58px; }
+  .bd-nav a, .bd-nav button { position: absolute; top: 10.5px; width: 32px; height: 32px; display: block; }
+  .bd-nav a { left: 24px; } .bd-nav button { left: 319px; }
+  .bd-nav img { width: 32px; height: 32px; }
+
+  .bdp { position: absolute; left: 0; top: 117.77px; width: 375px; }
+  .sec { height: 361.69px; margin-bottom: 35px; line-height: normal; }
+  .sec:last-child { margin-bottom: 0; }
+  .s1 { --tc: var(--lime); } .s2 { --tc: var(--rule-cyan); } .s3 { --tc: var(--rule-pink); }
+
+  /* 섹션 머리: 마크 + 이름 + 설명 …… 개수, 아래 점선 */
+  .sh { position: relative; height: 39.41px; padding-top: 5px; }
+  .sh::after { content: ''; position: absolute; left: 20px; width: 335px; top: 33.91px; height: 1px;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px); }
+  .sh-in { height: 21.41px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+  .sh-l { display: flex; align-items: center; gap: 10px; }
+  .mk-box { width: 20.175px; height: 21.41px; flex: none; display: flex; align-items: center; justify-content: center; }
+  .mk-box svg { width: 18.23px; height: 19.62px; flex: none; overflow: visible; transform: rotate(-5.97deg); }
+  .sh-t { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .sh-t .n { font-size: 16px; } .sh-t .c { font-size: 14px; }
+  .sh-cnt { font-size: 14px; white-space: nowrap; }
+
+  /* 배지 줄: 그림 3칸(90px, 칸 사이 24px) → 판자 → 이름·날짜(또는 남은 조건) */
+  .rows { margin: 5px 0 0 19.9px; width: 335.2px; display: flex; flex-direction: column; gap: 5px; }
+  .bd-row { height: 156.14px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bd-cells, .bd-names { display: flex; gap: 24px; justify-content: center; }
+  .bd-art { display: block; width: 90px; height: 90px; flex: none; }
+  .bd-nm { width: 90px; height: 38px; flex: none; display: flex; flex-direction: column; align-items: center; white-space: nowrap; color: var(--ink); }
+  .bd-nm .n { font-size: 16px; line-height: 19px; } .bd-nm .s { font-size: 12px; line-height: 19px; }
+
+  /* 판자: 단계색 띠가 -1.01° 기울어져 종이 띠 뒤로 모서리만 살짝 보여요 */
+  .pl { position: relative; width: 335.2px; height: 20.14px; flex: none; }
+  .pl::before, .pl::after { content: ''; position: absolute; box-sizing: border-box; left: .1px; top: 2.97px; width: 335px; height: 14.21px; border: 1px solid var(--ink); }
+  .pl::before { background: var(--tc); transform: rotate(-1.01deg); }
+  .pl::after { background: url('assets/common/plank-paper.png') 0 0 / 100% 100% no-repeat, #f1eed6; }
+</style>
+</head><body>
+<div class="phone flat" style="--h:1405px">
+  <div class="top" data-fixed>
+    <div class="status"><span class="status-time">9:41</span>
+      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+    <div class="bd-nav"><a href="my.html" aria-label="뒤로"><img src="assets/icons/outline/arrow-left.svg" alt=""></a><button type="button" aria-label="더보기"><img src="assets/icons/outline/more-vertical.svg" alt=""></button></div>
+  </div>
+  <main class="bdp">
+  <section class="sec s1" aria-label="발견 배지">
+    <div class="sh"><div class="sh-in"><div class="sh-l"><span class="mk-box"><svg viewBox="0 0 18.23 19.62" aria-hidden="true"><polygon points="3.79,0.5 16.59,5.53 17.73,16.48 5.74,19.12 0.5,8.89" fill="var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg></span><h2 class="sh-t"><span class="n">발견 배지</span><span class="c">얼마나 많이 발견했는가</span></h2></div><span class="sh-cnt">4 / 4</span></div></div>
+    <div class="rows"><div class="bd-row"><div class="bd-cells"><img class="bd-art" src="assets/badges/first.svg" width="90" height="90" alt="첫 발견"><img class="bd-art" src="assets/badges/star10.svg" width="90" height="90" alt="10종 탐험가"><img class="bd-art" src="assets/badges/butterfly.svg" width="90" height="90" alt="나비 박사"></div><div class="pl" aria-hidden="true"></div><div class="bd-names"><span class="bd-nm"><span class="n">첫 발견</span><span class="s">2027.11.22</span></span><span class="bd-nm"><span class="n">10종 탐험가</span><span class="s">2027.11.20</span></span><span class="bd-nm"><span class="n">나비 박사</span><span class="s">2027.11.04</span></span></div></div><div class="bd-row"><div class="bd-cells"><img class="bd-art" src="assets/badges/loupe.svg" width="90" height="90" alt="30종 탐험가"><span class="bd-art"></span><span class="bd-art"></span></div><div class="pl" aria-hidden="true"></div><div class="bd-names"><span class="bd-nm"><span class="n">30종 탐험가</span><span class="s">곤충 6번 더 만나기</span></span><span class="bd-nm"></span><span class="bd-nm"></span></div></div></div>
+  </section>
+  <section class="sec s2" aria-label="관찰 배지">
+    <div class="sh"><div class="sh-in"><div class="sh-l"><span class="mk-box"><svg viewBox="0 0 18.23 19.62" aria-hidden="true"><polygon points="3.79,0.5 16.59,5.53 17.73,16.48 5.74,19.12 0.5,8.89" fill="var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg></span><h2 class="sh-t"><span class="n">관찰 배지</span><span class="c">어떤 환경에서 탐험했는가</span></h2></div><span class="sh-cnt">3 / 6</span></div></div>
+    <div class="rows"><div class="bd-row"><div class="bd-cells"><img class="bd-art" src="assets/badges/rain.svg" width="90" height="90" alt="비오는 날"><img class="bd-art" src="assets/badges/sunrise.svg" width="90" height="90" alt="아침 탐험가"><img class="bd-art" src="assets/badges/flag.svg" width="90" height="90" alt="새로운 장소"></div><div class="pl" aria-hidden="true"></div><div class="bd-names"><span class="bd-nm"><span class="n">비오는 날</span><span class="s">2027.11.13</span></span><span class="bd-nm"><span class="n">아침 탐험가</span><span class="s">2027.10.09</span></span><span class="bd-nm"><span class="n">새로운 장소</span><span class="s">2027.10.18</span></span></div></div><div class="bd-row"><div class="bd-cells"><img class="bd-art" src="assets/badges/moon.svg" width="90" height="90" alt="해 질 녘 탐험"><img class="bd-art" src="assets/badges/fish.svg" width="90" height="90" alt="물가 탐험가"><img class="bd-art" src="assets/badges/tree.svg" width="90" height="90" alt="공원 탐험가"></div><div class="pl" aria-hidden="true"></div><div class="bd-names"><span class="bd-nm"><span class="n">해 질 녘 탐험</span><span class="s">오후 5시 이후 탐험</span></span><span class="bd-nm"><span class="n">물가 탐험가</span><span class="s">연못, 개울 근처</span></span><span class="bd-nm"><span class="n">공원 탐험가</span><span class="s">새로운 공원 3곳 더</span></span></div></div></div>
+  </section>
+  <section class="sec s3" aria-label="특별 배지">
+    <div class="sh"><div class="sh-in"><div class="sh-l"><span class="mk-box"><svg viewBox="0 0 18.23 19.62" aria-hidden="true"><polygon points="3.79,0.5 16.59,5.53 17.73,16.48 5.74,19.12 0.5,8.89" fill="var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg></span><h2 class="sh-t"><span class="n">특별 배지</span><span class="c">특별한 경험을 했는가</span></h2></div><span class="sh-cnt">3 / 4</span></div></div>
+    <div class="rows"><div class="bd-row"><div class="bd-cells"><img class="bd-art" src="assets/badges/heart.svg" width="90" height="90" alt="함께 발견"><img class="bd-art" src="assets/badges/pencil.svg" width="90" height="90" alt="첫 그림"><img class="bd-art" src="assets/badges/eye.svg" width="90" height="90" alt="LOOK 관찰자"></div><div class="pl" aria-hidden="true"></div><div class="bd-names"><span class="bd-nm"><span class="n">함께 발견</span><span class="s">2027.11.12</span></span><span class="bd-nm"><span class="n">첫 그림</span><span class="s">2027.10.09</span></span><span class="bd-nm"><span class="n">LOOK 관찰자</span><span class="s">2027.11.17</span></span></div></div><div class="bd-row"><div class="bd-cells"><img class="bd-art" src="assets/badges/leaf.svg" width="90" height="90" alt="가을 탐험"><span class="bd-art"></span><span class="bd-art"></span></div><div class="pl" aria-hidden="true"></div><div class="bd-names"><span class="bd-nm"><span class="n">가을 탐험</span><span class="s">가을에 곤충 3번 더</span></span><span class="bd-nm"></span><span class="bd-nm"></span></div></div></div>
+  </section>
+  </main>
+  <img class="home-ind" src="assets/common/home-indicator.png" alt="">
+</div>
+<script src="shared.js"></script>
+</body></html>
