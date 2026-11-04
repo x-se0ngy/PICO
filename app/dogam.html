@@ -230,8 +230,11 @@
       '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="sh"></i><i class="fc"></i><span class="pic">' + drawing(it) + '</span></span></a>';
   }
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
-  //  시안 순서대로 색: 하늘 · 분홍 · 분홍 · 하늘 · 연두 · 연두 · 연두 · 하늘 (Figma 3279:24356)
-  var UNMET = [['025', 'normal'], ['028', 'rare'], ['029', 'rare'], ['030', 'normal'], ['033', 'common'], ['035', 'common'], ['037', 'common'], ['038', 'normal']];
+  //  번호는 No. 025부터 빠지는 번호 없이 이어서 도감 끝(단계 합계 = 80종)까지.
+  //  색은 시안 순서(하늘 · 분홍 · 분홍 · 하늘 · 연두 · 연두 · 연두 · 하늘, Figma 3279:24356)를 되풀이해요
+  var UNMET_COLORS = ['normal', 'rare', 'rare', 'normal', 'common', 'common', 'common', 'normal'];
+  var DEX_TOTAL = G.ORDER.reduce(function (s, k) { return s + G.TIERS[k].total; }, 0), UNMET = [];
+  for (var no = 25; no <= DEX_TOTAL; no++) UNMET.push([('00' + no).slice(-3), UNMET_COLORS[(no - 25) % UNMET_COLORS.length]]);
   function utile(u) {
     var n = u[0], k = u[1], c = k === 'normal' ? ' c-cyan' : k === 'rare' ? ' c-pink' : '';   // 아직 못 만났어도 단계 색은 보여 줘요
     return '<div class="utile' + c + '"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span>' + FLAG + '<img src="assets/icons/outline/help.svg" alt=""></div>';
