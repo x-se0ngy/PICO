@@ -15,16 +15,17 @@
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="base.css">
 <style>
-  /* Figma 1.2.1. 배지 상세 (3373:7192) — 375 × 1405, 위 118px(상태바+뒤로/더보기)는 고정 */
+  /* Figma 1.2.1. 배지 상세 (3373:7192) — 375 × 1446, 위 118px(상태바+뒤로/더보기)는 고정 */
   .top[data-fixed] { height: 118px; background: var(--paper); }
   .bd-nav { position: relative; height: 58px; }
   .bd-nav a, .bd-nav button { position: absolute; top: 10.5px; width: 32px; height: 32px; display: block; }
   .bd-nav a { left: 24px; } .bd-nav button { left: 319px; }
   .bd-nav img { width: 32px; height: 32px; }
 
-  .bdp { position: absolute; left: 0; top: 117.77px; width: 375px; }
-  .sec { height: 361.69px; margin-bottom: 35px; line-height: normal; }
+  .bdp { position: absolute; left: 0; top: 118.27px; width: 375px; padding: 35px 0; }
+  .sec { margin-bottom: 60px; line-height: normal; }
   .sec:last-child { margin-bottom: 0; }
+  .s1 .rows { margin-top: 5px; }   /* 시안: 첫 구역만 머리~그림 간격 5px, 나머지 15px */
   .s1 { --tc: var(--lime); } .s2 { --tc: var(--rule-cyan); } .s3 { --tc: var(--rule-pink); }
 
   /* 섹션 머리: 마크 + 이름 + 설명 …… 개수, 아래 점선 */
@@ -40,7 +41,7 @@
   .sh-cnt { font-size: 14px; white-space: nowrap; }
 
   /* 배지 줄: 그림 3칸(90px, 칸 사이 24px) → 판자 → 이름·날짜(또는 남은 조건) */
-  .rows { margin: 5px 0 0 19.9px; width: 335.2px; display: flex; flex-direction: column; gap: 5px; }
+  .rows { margin: 15px 0 0 19.9px; width: 335.2px; display: flex; flex-direction: column; gap: 5px; }
   .bd-row { height: 156.14px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .bd-cells, .bd-names { display: flex; gap: 24px; justify-content: center; }
   .bd-art { display: block; width: 90px; height: 90px; flex: none; }
@@ -54,7 +55,7 @@
   .pl::after { background: url('assets/common/plank-paper.png') 0 0 / 100% 100% no-repeat, #f1eed6; }
 </style>
 </head><body>
-<div class="phone flat" style="--h:1405px">
+<div class="phone flat" style="--h:1446px">
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
