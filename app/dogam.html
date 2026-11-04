@@ -230,11 +230,14 @@
       '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="sh"></i><i class="fc"></i><span class="pic">' + drawing(it) + '</span></span></a>';
   }
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
-  //  번호는 No. 025부터 빠지는 번호 없이 이어서 도감 끝(단계 합계 = 80종)까지.
+  //  번호는 No. 025부터 빠지는 번호 없이 이어서 도감 끝(567종, 시안 위쪽 '/ 567종')까지.
   //  색은 시안 순서(하늘 · 분홍 · 분홍 · 하늘 · 연두 · 연두 · 연두 · 하늘, Figma 3279:24356)를 되풀이해요
   var UNMET_COLORS = ['normal', 'rare', 'rare', 'normal', 'common', 'common', 'common', 'normal'];
-  var DEX_TOTAL = G.ORDER.reduce(function (s, k) { return s + G.TIERS[k].total; }, 0), UNMET = [];
+  var DEX_TOTAL = 567, UNMET = [];
   for (var no = 25; no <= DEX_TOTAL; no++) UNMET.push([('00' + no).slice(-3), UNMET_COLORS[(no - 25) % UNMET_COLORS.length]]);
+  document.getElementById('allTotal').textContent = '/ ' + DEX_TOTAL + '종';
+  // 543칸을 한꺼번에 그리면 무거워서, 처음엔 24칸만 그리고 아래로 내려가는 만큼 30칸씩 이어서 붙여요
+  var unmetShown = 24, UNMET_STEP = 30;
   function utile(u) {
     var n = u[0], k = u[1], c = k === 'normal' ? ' c-cyan' : k === 'rare' ? ' c-pink' : '';   // 아직 못 만났어도 단계 색은 보여 줘요
     return '<div class="utile' + c + '"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span>' + FLAG + '<img src="assets/icons/outline/help.svg" alt=""></div>';
@@ -251,11 +254,22 @@
     cards.innerHTML = shown.slice(0, 8).map(cardHTML).join('');   // TIP 위에 8장 (Figma 3279:24356)
     // Figma order of the unmet tiles: No.25, No.27 in the last card grid, then No.26, No.28
     // unmet insects (Figma 곤충목록: same order for 최근순 and 오래된순)
-    cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : UNMET.map(utile).join(''));
+    cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : UNMET.slice(0, unmetShown).map(utile).join(''));
     empty.hidden = shown.length > 0 || (searching && !v);
-    // page grows with the list; keep it clear of the tab bar
-    phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px');
+    fit(); more();
   }
+  // page grows with the list; keep it clear of the tab bar
+  function fit() { phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px'); }
+  // 목록 끝이 화면 아래 1800px 안으로 들어오면 못 만난 곤충 칸을 더 붙여요 (찾는 중에는 안 붙여요)
+  function more() {
+    for (var g = 0; g < 30 && unmetShown < UNMET.length && !q.value && !phone.classList.contains('searching') && cards2.getBoundingClientRect().bottom - window.innerHeight < 1800; g++) {
+      var to = Math.min(UNMET.length, unmetShown + UNMET_STEP);
+      cards2.insertAdjacentHTML('beforeend', UNMET.slice(unmetShown, to).map(utile).join(''));
+      unmetShown = to; fit();
+    }
+  }
+  var moreTick = 0;
+  document.addEventListener('scroll', function () { if (!moreTick) moreTick = requestAnimationFrame(function () { moreTick = 0; more(); }); }, true);   // 안쪽 스크롤 칸의 스크롤도 잡아요
   render();
 
   q.addEventListener('input', render);
