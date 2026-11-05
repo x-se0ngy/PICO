@@ -1,6 +1,6 @@
 // PICO 앱 서비스워커 — 홈 화면에 설치하고, 한 번 연 화면은 인터넷이 없어도 열려요 (전시장 와이파이 대비).
 // 화면(html·js·css)은 인터넷이 되면 새로 받아 오고(느리거나 끊기면 저장본), 그림·폰트는 저장해 둔 것을 먼저 써요. 처음 설치할 때 모든 화면을 미리 받아 둬요.
-var CACHE = 'pico-app-v60';
+var CACHE = 'pico-app-v61';
 var CORE = ["badge.html", "capture-1.html", "capture-2.html", "capture-3.html", "capture-4.html", "capture-5.html", "capture-card.html", "dogam-detail.html", "dogam.html", "friend.html", "friends.html", "friend-field.html", "badges.html", "badge-detail.html", "home.html", "index.html", "my.html", "onboard-1.html", "onboard-2.html", "onboard-3.html", "setup-done.html", "setup-explore.html", "setup-grade.html", "setup-name.html", "splash.html", "ai.js", "field.js", "grade.js", "onboard.js", "origami.js", "photo.js", "shared.js", "stickers.js", "base.css", "onboard.css", "fonts/HakgyoansimAllimjangTTF-R.woff2", "fonts/HakgyoansimAllimjangTTF-B.woff2", "fonts/SejongGeulggot.woff", "/favicon.svg", "/icons/icon-192.png"];
 
 self.addEventListener('install', function (e) {
@@ -9,8 +9,13 @@ self.addEventListener('install', function (e) {
 });
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (keys) {
-    return Promise.all(keys.filter(function (k) { return k.indexOf('pico-app-') === 0 && k !== CACHE; }).map(function (k) { return caches.delete(k); }));
-  }).then(function () { return self.clients.claim(); }));
+    var old = keys.filter(function (k) { return k.indexOf('pico-app-') === 0 && k !== CACHE; });
+    return Promise.all(old.map(function (k) { return caches.delete(k); })).then(function () { return self.clients.claim(); }).then(function () {
+      // 배포로 서비스워커가 새 버전으로 바뀐 거라면, 이미 열려 있던 화면은 옛 js·css로 떠 있어서 새 css와 섞여 깨질 수 있어요 → 열린 화면을 한 번 새로 불러와요.
+      if (!old.length) return;
+      return self.clients.matchAll({ type: 'window' }).then(function (cs) { cs.forEach(function (c) { try { c.navigate(c.url); } catch (err) {} }); });
+    });
+  }));
 });
 self.addEventListener('fetch', function (e) {
   var req = e.request;
