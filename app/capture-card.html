@@ -25,28 +25,32 @@
 </script>
 <style>
   .nav-actions { display: flex; gap: 10px; align-items: center; }
-  .headline { position: absolute; left: 0; top: 127.15px; width: 375px; text-align: center; font-family: var(--font-hand); font-size: 24px; white-space: nowrap; }
-  .card-shadow { position: absolute; left: 28.91px; top: 176.6px; width: 326.285px; height: 335px; background: var(--ink); }
-  .card { position: absolute; left: 19.81px; top: 165.3px; width: 325.917px; height: 335px; background: var(--brand); border: 1px dashed var(--ink); }
-  .card-photo { position: absolute; left: 28.81px; top: 177px; width: 308px; height: 250px; object-fit: cover; background: var(--brand-soft); }
+  /* Figma 3198:18395 관찰 카드 완성 — 라임 카드 + 뒤에 3.37° 기울어진 종이 한 장, 아래 노트 */
+  .headline { position: absolute; left: 0; top: 118px; width: 375px; text-align: center; font-family: var(--font-hand); font-size: 24px; white-space: nowrap; }
+  .card-back { position: absolute; left: 24.36px; top: 174.3px; width: 326.285px; height: 335px; background: var(--paper); border: 1px solid var(--ink); transform: rotate(3.37deg); }
+  .card { position: absolute; left: 24.2px; top: 174.45px; width: 325.917px; height: 335px; background: var(--lime); border: 1px dashed var(--ink); }
+  .card-photo { position: absolute; left: 33.15px; top: 187.95px; width: 308px; height: 250px; object-fit: cover; background: #d8ff7d; }
   /* 곤충 단계(사진 왼쪽 위) · 꼼꼼 관찰(이름 줄 오른쪽) */
-  .gr.card-gr { left: 34.81px; top: 183px; }
-  .look { position: absolute; left: 245px; top: 458px; width: 92px; text-align: right; white-space: nowrap; }
+  .gr.card-gr { left: 39.15px; top: 193.95px; }
+  .look { position: absolute; left: 249.34px; top: 467.75px; width: 92px; text-align: right; white-space: nowrap; }
   .look .lk-t { display: block; font-size: 11px; line-height: 14px; }
   .look .lk-s { display: block; font-size: 17px; line-height: 20px; letter-spacing: 1px; }
-  .meta { position: absolute; top: 437px; font-size: 16px; white-space: nowrap; }
-  .name { position: absolute; left: 28.81px; top: 457.2px; font-size: 24px; white-space: nowrap; }
-  .tag { position: absolute; left: 19.81px; top: 526.6px; width: 96.127px; height: 35px; background: var(--brand-soft); border: 1px solid var(--ink); font-size: 14px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
-  .diary-box { position: absolute; left: 19.81px; top: 566.6px; width: 335.38px; height: 117.409px; background: var(--surface); border: 1px solid var(--ink); }
-  .diary-lines { position: absolute; left: 33.81px; top: 579.7px; width: 321px; display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
-  .diary-lines p { padding: 0 12px; font-family: var(--font-hand); font-size: 14px; line-height: 20px; white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
-  .diary-lines img { width: 300px; }
-  /* Figma 2884:6106: 4단계에서 그린 그림을 담은 작은 액자 (7.96° 기울임, 검은 그림자 +2.45/+3.98) */
+  .meta { position: absolute; top: 447.95px; font-size: 16px; white-space: nowrap; }
+  .name { position: absolute; left: 33.15px; top: 466.95px; font-size: 24px; white-space: nowrap; }
+  .rec-h { position: absolute; left: 19.81px; top: 533.6px; font-size: 14px; line-height: normal; white-space: nowrap; }
+  .diary-box { position: absolute; left: 19.81px; top: 555.6px; width: 337px; height: 117.4px; border: 1px solid var(--ink); }
+  .note-pink { position: absolute; left: 45.31px; top: 563.18px; width: 2px; height: 102.24px; }
+  .diary-lines { position: absolute; left: 33.31px; top: 566.58px; width: 310px; display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+  .diary-lines p { padding: 0 0 0 26px; font-family: var(--font-hand); font-size: 14px; line-height: 20px; white-space: nowrap; max-width: 310px; overflow: hidden; text-overflow: ellipsis; }
+  .diary-lines img { width: 310px; }
+  /* Figma 3198:18429: 4단계에서 그린 그림을 담은 작은 액자 (7.96° 기울임, 검은 그림자 +2.45/+3.98) */
   .pico-frame > * { position: absolute; transform: rotate(7.96deg); border: 1px solid var(--ink); }
   .pf-shadow { left: 179.53px; top: 418.05px; width: 55.893px; height: 62.88px; background: var(--ink); }
-  .pf-face { left: 177.08px; top: 414.07px; width: 55.893px; height: 62.88px; background: var(--brand-soft); }
-  .pf-win { left: 181.34px; top: 418.34px; width: 48.929px; height: 48.008px; background: var(--bg); overflow: hidden; }
+  .pf-face { left: 177.08px; top: 414.07px; width: 55.893px; height: 62.88px; background: var(--lime); }
+  .pf-win { left: 181.34px; top: 418.34px; width: 48.929px; height: 48.008px; background: var(--surface); overflow: hidden; }
   .pf-win img { width: 100%; height: 100%; object-fit: contain; }
+  /* 그린 그림이 없을 때(바로 이 화면을 열었을 때)는 시안의 접은 무당벌레 */
+  .pf-sample { position: absolute; left: 181.53px; top: 420.52px; width: 48.541px; height: 43.641px; }
   /* 3.2.1 save toast */
   .save-toast { position: absolute; left: 39.71px; top: 640.68px; width: 295.33px; height: 50px; z-index: 42; transition: opacity var(--dur) var(--ease); }
   .save-toast::before { content: ''; position: absolute; left: 5.35px; top: 5.99px; width: 290px; height: 45px; background: var(--ink); border: 1px solid var(--ink); box-sizing: border-box; }
@@ -54,7 +58,7 @@
   .save-toast-face img { width: 24px; height: 24px; }
 </style>
 </head><body>
-<div class="phone" style="--h:812px">
+<div class="phone warm" style="--h:812px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
@@ -70,21 +74,23 @@
 
   <p class="headline">관찰 카드가 완성 됐어요!</p>
 
-  <div class="card-shadow"></div>
+  <div class="card-back"></div>
   <div class="card"></div>
   <img class="card-photo" data-photo src="assets/capture/card-photo-ladybug.png" alt="관찰한 곤충 사진">
   <div class="pico-frame" role="img" aria-label="내가 그린 PICO">
     <span class="pf-shadow"></span><span class="pf-face"></span><span class="pf-win" id="picoWin"></span>
   </div>
+  <img class="pf-sample" id="picoSample" src="assets/capture/card-pico-sample.png" alt="">
   <span class="gr card-gr" id="cardGr"></span>
   <p class="look" id="look" hidden><span class="lk-t">꼼꼼 관찰</span><span class="lk-s" id="lookStars"></span></p>
-  <p class="meta" style="left:28.81px">NO.023</p>
-  <p class="meta" style="left:98.81px" id="group">딱정벌레류</p>
-  <p class="meta" style="left:265.85px">27.10.08</p>
+  <p class="meta" style="left:33.15px">NO.023</p>
+  <p class="meta" style="left:104.15px" id="group">딱정벌레류</p>
+  <p class="meta" style="left:272.15px">27.10.08</p>
   <p class="name" data-species>칠성무당벌레</p>
 
-  <div class="tag" id="tag">내 관찰 일기</div>
+  <p class="rec-h" id="tag">내 관찰 기록</p>
   <div class="diary-box"></div>
+  <img class="note-pink" src="assets/capture/card-note-pink.svg" alt="">
   <div class="diary-lines" id="diaryLines"></div>
 
   <div class="save-toast" id="toast" role="status" hidden>
@@ -93,12 +99,12 @@
 
   <!-- 종이로 접는 중 (Figma Warm-Up 촬영 8~10): html.fold-pending 일 때만 보여요 -->
   <div class="ai-wait fold-wait" id="foldWait" role="status" aria-live="polite">
-    <div class="fold-board"><canvas width="440" height="440"></canvas></div>
-    <div class="fold-text"><p class="fold-title">내 그림을 종이로 접고 있어요.</p><p class="fold-sub">관찰한 특징을 하나씩 담아볼게요.</p></div>
-    <div class="fold-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+    <div class="ai-board"><i class="ai-lime"></i><div class="ai-photo"><canvas width="440" height="440"></canvas></div></div>
+    <div class="ai-text fold-text"><p class="ai-title fold-title">내 그림을 종이로 접고 있어요.</p><p class="ai-sub fold-sub">관찰한 특징을 하나씩 담아볼게요.</p></div>
+    <div class="ai-dots fold-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
   </div>
 
-  <a class="cta" id="release" href="home.html?state=field" style="top:702px"><span class="cta-face">들판에 놓아주기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
+  <a class="cta" id="release" href="home.html?state=field" style="top:707.17px"><span class="cta-face">들판에 놓아주기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
@@ -128,7 +134,7 @@
   })();
 
   // 내 관찰 일기: 촬영 4에서 쓴 글을 세 줄로 보여줘요. 아무것도 안 썼으면 AI 분석글로 채우고 이름표도 바꿔요.
-  var RULES = [{ src: 'card-rule-1.png', h: 2 }, { src: 'card-rule-2.png', h: 3 }, { src: 'card-rule-3.png', h: 3 }];
+  var RULES = ['card-note-line-1.svg', 'card-note-line-2.svg', 'card-note-line-3.svg'];
   function esc(t) { return t.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
   function wrapLines(text, maxW) {
     var ctx = document.createElement('canvas').getContext('2d'); ctx.font = '14px SejongGeulggot, Allimjang, sans-serif';
@@ -156,13 +162,13 @@
   function renderDiary() {
     var mine = ''; try { mine = (sessionStorage.getItem('pico.capture.diary') || '').trim(); } catch (e) {}
     var lines;
-    if (mine) lines = wrapLines(mine, 276);
+    if (mine) lines = wrapLines(mine, 258);
     else {
       document.getElementById('tag').textContent = 'AI 분석';
       lines = (AI.summary && AI.summary.length ? AI.summary : PicoAI.DEMO.summary).slice(0, 3);
     }
     document.getElementById('diaryLines').innerHTML = lines.map(function (t, i) {
-      return '<p>' + esc(t) + '</p><img src="assets/capture/' + RULES[i].src + '" style="height:' + RULES[i].h + 'px" alt="">';
+      return '<p>' + esc(t) + '</p><img src="assets/capture/' + RULES[i] + '" alt="">';
     }).join('');
   }
   var fontsReady = document.fonts && document.fonts.load ? Promise.race([document.fonts.load('14px SejongGeulggot'), new Promise(function (r) { setTimeout(r, 1200); })]) : Promise.resolve();
@@ -176,6 +182,7 @@
     function leave() { document.documentElement.classList.remove('fold-pending'); }   // 로딩 화면 치우기
     var d = null; try { d = JSON.parse(sessionStorage.getItem('pico.drawing') || 'null'); } catch (e) {}
     if (!d || !d.src) { leave(); return; }
+    document.getElementById('picoSample').hidden = true;      // 그린 그림이 있으면 시안의 예시 무당벌레는 숨겨요
     function show(src) { win.innerHTML = ''; var im = new Image(); im.alt = ''; im.src = src; win.appendChild(im); }
     if (d.folded) { show(d.folded); leave(); return; }               // 이미 접었으면 다시 접지 않아요 (뒤로 갔다 와도 그대로)
     show(d.src);                                                     // 접기 전에는 그린 그대로

@@ -58,8 +58,8 @@
     var phone = document.querySelector('.phone'), started = Date.now();
     var el = document.createElement('div');
     el.className = 'ai-wait'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
-    el.innerHTML = '<div class="ai-card"><div class="ai-photo"><span class="ai-scan"></span></div>' +
-      '<div class="ai-text"><p class="ai-title"></p><p class="ai-sub"></p></div><span class="ai-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>';
+    el.innerHTML = '<div class="ai-board"><i class="ai-lime"></i><div class="ai-photo"></div></div>' +
+      '<div class="ai-text"><p class="ai-title"></p><p class="ai-sub"></p></div><span class="ai-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
     el.querySelector('.ai-title').textContent = title || 'AI가 분석중이에요';
     el.querySelector('.ai-sub').textContent = sub || '';
     var photo = (window.PicoPhoto && PicoPhoto.get()) || (window.PicoPhoto && PicoPhoto.FALLBACK);

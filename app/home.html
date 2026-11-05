@@ -151,6 +151,30 @@
   .pf-arrive { position: absolute; left: 50%; top: 190px; transform: translateX(-50%); z-index: 6; width: 300px; background: var(--surface); border: 1px solid var(--ink); box-shadow: 5px 7px 0 var(--ink); padding: 12px 14px; text-align: center; animation: pf-banner 3.6s ease both; pointer-events: none; }
   .pf-arrive b { display: block; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
   .pf-arrive span { font-size: 13px; }
+  /* 내 들판의 친구를 누르면: 정보 시트 (+ 삭제) */
+  .pf-bug.is-bye { pointer-events: none; }
+  .pf-bug.is-bye .pf-body { animation: pf-bye var(--dur) var(--ease) both; }
+  .pf-bug.is-bye .pf-name { opacity: 0; transition: opacity calc(var(--dur) * .6) var(--ease); }
+  @keyframes pf-bye { from { transform: scale(1) rotate(0); opacity: 1; } to { transform: scale(.2) rotate(-25deg) translateY(-24px); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .pf-bug.is-bye .pf-body { animation: none; opacity: 0; } }
+  .place.bugsheet { top: 550px; height: 262px; }
+  .bs-tile { position: absolute; left: 19.5px; top: 46px; width: 96px; height: 96px; background: var(--paper); border: 1px solid var(--ink); box-shadow: 4px 5px 0 var(--ink); display: flex; align-items: center; justify-content: center; }
+  .bs-tile img, .bs-tile svg { display: block; width: 80px; height: 80px; object-fit: contain; }
+  .bs-info, .bs-ask { position: absolute; left: 139px; top: 50px; width: 216px; }
+  .bs-info h2 { font-size: 22px; line-height: 26px; white-space: nowrap; }
+  .bs-info p { font-size: 14px; line-height: 18px; margin-top: 8px; }
+  .bs-info .bs-date { font-size: 12px; line-height: 16px; margin-top: 6px; }
+  .bs-ask h2 { font-size: 18px; line-height: 22px; font-weight: 700; }
+  .bs-ask p { font-size: 14px; line-height: 18px; margin-top: 8px; }
+  .bs-btns { position: absolute; left: 19.5px; top: 166px; width: 336px; display: flex; gap: 16px; }
+  .bs-btn { flex: 1; height: 50px; background: var(--paper); border: 1px solid var(--ink); box-shadow: 3px 4px 0 var(--ink); font-size: 16px; font-weight: 700; }
+  .bs-btn.is-lime { background: var(--lime); }
+  .bs-btn.is-rose { background: #f8addb; }
+  .bs-btn:active { transform: translate(3px, 4px); box-shadow: none; }
+  .bs-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .bugsheet.is-sample #bugDel { display: none; }
+  .bs-toast { top: 204px; z-index: 46; }
+  .bugsheet:focus { outline: none; }
   @keyframes pf-banner { 0% { opacity: 0; transform: translate(-50%, -12px); } 12%, 82% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -12px); } }
 </style>
 </head><body>
@@ -228,6 +252,31 @@
     <div class="bugs" id="bugs"></div>
     <a class="cta cta--yellow" href="capture-1.html"><span class="cta-face">탐험 시작하기 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
   </div>
+
+  <!-- ========== 들판의 친구 정보 시트: 누르면 정보, 삭제하기 ========== -->
+  <div class="dim scrim" id="bugDim" hidden></div>
+  <div class="sheet place bugsheet" id="bugSheet" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="bugName" hidden>
+    <div class="sheet-handle"></div>
+    <div class="bs-tile" id="bugTile"></div>
+    <div class="bs-info" id="bugInfo">
+      <h2 id="bugName"></h2>
+      <p id="bugSpecies"></p>
+      <p class="bs-date" id="bugDate"></p>
+    </div>
+    <div class="bs-ask" id="bugAsk" hidden>
+      <h2>들판에서 삭제할까요?</h2>
+      <p id="bugAskSub"></p>
+    </div>
+    <div class="bs-btns" id="bugBtnsInfo">
+      <button type="button" class="bs-btn" id="bugDel">삭제하기</button>
+      <button type="button" class="bs-btn is-lime" id="bugClose">닫기</button>
+    </div>
+    <div class="bs-btns" id="bugBtnsAsk" hidden>
+      <button type="button" class="bs-btn" id="bugNo">취소</button>
+      <button type="button" class="bs-btn is-rose" id="bugYes">삭제하기</button>
+    </div>
+  </div>
+  <div class="toast bs-toast" id="bugToast" role="status" hidden>들판에서 삭제했어요.</div>
 
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
@@ -323,7 +372,9 @@
   var bugLayer = document.createElement('div');
   bugLayer.className = 'pf-layer'; bugLayer.id = 'fieldBugs'; bugLayer.setAttribute('aria-label', '들판의 PICO들');
   document.getElementById('field').appendChild(bugLayer);
-  if (window.PicoField) PicoField.mount(bugLayer, {
+  var fieldCtl = null;
+  if (window.PicoField) fieldCtl = PicoField.mount(bugLayer, {
+    onTap: function (b) { openBug(b); },
     onArrive: function (b) {
       var n = document.createElement('div'); n.className = 'pf-arrive'; n.setAttribute('role', 'status');
       n.innerHTML = '<b>새로운 친구가 들판에 도착했어요!</b><span>' + b.name + '가 오늘부터 여기서 지내요.</span>';
@@ -376,12 +427,74 @@
   }
   document.addEventListener('click', function (e) { if (e.target.closest('[data-open-sheet]')) openSheet(); });
   dim.addEventListener('click', closeSheet);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeSheet(); if (window.closeBugSheet) closeBugSheet(); } });
+
+  // ---- 들판의 친구를 누르면: 정보 → (삭제하기 → 한 번 더 물어봐요) ----
+  var bugSheet = document.getElementById('bugSheet'), bugDim = document.getElementById('bugDim'), bugToast = document.getElementById('bugToast');
+  var curBug = null, bugTimer, toastTimer;
+  function $(id) { return document.getElementById(id); }
+  function josa(word, withFinal, without) {          // 받침이 있으면 을, 없으면 를
+    var c = word.charCodeAt(word.length - 1) - 0xAC00;
+    return word + (c >= 0 && c <= 11171 && c % 28 !== 0 ? withFinal : without);
+  }
+  function whenText(t) {
+    if (!t) return '';
+    var d = new Date(t); if (isNaN(d.getTime())) return '';
+    var now = new Date();
+    return (d.toDateString() === now.toDateString() ? '오늘' : (d.getMonth() + 1) + '월 ' + d.getDate() + '일') + '에 들판에 놓아줬어요.';
+  }
+  function bugMode(m) {                              // 'info' | 'ask'
+    $('bugInfo').hidden = m !== 'info'; $('bugBtnsInfo').hidden = m !== 'info';
+    $('bugAsk').hidden = m !== 'ask'; $('bugBtnsAsk').hidden = m !== 'ask';
+  }
+  function openBug(b) {
+    clearTimeout(bugTimer);
+    curBug = b;
+    $('bugTile').innerHTML = b.mine ? '<img src="' + b.src + '" alt="">' : b.html;
+    $('bugName').textContent = b.name;
+    $('bugSpecies').textContent = b.mine ? (b.species || '') : '처음부터 들판에 살던 친구예요.';
+    $('bugSpecies').hidden = !$('bugSpecies').textContent;
+    $('bugDate').textContent = b.mine ? whenText(b.at) : '';
+    $('bugDate').hidden = !$('bugDate').textContent;
+    $('bugAskSub').textContent = '삭제하면 되돌릴 수 없어요.';
+    bugSheet.classList.toggle('is-sample', !b.mine);
+    bugMode('info');
+    bugSheet.classList.remove('is-closing'); bugDim.classList.remove('is-closing');
+    bugSheet.hidden = false; bugDim.hidden = false;
+    $('bugClose').focus({ preventScroll: true });
+  }
+  window.closeBugSheet = closeBug;
+  function closeBug() {
+    if (bugSheet.hidden) return;
+    bugSheet.classList.add('is-closing'); bugDim.classList.add('is-closing');
+    if (fieldCtl) fieldCtl.unhold();
+    bugTimer = setTimeout(function () {
+      bugSheet.hidden = true; bugDim.hidden = true;
+      bugSheet.classList.remove('is-closing'); bugDim.classList.remove('is-closing');
+      curBug = null;
+    }, (window.picoDur ? picoDur() : 300) + 20);
+  }
+  function showToast(text) {
+    bugToast.textContent = text; bugToast.hidden = false; clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { bugToast.hidden = true; }, 2200);
+  }
+  $('bugClose').addEventListener('click', closeBug);
+  bugDim.addEventListener('click', closeBug);
+  $('bugDel').addEventListener('click', function () { window.picoSwap(function () { bugMode('ask'); }); });
+  $('bugNo').addEventListener('click', function () { window.picoSwap(function () { bugMode('info'); }); });
+  $('bugYes').addEventListener('click', function () {
+    var b = curBug; if (!b || !b.mine) return;
+    window.PicoField && PicoField.remove(b.id);
+    fieldCtl && fieldCtl.remove(b.id);
+    closeBug();
+    showToast(josa(b.name, '을', '를') + ' 들판에서 삭제했어요.');
+  });
 
   var st = document.documentElement.dataset.state;
   // 홈은 항상 내 들판으로 열려요. 내 근처는 토글이나 ?state=radar|picked 로만.
   setMode('field');
   if (st === 'sheet') { setMode('field'); openSheet(); }
+  if (st === 'bug') setTimeout(function () { var el = document.querySelector('.pf-bug.is-mine') || document.querySelector('.pf-bug'); if (el) el.click(); }, 80);
 })();
 </script>
 </body></html>

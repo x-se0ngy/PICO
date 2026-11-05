@@ -4,7 +4,7 @@
 //   capture-5.html  → PicoField.saveDraft(canvas, colorName)
 //   capture-card    → PicoField.saveFolded(png)    (origami.js로 접은 모습을 그림에 붙여요)
 //                     PicoField.release(species)   (그림이 없으면 들판에 보내지 않음)
-//   home.html       → PicoField.mount(layerEl)
+//   home.html       → PicoField.mount(layerEl, { onTap })   (누르면 정보 · 삭제: PicoField.remove(id) + 돌려받은 ctl.remove(id))
 (function () {
   var DRAFT = 'pico.drawing';          // 이번 관찰에서 그린 그림 (sessionStorage)
   var LIST = 'pico.field';             // 들판에 사는 내 PICO 목록 (localStorage)
@@ -53,6 +53,15 @@
   }
   function hasDraft() { return !!ss(DRAFT); }
 
+  // ---------- 들판에서 내 PICO 지우기 (이 목록을 쓰는 도감 그림도 함께 사라져요) ----------
+  function remove(id) {
+    var all = list(), keep = all.filter(function (m) { return m.id !== id; });
+    if (keep.length === all.length) return false;
+    ls(LIST, JSON.stringify(keep));
+    if (ls(NEW) === id) ls(NEW, null);
+    return true;
+  }
+
   // ---------- 3) 들판: 스티커들이 돌아다녀요 ----------
   var BF = '<path d="M31 22c-5-9-18-14-21-6-3 7 7 13 20 11" fill="#F4D35E"/><path d="M33 22c5-9 18-13 21-5 2 7-8 12-20 10" fill="#F4D35E"/><path d="M31 31c-7 2-15 8-12 13 3 4 10-1 12-8" fill="#F2A7C3"/><path d="M33 31c7 2 14 8 11 13-3 4-10-1-11-8" fill="#F2A7C3"/><path d="M32 19c.6 10-.4 20 .3 30"/><path d="M31 19l-4-7M33 19l5-6"/>';
   var DF = '<path d="M30 24C20 14 6 14 6 20s14 8 24 6M34 24c10-10 24-10 24-4s-14 8-24 6M30 30C20 34 8 40 10 44s14-2 20-10M34 30c10 4 22 10 20 14s-14-2-20-10" fill="#8ED8FF"/><path d="M32 18v40" stroke-width="5"/><circle cx="32" cy="16" r="5" fill="#00B2FF"/>';
@@ -95,8 +104,8 @@
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var mine = list(), newId = ls(NEW);
     var sampleCount = Math.max(0, 5 - mine.length);                // 내 PICO가 많아지면 예시는 줄어요
-    var bugs = SAMPLES.slice(0, sampleCount).map(function (s) { return { name: s.name, html: svgSticker(s.svg), fly: s.fly, hop: s.hop, slow: s.slow }; })
-      .concat(mine.map(function (m) { return { id: m.id, name: m.name, mine: true, html: '<img src="' + m.src + '" alt="" width="64" height="64">' }; }));
+    var bugs = SAMPLES.slice(0, sampleCount).map(function (s) { return { name: s.name, sample: true, html: svgSticker(s.svg), fly: s.fly, hop: s.hop, slow: s.slow }; })
+      .concat(mine.map(function (m) { return { id: m.id, name: m.name, species: m.species || '', at: m.at, mine: true, src: m.src, html: '<img src="' + m.src + '" alt="" width="64" height="64">' }; }));
 
     layer.innerHTML = '';
     bugs.forEach(function (b, i) {
@@ -114,7 +123,7 @@
       el.style.animationDelay = (-i * 0.37) + 's';
       el.addEventListener('click', function () {
         el.classList.remove('is-poke'); void el.offsetWidth; el.classList.add('is-poke');
-        if (opts.onTap) opts.onTap(b);
+        if (opts.onTap) { b.hold = true; el.classList.remove('is-moving'); opts.onTap(b); }   // 정보를 보는 동안 그 친구는 가만히 있어요
       });
       place(b);
       if (b.mine && b.id === newId) {                           // 방금 놓아준 친구: 위에서 폴짝 내려와요
@@ -140,14 +149,30 @@
     function place(b) {
       b.el.style.transform = 'translate(' + b.pos.x.toFixed(1) + 'px,' + b.pos.y.toFixed(1) + 'px)';
     }
-    if (reduce) return;
-
     var lastT = 0, running = true;
+    var ctl = {
+      stop: function () { running = false; },
+      unhold: function () { bugs.forEach(function (b) { b.hold = false; }); },
+      // 지운 친구는 작아지며 사라져요
+      remove: function (id) {
+        for (var i = 0; i < bugs.length; i++) {
+          if (bugs[i].id !== id) continue;
+          var gone = bugs.splice(i, 1)[0];
+          gone.el.classList.add('is-bye');
+          setTimeout(function () { if (gone.el.parentNode) gone.el.parentNode.removeChild(gone.el); }, (window.picoDur ? picoDur() : 300) + 20);
+          return true;
+        }
+        return false;
+      }
+    };
+    if (reduce) return ctl;
+
     function tick(t) {
       if (!running) return;
       var dt = lastT ? Math.min(0.05, (t - lastT) / 1000) : 0; lastT = t;
       if (layer.offsetParent !== null) {                        // 들판이 보일 때만 움직여요
         bugs.forEach(function (b) {
+          if (b.hold) { b.el.classList.remove('is-moving'); return; }
           if (b.wait > 0) { b.wait -= dt * 1000; b.el.classList.remove('is-moving'); return; }
           var dx = b.to.x - b.pos.x, dy = b.to.y - b.pos.y, d = Math.hypot(dx, dy);
           if (d < 2) { b.to = pickFree(b); b.wait = b.fly ? rnd(300, 1500) : rnd(800, 3200); return; }
@@ -162,7 +187,7 @@
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
-    return { stop: function () { running = false; } };
+    return ctl;
   }
 
   // 도감 사진첩용 예시 그림 (아이가 크레용으로 그린 느낌: 색칠 + 굵은 검은 선)
@@ -185,5 +210,5 @@
   // 도감 상세에서 돌아다니는 그림용: 예시 그림에 하얀 테두리를 둘러 스티커처럼
   function sticker(key) { return svgSticker(DOODLE[key] || LB); }
 
-  window.PicoField = { doodle: doodle, sticker: sticker, saveDraft: saveDraft, saveFolded: saveFolded, release: release, hasDraft: hasDraft, mount: mount, list: list };
+  window.PicoField = { doodle: doodle, sticker: sticker, saveDraft: saveDraft, saveFolded: saveFolded, release: release, remove: remove, hasDraft: hasDraft, mount: mount, list: list };
 })();

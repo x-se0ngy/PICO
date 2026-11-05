@@ -263,46 +263,42 @@ img { display: block; }
   .status-time, .status-icons, .home-ind, .proto-index { visibility: hidden; }
 }
 
-/* ---------- AI가 분석중이에요 (app/ai.js · Figma Warm-Up 촬영 8, 3198:18036) ----------
-   촬영 화면 위에 어두운 막(scrim)을 덮고, 점선 판 위의 사진을 어두운 초록 띠가 위아래로 훑어요.
-   아래 네모 점 세 개가 차례로 라임이 되며 살짝 내려앉아요. 나타날 때·사라질 때 모두 디졸브. */
-.ai-wait { position: absolute; inset: 0; z-index: 60; background: rgba(44, 44, 44, .57);
+/* ---------- AI가 분석중이에요 · 종이로 접는 중이에요 (app/ai.js · capture-card.html)
+   Figma Warm-Up 촬영 5 (3198:17975) · 관찰 카드 10~12 (3440:13875 · 13433 · 12991)
+   화면 위에 종이 질감을 80%로 덮어 아래 화면이 희미하게 비치고, 가운데 4.51° 기울어진 종이 위에 사진(또는 접히는 그림)이 놓여요.
+   종이 뒤에는 라임 점선 정사각형이 살짝 어긋나 있어요. 아래 네모 점 세 개가 차례로 라임이 되며 내려앉아요.
+   나타날 때·사라질 때 모두 디졸브. */
+.ai-wait { position: absolute; inset: 0; z-index: 60;
   animation: pico-dissolve var(--dissolve) var(--ease-slow) both; transition: opacity var(--dissolve) var(--ease-slow); }
+.ai-wait::before { content: ''; position: absolute; inset: 0; opacity: .8;
+  background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px no-repeat, var(--paper); background-blend-mode: multiply; }
 .ai-wait.is-out { opacity: 0; }
-.ai-card { position: absolute; left: 23.5px; top: 296.2px; width: 327px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.ai-photo { position: relative; width: 205.717px; height: 211.45px; background: var(--surface) center / cover no-repeat; border: .631px dashed var(--ink); overflow: hidden; }
-.ai-scan { position: absolute; left: 0; right: 0; top: 0; height: 119.146px;
-  background: linear-gradient(179.87deg, rgba(25, 35, 11, .2) 26%, rgba(23, 36, 6, .52) 52.4%, rgba(22, 38, 0, .5) 78.8%, rgba(23, 36, 6, 0) 99.8%);
-  animation: ai-scan 1.8s cubic-bezier(.45, .05, .2, 1) infinite alternate; }
-@keyframes ai-scan { from { transform: translateY(-40px); } to { transform: translateY(132px); } }
-.ai-text { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ai-board { position: absolute; left: 96.6px; top: 267.8px; width: 182.395px; height: 183.026px; }
+.ai-lime { position: absolute; left: 5.37px; top: 7.37px; width: 171.48px; height: 171.48px; background: var(--lime); border: 1px dashed var(--ink); }
+.ai-photo { position: absolute; left: 6.43px; top: 6.4px; width: 169.532px; height: 170.219px; background: var(--paper) center / cover no-repeat; border: 1.261px solid var(--ink); transform: rotate(4.51deg); }
+.ai-photo canvas { position: absolute; left: 50%; top: 50%; width: 160px; height: 160px; transform: translate(-50%, -50%); display: block; }
+.ai-text { position: absolute; left: 24.3px; top: 464.8px; width: 327px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .ai-title { font-weight: 700; font-size: 18px; line-height: normal; white-space: nowrap; }
 .ai-sub { font-size: 14px; line-height: normal; white-space: nowrap; }
-.ai-dots { display: flex; gap: 14px; height: 12.11px; margin-top: 10px; }
-.ai-dots i { display: block; width: 10px; height: 10px; background: var(--bg); border: 1px solid var(--ink); animation: ai-dot 1.5s steps(1, end) infinite; }
-.ai-dots i:nth-child(2) { animation-delay: .5s; } .ai-dots i:nth-child(3) { animation-delay: 1s; }
-@keyframes ai-dot { 0% { background-color: #afff4c; transform: translateY(2.11px); } 33.34%, 100% { background-color: var(--bg); transform: none; } }
-@media (prefers-reduced-motion: reduce) { .ai-scan, .ai-dots i { animation: none; } .ai-dots i:first-child { background-color: #afff4c; transform: translateY(2.11px); } }
+.ai-dots { position: absolute; left: 162.8px; top: 531.86px; width: 58px; height: 14px; }
+.ai-dots i { position: absolute; top: 0; display: block; width: 10px; height: 10px; background: var(--paper); border: 1px solid var(--ink); }
+.ai-dots i:nth-child(1) { left: 0; } .ai-dots i:nth-child(2) { left: 24px; } .ai-dots i:nth-child(3) { left: 48px; }
+/* 분석 중: 점이 차례로 라임이 돼요 */
+.ai-wait:not(.fold-wait) .ai-dots i { animation: ai-dot 1.5s steps(1, end) infinite; }
+.ai-wait:not(.fold-wait) .ai-dots i:nth-child(2) { animation-delay: .5s; } .ai-wait:not(.fold-wait) .ai-dots i:nth-child(3) { animation-delay: 1s; }
+@keyframes ai-dot { 0% { background-color: var(--lime); transform: translateY(2.11px); } 33.34%, 100% { background-color: var(--paper); transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ai-wait:not(.fold-wait) .ai-dots i { animation: none; } .ai-wait:not(.fold-wait) .ai-dots i:first-child { background-color: var(--lime); transform: translateY(2.11px); } }
 
-/* ---------- 종이로 접는 중이에요 (app/origami.js · 관찰 카드, Figma Warm-Up 촬영 8~10) ----------
-   카드 위에 종이 질감을 85%로 덮어 카드가 희미하게 비치고, 가운데 종이 판 위에서 그림이 삼각형 면으로 접혀요.
-   아래 점 세 개가 접는 단계(1 → 2 → 3)를 알려주고, 끝나면 문구가 바뀐 뒤 디졸브로 사라져요. */
-.fold-wait { display: none; background: none; animation: none; }      /* 첫 프레임부터 떠 있어야 해서 따로 페이드인하지 않아요 (페이지 전환이 디졸브해 줘요) */
+/* 종이로 접는 중 (관찰 카드): 첫 프레임부터 떠 있어야 해서 따로 페이드인하지 않아요 (페이지 전환이 디졸브해 줘요) */
+.fold-wait { display: none; animation: none; }
 .fold-pending .fold-wait { display: block; }
-.fold-wait::before { content: ''; position: absolute; inset: 0; background: #fffad3 url('assets/common/paper.jpg') 0 0 / 375px 812px no-repeat; opacity: .85; }
-.fold-board { position: absolute; left: 81.66px; top: 240.9px; width: 205.717px; height: 211.45px; background: var(--surface); border: .631px dashed var(--ink); box-shadow: 5.74px 7.13px 0 var(--ink); }
-.fold-board canvas { position: absolute; left: 50%; top: 50%; width: 196px; height: 196px; transform: translate(-50%, -50%); display: block; }
-.fold-text { position: absolute; left: 24px; top: 473.5px; width: 327px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity calc(var(--dur) / 2) var(--ease); }
+.fold-text { transition: opacity calc(var(--dur) / 2) var(--ease); }
 .fold-text.is-swap { opacity: 0; }
-.fold-title { font-weight: 700; font-size: 18px; line-height: normal; white-space: nowrap; }
-.fold-sub { font-size: 14px; line-height: normal; white-space: nowrap; }
-.fold-dots { position: absolute; left: 162.5px; top: 540.5px; width: 58px; height: 14px; }
-.fold-dots i { position: absolute; top: 0; width: 10px; height: 10px; background: var(--bg); border: 1px solid var(--ink); transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.fold-dots i:nth-child(1) { left: 0; } .fold-dots i:nth-child(2) { left: 24px; } .fold-dots i:nth-child(3) { left: 48px; }
-.fold-dots i.on { background: var(--brand); transform: translateY(2.11px); }
-.fold-wait.is-done .fold-board { animation: fold-pop var(--dur) var(--ease); }
+.fold-dots i { transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.fold-dots i.on { background: var(--lime); transform: translateY(2.11px); }
+.fold-wait.is-done .ai-board { animation: fold-pop var(--dur) var(--ease); }
 @keyframes fold-pop { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .fold-wait.is-done .fold-board { animation: none; } .fold-dots i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .fold-wait.is-done .ai-board { animation: none; } .fold-dots i { transition: none; } }
 
 /* ---------- 곤충 단계 이름표 (grade.js) · 사진 왼쪽 위에 붙는 작은 종이 라벨 ---------- */
 .gr { position: absolute; left: 6px; top: 6px; z-index: 1; height: 18px; padding: 0 6px; display: flex; align-items: center; font-size: 11px; line-height: 1; white-space: nowrap; background: var(--surface); border: 1px solid var(--ink); }
