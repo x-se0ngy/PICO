@@ -23,10 +23,10 @@
     display: flex; flex-direction: column; align-items: flex-start; padding: 0 0 0 11.8px; }
   .pick::before { content: ''; position: absolute; left: -1.62px; top: -1px; width: 160.541px; height: 74px; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box;
     transform: rotate(-1.8deg); z-index: -1; opacity: 0; transition: opacity var(--dur) var(--ease); }
-  .pick[aria-checked="true"] { background: var(--lime); transform: translate(1.93px, -.3px); }
+  .pick[aria-checked="true"] { background: var(--lime); left: 1.93px; top: -.3px; }   /* transform 대신 left/top: transform을 쓰면 뒤 종이(::before)가 앞면 위로 올라와요 */
   .pick[aria-checked="true"]::before { opacity: 1; }
   .pick-grid { isolation: isolate; }
-  .pick { padding-top: 14.73px; gap: 8px; }
+  .pick { padding-top: 16.73px; gap: 5px; padding-left: 7.8px; }
   .pick .t { font-size: 20px; line-height: 22.46px; white-space: nowrap; }
   .pick .s { font-size: 14px; line-height: 13.46px; white-space: nowrap; }
   .pick-grid { left: 21.93px; top: 228.02px; column-gap: 8.76px; row-gap: 10.36px; }
@@ -41,10 +41,10 @@
 
 </style>
 </head><body>
-<div class="phone flat setup" style="--h:812px">
+<div class="phone soft setup dim-status" style="--h:812px">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
-      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+      <span class="status-icons"><img class="sig" src="assets/common/signal-gray.svg" alt=""><img class="wifi" src="assets/common/wifi-gray.svg" alt=""><img class="bat" src="assets/common/battery-gray.svg" alt=""></span></div>
     <!-- no back button in the frame: the logo area asks to quit (shared .ox팝업 via data-confirm) -->
     <div class="nav nav--center"><a class="nav-quit" href="home.html" data-confirm="프로필 설정을 중단할까요?" aria-label="프로필 설정 중단"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></a></div>
   </div>
@@ -59,6 +59,8 @@
   <div class="pick-grid" id="cards" role="radiogroup" aria-label="곤충을 얼마나 아는지 (하나 고르기)"></div>
 
   <div class="toast toast--info" id="toast" role="status" hidden><img src="assets/onboarding/toast-alert.png" alt=""><span>답변을 선택해주세요.</span></div>
+
+  <a class="skip-link" href="home.html">건너뛰기</a>
 
   <button type="button" class="cta" id="next" style="top:708.07px"><span class="cta-face">다음 <img id="nextArrow" src="assets/icons/outline/arrow-right.svg" alt=""></span></button>
 

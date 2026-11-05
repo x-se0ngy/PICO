@@ -16,12 +16,13 @@
 <link rel="stylesheet" href="base.css">
 <style>
   /* 1.2.4 완료 (Figma Warm-Up 3198:21422): 기울어진 빈 탐험가 카드(폴라로이드) + 흩뿌린 색종이, 두 줄 안내, 큰 버튼.
-     카드는 아직 비어 있어요 — 첫 탐험에서 채워질 자리라서요. */
+     카드 안에는 무당벌레 한 마리가 있어요 (최신 Figma 3245:17018). */
   .card-pop { position: absolute; left: 0; top: 0; width: 375px; height: 812px; pointer-events: none; animation: card-pop var(--dur) var(--ease) both; transform-origin: 193.2px 353.5px; }
   .card-pop > i { position: absolute; display: block; border: 1.347px solid var(--ink); box-sizing: border-box; transform: rotate(7.96deg); }
   .pc-shadow { left: 156.58px; top: 314.03px; width: 75.286px; height: 84.696px; background: var(--ink); }
   .pc-face { left: 155.54px; top: 311.13px; width: 75.286px; height: 84.696px; background: var(--lime); }
   .pc-win { left: 161.28px; top: 314.97px; width: 65.905px; height: 64.665px; background: var(--surface); }
+  .pc-bug { position: absolute; left: 167.66px; top: 324.28px; width: 52.802px; height: 46.041px; }   /* 카드 안에 무당벌레 한 마리 (Figma 3302:26670) */
   .cf { position: absolute; display: flex; align-items: center; justify-content: center; }
   .cf i { display: block; border: 1px solid var(--ink); flex: none; box-sizing: border-box; }
   .cf-dot { position: absolute; display: flex; align-items: center; justify-content: center; }
@@ -36,10 +37,10 @@
 </style>
 </head><body>
 <!-- 1.2.4 완료 -->
-<div class="phone flat" style="--h:812px">
+<div class="phone soft dim-status" style="--h:812px">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
-      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+      <span class="status-icons"><img class="sig" src="assets/common/signal-gray.svg" alt=""><img class="wifi" src="assets/common/wifi-gray.svg" alt=""><img class="bat" src="assets/common/battery-gray.svg" alt=""></span></div>
     <div class="nav nav--center"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
   </div>
 
@@ -52,7 +53,7 @@
   <span class="cf-dot" style="left:332.82px;top:195.74px;width:13.195px;height:13.195px" aria-hidden="true"><i style="background:#e180ff"></i></span>
   <span class="cf-dot" style="left:231.34px;top:231.67px;width:14.892px;height:14.892px" aria-hidden="true"><i style="background:#60c8ff"></i></span>
 
-  <div class="card-pop" aria-hidden="true"><i class="pc-shadow"></i><i class="pc-face"></i><i class="pc-win"></i></div>
+  <div class="card-pop" aria-hidden="true"><i class="pc-shadow"></i><i class="pc-face"></i><i class="pc-win"></i><img class="pc-bug" src="assets/onboarding/done-ladybug.png" alt=""></div>
 
   <p class="done-title"><span id="short">선우</span>의 탐험가 카드가 
 완성됐어요!</p>

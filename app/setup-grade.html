@@ -22,10 +22,11 @@
     display: flex; flex-direction: column; align-items: flex-start; padding: 0 0 0 11.8px; }
   .pick::before { content: ''; position: absolute; left: -1.62px; top: -1px; width: 160.541px; height: 74px; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box;
     transform: rotate(-1.8deg); z-index: -1; opacity: 0; transition: opacity var(--dur) var(--ease); }
-  .pick[aria-checked="true"] { background: var(--lime); transform: translate(1.93px, -.3px); }
+  .pick[aria-checked="true"] { background: var(--lime); left: 1.93px; top: -.3px; }   /* transform 대신 left/top: transform을 쓰면 뒤 종이(::before)가 앞면 위로 올라와요 */
   .pick[aria-checked="true"]::before { opacity: 1; }
   .pick-grid { isolation: isolate; }
-  .pick { padding-top: 16.34px; gap: 4px; }
+  .pick { padding-top: 16.34px; gap: 2px; }
+  .pick[aria-checked="true"] { padding-left: 13.8px; }
   .pick .k { font-size: 14px; line-height: 12.19px; height: 12.19px; }
   .pick .v { font-size: 20px; line-height: 28.15px; white-space: nowrap; }
   .info-bar { position: absolute; left: 20px; top: 564px; width: 335px; height: 55px; border: 1px dashed var(--ink);
@@ -34,10 +35,10 @@
   .step-title { top: 174px; }
 </style>
 </head><body>
-<div class="phone flat setup" style="--h:812px">
+<div class="phone soft setup dim-status" style="--h:812px">
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
-      <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
+      <span class="status-icons"><img class="sig" src="assets/common/signal-gray.svg" alt=""><img class="wifi" src="assets/common/wifi-gray.svg" alt=""><img class="bat" src="assets/common/battery-gray.svg" alt=""></span></div>
     <div class="nav nav--center"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></div>
   </div>
 
@@ -51,6 +52,8 @@
   <div class="pick-grid" id="grades" role="radiogroup" aria-label="학년"></div>
 
   <div class="info-bar"><img src="assets/icons/outline/calendar-check.svg" alt=""><span>학년은 나만 볼 수 있어요. 친구에게는 보이지 않아요.</span></div>
+
+  <a class="skip-link" href="home.html">건너뛰기</a>
 
   <a class="cta" id="next" aria-disabled="true" href="setup-explore.html" style="top:708.07px"><span class="cta-face">다음 <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
 

@@ -48,8 +48,9 @@
   /* sheets */
   .dim.scrim { background: rgba(44, 44, 44, .57); }
   /* Figma 3.1.1 촬영 13 · 촬영 6: 시트는 윗선·손잡이 없이 종이 질감만 (위쪽은 어둡게 덮은 화면) */
-  .csheet { top: 402px; height: 410px; border-top: 0; background: url('assets/onboarding/ob-paper-full.jpg') 0 -132px / 375px 812px no-repeat, #fffce4; background-blend-mode: multiply; }
-  #error { top: 399.8px; height: 412.2px; }
+  /* 시트 종이: Figma의 구겨진 종이(image 3214) 그대로 — 두 시트가 서로 다른 조각이에요 (3207:38628 · 3448:23584) */
+  .csheet { top: 402px; height: 410px; border-top: 0; background: url('assets/capture/sheet-paper-safety.jpg') 0 0 / 375px 410px no-repeat, #fffce4; }
+  #error { top: 399.8px; height: 412.2px; background: url('assets/capture/sheet-paper-error.jpg') 0 0 / 375px 412.2px no-repeat, #fffce4; }
   .home-ind { z-index: 45; }
   .csheet h2 { position: absolute; left: .5px; right: -.5px; top: 22px; margin: 0; text-align: center; font-size: 22px; line-height: normal; }
   .csheet .lead { position: absolute; left: .5px; right: -.5px; top: 54px; margin: 0; text-align: center; font-size: 14px; line-height: 16px; }

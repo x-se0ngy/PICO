@@ -84,6 +84,15 @@ img { display: block; }
 .phone.warm { background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px no-repeat, var(--paper); background-blend-mode: multiply; }
 /* 설정 · 도감처럼 바탕은 종이 결 없이 크림색 한 가지 (Figma 3198:8826 · 3245:16807 …). 종이 결은 버튼 · 카드 · 진행 칸 같은 '종이'에만 */
 .phone.flat { background: var(--paper); }
+/* 개인 설정 화면(Figma 3245:…)의 종이: 종이색 위에 아주 고운 알갱이만 살짝 (바탕 평균 ≈ #fbf8e1, 주름 질감은 없어요) */
+.phone.soft { background: url('assets/onboarding/paper-grain.png') 0 0 / 192px 192px, var(--paper); background-blend-mode: multiply; }
+/* 개인 설정 상태바: 글자·아이콘이 회색(#8e8e8e) */
+.dim-status .status-time { color: #8e8e8e; left: 30px; top: 22px; }
+.dim-status .status-icons { left: auto; right: 30px; }
+.dim-status .nav .logo { width: 30px; height: 30px; position: relative; top: -2px; }   /* Figma 로고 30px, 위에서 70px */
+/* 건너뛰기: 큰 버튼 바로 위 오른쪽 (12px 밑줄 글자, Figma 3279:24975) — 누르면 바로 홈으로 가요 */
+.skip-link { position: absolute; right: 20px; bottom: 139.1px; font-size: 12px; line-height: normal; text-align: right; white-space: nowrap; color: var(--ink); text-decoration: underline; text-underline-position: from-font; z-index: 3; }
+.skip-link::after { content: ""; position: absolute; inset: -12px -12px -12px -16px; }
 
 /* ---------- status bar + top nav ---------- */
 .top { position: absolute; left: 0; top: 0; width: 375px; z-index: 5; }
