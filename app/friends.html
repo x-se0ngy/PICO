@@ -18,7 +18,7 @@
   @media (min-width: 500px) { body { padding-bottom: 0; } }
   .abs { position: absolute; }
   .top[data-fixed] { height: 118px; background: var(--paper); }
-  .nav .add { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-right: -6px; }
+  .nav .add { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-right: 0; background: none; border: 0; padding: 0; cursor: pointer; }
   .nav .add img { width: 32px; height: 32px; transform: rotate(45deg); }
 
   /* 친구 탭 (Figma 3355:5792) — 위: 종이 두 장(쪽지 접기 + 현황) */
@@ -38,50 +38,37 @@
   .stat b { font: 700 34px/41px Inter, -apple-system, sans-serif; }
   .stat .u { font-size: 14px; line-height: 17px; padding-bottom: 4px; }
   .stat .l { font-size: 12px; }
-  .stats i { width: 0; height: 48px; border-left: 1px dashed var(--ink); }
+  .stats i { width: 0; height: 48px; border-left: 1px solid var(--ink); }
 
   /* 아래는 흐름대로 쌓아요 */
   .flow { left: 0; top: 341.4px; width: 375px; display: flex; flex-direction: column; }
-  .sec-h { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 16px; }
+  .sec-h { display: flex; justify-content: space-between; align-items: center; height: 19px; padding: 0 20px; font-size: 16px; }
   .sec-h img { width: 18px; height: 18px; transform: rotate(-90deg); }
 
-  /* 친구 편지 줄: 닫힌 편지 = 아직 안 펼친 쪽지(이름 굵게) · 누르면 열린 편지 + 아래로 편지지
-     맨 끝 점선 편지 = 친구 추가(점선 = 아직) */
-  .envs { margin-top: 15px; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 14px; }
-  .fr { width: 66px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; line-height: 19px; white-space: nowrap; background: none; border: 0; padding: 0; color: inherit; font-family: inherit; cursor: pointer; }
-  .fr .pic { height: 70px; display: flex; align-items: flex-end; justify-content: center; }
+  /* 친구들의 발견 (Figma 3436:7072): 열어 본 편지 = 열린 편지(이름 보통) · 아직 안 연 편지 = 닫힌 편지(이름 굵게) · 맨 끝 = 친구 추가
+     편지를 누르면 그 친구의 쪽지가 바로 아래로 펼쳐져요 (한 번 더 누르면 접혀요) */
+  .envs { margin-top: 15px; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 25px; }
+  .fr { width: 55.18px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; line-height: 19px; white-space: nowrap; background: none; border: 0; padding: 0; color: inherit; font-family: inherit; cursor: pointer; }
+  .fr.op { width: 65.02px; }
+  .fr .pic { height: 70.32px; display: flex; align-items: flex-end; justify-content: center; }
   .fr.new span { font-weight: 700; }
-  .fr .c { width: 55px; height: 40px; display: block; margin-bottom: 8px; }
-  .fr .o { width: 64px; height: 60px; display: block; overflow: visible; }
-  .fr.add .c { width: 55px; }
+  .fr .c { width: 57px; height: 39px; flex: none; display: block; margin-bottom: 14.4px; overflow: visible; }
+  .fr .o { width: 65.02px; height: 70.32px; flex: none; display: block; overflow: visible; }
 
-  /* 펼친 쪽지: 고른 편지에서 나온 편지지 (위 현황 종이와 다르게 흰 노트 + 위로 꼭지) */
-  .letter { position: relative; margin: 20px 20px 0; height: 162px; background: #fff; border: 1px solid var(--ink); transform: rotate(-.6deg); }
-  .letter .tail { position: absolute; top: -8px; width: 14px; height: 14px; background: #fff; border-left: 1px solid var(--ink); border-top: 1px solid var(--ink); transform: translateX(-50%) rotate(45deg); transition: left var(--dur, .3s) var(--ease, ease); }
-  .letter .lines { position: absolute; inset: 0; overflow: hidden;
-    background: repeating-linear-gradient(to bottom, transparent 0 29.6px, var(--rule-cyan) 29.6px 30.6px, transparent 30.6px 34.4px) 0 0 / 100% 28px; }
-  .letter .lines { background: none; }
-  .letter .lines i { position: absolute; left: 0; right: 0; border-top: 1px solid var(--rule-cyan); }
-  .letter .lines b { position: absolute; top: 0; bottom: 0; left: 21.4px; border-left: 1px solid var(--rule-pink); }
-  .letter .from { position: absolute; left: 33px; top: 9px; display: flex; align-items: center; gap: 4px; font-size: 15px; }
-  .letter .from svg { width: 14px; height: 15px; transform: rotate(-7deg); }
-  .letter .ph { position: absolute; left: 31.6px; top: 35px; width: 102.5px; height: 102.8px; border: 1px solid var(--ink); overflow: hidden; }
-  .ph img, .cmp .ph img, .ins .ph img { position: absolute; left: 50%; bottom: 0; height: 161%; width: auto; max-width: none; transform: translateX(-50%); }
-  .letter .nm { position: absolute; left: 144.3px; top: 63px; font-weight: 700; font-size: 16px; }
-  .letter .hd { position: absolute; left: 144.8px; top: 89px; font-family: var(--font-hand); font-size: 17px; line-height: 28px; }
+  /* 펼친 쪽지: 337.67×178.35 노트 (윗선에 꼭지) + 하늘색 줄 다섯 + 분홍 세로줄 */
+  .letter { position: relative; left: .27px; margin: 15px auto 0; width: 337.67px; height: 178.35px; }
+  .letter .pp { position: absolute; left: 0; top: 0; width: 338px; height: 179px; overflow: visible; pointer-events: none; }
+  .letter .from { position: absolute; left: 52.23px; top: 29.25px; margin: 0; font-size: 15px; line-height: normal; white-space: nowrap; }
+  .letter .ph { position: absolute; left: 32.93px; top: 56.44px; width: 102.55px; height: 102.84px; border: 1px solid var(--ink); box-sizing: border-box; overflow: hidden; display: block; }
+  .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .letter .nm { position: absolute; left: 145.6px; top: 84.48px; margin: 0; font-weight: 700; font-size: 16px; line-height: normal; white-space: nowrap; }
+  .letter .hd { position: absolute; left: 146.09px; top: 108.1px; margin: 0; font-family: var(--font-hand); font-size: 17px; line-height: 28px; white-space: nowrap; }
   .letter.swap { animation: unfold .45s var(--ease, ease) both; }
-  @keyframes unfold { from { opacity: 0; transform: translateY(-14px) rotate(-.6deg) scaleY(.6); } to { opacity: 1; transform: rotate(-.6deg); } }
-
-  .tipx { margin-top: 20px; height: 129px; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); position: relative;
-    background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
-  .tipx-in { position: absolute; left: 21.8px; top: 15.6px; display: flex; flex-direction: column; gap: 5px; }
-  .tipx .h { display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 16px; line-height: 1.3; }
-  .tipx .h img { width: 32px; height: 32px; }
-  .tipx ol { margin: 0; padding-left: 21px; font-size: 14px; line-height: 1.21; }
+  @keyframes unfold { from { opacity: 0; transform: translateY(-14px) scaleY(.6); } to { opacity: 1; transform: none; } }
 
   /* 함께 하는 탐험 (Figma 3382:9803): 한 장씩 옆으로 넘기는 종이 두 장 카드 · 아래 점 · 마지막 장 = 새 탐험 만들기(점선 = 아직) */
   .coop { margin-top: 0; }
-  .mis-row { margin-top: 4px; display: flex; gap: 20px; padding: 6px 20px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .mis-row { margin-top: 4px; display: flex; gap: 20px; padding: 14.3px 20px 13.8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .mis-row::-webkit-scrollbar { display: none; }
   .mis { position: relative; flex: none; width: 335px; height: 87px; scroll-snap-align: center; color: inherit; text-decoration: none; }
   .mis .back { position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.59deg) skewX(-1.36deg); }
@@ -99,11 +86,29 @@
   .dots { display: flex; justify-content: center; gap: 8px; margin-top: 4px; }
   .dots i { width: 10px; height: 10px; border: 1px solid var(--ink); box-sizing: border-box; transition: width var(--dur, .3s) var(--ease, ease); }
   .dots i.on { width: 30px; background: var(--lime); }
-  .notes { margin-top: 20px; padding-bottom: 150px; }
-  /* 펼친 쪽지 오른쪽 위: 이 친구 들판으로 (쪽지에서 바로 친구에게 놀러 가요) */
-  .letter .visit { position: absolute; right: 12px; top: 7px; display: flex; align-items: center; gap: 2px; padding: 3px 6px 3px 8px; font-size: 12px; font-weight: 700; color: inherit; text-decoration: none; background: var(--lime); border: 1px solid var(--ink); }
-  .letter .visit img { width: 13px; height: 13px; }
+  .notes { margin-top: 14px; padding-bottom: 170px; }
   .letter[hidden] { display: none; }
+
+  /* 친구 추가 QR (Figma 3198:22202): 300×500 창이 친구 탭 위에 떠요 */
+  .ov { position: absolute; inset: 0; z-index: 50; }
+  .ov .dim { position: absolute; inset: 0; z-index: 0; background: rgba(44, 44, 44, .57); }
+  .qrm { position: absolute; z-index: 1; left: 37.5px; top: 156px; width: 300px; height: 500px; background: var(--paper); box-shadow: inset 0 0 0 1px #000; }
+  .qrm .x { position: absolute; left: 253px; top: 12.5px; width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .qrm .x img { width: 32px; height: 32px; display: block; }
+  .qrm .art { position: absolute; left: 58.8px; top: 68.5px; width: 182.4px; height: 183px; }
+  .qrm .art .sh { position: absolute; left: 6.43px; top: 6.4px; width: 169.53px; height: 170.22px; box-sizing: border-box; border: 1.261px solid var(--ink); background: var(--paper); transform: rotate(4.51deg); }
+  .qrm .art .fc { position: absolute; left: 6px; top: 8px; width: 170.22px; height: 170.22px; box-sizing: border-box; border: 1.261px dashed var(--ink); background: var(--lime); }
+  .qrm .art img { position: absolute; left: 24.44px; top: 28.64px; width: 133.32px; height: 124.53px; display: block; }
+  .qrm .say { position: absolute; left: 0; right: 0; top: 281.5px; margin: 0; text-align: center; font-family: var(--font-hand); font-size: 16px; line-height: 20px; }
+  .qrm .who { position: absolute; left: 0; right: 0; top: 311px; margin: 0; text-align: center; font-size: 16px; line-height: 19px; white-space: nowrap; }
+  .qrm .who b { font-weight: 700; }
+  .qrm .code { position: absolute; left: 0; right: 0; top: 335px; margin: 0; text-align: center; font-weight: 700; font-size: 22px; line-height: 26px; white-space: nowrap; }
+  .qrm .btn { position: absolute; top: 369px; width: 130px; height: 45px; box-sizing: border-box; border: 1px solid #000; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 14px; color: inherit; text-decoration: none; background: transparent; font-family: inherit; padding: 0; cursor: pointer; }
+  .qrm .btn.go { left: 14.5px; background: var(--lime); }
+  .qrm .btn.in { left: 154.5px; }
+  .qrm .btn img { width: 18px; height: 18px; display: block; }
+  .qrm .info { position: absolute; left: 14.5px; top: 424px; width: 270px; height: 45px; box-sizing: border-box; border: 1px dashed #000; display: flex; align-items: center; gap: 8px; padding-left: 9px; font-size: 12px; line-height: 14px; white-space: pre; }
+  .qrm .info img { width: 18px; height: 18px; flex: none; }
 </style>
 </head><body>
 <div class="phone flat" style="--h:1000px">
@@ -113,7 +118,7 @@
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav">
       <img class="logo lg" src="assets/common/logo-mark.png" alt="PICO">
-      <a class="add" href="badge.html?state=qr" aria-label="친구 추가"><img src="assets/icons/outline/close.svg" alt=""></a>
+      <button class="add" type="button" data-show="#ov-qr" aria-label="친구 추가"><img src="assets/icons/outline/close.svg" alt=""></button>
     </div>
   </div>
 
@@ -125,7 +130,7 @@
   <a class="abs fold-btn" href="capture-card.html"><span>쪽지 접기<img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
   <div class="abs rule" aria-hidden="true"></div>
   <div class="abs stats">
-    <div class="stat"><p class="n"><b>4</b><span class="u">명</span></p><p class="l">탐험 친구</p></div><i></i>
+    <div class="stat"><p class="n"><b>3</b><span class="u">명</span></p><p class="l">탐험 친구</p></div><i></i>
     <div class="stat"><p class="n"><b>12</b><span class="u">장</span></p><p class="l">주고받은 쪽지</p></div><i></i>
     <div class="stat"><p class="n"><b>5</b><span class="u">종</span></p><p class="l">같이 만난 곤충</p></div>
   </div>
@@ -136,30 +141,25 @@
       <div class="sec-h"><span>함께 하는 탐험</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></div>
       <div class="mis-row" id="misRow">
         <a class="mis" href="#"><span class="back" aria-hidden="true"></span><span class="pp">
-          <span class="who">민사온과 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">꽃밭에서 나비 5마리 함께 찾기</span><b class="cnt">2 / 5</b>
+          <span class="who">민지와 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">꽃밭에서 나비 5마리 함께 찾기</span><b class="cnt">2 / 5</b>
           <span class="bar" role="img" aria-label="5마리 중 2마리"><i style="width:40.0%"></i></span>
         </span></a>
         <a class="mis" href="#"><span class="back" aria-hidden="true"></span><span class="pp">
-          <span class="who">정하람과 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">비 온 뒤 달팽이 2마리 함께 찾기</span><b class="cnt">0 / 2</b>
+          <span class="who">지혁이와 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">비 온 뒤 달팽이 2마리 함께 찾기</span><b class="cnt">0 / 2</b>
           <span class="bar" role="img" aria-label="2마리 중 0마리"><i style="width:0.0%"></i></span>
         </span></a>
         <a class="mis" href="#"><span class="back" aria-hidden="true"></span><span class="pp">
-          <span class="who">유선규와 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">학교에서 잠자리 3마리 함께 찾기</span><b class="cnt">1 / 3</b>
+          <span class="who">민호와 함께</span><img class="go" src="assets/icons/outline/arrow-right.svg" alt=""><span class="ttl">학교에서 잠자리 3마리 함께 찾기</span><b class="cnt">1 / 3</b>
           <span class="bar" role="img" aria-label="3마리 중 1마리"><i style="width:33.3%"></i></span>
         </span></a>
         <a class="mis new" href="#"><span class="plus" aria-hidden="true"></span>친구와 새 탐험 만들기</a>
       </div>
-      <div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i></div>
     </div>
 
-    <!-- PICO가 알려줘요 -->
-    <div class="tipx"><div class="tipx-in">
-      <p class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO가 알려줘요 !</p>
-      <ol><li>쪽지는 직접 만난 친구와만 주고받아요.</li><li>쪽지를 펼치면 친구 들판에 놀러 갈 수 있어요.</li><li>오늘 본 곤충으로 먼저 쪽지를 접어 보세요.</li></ol>
-    </div></div>
     <div class="notes">
-      <!-- 친구들의 쪽지: 편지를 누르면 바로 아래로 편지지가 펼쳐져요 (한 번 더 누르면 접혀요) -->
-      <a class="sec-h" href="friend.html?friend=seongyu"><span>친구들의 쪽지</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
+      <!-- 친구들의 발견: 편지를 누르면 바로 아래로 쪽지가 펼쳐져요 (한 번 더 누르면 접혀요) -->
+      <a class="sec-h" href="friend.html?friend=seongyu"><span>친구들의 발견</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
       <div class="envs" id="envs"></div>
       <div class="letter" id="letter" aria-live="polite" hidden></div>
 
@@ -173,14 +173,28 @@
       <div class="tabbar-group"><a href="friends.html" aria-label="친구" aria-current="page"><img src="assets/icons/outline/mail.svg" alt=""><span>친구</span></a><a href="my.html" aria-label="마이"><img src="assets/icons/outline/user.svg" alt=""><span>마이</span></a></div>
     </div></nav>
 
+  <!-- 6.2.2 친구 추가 QR (state: qr) -->
+  <div class="ov" id="ov-qr" hidden role="dialog" aria-modal="true" aria-label="친구 추가">
+    <div class="dim" data-hide="#ov-qr"></div>
+    <div class="qrm">
+      <button class="x" type="button" data-hide="#ov-qr" aria-label="닫기"><img src="assets/icons/outline/close.svg" alt=""></button>
+      <div class="art" aria-hidden="true"><span class="sh"></span><span class="fc"></span><img src="assets/tabs/qr-code.png" alt=""></div>
+      <p class="say">친구를 추가 해보세요!</p>
+      <p class="who">민지혁 <b>•</b> 새싹 탐험가</p>
+      <p class="code">PICO • 4 3 9 1</p>
+      <a class="btn go" href="capture-1.html"><img src="assets/icons/outline/home-favorite.svg" alt="">QR 찍기</a>
+      <button class="btn in" type="button">코드 입력하기</button>
+      <div class="info"><img src="assets/icons/outline/presentation.svg" alt=""><span>QR 코드를 보여주고 탐험할 친구를 만나보세요!
+서로의 기록을 확인하고  탐험을 할 수 있어요.</span></div>
+    </div>
+  </div>
+
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
 <script>
 (function () {
   var PINK = '#f8addb', SKY = '#add2f8', LIME = '#c1f8ad', INK = '#211b17';
-  var PENT = '<polygon points="5.28,0.5 23.1,7.7 24.88,22.94 8,26.81 0.5,12.37" stroke="' + INK + '" stroke-width="1.6" stroke-linejoin="round"/>';
-  function mark(c) { return '<svg viewBox="0 0 25.38 27.31" aria-hidden="true"><g fill="' + c + '">' + PENT + '</g></svg>'; }
   // 친구마다 가장 최근 쪽지 한 장
   var FRIENDS = [
     { id: 'seongyu', name: '유선규', c: PINK, img: 'card-butterfly', bug: '배추흰나비', say: ['학교 화단에서 봤어!', '날개 끝이 까매'], date: '10월 31일' },
@@ -188,47 +202,70 @@
     { id: 'haram', name: '정하람', c: LIME, img: 'card-grasshopper', bug: '방아깨비', say: ['풀숲에서 폴짝!', '다리가 엄청 길어'], date: '10월 29일' },
     { id: 'taeho', name: '민태호', c: SKY, img: 'card-dragonfly', bug: '고추잠자리', say: ['개울 위를 빙빙', '꼬리가 빨개'], date: '10월 27일' }
   ];
-  var opened = {};
-  try { var s = JSON.parse(localStorage.getItem('pico.friendsOpened') || 'null'); if (s) opened = s; } catch (e) {}
-  var cur = null;
+  // 처음엔 유선규의 쪽지가 열려 있어요 (시안의 모습)
+  var opened = { seongyu: true };
+  try { var s = JSON.parse(localStorage.getItem('pico.friendsOpened') || 'null'); if (s) { for (var k in s) opened[k] = s[k]; } } catch (e) {}
+  var cur = 'seongyu';
 
-  function closedEnv(c, dashed, plain) {
-    var d = dashed ? ' stroke-dasharray="7 5"' : '', f = dashed ? 'none' : c, b = dashed ? 'none' : '#fffce4';
-    return '<svg class="c" viewBox="0 0 120 88" aria-hidden="true"><rect x="4" y="4" width="112" height="80" fill="' + b + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"' + d + '/>' +
-      '<polyline points="4,84 60,46 116,84" fill="none" stroke="' + INK + '" stroke-width="2.2" stroke-linejoin="round"' + d + '/>' +
-      '<polygon points="4,4 116,4 60,52" fill="' + f + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"' + d + '/>' +
-      (plain ? '<path d="M60 60v16M52 68h16" stroke="' + INK + '" stroke-width="2.6" stroke-linecap="round"/>' : dashed ? '<path d="M60 58v18M51 67h18" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/>' :
-      '<g transform="translate(60,52) rotate(-8)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="' + c + '" stroke="' + INK + '" stroke-width="1.8" stroke-linejoin="round"/></g>') + '</svg>';
+  // 닫힌 편지 (Figma 3436:7122 …): 57×39 · 색 = 그 친구 색 · plain = 친구 추가(색 없음)
+  var V = 'M28.0962 18.6171L28.3869 18.2095C28.2137 18.0862 27.981 18.0863 27.8073 18.2099L28.0962 18.6171ZM0.513068 38.2233L0.80197 38.6306L28.3851 19.0244L28.0962 18.6171L27.8073 18.2099L0.224166 37.8161L0.513068 38.2233ZM28.0962 18.6171L27.8054 19.0247L55.3014 38.5952L55.5921 38.1876L55.8828 37.7799L28.3869 18.2095L28.0962 18.6171Z';
+  var VP = 'M28.0807 23.9481L27.7634 24.3355C27.9473 24.4859 28.2122 24.4856 28.3967 24.3347L28.0807 23.9481ZM31.6305 21.0437L31.9222 20.6368C31.7387 20.5055 31.4896 20.5139 31.3145 20.6571L31.6305 21.0437ZM24.5309 21.0437L24.8482 20.6564C24.6737 20.5136 24.4248 20.5058 24.2408 20.6374L24.5309 21.0437ZM28.0807 23.9481L28.3967 24.3347L31.9464 21.4304L31.6305 21.0437L31.3145 20.6571L27.7647 23.5615L28.0807 23.9481ZM31.6305 21.0437L31.3388 21.4507L55.3004 38.5945L55.5921 38.1875L55.8838 37.7806L31.9222 20.6368L31.6305 21.0437ZM0.513089 38.2233L0.803205 38.6297L24.8211 21.4501L24.5309 21.0437L24.2408 20.6374L0.222974 37.8169L0.513089 38.2233ZM24.5309 21.0437L24.2137 21.4311L27.7634 24.3355L28.0807 23.9481L28.398 23.5608L24.8482 20.6564L24.5309 21.0437Z';
+  function closedEnv(c, plain) {
+    var st = ' stroke="' + INK + '" stroke-linejoin="round"';
+    return '<svg class="c" viewBox="0 0 57 39" aria-hidden="true">' +
+      '<path d="M55.6778 0.500748L0.585449 0.538818L0.500131 38.2222L55.5925 38.1842L55.6778 0.500748Z" fill="' + (plain ? 'none' : '#fffce4') + '"' + st + '/>' +
+      '<path d="' + (plain ? VP : V) + '" fill="' + INK + '"/>' +
+      (plain
+        ? '<path d="M0.585449 0.536621L55.6674 0.500003C44.8915 9.6472 38.8499 14.7757 28.074 23.9229L0.585449 0.536621Z" fill="none"' + st + '/>'
+        : '<path d="M0.585449 0.536621L55.6674 0.500003L28.074 23.9229L0.585449 0.536621Z" fill="' + c + '"' + st + '/>' +
+          '<path d="M24.5694 14.9256L31.7281 16.7075L33.1976 22.4486L26.9719 24.8562L23.3662 19.735L24.5694 14.9256Z" fill="' + c + '"' + st + '/>') +
+      '</svg>';
   }
+  // 열린 편지 (Figma 3436:7105): 65×70 · 분홍 → 그 친구 색 · 사진은 그 친구의 쪽지 사진
   function openEnv(f) {
-    var id = 'ec' + f.id;
-    return '<svg class="o" viewBox="0 0 160 150" aria-hidden="true"><defs><clipPath id="' + id + '"><rect width="94" height="80"/></clipPath></defs>' +
-      '<polygon points="8,62 152,62 80,8" fill="' + f.c + '" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"/><rect x="8" y="62" width="144" height="80" fill="' + f.c + '" stroke="' + INK + '" stroke-width="2.4"/>' +
-      '<g transform="translate(36,24) rotate(-9 47 40)"><g clip-path="url(#' + id + ')"><image href="assets/tabs/' + f.img + '.png" x="-20" y="-40" width="134" height="120" preserveAspectRatio="xMidYMax slice"/></g><rect width="94" height="80" fill="none" stroke="' + INK + '" stroke-width="2.2"/></g>' +
-      '<polygon points="8,62 80,110 152,62 152,142 8,142" fill="#fffce4" stroke="' + INK + '" stroke-width="2.4" stroke-linejoin="round"/><line x1="8" y1="142" x2="68" y2="102" stroke="' + INK + '" stroke-width="2"/><line x1="152" y1="142" x2="92" y2="102" stroke="' + INK + '" stroke-width="2"/>' +
-      '<g transform="translate(80,110) rotate(-8) scale(1.1)"><polygon points="-8,-9 8,-9 11,3 0,11 -11,3" fill="' + f.c + '" stroke="' + INK + '" stroke-width="1.8" stroke-linejoin="round"/></g></svg>';
+    var id = 'ec' + f.id, st = ' stroke="' + INK + '" stroke-linejoin="round"';
+    return '<svg class="o" viewBox="0 0 65.02 70.32" aria-hidden="true"><defs><clipPath id="' + id + '"><rect x="-19.445" y="-17.15" width="38.89" height="34.3"/></clipPath></defs>' +
+      '<path transform="translate(5.36 22.62)" d="M0.5 0.499756L55.7354 9.71464L24.1886 28.2445L0.5 0.499756Z" fill="' + f.c + '"' + st + '/>' +
+      '<path transform="translate(5.39 4.11)" d="M55.7158 28.1799L0.50011 18.9683L32.0263 0.499854L55.7158 28.1799Z" fill="' + f.c + '"' + st + '/>' +
+      '<g transform="translate(35.37 30.16) rotate(15)"><g clip-path="url(#' + id + ')"><image href="assets/tabs/' + f.img + '.png" x="-19.445" y="-17.15" width="38.89" height="34.3" preserveAspectRatio="xMidYMid slice"/></g><rect x="-19.445" y="-17.15" width="38.89" height="34.3" fill="none"' + st + '/></g>' +
+      '<g transform="translate(-0.5 22.71)" fill="#fffce4"' + st + '><path d="M61.604 9.56128L55.7631 47.4467L35.5627 24.8706L61.604 9.56128Z"/><path d="M0.5 38.3857L6.34092 0.50028L26.5413 23.0764L0.5 38.3857Z"/><path d="M55.7003 47.4624L0.500076 38.4018L31.584 19.8595L55.7003 47.4624Z"/></g>' +
+      '<path transform="translate(25.46 40.36)" d="M2.47989 0.499834L9.24092 3.43786L9.74137 9.33853L3.20822 10.6835L0.500095 5.04111L2.47989 0.499834Z" fill="' + f.c + '"' + st + '/></svg>';
   }
+  // 쪽지 윗선의 꼭지는 고른 편지 위치를 따라가요
+  function paperPath(tx) {
+    return 'M337.172 177.846V17.0286H' + (tx + 14.2256) + 'L' + (tx + 14.0762) + ' 16.8577L' + tx + ' 0.76001L' + (tx - 14.0762) + ' 16.8577L' + (tx - 14.2256) + ' 17.0286H0.5V177.846H337.172Z';
+  }
+  function paperSvg(f, tx) {
+    var lines = '';
+    for (var i = 0; i < 5; i++) { var x = 1.28 + i * 0.49, y = 51.86 + i * 28; lines += '<path d="M' + x.toFixed(2) + ' ' + y.toFixed(2) + 'H' + (x + 333.15).toFixed(2) + '"/>'; }
+    return '<svg class="pp" viewBox="0 0 338 179" aria-hidden="true">' +
+      '<g stroke="#ADD2F8" stroke-width=".909" stroke-linecap="square">' + lines + '</g>' +
+      '<path d="M22.65 21.29V175.46" stroke="#F8ADDB" stroke-width=".909" stroke-linecap="square"/>' +
+      '<path d="' + paperPath(tx) + '" fill="none" stroke="#000"/>' +
+      '<path transform="translate(34.43 30.8)" d="M2.4296 1.22317L11.9366 3.77068L13.7925 11.4059L5.45413 14.4264L0.740802 7.55483L2.4296 1.22317Z" fill="' + f.c + '" stroke="' + INK + '" stroke-width=".717" stroke-linejoin="round"/></svg>';
+  }
+
   var envs = document.getElementById('envs'), letter = document.getElementById('letter');
   function photo(img) { return '<img src="assets/tabs/' + img + '.png" alt="">'; }
   function render(anim) {
     envs.innerHTML = FRIENDS.map(function (f) {
       var isCur = f.id === cur, isNew = !opened[f.id];
-      return '<button class="fr' + (isNew ? ' new' : '') + (isCur ? ' on' : '') + '" data-id="' + f.id + '" aria-pressed="' + isCur + '">' +
+      return '<button class="fr' + (isNew ? ' new' : ' op') + (isCur ? ' on' : '') + '" data-id="' + f.id + '" aria-pressed="' + isCur + '">' +
         '<span class="pic">' + (opened[f.id] ? openEnv(f) : closedEnv(f.c)) + '</span><span>' + f.name + '</span></button>';
-    }).join('') + '<a class="fr add new" href="badge.html?state=qr"><span class="pic">' + closedEnv('#fffce4', false, true) + '</span><span>친구 추가</span></a>';
+    }).join('') + '<a class="fr new" href="friends.html?state=qr" data-show="#ov-qr"><span class="pic">' + closedEnv('', true) + '</span><span>친구 추가</span></a>';
     letter.hidden = !cur; fit(); if (!cur) return;
     var f = FRIENDS.filter(function (x) { return x.id === cur; })[0];
-    var lines = '<span class="lines">' + [30.6, 58.6, 86.6, 114.6, 142.6].map(function (t) { return '<i style="top:' + t + 'px"></i>'; }).join('') + '<b></b></span>';
-    letter.innerHTML = '<span class="tail"></span>' + lines +
-      '<p class="from">' + mark(f.c) + f.name + ' · ' + f.date + '</p><a class="visit" href="friend-field.html?friend=' + f.id + '">들판 놀러 가기<img src="assets/icons/outline/arrow-right.svg" alt=""></a><span class="ph">' + photo(f.img) + '</span>' +
-      '<p class="nm">' + f.bug + '</p><p class="hd">' + f.say.join('<br>') + '</p>';
     var btn = envs.querySelector('.fr.on'), lb = letter.getBoundingClientRect(), bb = btn.getBoundingClientRect();
     var k = letter.offsetWidth / lb.width || 1;
-    letter.querySelector('.tail').style.left = ((bb.left + bb.width / 2 - lb.left) * k) + 'px';
+    var tx = Math.max(24, Math.min(313, (bb.left + bb.width / 2 - lb.left) * k - 2.8));
+    letter.innerHTML = paperSvg(f, tx) +
+      '<p class="from">' + f.name + ' · ' + f.date + '</p>' +
+      '<a class="ph" href="friend-field.html?friend=' + f.id + '" aria-label="' + f.name + '의 들판 놀러 가기">' + photo(f.img) + '</a>' +
+      '<p class="nm">' + f.bug + '</p><p class="hd">' + f.say.join('<br>') + '</p>';
     if (anim) { letter.classList.remove('swap'); void letter.offsetWidth; letter.classList.add('swap'); }
     fit();
   }
-  // 편지지가 펼쳐지면 화면 길이도 같이 늘어나요
+  // 쪽지가 펼쳐지면 화면 길이도 같이 늘어나요
   function fit() { var fl = document.querySelector('.flow'); if (!fl) return; document.querySelector('.phone').style.setProperty('--h', Math.max(812, fl.offsetTop + fl.offsetHeight) + 'px'); }
   envs.addEventListener('click', function (e) {
     var b = e.target.closest('button.fr'); if (!b) return;
@@ -237,11 +274,19 @@
     try { localStorage.setItem('pico.friendsOpened', JSON.stringify(opened)); } catch (x) {}
     render(true);
   });
+  // 친구 추가 편지 = 위의 + 와 같이 QR 창을 열어요
+  envs.addEventListener('click', function (e) { var a = e.target.closest('a.fr'); if (a) e.preventDefault(); });
 
-  // 탐험 카드 점: 지금 보이는 장
+  // 탐험 카드 점: 지금 보이는 장 (마지막 '새 탐험' 장은 세 번째 점에 이어서)
   var row = document.getElementById('misRow'), dots = document.querySelectorAll('#dots i');
-  function dot() { var i = Math.round(row.scrollLeft / 355); dots.forEach(function (d, k) { d.classList.toggle('on', k === i); }); }
+  function dot() { var i = Math.min(dots.length - 1, Math.round(row.scrollLeft / 355)); dots.forEach(function (d, k) { d.classList.toggle('on', k === i); }); }
   row.addEventListener('scroll', dot, { passive: true });
+
+  // 친구 추가 QR 창
+  var qr = document.getElementById('ov-qr');
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !qr.hidden) window.picoSwap(function () { qr.hidden = true; }); });
+  if (document.documentElement.dataset.state === 'qr') qr.hidden = false;
+
   function boot() { render(false); dot(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 0); }); else boot();
   window.addEventListener('resize', function () { render(false); });

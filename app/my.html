@@ -19,71 +19,57 @@
   .top[data-fixed] { height: 118px; background: var(--paper); }
   .nav .gear img { width: 30px; height: 30px; display: block; }
 
-  /* 나 (Figma 3362:6455): 종이 두 장 (라임 뒷장 = 내 것) · 친구 탭 현황 카드와 같은 틀 */
-  .st-back { left: 20px; top: 145.3px; width: 335px; height: 169px; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-2.59deg) skewX(-1.36deg); }
-  .st { left: 20px; top: 145.3px; width: 335px; height: 169px; border: 1px solid var(--ink);
-    background: url('assets/onboarding/ob-paper-full.jpg') -20px -150px / 375px 812px, var(--paper); background-blend-mode: multiply; }
-  .pname { left: 40px; top: 170px; display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+  /* 나 (Figma 3436:7327): 종이 한 장 · 이름 · 탐험가 단계 · 이어 온 날 + 숫자 셋 */
+  .st { left: 20.11px; top: 141px; width: 335px; height: 169px; border: 1px solid var(--ink); box-sizing: border-box;
+    background: url('assets/onboarding/ob-paper-full.jpg') -20px -146px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  .pname { left: 38.96px; top: 165.7px; display: flex; align-items: baseline; gap: 6px; white-space: nowrap; margin: 0; }
   .pname b { font-size: 20px; line-height: 24px; } .pname span { font-size: 14px; }
-  .streak { left: 40px; top: 199px; font-size: 14px; white-space: nowrap; }
+  .streak { left: 38.96px; top: 194.7px; font-size: 14px; white-space: nowrap; margin: 0; }
   /* 내 정보 = 보조 버튼이라 종이색 (라임은 '내 것 · 고른 것'에만) */
-  .info-btn { left: 257px; top: 176.5px; width: 85px; height: 33px; color: inherit; text-decoration: none; }
+  .info-btn { left: 255.96px; top: 172.2px; width: 85px; height: 33px; color: inherit; text-decoration: none; }
   .info-btn::before { content: ''; position: absolute; inset: -1.2px -1.8px -1.5px -1.7px; background: var(--paper); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
   .info-btn span { position: absolute; inset: 0 -1px; background: #fffdf2; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
-  .rule { left: 32.5px; top: 229.8px; width: 310px; border-top: 1px dashed var(--ink); }
-  .stats { left: 20px; top: 237px; width: 335px; display: flex; justify-content: center; align-items: center; gap: 30px; }
+  .rule { left: 31.46px; top: 225px; width: 310px; border-top: 1px dashed var(--ink); }
+  .stats { left: 20.11px; top: 232.7px; width: 335px; display: flex; justify-content: center; align-items: center; gap: 30px; }
   .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; white-space: nowrap; }
-  .stat .n { display: flex; align-items: flex-end; gap: 1px; }
+  .stat .n { display: flex; align-items: flex-end; gap: 1px; margin: 0; }
+  .stat .l { margin: 0; }
   .stat b { font: 700 34px/41px Inter, -apple-system, sans-serif; }
   .stat .u { font-size: 14px; line-height: 17px; padding-bottom: 4px; }
   .stat .l { font-size: 12px; }
-  .stats i { width: 0; height: 48px; border-left: 1px dashed var(--ink); }
+  .stats i { width: 0; height: 48px; border-left: 1px solid var(--ink); }
 
-  .flow { left: 0; top: 341.4px; width: 375px; display: flex; flex-direction: column; }
+  .flow { left: 0; top: 333px; width: 375px; }
   .sec-h { display: flex; justify-content: space-between; align-items: center; height: 19px; padding: 0 20px; font-size: 16px; color: inherit; text-decoration: none; }
-  .sec-h small { margin-left: 8px; font-size: 14px; }
+  .sec-h small { margin-left: 10px; font-size: 12px; }
   .sec-h img { width: 18px; height: 18px; transform: rotate(-90deg); }
 
-  /* 배지 선반: 갈래마다 가장 먼저 받은 배지 하나가 선반 위에 서 있어요 (아래 = 갈래 이름 · 받은 수) */
-  .shelf { position: relative; height: 162px; margin-top: 10px; }
-  .sb { position: absolute; top: 0; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
-  .plank, .plank-back { position: absolute; left: 20px; width: 335px; height: 14.2px; border: 1px solid var(--ink); box-sizing: border-box; }
-  .plank-back { top: 90px; height: 16px; background: var(--lime); transform: rotate(-1deg); }
-  .plank { top: 87px; background: url('assets/onboarding/ob-paper-full.jpg') -20px -430px / 375px 812px, var(--paper); background-blend-mode: multiply; }
-  .sl { position: absolute; top: 114px; width: 90px; display: flex; flex-direction: column; align-items: center; font-size: 16px; line-height: 19px; white-space: nowrap; }
-  .sl span { font-size: 14px; }
+  /* 배지 선반: 갈래마다 가장 먼저 받은 배지 하나가 선반 위에 서 있어요 (아래 = 갈래 이름 · 받은 수) · 누르면 배지 상세 */
+  .shelf { position: relative; height: 152.14px; margin-top: 15px; }
+  .sb { position: absolute; top: 0; width: 90px; height: 90px; display: block; }
+  .sb img { width: 90px; height: 90px; display: block; }
+  .pl { position: absolute; left: 19.9px; top: 84px; width: 335.2px; height: 20.14px; }
+  .pl::before, .pl::after { content: ''; position: absolute; box-sizing: border-box; left: .1px; top: 2.97px; width: 335px; height: 14.21px; border: 1px solid var(--ink); }
+  .pl::before { background: var(--lime); transform: rotate(-1.01deg); }
+  .pl::after { background: url('assets/common/plank-paper.png') 0 0 / 100% 100% no-repeat, #f1eed6; }
+  .sl { position: absolute; top: 114.14px; display: flex; flex-direction: column; align-items: center; padding: 0 15px; font-size: 16px; line-height: 19px; white-space: nowrap; color: inherit; text-decoration: none; }
+  .sl span { font-size: 12px; }
 
-  /* 내가 저장한 곤충: 도감 곤충 카드 그대로 (Figma 3251:17848) · 옆으로 넘겨요 */
-  .ins-row { margin-top: 10px; display: flex; gap: 14.5px; padding: 3px 25px 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-  .ins-row::-webkit-scrollbar { display: none; }
-  .icard { position: relative; flex: none; width: 160.54px; height: 141.6px; display: block; scroll-snap-align: start; scroll-margin-left: 25px; --tc: var(--lime); }
-  .c-cyan { --tc: var(--rule-cyan); } .c-pink { --tc: var(--rule-pink); }
-  .icard .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; border: 1px solid var(--ink); transform: rotate(.18deg); }
-  .icard .label { position: absolute; left: -.66px; top: -.07px; width: 162.5px; height: 53.14px; transform: rotate(1.97deg); border: 1px solid var(--ink);
-    background: url('assets/onboarding/ob-paper-full.jpg') -40px -300px / 375px 812px, var(--paper); background-blend-mode: multiply;
-    clip-path: polygon(0 0, 145.33px 0, 162.5px 13.65px, 162.5px 100%, 0 100%); }
-  .icard .flag { position: absolute; left: 146.4px; top: 2.8px; width: 17.3px; height: 23.3px; overflow: visible; filter: drop-shadow(1px 2px 1.5px rgba(33,27,23,.22)); }
-  .icard .meta { position: absolute; left: 12px; top: 7px; width: 88px; display: flex; flex-direction: column; gap: 2px; }
-  .icard .meta b { display: block; font-weight: 400; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .icard .meta span { display: block; font-size: 12px; white-space: nowrap; }
-  .icard .album > * { position: absolute; display: block; border: .811px solid var(--ink); box-sizing: border-box; transform: rotate(9.94deg); }
-  .icard .album .fc { left: 95.57px; top: 14.52px; width: 45.32px; height: 50.98px; background: var(--tc); }
-  .icard .album .pic { left: 99.11px; top: 18px; width: 39.67px; height: 38.93px; background: var(--paper); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .icard .album .pic img, .icard .album .pic svg { width: 32px; height: 32px; display: block; transform: rotate(-7.97deg); }
-
-  .tipx { margin-top: 20px; height: 105px; box-sizing: border-box; padding: 15.6px 21.5px 0; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
-  .tipx .h { margin: 0 0 5px; display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 16px; }
-  .tipx .h img { width: 32px; height: 32px; } .tipx p { margin: 0; font-size: 14px; line-height: 1.3; }
-  /* 앱 설정 = 피코 노트 줄 */
-  .set { position: relative; margin: 20px 22.3px 140px; background: #fff; border: 1px solid var(--ink); }
-  .set::before { content: ''; position: absolute; top: 0; bottom: 0; left: 24.5px; border-left: 1px solid var(--rule-pink); }
-  .set h2 { margin: 0; height: 39px; box-sizing: border-box; padding: 12px 0 0 32.8px; font-size: 16px; }
+  .tipx { margin-top: 23px; height: 105px; box-sizing: border-box; padding: 15.6px 21.5px 0; border-top: 1px dashed var(--ink); border-bottom: 1px dashed var(--ink); background: url('assets/onboarding/ob-paper-bottom.jpg') 0 0 / 375px 390px, var(--paper); background-blend-mode: multiply; }
+  .tipx .h { margin: 0 0 5px; display: flex; gap: 2px; align-items: center; font-weight: 700; font-size: 16px; line-height: 1.3; }
+  .tipx .h img { width: 32px; height: 32px; } .tipx p { margin: 0; }
+  .tipx .h { margin: 0 0 5px; }
+  .tipx .t { margin: 0; font-size: 14px; line-height: 1.3; }
+  /* 앱 설정 = 피코 노트 줄 (종이 그대로 · 하늘색 줄 · 분홍 여백줄) */
+  .set { position: relative; box-sizing: border-box; width: 330.48px; margin: 23px 0 0 22.26px; border: 1px solid var(--ink); }
+  .set::before { content: ''; position: absolute; top: 0; bottom: 0; left: 23.55px; border-left: 1px solid var(--rule-pink); }
+  .set h2 { margin: 0; height: 37.4px; box-sizing: border-box; padding: 12px 0 0 31.8px; font-size: 16px; font-weight: 400; line-height: normal; }
   .set ul { list-style: none; margin: 0; padding: 0; }
-  .set li a { display: flex; align-items: center; justify-content: space-between; height: 41px; padding: 0 15px 0 32.8px; border-top: 1px solid var(--rule-cyan); font-size: 14px; color: inherit; text-decoration: none; }
+  .set li a { display: flex; align-items: center; justify-content: space-between; box-sizing: border-box; height: 41px; padding: 0 13.7px 0 31.8px; border-top: 1px solid var(--rule-cyan); font-size: 14px; color: inherit; text-decoration: none; }
   .set li img { width: 16px; height: 16px; }
 </style>
 </head><body>
-<div class="phone flat" style="--h:1100px">
+<div class="phone flat" style="--h:1201px">
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
@@ -94,32 +80,35 @@
   </div>
 
   <!-- 나: 이름 · 탐험가 단계 · 이어 온 날 + 숫자 셋 -->
-  <div class="abs st-back" aria-hidden="true"></div>
   <div class="abs st"></div>
-  <p class="abs pname"><b id="myName">선우</b><span>•</span><span>새싹 탐험가</span></p>
+  <p class="abs pname"><b id="myName">김선우</b><span>•</span><span>새싹 탐험가</span></p>
   <p class="abs streak">PICO 와 연속 54일째</p>
   <a class="abs info-btn" href="setup-name.html"><span>내 정보</span></a>
   <div class="abs rule" aria-hidden="true"></div>
   <div class="abs stats">
-    <div class="stat"><p class="n"><b>24</b><span class="u">종</span></p><p class="l">만난 곤충</p></div><i></i>
+    <div class="stat"><p class="n"><b>3</b><span class="u">종</span></p><p class="l">만난 곤충</p></div><i></i>
     <div class="stat"><p class="n"><b>12</b><span class="u">장</span></p><p class="l">그린 피코</p></div><i></i>
-    <div class="stat"><p class="n"><b>7</b><span class="u">개</span></p><p class="l">모은 배지</p></div>
+    <div class="stat"><p class="n"><b>5</b><span class="u">개</span></p><p class="l">모은 배지</p></div>
   </div>
 
   <div class="abs flow">
     <!-- 내 배지 선반 -->
-    <a class="sec-h" href="badges.html"><span>내 배지 선반<small>7 / 18</small></span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
-    <div class="shelf"><a class="sb" style="left:30px" href="badges.html" aria-label="발견 배지 3개"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="72" height="72" style="display:block;overflow:visible"><polygon points="18,54 42,54 38,58 22,58" fill="#f3eec8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><line x1="30" y1="54" x2="30" y2="38" stroke="#211b17" stroke-width="2.4" stroke-linecap="round"/><polygon points="30,46 12,34 8,20 22,24" fill="#c1f8ad" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><line x1="30" y1="46" x2="8" y2="20" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/><polygon points="30,40 46,26 54,12 38,18" fill="#9fe885" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><line x1="30" y1="40" x2="54" y2="12" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/></svg></a><a class="sb" style="left:142.6px" href="badges.html" aria-label="관찰 배지 2개"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="72" height="72" style="display:block;overflow:visible"><polygon points="4,30 30,14 56,30 30,46" fill="#f3eec8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><line x1="4" y1="30" x2="56" y2="30" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/><polygon points="30,20 38,24 40,30 38,36 30,40 22,36 20,30 22,24" fill="#add2f8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="30,25 35,30 30,35 25,30" fill="#211b17" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/></svg></a><a class="sb" style="left:255.2px" href="badges.html" aria-label="특별 배지 2개"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="72" height="72" style="display:block;overflow:visible"><polygon points="30,52 6,28 6,18 12,10 22,10 30,18" fill="#f8addb" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="30,52 54,28 54,18 48,10 38,10 30,18" fill="#ef8cc8" stroke="#211b17" stroke-width="1.6" stroke-linejoin="round"/><polygon points="6,18 12,10 14,20" fill="#f3eec8" stroke="#211b17" stroke-width="1.2" stroke-linejoin="round"/><polygon points="54,18 48,10 46,20" fill="#f3eec8" stroke="#211b17" stroke-width="1.2" stroke-linejoin="round"/><line x1="30" y1="18" x2="30" y2="52" stroke="#211b17" stroke-width="1" stroke-dasharray="2.4 2" stroke-linecap="round"/></svg></a><span class="plank-back" aria-hidden="true"></span><span class="plank" aria-hidden="true"></span><p class="sl" style="left:25.6px">발견 배지<span>3개</span></p><p class="sl" style="left:142.6px">관찰 배지<span>2개</span></p><p class="sl" style="left:259.6px">특별 배지<span>2개</span></p></div>
-
-    <!-- 내가 저장한 곤충 -->
-    <a class="sec-h" href="dogam.html" style="margin-top:20px"><span>내가 저장한 곤충</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
-    <div class="ins-row" id="saved"></div>
+    <a class="sec-h" href="badge-detail.html"><span>내 뱃지 선반<small>8 / 16</small></span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></a>
+    <div class="shelf">
+      <a class="sb" style="left:29.9px" href="badge-detail.html" aria-label="발견 배지 3개"><img src="assets/badges/first.svg" alt=""></a>
+      <a class="sb" style="left:142.5px" href="badge-detail.html" aria-label="관찰 배지 2개"><img src="assets/badges/loupe-blue.svg" alt=""></a>
+      <a class="sb" style="left:255.1px" href="badge-detail.html" aria-label="특별 배지 3개"><img src="assets/badges/heart.svg" alt=""></a>
+      <span class="pl" aria-hidden="true"></span>
+      <a class="sl" style="left:20.5px" href="badge-detail.html">발견 배지<span>3개</span></a>
+      <a class="sl" style="left:142.5px; width:90px; padding:0" href="badge-detail.html">관찰 배지<span>2개</span></a>
+      <a class="sl" style="left:260.5px" href="badge-detail.html">특별 배지<span>3개</span></a>
+    </div>
 
     <!-- PICO가 알려줘요 -->
-    <div class="tipx"><p class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO가 알려줘요 !</p><p>잎 뒷면도 살펴보세요!<br>작은 알이 숨어 있을지도 몰라요.</p></div>
+    <div class="tipx"><p class="h"><img src="assets/icons/outline/presentation.svg" alt="">PICO가 알려줘요 !</p><p class="t">잎 뒷면도 살펴보세요!<br>작은 알이 숨어 있을지도 몰라요.</p></div>
 
     <!-- 앱 설정 -->
-    <div class="set" id="settings"><h2>앱 설정</h2><ul><li><a href="#">알림 관리<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">보호자 설정<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">위치 정보 설정<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">공지사항<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">고객센터<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">서비스 이용 약관<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">개인정보 처리방침<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li></ul></div>
+    <div class="set" id="settings"><h2>앱 설정</h2><ul><li><a href="#">알림 관리<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">보호자 설정<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#">위치 정보 설정<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#" style="height:41.1px">공지사항<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#" style="height:42.8px">고객센터<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#" style="height:42.3px">서비스 이용 약관<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li><li><a href="#" style="height:45.7px">개인정보 처리방침<img src="assets/icons/outline/arrow-right.svg" alt=""></a></li></ul></div>
   </div>
 
   <nav class="tabbar" aria-label="메인 메뉴"><div class="tabbar-bg"></div>
@@ -132,32 +121,13 @@
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>
-<script src="grade.js"></script>
-<script src="field.js"></script>
 <script>
   // 이름: 개인 설정 1에서 정한 탐험가 이름의 마지막 단어 (탐험가 카드 setup-done.html과 같은 규칙).
-  // 이름을 정하지 않았으면 같은 예시 이름 '초고속 탐험가 선우' → '선우'.
+  // 이름을 정하지 않았으면 시안의 예시 이름 '김선우'.
   (function () {
-    var full = '초고속 탐험가 선우';
+    var full = '김선우';
     try { full = (localStorage.getItem('pico.name') || '').trim() || full; } catch (e) {}
     document.getElementById('myName').textContent = full.split(/\s+/).pop();
-  })();
-</script>
-<script>
-  // 내가 저장한 곤충: 도감 카드와 같은 모양 (오른쪽 위 접힌 귀퉁이 · 액자 = 단계 색, 안 = 내가 그린 PICO)
-  (function () {
-    var SAVED = [
-      { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly' },
-      { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid', c: 'pink' },
-      { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.05', img: 'card-moth', c: 'pink' }
-    ];
-    var FLAG = '<svg class="flag" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
-    document.getElementById('saved').innerHTML = SAVED.map(function (it) {
-      return '<a class="icard' + (it.c ? ' c-' + it.c : '') + '" href="dogam-detail.html" data-name="' + it.name + '">' +
-        '<img class="photo" src="assets/tabs/' + it.img + '.png" alt="">' +
-        '<span class="label"><span class="meta"><b>' + it.name + '</b><span>' + it.date + '</span></span></span>' + FLAG +
-        '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="fc"></i><span class="pic">' + (window.PicoField ? PicoField.doodle(it.doodle) : '') + '</span></span></a>';
-    }).join('');
   })();
 </script>
 </body></html>

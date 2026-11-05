@@ -134,17 +134,6 @@
   .btn-main img { width: 24px; height: 24px; }
   .btn-sub { position: absolute; left: 18.09px; top: 435.88px; width: 270px; height: 45px; background: var(--paper); border: 1px solid var(--ink); font-weight: 700; font-size: 14px; }
 
-  .qr-shadow { position: absolute; left: 69.92px; top: 78.39px; width: 170.219px; height: 170.219px; background: var(--ink); }
-  .qr-face { position: absolute; left: 59.86px; top: 68.43px; width: 170.219px; height: 170.219px; background: var(--lime); border: 1.261px dashed var(--ink); }
-  .qr-code { position: absolute; left: 78.3px; top: 89.06px; width: 133.3px; height: 124.5px; }
-  .qr-who { position: absolute; left: 57px; top: 311.7px; width: 185px; display: flex; flex-direction: column; gap: 0; align-items: center; }
-  .qr-who .p { display: flex; gap: 5px; align-items: center; font-size: 16px; white-space: nowrap; }
-  .qr-who .p img { width: 25px; height: 25px; }
-  .qr-who .code { font-weight: 700; font-size: 22px; white-space: nowrap; }
-  .qr-btn { position: absolute; top: 381.25px; width: 130px; height: 45px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 14px; white-space: nowrap; }
-  .qr-btn img { width: 18px; height: 18px; }
-  .qr-info { position: absolute; left: 18.09px; top: 440.88px; width: 270px; height: 45px; border: 1px dashed var(--ink); display: flex; align-items: center; gap: 8px; padding-left: 9.28px; font-size: 12px; line-height: 14px; white-space: pre; }
-  .qr-info img { width: 18px; height: 18px; }
 </style>
 </head><body>
 <div class="phone flat" style="--h:1749px">
@@ -255,22 +244,6 @@
       <button class="btn-sub" data-open="qr">친구에게 보여주기</button>
     </div>
   </div>
-
-  <!-- 6.2.2 친구 추가 QR (state: qr) -->
-  <div class="ov" id="ov-qr" hidden role="dialog" aria-modal="true" aria-label="친구 추가">
-    <div class="dim" data-close></div>
-    <div class="bmodal">
-      <button class="x" data-close aria-label="닫기" style="top:10.5px"><img src="assets/icons/outline/close.svg" alt=""></button>
-      <span class="qr-shadow"></span><span class="qr-face"></span>
-      <img class="qr-code" src="assets/tabs/qr-code.png" alt="내 QR 코드">
-      <p class="hand" style="left:0;right:0;top:276.7px;text-align:center">친구를 추가해 보세요!</p>
-      <div class="qr-who"><p class="p"><img src="assets/profile/grass-s.svg" alt=""><span>민지혁 <b>•</b> 새싹 탐험가</span></p><p class="code">PICO • 4 3 9 1</p></div>
-      <a class="qr-btn" href="capture-1.html" style="left:18.09px;background:var(--lime)"><img src="assets/common/tab-camera.png" alt="">QR 찍기</a>
-      <button class="qr-btn" style="left:158.09px">코드 입력하기</button>
-      <div class="qr-info"><img src="assets/icons/outline/presentation.svg" alt=""><span>QR 코드를 보여주고 탐험할 친구를 만나 보세요!
-서로의 기록을 확인하고 탐험을 할 수 있어요.</span></div>
-    </div>
-  </div>
 </div>
 <script src="shared.js"></script>
 <script>
@@ -338,13 +311,14 @@
   }, true);
 
   // overlays
-  var names = ['earned', 'locked', 'new', 'qr'];
+  var names = ['earned', 'locked', 'new'];
   function hideAll() {
     names.forEach(function (n) { document.getElementById('ov-' + n).hidden = true; });
     document.body.style.overflow = '';
   }
   function close() { window.picoSwap(hideAll); }
   function open(n) {
+    if (n === 'qr') { location.href = 'friends.html?state=qr'; return; }   // 친구 추가 QR은 친구 탭 위에 떠요
     if (names.indexOf(n) === -1) return;
     hideAll();
     document.getElementById('ov-' + n).hidden = false;
