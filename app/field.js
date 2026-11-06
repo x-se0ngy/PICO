@@ -75,11 +75,11 @@
   }
   // 예시 친구들 (그림을 아직 안 그렸을 때도 들판이 비어 보이지 않게)
   var SAMPLES = [
-    { name: '노랑 날개', svg: BF, fly: true },
-    { name: '파랑 꼬리', svg: DF, fly: true },
-    { name: '빨강 점박이', svg: LB },
-    { name: '통통 다리', svg: HOP, hop: true },
-    { name: '느릿느릿', svg: SNAIL, slow: true }
+    { name: '노랑 날개', svg: BF, fly: true, species: '노랑나비 · 나비목', info: '꽃꿀을 먹으며 낮에 팔랑팔랑 날아다녀요.' },
+    { name: '파랑 꼬리', svg: DF, fly: true, species: '잠자리 · 잠자리목', info: '연못 가까이에서 날며 작은 벌레를 잡아먹어요.' },
+    { name: '빨강 점박이', svg: LB, species: '칠성무당벌레 · 딱정벌레목', info: '진딧물을 잡아먹는 고마운 곤충이에요.' },
+    { name: '통통 다리', svg: HOP, hop: true, species: '메뚜기 · 메뚜기목', info: '긴 뒷다리로 풀밭을 폴짝폴짝 뛰어요.' },
+    { name: '느릿느릿', svg: SNAIL, slow: true, species: '달팽이 · 연체동물', info: '곤충은 아니지만 풀잎 위를 천천히 기어다녀요.' }
   ];
 
   // 들판 좌표(375x812 폰 기준): 걷는 친구는 언덕 위, 나는 친구는 하늘~언덕
@@ -104,7 +104,7 @@
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var mine = list(), newId = ls(NEW);
     var sampleCount = Math.max(0, 5 - mine.length);                // 내 PICO가 많아지면 예시는 줄어요
-    var bugs = SAMPLES.slice(0, sampleCount).map(function (s) { return { name: s.name, sample: true, html: svgSticker(s.svg), fly: s.fly, hop: s.hop, slow: s.slow }; })
+    var bugs = SAMPLES.slice(0, sampleCount).map(function (s) { return { name: s.name, sample: true, species: s.species, info: s.info, html: svgSticker(s.svg), fly: s.fly, hop: s.hop, slow: s.slow }; })
       .concat(mine.map(function (m) { return { id: m.id, name: m.name, species: m.species || '', at: m.at, mine: true, src: m.src, html: '<img src="' + m.src + '" alt="" width="64" height="64">' }; }));
 
     layer.innerHTML = '';

@@ -452,9 +452,9 @@
     curBug = b;
     $('bugTile').innerHTML = b.mine ? '<img src="' + b.src + '" alt="">' : b.html;
     $('bugName').textContent = b.name;
-    $('bugSpecies').textContent = b.mine ? (b.species || '') : '처음부터 들판에 살던 친구예요.';
+    $('bugSpecies').textContent = b.species || '';
     $('bugSpecies').hidden = !$('bugSpecies').textContent;
-    $('bugDate').textContent = b.mine ? whenText(b.at) : '';
+    $('bugDate').textContent = b.mine ? whenText(b.at) : (b.info || '');   // 내 친구는 놓아준 날, 예시 친구는 한 줄 정보
     $('bugDate').hidden = !$('bugDate').textContent;
     $('bugAskSub').textContent = '삭제하면 되돌릴 수 없어요.';
     bugSheet.classList.toggle('is-sample', !b.mine);
