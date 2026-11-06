@@ -86,6 +86,8 @@ img { display: block; }
 .phone.flat { background: var(--paper); }
 /* 개인 설정 화면(Figma 3245:…)의 종이: 종이색 위에 아주 고운 알갱이만 살짝 (바탕 평균 ≈ #fbf8e1, 주름 질감은 없어요) */
 .phone.soft { background: url('assets/onboarding/paper-grain.png') 0 0 / 192px 192px, var(--paper); background-blend-mode: multiply; }
+/* 촬영 3 · 4 · 5 (고르기 · 쓰기 · 그리기): Warm-Up 색 — 바탕은 종이 질감 없이 #FFFCE4 한 가지, 칸 안도 같은 종이색, 고른 것 · 칩은 연두 #C1F8AD (예전 올리브 · 노란 바탕 대신) */
+.phone.cap { background: var(--paper); --bg: var(--paper); --surface: var(--paper); --brand: var(--lime); --brand-soft: var(--lime); }
 /* 개인 설정 상태바: 글자·아이콘이 회색(#8e8e8e) */
 .dim-status .status-time { color: #8e8e8e; left: 30px; top: 22px; }
 .dim-status .status-icons { left: auto; right: 30px; }

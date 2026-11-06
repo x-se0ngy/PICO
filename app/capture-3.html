@@ -2,7 +2,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="/app/manifest.json">
-<meta name="theme-color" content="#fffad3">
+<meta name="theme-color" content="#fffce4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -56,11 +56,11 @@
   .other { grid-column: 1 / -1; display: flex; gap: 5px; }
   .other input { flex: 1; min-width: 0; height: 46px; padding: 0 12px; background: var(--surface); border: 1px solid var(--ink); border-radius: 0; font: 16px var(--font); color: var(--ink); outline: none; }
   .other input:focus { box-shadow: inset 0 0 0 1px var(--ink); }
-  .other button { flex: none; width: 56px; height: 46px; background: #fffad7; border: 1px solid var(--ink); font-size: 14px; }
+  .other button { flex: none; width: 56px; height: 46px; background: var(--surface); border: 1px solid var(--ink); font-size: 14px; }
   .other button.ok { background: var(--brand); font-weight: 700; }
   /* 보기 = 버튼 3 (2836:711) 162×46 두 줄 */
   .options { position: absolute; left: 22.89px; top: 548px; width: 329.22px; display: grid; grid-template-columns: 162px 162px; column-gap: 5.22px; row-gap: 4.5px; }
-  .opt { height: 46px; display: flex; align-items: center; justify-content: center; background: #fffad7; border: 1px solid var(--ink); font-size: 16px; white-space: nowrap;
+  .opt { height: 46px; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--ink); font-size: 16px; white-space: nowrap;
     transition: background-color var(--dur) var(--ease); }
   .opt[aria-pressed="true"] { background: var(--brand); }
   .options.ready .opt { animation: opt-in var(--dur) var(--ease) both; }
@@ -71,7 +71,7 @@
   .skip.show { display: flex; }
 </style>
 </head><body>
-<div class="phone" style="--h:812px">
+<div class="phone cap" style="--h:812px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>
