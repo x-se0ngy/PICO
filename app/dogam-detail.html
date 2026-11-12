@@ -23,8 +23,8 @@
 
   /* 도감 카드: 연두 종이 두 장 · 검정 선과 글씨 (Figma 3683:15281) */
   .sheet-b { left: 18.2px; top: 139.77px; width: 338.57px; height: 393.47px; display: flex; align-items: center; justify-content: center; }
-  .sheet-b::before { content: ''; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid #000; transform: rotate(2.46deg); }
-  .sheet-f { left: 26.19px; top: 146.5px; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid #000; }
+  .sheet-b::before { content: ''; width: 322.59px; height: 380px; background: var(--tc, var(--lime)); border: 1px solid #000; transform: rotate(2.46deg); }
+  .sheet-f { left: 26.19px; top: 146.5px; width: 322.59px; height: 380px; background: var(--tc, var(--lime)); border: 1px solid #000; }
   .dcard { left: 32.5px; top: 166.5px; width: 310px; display: flex; flex-direction: column; gap: 8px; color: #000; }
   .dhead { display: flex; justify-content: space-between; align-items: flex-end; }
   .dhead .nm { display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
@@ -105,13 +105,13 @@
   <div class="abs sheet-f"></div>
   <article class="abs dcard">
     <div class="dhead">
-      <div class="nm"><p class="no"><span>NO.023</span><span>딱정벌레류</span></p><p class="name">칠성무당벌레</p></div>
-      <button class="date-pick" type="button" aria-label="발견한 날 고르기"><span>2027.11.01</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button>
+      <div class="nm"><p class="no"><span id="dNo">NO.023</span><span id="dOrder">딱정벌레류</span></p><p class="name" id="dName">칠성무당벌레</p></div>
+      <button class="date-pick" type="button" aria-label="발견한 날 고르기"><span id="dDate">2027.11.01</span><img src="assets/icons/outline/arrow-alternate.svg" alt=""></button>
     </div>
-    <img class="photo" src="assets/tabs/detail-ladybug.png" alt="칠성무당벌레 사진">
+    <img class="photo" id="dPhoto" src="assets/tabs/detail-ladybug.png" alt="칠성무당벌레 사진">
     <div class="rec">
       <h3>발견 기록</h3>
-      <div class="rows">
+      <div class="rows" id="dRows">
         <div class="row"><div><span class="l"><span class="d">27.09.28</span><span class="pl">동네 공원 화단</span></span><span class="w">맑음 21º</span></div><hr></div>
         <div class="row"><div><span class="l"><span class="d">27.08.06</span><span class="pl">학교 텃밭</span></span><span class="w">흐림 19º</span></div><hr></div>
         <div class="row"><div><span class="l"><span class="d">27.08.03</span><span class="pl">동네 공원 화단</span></span><span class="w">흐림 16º</span></div><hr></div>
@@ -121,9 +121,9 @@
 
   <div class="abs col">
     <div class="sec">
-      <div class="blk"><h3>내 관찰 기록</h3><div class="nb"><div class="in"><div class="ls"><p>나뭇잎 위를 천천히 기어가던 칠성무당벌레의</p><i></i><p>빨간 등에 검은 점이 또렷하게 보였어요.</p><i></i><p>가까이 다가가자 날개를 펴고 날아갔어요.</p><i></i></div></div></div></div>
+      <div class="blk"><h3>내 관찰 기록</h3><div class="nb"><div class="in"><div class="ls" id="dNote"><p>나뭇잎 위를 천천히 기어가던 칠성무당벌레의</p><i></i><p>빨간 등에 검은 점이 또렷하게 보였어요.</p><i></i><p>가까이 다가가자 날개를 펴고 날아갔어요.</p><i></i></div></div></div></div>
       <div class="blk"><h3>관찰 정보</h3>
-        <div class="info"><div class="g">
+        <div class="info"><div class="g" id="dInfo">
           <div class="c"><div class="r"><b>먹이</b><span>꽃꿀 · 꽃가루</span></div><i></i></div>
           <div class="c"><div class="r"><b>활동시기</b><span>봄–가을</span></div><i></i></div>
           <div class="c"><div class="r"><b>서식지</b><span>꽃밭 · 풀숲</span></div><i></i></div>
@@ -133,13 +133,13 @@
     </div>
     <section class="tip" aria-label="PICO가 알려줘요">
       <p class="h"><img src="assets/icons/outline/presentation.svg" alt=""><b>PICO가 알려줘요 !</b></p>
-      <ol>
+      <ol id="dTips">
         <li>몸길이 5~8mm 정도의 작은 딱정벌레예요.</li>
         <li>진딧물을 잡아먹어서 식물을 지켜 주는 곤충이에요.</li>
         <li>위험을 느끼면 다리 마디에서 노란 즙을 내요.</li>
       </ol>
     </section>
-    <div class="sec"><div class="blk"><h3>더 알아보기</h3><div class="nb"><div class="in"><div class="ls"><p>칠성무당벌레는 빨간 날개에 일곱 개의 검은 점이 있는</p><i></i><p>곤충이에요. 주로 식물 주변에서 볼 수 있고,</p><i></i><p>위험을 느끼면 다리에서 노란색 액체를 내기도 해요.</p><i></i></div></div></div></div></div>
+    <div class="sec"><div class="blk"><h3>더 알아보기</h3><div class="nb"><div class="in"><div class="ls" id="dMore"><p>칠성무당벌레는 빨간 날개에 일곱 개의 검은 점이 있는</p><i></i><p>곤충이에요. 주로 식물 주변에서 볼 수 있고,</p><i></i><p>위험을 느끼면 다리에서 노란색 액체를 내기도 해요.</p><i></i></div></div></div></div></div>
   </div>
 
   <div class="roam" id="roam" data-fixed></div>
@@ -148,8 +148,23 @@
 </div>
 <script src="shared.js"></script>
 <script src="field.js"></script>
+<script src="dex.js"></script>
 <script>
 (function () {
+  // ---------- 곤충마다 다른 내용: 도감 목록에서 누른 곤충(?name=)의 정보로 채워요 (dex.js) ----------
+  (function () {
+    var P = new URLSearchParams(location.search), D = PicoDex.get(P.get('name') || '칠성무당벌레') || PicoDex.get('칠성무당벌레');
+    function $(id) { return document.getElementById(id); }
+    function lines(a) { return a.map(function (t) { return '<p>' + t + '</p><i></i>'; }).join(''); }
+    document.title = 'PICO · ' + D.name;
+    if (D.c) document.querySelector('.phone').style.setProperty('--tc', D.c === 'cyan' ? 'var(--rule-cyan)' : 'var(--rule-pink)');   // 카드 색 = 목록 카드의 깃발·액자 색
+    $('dNo').textContent = 'NO.' + D.no; $('dOrder').textContent = D.order; $('dName').textContent = D.name; $('dDate').textContent = D.date;
+    var ph = $('dPhoto'); ph.src = 'assets/tabs/' + D.photo; ph.alt = D.name + ' 사진';
+    $('dRows').innerHTML = D.rec.map(function (r) { return '<div class="row"><div><span class="l"><span class="d">' + r[0] + '</span><span class="pl">' + r[1] + '</span></span><span class="w">' + r[2] + '</span></div><hr></div>'; }).join('');
+    $('dNote').innerHTML = lines(D.note); $('dMore').innerHTML = lines(D.more);
+    $('dInfo').innerHTML = D.info.map(function (r) { return '<div class="c"><div class="r"><b>' + r[0] + '</b><span>' + r[1] + '</span></div><i></i></div>'; }).join('');
+    $('dTips').innerHTML = D.tips.map(function (t) { return '<li>' + t + '</li>'; }).join('');
+  })();
   var bm = document.getElementById('bm');
   bm.addEventListener('click', function () {
     var on = bm.getAttribute('aria-pressed') !== 'true';
@@ -161,7 +176,7 @@
   (function () {
     var layer = document.getElementById('roam'); if (!layer || !window.PicoField) return;
     // 도감 목록에서 카드를 누르고 왔으면: 그 카드 그림이, 목록에서 내려앉은 자리(x, y)에서 그대로 이어서 돌아다녀요
-    var P = new URLSearchParams(location.search), SHOW = P.get('name') || '칠성무당벌레', NAME = SHOW.replace(/\s+/g, ''), KEY = P.get('bug') || 'ladybug';
+    var P = new URLSearchParams(location.search), SHOW = P.get('name') || '칠성무당벌레', NAME = SHOW.replace(/\s+/g, ''), KEY = P.get('bug') || (PicoDex.get(SHOW) || {}).bug || 'ladybug';
     var FROM = P.get('x') != null ? { x: +P.get('x'), y: +P.get('y') } : null;
     var mine = (PicoField.list() || []).filter(function (m) { return m.species && m.species.replace(/\s+/g, '') === NAME; }).pop();
     var el = document.createElement('button');
