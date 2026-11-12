@@ -77,7 +77,7 @@
   .bug .body { display: block; width: 64px; height: 64px; animation: bug-bob 1.6s ease-in-out infinite; }
   .bug .flip { display: block; width: 64px; height: 64px; transition: transform .18s ease; }
   .bug svg, .bug img { display: block; width: 64px; height: 64px; filter: drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
-  .bug.is-mine img { object-fit: contain;
+  .bug.is-mine img, .bug.is-paper img { object-fit: contain;
     filter: drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff) drop-shadow(1.5px 2.5px 0 rgba(0,0,0,.22)); }
   .bug.is-moving .body { animation-duration: .5s; }
   .bug.is-flee .body { animation: bug-scurry .16s linear infinite; }
@@ -181,9 +181,10 @@
     var FROM = P.get('x') != null ? { x: +P.get('x'), y: +P.get('y') } : null;
     var mine = (PicoField.list() || []).filter(function (m) { return m.species && m.species.replace(/\s+/g, '') === NAME; }).pop();
     var el = document.createElement('button');
-    el.type = 'button'; el.className = 'bug' + (mine ? ' is-mine' : '');
-    el.setAttribute('aria-label', '내가 그린 ' + SHOW + ' 그림. 눌러 보세요');
-    el.innerHTML = '<span class="body"><span class="flip">' + (mine ? '<img src="' + mine.src + '" alt="">' : PicoField.sticker(KEY)) + '</span></span>';
+    var paper = (PicoDex.get(SHOW) || {}).paper;   // 내 그림이 없으면 미리 접어 둔 종이 곤충
+    el.type = 'button'; el.className = 'bug' + (mine ? ' is-mine' : paper ? ' is-paper' : '');
+    el.setAttribute('aria-label', (mine ? '내가 그린 ' + SHOW + ' 그림' : SHOW + ' 종이 곤충') + '. 눌러 보세요');
+    el.innerHTML = '<span class="body"><span class="flip">' + (mine ? '<img src="' + mine.src + '" alt="">' : paper ? '<img src="' + paper + '" alt="">' : PicoField.sticker(KEY)) + '</span></span>';
     if (FROM) el.style.viewTransitionName = 'pico-bug';   // 목록의 튀어나온 그림과 같은 이름 → 화면이 바뀌어도 그 자리에 그대로
     layer.appendChild(el);
     var flip = el.querySelector('.flip');

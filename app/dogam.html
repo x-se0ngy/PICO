@@ -197,39 +197,66 @@
 <script>
 (function () {
   // 단계별 진행: PICO 마크 색 + 한 줄 설명 + 만난 수 + 막대 (막대 = 그 단계 곤충 중 만난 비율)
-  var G = PicoGrade, gotAll = 0, TC = { common: 'var(--lime)', normal: 'var(--rule-cyan)', rare: 'var(--rule-pink)' };
+  var G = PicoGrade, TC = { common: 'var(--lime)', normal: 'var(--rule-cyan)', rare: 'var(--rule-pink)' };
   var MARK = '<svg class="mk" viewBox="0 0 18.23 19.62" aria-hidden="true"><polygon points="3.79,0.5 16.59,5.53 17.73,16.48 5.74,19.12 0.5,8.89" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
-  document.getElementById('tiers').innerHTML = G.ORDER.map(function (k) {
-    var t = G.TIERS[k]; gotAll += t.got;
-    return '<div class="tier" style="--tc:' + TC[k] + '"><p class="th">' + MARK + '<span class="tn">' + t.label + '</span><span class="tc">' + t.got + '</span></p>' +
-      '<span class="bar" role="img" aria-label="' + t.label + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
-  }).join('');
-  document.getElementById('allGot').textContent = gotAll;
+  // 만난 수 = 아래 목록(insects)에 있는 곤충을 단계별로 센 값
+  function drawTiers(list) {
+    var gotAll = 0;
+    G.ORDER.forEach(function (k) { G.TIERS[k].got = 0; });
+    list.forEach(function (it) { G.TIERS[G.of(it.name)].got++; });
+    document.getElementById('tiers').innerHTML = G.ORDER.map(function (k) {
+      var t = G.TIERS[k]; gotAll += t.got;
+      return '<div class="tier" style="--tc:' + TC[k] + '"><p class="th">' + MARK + '<span class="tn">' + t.label + '</span><span class="tc">' + t.got + '</span></p>' +
+        '<span class="bar" role="img" aria-label="' + t.label + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
+    }).join('');
+    document.getElementById('allGot').textContent = gotAll;
+  }
 
   // 시안(Figma 3279:24356) 순서 그대로. 처음 8장은 TIP 위, 나머지는 TIP 아래. 카드 색 = 시안의 깃발·액자 색
   //  (label = 카드에 쓰는 이름: 시안은 '무당벌레'. 이름(name)은 상세·내 그림과 이어지는 '칠성무당벌레' 그대로)
   var insects = [
-    { name: '방아깨비', doodle: 'hop', date: '2027.11.22', img: 'card-grasshopper' },
-    { name: '칠성무당벌레', label: '무당벌레', doodle: 'ladybug', date: '2027.11.22', img: 'card-ladybug' },
-    { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly' },
-    { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly', c: 'cyan' },
-    { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito', c: 'cyan' },
-    { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid', c: 'pink' },
-    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.29', img: 'card-moth', c: 'pink' },
-    { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect', c: 'cyan' },
-    { name: '소금쟁이', doodle: 'strider', date: '2027.09.23', img: 'card-waterstrider' },
-    { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo', c: 'pink' },
-    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.12', img: 'card-blackveined', c: 'cyan' },
-    { name: '물방개', doodle: 'beetle', date: '2027.09.05', img: 'card-divingbeetle' }
+    { name: '방아깨비', doodle: 'hop', date: '2027.11.22', img: 'card-grasshopper', paper: 'assets/dogam/paper-grasshopper.png' },
+    { name: '칠성무당벌레', label: '무당벌레', doodle: 'ladybug', date: '2027.11.22', img: 'card-ladybug', paper: 'assets/capture/card-pico-sample.png' },
+    { name: '배추흰나비', doodle: 'butterfly', date: '2027.11.17', img: 'card-butterfly', paper: 'assets/dogam/paper-butterfly.png' },
+    { name: '고추 잠자리', doodle: 'dragonfly', date: '2027.10.29', img: 'card-dragonfly', c: 'cyan', paper: 'assets/dogam/paper-dragonfly.png' },
+    { name: '흰줄숲모기', doodle: 'mosquito', date: '2027.10.12', img: 'card-mosquito', c: 'cyan', paper: 'assets/dogam/paper-mosquito.png' },
+    { name: '갈색 여치', doodle: 'hop', date: '2027.10.08', img: 'card-katydid', c: 'pink', paper: 'assets/dogam/paper-katydid.png' },
+    { name: '큰자루긴수염나방', doodle: 'moth', date: '2027.10.29', img: 'card-moth', c: 'pink', paper: 'assets/dogam/paper-moth.png' },
+    { name: '긴수염대벌레', doodle: 'stick', date: '2027.10.08', img: 'card-stickinsect', c: 'cyan', paper: 'assets/dogam/paper-stickinsect.png' },
+    { name: '소금쟁이', doodle: 'strider', date: '2027.09.23', img: 'card-waterstrider', paper: 'assets/dogam/paper-waterstrider.png' },
+    { name: '붉은점모시나비', doodle: 'butterfly2', date: '2027.09.23', img: 'card-apollo', c: 'pink', paper: 'assets/dogam/paper-apollo.png' },
+    { name: '상제나비', doodle: 'butterfly3', date: '2027.09.12', img: 'card-blackveined', c: 'cyan', paper: 'assets/dogam/paper-blackveined.png' },
+    { name: '물방개', doodle: 'beetle', date: '2027.09.05', img: 'card-divingbeetle', paper: 'assets/dogam/paper-divingbeetle.png' },
+    { name: '호랑나비', doodle: 'butterfly2', date: '2027.09.01', img: 'card-swallowtail', paper: 'assets/dogam/paper-swallowtail.png' },
+    { name: '작은멋쟁이나비', doodle: 'butterfly3', date: '2027.08.27', img: 'card-paintedlady', paper: 'assets/dogam/paper-paintedlady.png' },
+    { name: '공작나비', doodle: 'butterfly', date: '2027.08.23', img: 'card-peacock', c: 'pink', paper: 'assets/dogam/paper-peacock.png' },
+    { name: '푸른부전나비', doodle: 'butterfly', date: '2027.08.19', img: 'card-bluebutterfly', c: 'cyan', paper: 'assets/dogam/paper-bluebutterfly.png' },
+    { name: '흰불나방', doodle: 'moth', date: '2027.08.14', img: 'card-whitemoth', c: 'cyan', paper: 'assets/dogam/paper-whitemoth.png' },
+    { name: '검은 나방', doodle: 'moth', date: '2027.08.10', img: 'card-blackmoth', c: 'cyan', paper: 'assets/dogam/paper-blackmoth.png' },
+    { name: '잠자리', doodle: 'dragonfly', date: '2027.08.06', img: 'card-dragonfly2', c: 'cyan', paper: 'assets/dogam/paper-dragonfly2.png' },
+    { name: '실잠자리', doodle: 'dragonfly', date: '2027.08.02', img: 'card-damselfly', c: 'cyan', paper: 'assets/dogam/paper-damselfly.png' },
+    { name: '메뚜기', doodle: 'hop', date: '2027.07.29', img: 'card-greengrasshopper', paper: 'assets/dogam/paper-greengrasshopper.png' },
+    { name: '스물두점박이무당벌레', doodle: 'ladybug', date: '2027.07.25', img: 'card-ladybird22', c: 'cyan', paper: 'assets/dogam/paper-ladybird22.png' },
+    { name: '병대벌레', doodle: 'beetle', date: '2027.07.21', img: 'card-soldierbeetle', c: 'cyan', paper: 'assets/dogam/paper-soldierbeetle.png' },
+    { name: '사슴벌레', doodle: 'beetle', date: '2027.07.17', img: 'card-stagbeetle', c: 'pink', paper: 'assets/dogam/paper-stagbeetle.png' },
+    { name: '꽃등에', doodle: 'mosquito', date: '2027.07.13', img: 'card-hoverfly', paper: 'assets/dogam/paper-hoverfly.png' },
+    { name: '쌍살벌', doodle: 'mosquito', date: '2027.07.09', img: 'card-paperwasp', c: 'cyan', paper: 'assets/dogam/paper-paperwasp.png' },
+    { name: '왕개미', doodle: 'strider', date: '2027.07.05', img: 'card-blackant', paper: 'assets/dogam/paper-blackant.png' },
+    { name: '노랑 개미', doodle: 'strider', date: '2027.07.01', img: 'card-yellowant', c: 'cyan', paper: 'assets/dogam/paper-yellowant.png' },
+    { name: '자벌레', doodle: 'stick', date: '2027.06.27', img: 'card-inchworm', c: 'cyan', paper: 'assets/dogam/paper-inchworm.png' },
+    { name: '왕거미', doodle: 'strider', date: '2027.06.23', img: 'card-spider', c: 'cyan', paper: 'assets/dogam/paper-spider.png' },
+    { name: '지렁이', doodle: 'stick', date: '2027.06.19', img: 'card-earthworm', paper: 'assets/dogam/paper-earthworm.png' },
+    { name: '청개구리', doodle: 'hop', date: '2027.06.15', img: 'card-treefrog', paper: 'assets/dogam/paper-treefrog.png' }
   ];
-  // 사진첩 안 그림 (Figma 3683:16567): 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있을 때만 그림이 들어가요.
-  //  아직 안 그린 곤충은 빈 액자로 두고, 예시로는 칠성무당벌레 한 장만 그려 둬요.
+  drawTiers(insects);
+  // 사진첩 안 그림 (Figma 3683:16567): 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있으면 그 그림,
+  //  없으면 곤충마다 미리 접어 둔 종이 곤충(paper)이 들어가요.
   var mine = {};
   ((window.PicoField && PicoField.list()) || []).forEach(function (m) { if (m.species) mine[m.species.replace(/\s+/g, '')] = m.src; });
   function drawing(it) {
     var src = mine[it.name.replace(/\s+/g, '')];
     if (src) return '<img src="' + src + '" alt="내가 그린 ' + it.name + '">';
-    return it.doodle === 'ladybug' ? '<img src="assets/capture/card-pico-sample.png" alt="">' : '';
+    return it.paper ? '<img src="' + it.paper + '" alt="">' : '';
   }
   // 오른쪽 위 접힌 귀퉁이 (Figma Rectangle 556): 뒷면 = 단계 색
   var FLAG = '<svg class="flag" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
@@ -240,11 +267,11 @@
       '<span class="album" role="img" aria-label="내가 그린 ' + it.name + ' 그림"><i class="sh"></i><i class="fc"></i><span class="pic">' + drawing(it) + '</span></span></a>';
   }
   // 아직 못 만난 곤충도 어떤 단계인지 보여 줘서, 다음에 찾을 목표가 돼요
-  //  번호는 No. 025부터 빠지는 번호 없이 이어서 도감 끝(567종, 시안 위쪽 '/ 567종')까지.
+  //  번호는 만난 곤충 번호 다음부터 빠지는 번호 없이 이어서 도감 끝(567종, 시안 위쪽 '/ 567종')까지.
   //  색은 시안 순서(하늘 · 분홍 · 분홍 · 하늘 · 연두 · 연두 · 연두 · 하늘, Figma 3279:24356)를 되풀이해요
   var UNMET_COLORS = ['normal', 'rare', 'rare', 'normal', 'common', 'common', 'common', 'normal'];
-  var DEX_TOTAL = 567, UNMET = [];
-  for (var no = 25; no <= DEX_TOTAL; no++) UNMET.push([('00' + no).slice(-3), UNMET_COLORS[(no - 25) % UNMET_COLORS.length]]);
+  var DEX_TOTAL = 567, UNMET = [], FIRST_UNMET = insects.length + 1;
+  for (var no = FIRST_UNMET; no <= DEX_TOTAL; no++) UNMET.push([('00' + no).slice(-3), UNMET_COLORS[(no - FIRST_UNMET) % UNMET_COLORS.length]]);
   document.getElementById('allTotal').textContent = '/ ' + DEX_TOTAL + '종';
   // 543칸을 한꺼번에 그리면 무거워서, 처음엔 24칸만 그리고 아래로 내려가는 만큼 30칸씩 이어서 붙여요
   var unmetShown = 24, UNMET_STEP = 30;
@@ -334,7 +361,7 @@
     var sx = (r.left + r.width / 2 - R.left) / k - 32, sy = (r.top + r.height / 2 - R.top) / k - 32;
     // 폴라로이드에서 위로 톡 튀어 올랐다가 카드 앞쪽에 착 내려앉아요
     var lx = clamp(sx - 56, 12, 300), ly = clamp(sy + 46, 130, 640);
-    var src = mine[name.replace(/\s+/g, '')];
+    var src = mine[name.replace(/\s+/g, '')] || it.paper;
     var fly = document.createElement('div'); fly.className = 'hop-out'; fly.setAttribute('aria-hidden', 'true');
     fly.innerHTML = src ? '<img src="' + src + '" alt="">' : PicoField.sticker(it.doodle);
     phone.appendChild(fly); a.classList.add('hopping');

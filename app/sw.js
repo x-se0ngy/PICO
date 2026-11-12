@@ -1,6 +1,6 @@
 // PICO 앱 서비스워커 — 홈 화면에 설치하고, 한 번 연 화면은 인터넷이 없어도 열려요 (전시장 와이파이 대비).
 // 화면(html·js·css)은 인터넷이 되면 새로 받아 오고(느리거나 끊기면 저장본), 그림·폰트는 저장해 둔 것을 먼저 써요. 처음 설치할 때 모든 화면을 미리 받아 둬요.
-var CACHE = 'pico-app-v79';
+var CACHE = 'pico-app-v80';
 var CORE = ["badge.html", "capture-1.html", "capture-2.html", "capture-3.html", "capture-4.html", "capture-5.html", "capture-card.html", "dogam-detail.html", "dogam.html", "friend.html", "friends.html", "friend-field.html", "badges.html", "badge-detail.html", "home.html", "index.html", "my.html", "onboard-1.html", "onboard-2.html", "onboard-3.html", "setup-done.html", "setup-explore.html", "setup-grade.html", "setup-name.html", "splash.html", "ai.js", "dex.js", "field.js", "grade.js", "onboard.js", "origami.js", "photo.js", "shared.js", "stickers.js", "base.css", "onboard.css", "fonts/HakgyoansimAllimjangTTF-R.woff2", "fonts/HakgyoansimAllimjangTTF-B.woff2", "fonts/SejongGeulggot.woff", "/favicon.svg", "/icons/icon-192.png"];
 
 self.addEventListener('install', function (e) {
