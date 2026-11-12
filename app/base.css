@@ -228,6 +228,7 @@ img { display: block; }
 }
 /* 문서 간 화면 전환(View Transition)을 못 쓰는 브라우저: shared.js가 .no-vt를 붙이고, 같은 --dur로 나타나고(in) 사라져요(out) */
 .no-vt .phone, .pico-enter .phone { animation: pico-dissolve var(--dur) var(--ease) both; }   /* .pico-enter: 전환이 건너뛰어졌을 때 shared.js가 붙여요 */
+.no-vt::view-transition-new(root) { animation: none; }   /* .no-vt 에서는 .phone 이 직접 디졸브해요 (브라우저 전환이 같이 돌아도 두 번 겹치지 않게) */
 .no-vt.is-leaving .phone { animation: pico-leave calc(var(--dur) * .6) var(--ease) both; }   /* 떠날 때: 먼저 디졸브로 흐려져요 */
 @keyframes pico-dissolve { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pico-leave { from { opacity: 1; } to { opacity: 0; } }

@@ -23,7 +23,9 @@
   window.picoDur = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur')) || 300; };
   // 문서 간 View Transition이 없는 브라우저(Safari·Firefox 등 Chrome 계열이 아닌 곳 포함): 나타날 때 디졸브(CSS .no-vt), 떠날 때 먼저 흐려진 뒤 이동해요
   var chromium = !!(navigator.userAgentData && navigator.userAgentData.brands && navigator.userAgentData.brands.some(function (b) { return /Chromium/.test(b.brand); }));
-  if (!('CSSViewTransitionRule' in window) || !chromium) {
+  // 브라우저가 전환을 스스로 취소한 적이 있는 탭(예: 화면 크기가 바뀌었다며 건너뜀)은 처음부터 이 방식으로 가요 — 아래 pagereveal 참고
+  var vtBroken = false; try { vtBroken = sessionStorage.getItem('pico.novt') === '1'; } catch (x) {}
+  if (!('CSSViewTransitionRule' in window) || !chromium || vtBroken) {
     document.documentElement.classList.add('no-vt');
     document.addEventListener('click', function (e) {
       var a = e.target.closest('a[href]');
@@ -57,7 +59,11 @@
     var nav = performance.getEntriesByType('navigation')[0];
     var fromLink = nav && nav.type === 'navigate' && document.referrer && new URL(document.referrer).origin === location.origin;
     if (!vt) { rec.fallback = fromLink; if (fromLink) enter(); keep(); return; }
-    vt.ready.then(function () { rec.ready = Math.round(performance.now()); keep(); }, function (err) { rec.skip = String(err && err.message || err).slice(0, 80); enter(); keep(); });
+    vt.ready.then(function () { rec.ready = Math.round(performance.now()); keep(); }, function (err) {
+      rec.skip = String(err && err.message || err).slice(0, 80); enter(); keep();
+      // 화면 크기가 바뀌었다는 이유로 브라우저가 전환을 취소했다면, 이 탭에서는 앞으로 우리가 직접 디졸브(나가고 들어오기)를 돌려요
+      if (/viewport|size/i.test(rec.skip)) { try { sessionStorage.setItem('pico.novt', '1'); } catch (x) {} }
+    });
   });
   window.addEventListener('resize', fit);
   document.addEventListener('DOMContentLoaded', function () { wrap(); fit(); });
