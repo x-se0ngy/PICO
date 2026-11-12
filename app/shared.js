@@ -21,8 +21,9 @@
   }
   // 앱 전체 움직임 길이(base.css의 --dur) — 애니메이션이 끝난 뒤 정리하는 타이머가 같은 값을 써요
   window.picoDur = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur')) || 300; };
-  // 문서 간 View Transition이 없는 브라우저: 나타날 때 디졸브(CSS .no-vt), 떠날 때 먼저 흐려진 뒤 이동해요
-  if (!('CSSViewTransitionRule' in window)) {
+  // 문서 간 View Transition이 없는 브라우저(Safari·Firefox 등 Chrome 계열이 아닌 곳 포함): 나타날 때 디졸브(CSS .no-vt), 떠날 때 먼저 흐려진 뒤 이동해요
+  var chromium = !!(navigator.userAgentData && navigator.userAgentData.brands && navigator.userAgentData.brands.some(function (b) { return /Chromium/.test(b.brand); }));
+  if (!('CSSViewTransitionRule' in window) || !chromium) {
     document.documentElement.classList.add('no-vt');
     document.addEventListener('click', function (e) {
       var a = e.target.closest('a[href]');

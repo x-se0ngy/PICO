@@ -278,7 +278,14 @@
   // 돋보기 → 찾기 화면 (로고 자리에 종이 칸, 도감 위·하단바는 숨김).
   // 찾기 화면: 왼쪽 ← 를 누르면 도감으로 돌아가요 (쓴 글은 지워져요). 뒤로 가기·Esc로도 닫혀요. 칸 안 돋보기는 키보드 내리기.
   var searchBtn = document.getElementById('searchBtn'), navQ = document.getElementById('navQ'), logo = document.getElementById('logo'), searchBack = document.getElementById('searchBack');
+  // 찾기 화면으로 바뀔 때(열기·닫기)도 다른 화면으로 넘어갈 때처럼 디졸브해요
+  var searchWant = false;
   function setSearch(open) {
+    if (searchWant === open) return;
+    searchWant = open;
+    window.picoSwap(function () { applySearch(open); });
+  }
+  function applySearch(open) {
     phone.classList.toggle('searching', open);
     navQ.hidden = !open; logo.hidden = open;
     searchBtn.setAttribute('aria-expanded', open);
@@ -346,7 +353,7 @@
     oldest = !oldest;
     sort.setAttribute('aria-pressed', oldest);
     sort.querySelector('span').textContent = oldest ? '오래된순' : '최근순';
-    render();
+    window.picoSwap(render);   // 순서가 바뀔 때도 디졸브
   });
 })();
 </script>

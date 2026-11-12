@@ -228,8 +228,9 @@ img { display: block; }
 }
 /* 문서 간 화면 전환(View Transition)을 못 쓰는 브라우저: shared.js가 .no-vt를 붙이고, 같은 --dur로 나타나고(in) 사라져요(out) */
 .no-vt .phone { animation: pico-dissolve var(--dur) var(--ease) both; }
-.no-vt.is-leaving .phone { opacity: 0; transition: opacity calc(var(--dur) * .6) var(--ease); }
+.no-vt.is-leaving .phone { animation: pico-leave calc(var(--dur) * .6) var(--ease) both; }   /* 떠날 때: 먼저 디졸브로 흐려져요 */
 @keyframes pico-dissolve { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pico-leave { from { opacity: 1; } to { opacity: 0; } }
 .phone > .dim, .phone > .sheet, .phone > .modal, .phone > .toast, .phone > .ov, [data-dissolve] {
   animation: pico-dissolve var(--dur) var(--ease);
 }
