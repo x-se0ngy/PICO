@@ -118,7 +118,7 @@
       '<span class="half bottom">' + q(0, 25, 'left') + q(25, 25, 'right') + '</span></span></span>';
   }
   function setupOrigami() {
-    document.querySelectorAll('a.tab-cam').forEach(function (a) {
+    document.querySelectorAll('.tab-cam').forEach(function (a) {   // 하단바(a)와 촬영 화면 셔터(button) 모두
       if (a.classList.contains('is-origami')) return;
       a.insertAdjacentHTML('beforeend', paperHTML());
       a.classList.add('is-origami');

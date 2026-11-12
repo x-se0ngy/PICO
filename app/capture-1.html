@@ -26,12 +26,13 @@
   .finder video.live { opacity: 1; }
 
   /* 배율 칩 40px: 고른 칩 = 라임 + 실선, 나머지 = 종이색 + 점선 */
-  .zoom { position: absolute; left: 50%; top: 622.5px; transform: translateX(-50%); display: flex; gap: 15px; z-index: 1; }
-  .chip { width: 40px; height: 40px; border-radius: 50%; border: 1px dashed var(--ink); background: var(--surface); font-size: 12px; line-height: 1; text-align: center; }
+  .zoom { position: absolute; left: calc(50% + .5px); top: 623px; transform: translateX(-50%); display: flex; gap: 15px; z-index: 1; }
+  .chip { width: 40px; height: 40px; border: 1px dashed #000; background: var(--paper); font-size: 12px; line-height: 1; text-align: center; }
   .chip[aria-pressed="true"] { background: var(--lime); border-style: solid; }
 
-  /* 아래 줄: 사진첩 · 셔터(55) · 카메라 전환, 간격 60 · y 713 */
-  .controls { position: absolute; left: 0; top: 713px; width: 375px; height: 55px; display: flex; align-items: center; justify-content: center; gap: 60px; }
+  /* 아래 줄 (Figma 3683:19609): 사진첩 · 셔터(하단바 관찰 네모, 68.3) · 카메라 전환, 간격 60 · 홈 인디케이터 위 */
+  .controls { position: absolute; left: 0; top: 699.7px; width: 375px; height: 68.3px; display: flex; align-items: center; justify-content: center; gap: 60px; }
+  .controls .tab-cam { flex: none; margin-top: 0; align-self: center; }
   .gallery, .gallery img, .flip, .flip img { width: 32px; height: 32px; }
   .file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   /* shutter feedback: white flash, then the frame freezes on the taken photo */
@@ -41,10 +42,7 @@
   @keyframes shot-flash { 0% { opacity: .9; } 100% { opacity: 0; } }
   .finder .hint { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-size: 14px; line-height: 20px; color: rgba(33, 27, 23, .55); }
   .finder video.live ~ .hint { display: none; }
-  /* 셔터: 종이색 동그라미(점선) 안에 검정 동그라미 38px */
-  .shutter { position: relative; display: block; width: 55px; height: 55px; border-radius: 50%; background: var(--surface); border: 1px dashed var(--ink); }
-  .shutter::after { content: ''; position: absolute; left: 50%; top: 50%; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; background: var(--ink); transition: transform 120ms ease-out; }
-  .shutter:active::after { transform: scale(.9); }
+  /* 셔터: 하단바의 관찰 네모(.tab-cam)와 같은 모양 — 기울어진 점선 종이 두 장 + 접는 선 + 아이콘 (base.css · shared.js가 그려요). 누르면 살짝 작아져요 */
 
   /* sheets */
   .dim.scrim { background: rgba(44, 44, 44, .57); }
@@ -109,7 +107,7 @@
 
   <div class="controls">
     <button class="gallery" type="button" id="gallery" aria-label="사진첩에서 고르기"><img src="assets/icons/outline/photo.svg" alt=""></button>
-    <button class="shutter" type="button" id="shutter" aria-label="촬영하기"></button>
+    <button class="shutter tab-cam" type="button" id="shutter" aria-label="촬영하기"></button>
     <input class="file" type="file" id="pickCam" accept="image/*" capture="environment" tabindex="-1" aria-hidden="true">
     <input class="file" type="file" id="pickAlbum" accept="image/*" tabindex="-1" aria-hidden="true">
     <button class="flip" type="button" id="flip" aria-label="카메라 전환"><img src="assets/icons/outline/image.svg" alt=""></button>
