@@ -67,19 +67,20 @@
   var DF = '<path d="M30 24C20 14 6 14 6 20s14 8 24 6M34 24c10-10 24-10 24-4s-14 8-24 6M30 30C20 34 8 40 10 44s14-2 20-10M34 30c10 4 22 10 20 14s-14-2-20-10" fill="#8ED8FF"/><path d="M32 18v40" stroke-width="5"/><circle cx="32" cy="16" r="5" fill="#00B2FF"/>';
   var LB = '<path d="M24 22a8 6 0 0 1 16 0" fill="#111"/><ellipse cx="32" cy="38" rx="18" ry="16" fill="#E8432E"/><path d="M32 22v32"/><circle cx="24" cy="32" r="3" fill="#111"/><circle cx="40" cy="32" r="3" fill="#111"/><circle cx="22" cy="43" r="2.5" fill="#111"/><circle cx="42" cy="43" r="2.5" fill="#111"/>';
   var HOP = '<path d="M8 40 L44 26 L56 30 L50 38 Z" fill="#B3BE37"/><path d="M20 36 L28 22 L40 30 M28 22 L34 46 M18 38 L14 50 M30 34 L32 50"/><path d="M54 30 L60 16"/>';
-  var SNAIL = '<path d="M6 48h46c4 0 6-6 2-8" fill="#F2A7C3"/><circle cx="30" cy="32" r="14" fill="#F4D35E"/><path d="M30 32a6 6 0 1 1 6-6"/><path d="M50 40l2-14M54 40l6-12"/>';
   function svgSticker(inner) {
     return '<svg viewBox="-6 -6 76 76" width="64" height="64" aria-hidden="true">' +
       '<g fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g>' +
       '<g fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' + inner + '</g></svg>';
   }
   // 예시 친구들 (그림을 아직 안 그렸을 때도 들판이 비어 보이지 않게)
+  // 관찰을 마쳤을 때와 똑같이 종이를 삼각 면으로 접은 모습이에요 (origami.js로 접어 PNG로 담아 둔 그림).
+  //   tile: 정보 시트의 작은 액자에서 쓰는 그림 크기 맞춤(is-sample = 가로로 긴 카드 그림)
   var SAMPLES = [
-    { name: '노랑 날개', svg: BF, fly: true, species: '노랑나비 · 나비목', info: '꽃꿀을 먹으며 낮에 팔랑팔랑 날아다녀요.' },
-    { name: '파랑 꼬리', svg: DF, fly: true, species: '잠자리 · 잠자리목', info: '연못 가까이에서 날며 작은 벌레를 잡아먹어요.' },
-    { name: '빨강 점박이', svg: LB, species: '칠성무당벌레 · 딱정벌레목', info: '진딧물을 잡아먹는 고마운 곤충이에요.' },
-    { name: '통통 다리', svg: HOP, hop: true, species: '메뚜기 · 메뚜기목', info: '긴 뒷다리로 풀밭을 폴짝폴짝 뛰어요.' },
-    { name: '느릿느릿', svg: SNAIL, slow: true, species: '달팽이 · 연체동물', info: '곤충은 아니지만 풀잎 위를 천천히 기어다녀요.' }
+    { name: '노랑 날개', src: 'assets/home/sample-butterfly.png', fly: true, species: '노랑나비 · 나비목', info: '꽃꿀을 먹으며 낮에 팔랑팔랑 날아다녀요.' },
+    { name: '파랑 꼬리', src: 'assets/home/sample-dragonfly.png', fly: true, species: '잠자리 · 잠자리목', info: '연못 가까이에서 날며 작은 벌레를 잡아먹어요.' },
+    { name: '빨강 점박이', src: 'assets/capture/card-pico-sample.png', tile: 'is-sample', species: '칠성무당벌레 · 딱정벌레목', info: '진딧물을 잡아먹는 고마운 곤충이에요.' },
+    { name: '통통 다리', src: 'assets/home/sample-grasshopper.png', hop: true, species: '메뚜기 · 메뚜기목', info: '긴 뒷다리로 풀밭을 폴짝폴짝 뛰어요.' },
+    { name: '느릿느릿', src: 'assets/home/sample-snail.png', slow: true, species: '달팽이 · 연체동물', info: '곤충은 아니지만 풀잎 위를 천천히 기어다녀요.' }
   ];
 
   // 들판 좌표(375x812 폰 기준): 걷는 친구는 언덕 위, 나는 친구는 하늘~언덕
@@ -104,14 +105,14 @@
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var mine = list(), newId = ls(NEW);
     var sampleCount = Math.max(0, 5 - mine.length);                // 내 PICO가 많아지면 예시는 줄어요
-    var bugs = SAMPLES.slice(0, sampleCount).map(function (s) { return { name: s.name, sample: true, species: s.species, info: s.info, html: svgSticker(s.svg), fly: s.fly, hop: s.hop, slow: s.slow }; })
+    var bugs = SAMPLES.slice(0, sampleCount).map(function (s) { return { name: s.name, sample: true, species: s.species, info: s.info, src: s.src, tile: s.tile, html: '<img src="' + s.src + '" alt="" width="64" height="64">', fly: s.fly, hop: s.hop, slow: s.slow }; })
       .concat(mine.map(function (m) { return { id: m.id, name: m.name, species: m.species || '', at: m.at, mine: true, src: m.src, html: '<img src="' + m.src + '" alt="" width="64" height="64">' }; }));
 
     layer.innerHTML = '';
     bugs.forEach(function (b, i) {
       var el = document.createElement('button');
       el.type = 'button';
-      el.className = 'pf-bug' + (b.mine ? ' is-mine' : '') + (b.fly ? ' is-fly' : '') + (b.hop ? ' is-hop' : '');
+      el.className = 'pf-bug' + (b.mine ? ' is-mine' : ' is-paper') + (b.fly ? ' is-fly' : '') + (b.hop ? ' is-hop' : '');
       el.setAttribute('aria-label', b.name + (b.mine ? ' · 내가 그린 PICO' : ''));
       el.innerHTML = '<span class="pf-body"><span class="pf-flip">' + b.html + '</span></span><span class="pf-name">' + b.name + '</span>';
       layer.appendChild(el);
