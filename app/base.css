@@ -258,10 +258,10 @@ img { display: block; }
 
 /* ---------- 중단 확인 팝업 (Figma .ox팝업 2825:2860) ----------
    Any <a data-confirm="관찰을 중단할까요?" href="..."> asks first; 네 follows the link.
-   300x150 card, offset black shadow (10 / 11.5), 취소 surface · 네 background. */
+   300x150 card (검은 그림자 없이, 화면 전체를 어둡게 덮는 .ox-dim 위에), 취소 로즈 · 네 라임. */
 .ox-dim { position: absolute; inset: 0; background: rgba(44, 44, 44, .57); z-index: 60; }
 .ox { position: absolute; left: 37.5px; top: 331px; width: 300px; height: 150px; z-index: 61; padding: 36px 23px 29px;
-  background: var(--bg); border: 1px solid var(--ink); box-shadow: 10px 11.5px 0 var(--ink);
+  background: var(--bg); border: 1px solid var(--ink);
   display: flex; flex-direction: column; align-items: center; gap: 14px; animation: pico-dissolve var(--dissolve) var(--ease-slow); }
 .ox-title { font-size: 22px; line-height: normal; text-align: center; width: 100%; }
 .ox-btns { display: flex; gap: 14px; width: 100%; }
@@ -272,6 +272,7 @@ img { display: block; }
 .ox-btns > *::after { left: 0; z-index: -1; transition: transform 120ms ease-out; }
 .ox-btns > *:active::after { transform: rotate(-1.8deg); }
 .ox-btns > *:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.ox-no::before, .ox-no::after { background: #f8addb; }   /* 취소: 앱에서 부정적인 버튼에 쓰는 로즈(홈의 '삭제하기'와 같은 색) */
 
 /* ---------- 홈 화면에 설치해서 열었을 때 (standalone) ----------
    진짜 상태바가 화면 위에 겹쳐 보이니 가짜 9:41 상태바와 홈 인디케이터는 숨겨요 (자리는 그대로 둬서 레이아웃은 같아요). */
