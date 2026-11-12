@@ -92,7 +92,13 @@
   // Dissolve an in-page state change (Figma "Dissolve · Slow · 300ms") where the browser supports it.
   window.picoSwap = function (fn) {
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (document.startViewTransition && !reduce) document.startViewTransition(fn); else fn();
+    if (document.startViewTransition && !reduce) {
+      // 같은 화면 안의 바뀜에서는 상단 바 · 하단 탭 · 홈 인디케이터에 이름을 붙이지 않아요 (base.css .pico-same):
+      // 이름 붙은 층은 전환 동안 시트 · 팝업 위에 따로 얹혀 그려져서, 하단 탭이 시트 위로 비쳐 보였어요
+      var root = document.documentElement; root.classList.add('pico-same');
+      var vt = document.startViewTransition(fn), done = function () { root.classList.remove('pico-same'); };
+      vt.finished.then(done, done);
+    } else fn();
   };
   // 하단바 촬영 네모: 누르면 종이접기하듯 ½ → ¼로 접힌 뒤 촬영 화면으로 넘어가요 (Figma 하단바 2821:44176).
   // 접는 선은 Figma 네모 안의 점선 두 줄. 아이콘은 화면에서 똑바로 서 있도록 종이 회전(60°)만큼 되돌려 그려요.
@@ -100,7 +106,7 @@
   var FOLD_OVERLAP = 60, FOLD_LEAD = 100;
   function foldMs() { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fold-ms')) || 380; }
   function paperHTML() {
-    var face = '<rect x="0" y="0" width="50" height="50" fill="#FFFCE4" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/>' +
+    var face = '<rect x="0" y="0" width="50" height="50" fill="none" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/>' +
       '<path d="M25 0V50M0 25H50" stroke="black" stroke-dasharray="2 2"/>' +
       '<g transform="translate(25 25) rotate(-60) translate(-34.83 -34.83)">' +
       '<path fill-rule="evenodd" clip-rule="evenodd" d="M38.6641 22.4565L38.7744 22.3931L42.2314 28.3813L45.5312 29.2651L45.6445 28.3638L48.6211 28.7358L48.457 30.0493L49.6152 30.3599L48.8389 33.2583L48.082 33.0552L46.4736 45.9526L46.4707 45.9517V46.4995H21.8838V43.313H23.4453L22.1641 33.0396L20.8809 33.3843L20.0557 30.3052L22.3379 29.6929L21.8838 26.0522L25.0469 25.6577L25.4463 28.8608L27.8633 28.2134L29.5098 25.3628H29.1338V22.3628H38.6641V22.4565ZM37.4102 33.9985L37.8633 37.2896L33.9502 38.1929L32.1387 35.0396L33.3389 32.3491L37.4102 33.9985Z" fill="#FFFCE4"/>' +
@@ -108,7 +114,7 @@
     function q(qx, qy, side) {
       // 바깥쪽 테두리 선은 반쯤 바깥에 그려지니, 바깥 가장자리만 1px 넉넉히 보여줘요
       var clip = [qy ? 0 : -1, qx ? -1 : 0, qy ? -1 : 0, qx ? 0 : -1].map(function (v) { return v + 'px'; }).join(' ');
-      return '<span class="q ' + side + '"><span class="pface front" style="clip-path:inset(' + clip + ')">' +
+      return '<span class="q ' + side + '"><span class="pface front" style="--qx:' + qx + 'px;--qy:' + qy + 'px;clip-path:inset(' + clip + ')">' +
         '<svg width="52" height="52" viewBox="-1 -1 52 52" style="left:' + (-qx - 1) + 'px;top:' + (-qy - 1) + 'px" fill="none">' + face + '</svg></span>' +
         '<span class="pface back"><svg width="26" height="26" viewBox="-0.5 -0.5 26 26" style="left:-0.5px;top:-0.5px" fill="none">' +
         '<rect x="0" y="0" width="25" height="25" fill="#F1ECBF" stroke="black" stroke-linecap="square" stroke-dasharray="2 2"/></svg></span></span>';

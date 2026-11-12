@@ -134,12 +134,14 @@ img { display: block; }
 /* 촬영 네모 종이접기 (shared.js가 .tab-cam 안에 종이를 만들어 넣어요).
    누르면 세로 접는 선을 따라 ½, 가로 접는 선을 따라 ¼로 접힌 뒤 촬영 화면으로 넘어가요.
    종이 = 50×50 정사각형을 60° 돌린 것, 4조각(q)으로 나눠 각 조각이 앞·뒷면을 가져요. */
-:root { --fold-ms: 400ms; --fold-ease: ease-in-out; }   /* 두 번 접고 약 0.7초 · ease in-out */
+:root { --fold-ms: 400ms; --fold-ease: ease-in-out;
+  /* 관찰 네모(하단바 · 촬영 셔터) 종이 면: Figma 3727:21748 — 구겨진 종이 그림 두 장을 50×50 안에 가득 (위 = 종이 결, 아래 = 종이) */
+  --paper-img-top: url('assets/onboarding/ob-paper-full.jpg'); --paper-img-base: url('assets/common/paper.jpg'); }   /* 두 번 접고 약 0.7초 · ease in-out */
 .tab-cam.is-origami > img { display: none; }
 /* 뒤에 한 장 더 (Figma 3261:7742): 71.61° 기울어진 종이가 접을 종이 밑에 깔려 있어요 — 앱 곳곳의 "종이 두 장"과 같은 언어.
    접기 시작하면 밑장은 살짝 사라지고 위 종이만 접혀요. */
 .tab-cam.is-origami::before { transform: rotate(71.61deg); transition: opacity 200ms ease;
-  background: url('assets/onboarding/ob-paper-full.jpg') -150px -700px / 375px 812px, var(--paper); background-blend-mode: multiply; }
+  background: var(--paper-img-top) center / 100% 100%, var(--paper-img-base) center / cover, var(--paper); background-blend-mode: multiply, normal, normal; }
 .tab-cam.is-origami:has(.paper.f1)::before { opacity: 0; }
 .tab-cam .origami { position: absolute; left: -0.683px; top: -0.683px; width: 70px; height: 70px; perspective: 240px; transition: transform 120ms ease; }
 .tab-cam:active .origami { transform: scale(.95); }
@@ -152,6 +154,9 @@ img { display: block; }
 .tab-cam .q.left { left: 0; }
 .tab-cam .q.right { left: 25px; transform-origin: 0 50%; transform: translateZ(0px) rotateY(0deg); transition: transform var(--fold-ms) var(--fold-ease); }
 .tab-cam .pface { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+/* 앞면: 50×50 종이 전체에 그림을 깔고 조각(--qx · --qy)마다 제자리 부분만 보여요 */
+.tab-cam .pface.front { background-image: var(--paper-img-top), var(--paper-img-base); background-blend-mode: multiply, normal; background-size: 50px 50px, 50px 108.16px;
+  background-position: calc(var(--qx) * -1) calc(var(--qy) * -1), calc(var(--qx) * -1) calc(-29.08px - var(--qy)); background-color: var(--paper); }
 .tab-cam .pface svg { position: absolute; display: block; }
 .tab-cam .pface.back { transform: rotateY(180deg); }
 .tab-cam .paper.f1 { --tx: 12.5px; }
@@ -221,6 +226,8 @@ img { display: block; }
 .phone > .progress { view-transition-name: pico-progress; }
 .phone > .cta { view-transition-name: pico-cta; }
 .phone > .home-ind { view-transition-name: pico-home-ind; }
+/* 같은 화면 안 전환(picoSwap: 시트 · 팝업 · 카드 바뀜)에서는 이름 붙은 층이 시트 위로 얹혀 보이니 이름을 떼요 */
+.pico-same .phone > .top, .pico-same .phone > .tabbar, .pico-same .phone > .progress, .pico-same .phone > .cta, .pico-same .phone > .home-ind { view-transition-name: none; }
 /* 모든 화면의 누르기·고르기·켜고 끄기 같은 상태 변화도 같은 움직임으로 (각 화면이 따로 정한 건 그쪽이 우선) */
 :where(a, button, input, textarea, select, [role="button"], [role="radio"], [role="tab"], [aria-pressed], [aria-selected], [aria-checked]) {
   transition-property: color, background-color, border-color, box-shadow, opacity, transform;
