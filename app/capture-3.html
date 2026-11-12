@@ -19,7 +19,11 @@
   /* 질문 헤더: 질문 하나가 화면 제목이에요 (이름표 · 몇 번째 점 / 질문 / 한 줄 안내) */
   .hd { position: absolute; left: 20px; top: 154px; width: 335px; }
   .hd-row { height: 22px; display: flex; align-items: center; justify-content: space-between; }
-  .kind { height: 22px; padding: 0 9px; display: flex; align-items: center; background: var(--surface); border: 1px solid var(--ink); font-size: 12px; font-weight: 700; line-height: 1; white-space: nowrap; }
+  /* 이름표: 아래 '다음' 버튼(.cta)과 같은 모양 — 연두 종이 + 뒤에 살짝 기울어진 연두 종이 한 장 (크기는 그대로) */
+  .kind { position: relative; isolation: isolate; height: 22px; padding: 0 10px; display: flex; align-items: center; font-size: 12px; font-weight: 700; line-height: 1; white-space: nowrap; }
+  .kind::before, .kind::after { content: ""; position: absolute; top: 0; height: 100%; width: 100%; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box; }
+  .kind::before { left: -1.1px; transform: rotate(-1.8deg); z-index: -2; }
+  .kind::after { left: 0; z-index: -1; }
   .dots { display: flex; gap: 6px; align-items: center; padding-right: 2px; }
   .dots i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--ink); background: var(--bg); transition: background-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
   .dots i.done { background: var(--ink); }
