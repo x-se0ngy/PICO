@@ -13,6 +13,7 @@
 <title>PICO · 탐험 취향</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
   .nav-quit { display: block; padding: 0; }
@@ -124,4 +125,5 @@
   if (state === 'quit') openQuit();
 })();
 </script>
+<span id="pico-ready"></span>
 </body></html>

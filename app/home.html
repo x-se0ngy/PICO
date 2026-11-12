@@ -13,6 +13,18 @@
 <title>PICO · 홈</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
+<link rel="preload" as="image" href="assets/home/field-new/sun.png">
+<link rel="preload" as="image" href="assets/home/field-new/hill-back.png">
+<link rel="preload" as="image" href="assets/home/field-new/hill-front.png">
+<link rel="preload" as="image" href="assets/home/field-new/pond-outer.png">
+<link rel="preload" as="image" href="assets/home/field-new/bush-patch.png">
+<link rel="preload" as="image" href="assets/home/field-new/pond-inner.png">
+<link rel="preload" as="image" href="assets/home/field-new/tree-tall.png">
+<link rel="preload" as="image" href="assets/home/field-new/tree-mid.png">
+<link rel="preload" as="image" href="assets/home/field-new/tree-a.png">
+<link rel="preload" as="image" href="assets/home/field-new/tree-b.png">
+<link rel="preload" as="image" href="assets/home/field-new/tree-c.png">
 <link rel="stylesheet" href="base.css">
 <style>
   /* surface panel behind radar / field */
@@ -378,6 +390,7 @@
     + '</svg>'
     + tufts.map(function (t) { return TUFT.replace('LEFT', t[0]).replace('TOP', t[1]); }).join('')
     + '<div class="abs field-tex" aria-hidden="true"></div>';
+  if (window.picoFade) picoFade(document.getElementById('field'));
 
 
   // 내 들판: 예시 친구 + 내가 그린 PICO가 돌아다녀요 (field.js)
@@ -509,4 +522,5 @@
   if (st === 'bug') setTimeout(function () { var el = document.querySelector('.pf-bug.is-mine') || document.querySelector('.pf-bug'); if (el) el.click(); }, 80);
 })();
 </script>
+<span id="pico-ready"></span>
 </body></html>

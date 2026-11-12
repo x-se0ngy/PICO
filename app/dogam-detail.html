@@ -13,6 +13,7 @@
 <title>PICO · 도감 상세</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
   :root { --font-hand: 'SejongGeulggot', var(--font); --grey56: #8e8e8e; --pink-rule: #facade; --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 310 3' preserveAspectRatio='none'%3E%3Cpath d='M0 1.6C38 .7 78 2.5 118 1.5S200 .8 242 1.8 292 1 310 1.5' fill='none' stroke='%23c2ddf4' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
@@ -159,7 +160,7 @@
     document.title = 'PICO · ' + D.name;
     if (D.c) document.querySelector('.phone').style.setProperty('--tc', D.c === 'cyan' ? 'var(--rule-cyan)' : 'var(--rule-pink)');   // 카드 색 = 목록 카드의 깃발·액자 색
     $('dNo').textContent = 'NO.' + D.no; $('dOrder').textContent = D.order; $('dName').textContent = D.name; $('dDate').textContent = D.date;
-    var ph = $('dPhoto'); ph.src = 'assets/tabs/' + D.photo; ph.alt = D.name + ' 사진';
+    var ph = $('dPhoto'); ph.src = 'assets/tabs/' + D.photo; ph.alt = D.name + ' 사진'; if (window.picoFade) picoFade(ph);
     $('dRows').innerHTML = D.rec.map(function (r) { return '<div class="row"><div><span class="l"><span class="d">' + r[0] + '</span><span class="pl">' + r[1] + '</span></span><span class="w">' + r[2] + '</span></div><hr></div>'; }).join('');
     $('dNote').innerHTML = lines(D.note); $('dMore').innerHTML = lines(D.more);
     $('dInfo').innerHTML = D.info.map(function (r) { return '<div class="c"><div class="r"><b>' + r[0] + '</b><span>' + r[1] + '</span></div><i></i></div>'; }).join('');
@@ -239,4 +240,5 @@
   })();
 })();
 </script>
+<span id="pico-ready"></span>
 </body></html>

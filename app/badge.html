@@ -13,6 +13,7 @@
 <title>PICO · 배지</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
   :root { --font-hand: 'SejongGeulggot', var(--font); }
@@ -332,4 +333,5 @@
   var st = document.documentElement.dataset.state; if (st) open(st);
 })();
 </script>
+<span id="pico-ready"></span>
 </body></html>

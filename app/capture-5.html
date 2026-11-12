@@ -13,6 +13,7 @@
 <title>PICO · 촬영 5 그림 그리기</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
   .board { position: absolute; left: 20px; top: 208.5px; width: 335px; height: 335px; background: transparent; border: 1px solid var(--ink); z-index: 2; }
@@ -205,4 +206,5 @@
     window.PicoField && PicoField.saveDraft(cv, top);
   });
 </script>
+<span id="pico-ready"></span>
 </body></html>

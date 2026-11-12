@@ -13,6 +13,15 @@
 <title>PICO · 도감</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
+<link rel="preload" as="image" href="assets/tabs/card-grasshopper.png">
+<link rel="preload" as="image" href="assets/tabs/card-ladybug.png">
+<link rel="preload" as="image" href="assets/tabs/card-butterfly.png">
+<link rel="preload" as="image" href="assets/tabs/card-dragonfly.png">
+<link rel="preload" as="image" href="assets/tabs/card-mosquito.png">
+<link rel="preload" as="image" href="assets/tabs/card-katydid.png">
+<link rel="preload" as="image" href="assets/tabs/card-moth.png">
+<link rel="preload" as="image" href="assets/tabs/card-stickinsect.png">
 <link rel="stylesheet" href="base.css">
 <style>
   /* long frame scrolls in the browser; tab bar + home indicator stick to the viewport bottom */
@@ -258,6 +267,7 @@
     cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : UNMET.slice(0, unmetShown).map(utile).join(''));
     empty.hidden = shown.length > 0 || (searching && !v);
     fit(); more();
+    if (window.picoFade) picoFade(list);
   }
   // page grows with the list; keep it clear of the tab bar
   function fit() { phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px'); }
@@ -357,4 +367,5 @@
   });
 })();
 </script>
+<span id="pico-ready"></span>
 </body></html>

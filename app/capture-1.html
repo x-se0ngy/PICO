@@ -13,6 +13,7 @@
 <title>PICO · 촬영 1</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
   .nav a, .nav button { display: block; width: 32px; height: 32px; }
@@ -265,4 +266,5 @@
   if (!st) startCam();
 })();
 </script>
+<span id="pico-ready"></span>
 </body></html>

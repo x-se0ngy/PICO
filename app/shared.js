@@ -38,6 +38,27 @@
     });
     window.addEventListener('pageshow', function (e) { if (e.persisted) document.documentElement.classList.remove('is-leaving'); });
   }
+  // 아직 안 불러온 그림은 뚝 나타나지 않고, 다 불러온 뒤 디졸브로 나타나요 (이미 저장돼 있으면 그냥 바로 보여요)
+  window.picoFade = function (root) {
+    var list = root && root.tagName === 'IMG' ? [root] : (root || document).querySelectorAll('img');
+    Array.prototype.forEach.call(list, function (im) {
+      if (im.complete && im.naturalWidth) return;
+      im.style.opacity = '0'; im.style.transition = 'opacity var(--dur) var(--ease)';
+      var show = function () { im.style.opacity = ''; };
+      im.addEventListener('load', show, { once: true }); im.addEventListener('error', show, { once: true });
+    });
+  };
+  // 화면이 바뀔 때 브라우저의 문서 간 전환(View Transition)이 안 돌았거나 건너뛰어졌다면, 새 화면이 디졸브로 나타나게 대신 돌려요.
+  // 어떻게 됐는지는 sessionStorage 'pico.vt'에 남겨요 (확인용).
+  window.addEventListener('pagereveal', function (e) {
+    var vt = e.viewTransition, rec = { p: location.pathname.split('/').pop(), vt: !!vt, t: Math.round(performance.now()) };
+    function keep() { try { var a = JSON.parse(sessionStorage.getItem('pico.vt') || '[]'); a.push(rec); sessionStorage.setItem('pico.vt', JSON.stringify(a.slice(-12))); } catch (x) {} }
+    function enter() { document.documentElement.classList.add('pico-enter'); }
+    var nav = performance.getEntriesByType('navigation')[0];
+    var fromLink = nav && nav.type === 'navigate' && document.referrer && new URL(document.referrer).origin === location.origin;
+    if (!vt) { rec.fallback = fromLink; if (fromLink) enter(); keep(); return; }
+    vt.ready.then(function () { rec.ready = Math.round(performance.now()); keep(); }, function (err) { rec.skip = String(err && err.message || err).slice(0, 80); enter(); keep(); });
+  });
   window.addEventListener('resize', fit);
   document.addEventListener('DOMContentLoaded', function () { wrap(); fit(); });
   // 왼쪽 위 PICO 로고를 누르면 스플래시로 가요. 가운데 로고(설정 화면 .nav--center)와 이미 링크·버튼 안에 있는 로고는 그대로 둬요.

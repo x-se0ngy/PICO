@@ -13,6 +13,7 @@
 <title>PICO · 친구 프로필</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
   .abs { position: absolute; }
@@ -117,4 +118,5 @@
   document.title = 'PICO · ' + f.name;
 })();
 </script>
+<span id="pico-ready"></span>
 </body></html>

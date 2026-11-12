@@ -13,6 +13,7 @@
 <title>PICO · 관찰 카드 완성</title>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-R.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/HakgyoansimAllimjangTTF-B.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <script>
   // 아직 안 접은 그림이 있으면 "종이로 접는 중" 화면이 첫 프레임부터 떠 있어야 해요
@@ -242,4 +243,5 @@
     window.PicoField && PicoField.release(document.querySelector('[data-species]') ? document.querySelector('[data-species]').textContent.trim() : '칠성무당벌레');
   });
 </script>
+<span id="pico-ready"></span>
 </body></html>

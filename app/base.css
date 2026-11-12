@@ -227,7 +227,7 @@ img { display: block; }
   transition-duration: var(--dur); transition-timing-function: var(--ease);
 }
 /* 문서 간 화면 전환(View Transition)을 못 쓰는 브라우저: shared.js가 .no-vt를 붙이고, 같은 --dur로 나타나고(in) 사라져요(out) */
-.no-vt .phone { animation: pico-dissolve var(--dur) var(--ease) both; }
+.no-vt .phone, .pico-enter .phone { animation: pico-dissolve var(--dur) var(--ease) both; }   /* .pico-enter: 전환이 건너뛰어졌을 때 shared.js가 붙여요 */
 .no-vt.is-leaving .phone { animation: pico-leave calc(var(--dur) * .6) var(--ease) both; }   /* 떠날 때: 먼저 디졸브로 흐려져요 */
 @keyframes pico-dissolve { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pico-leave { from { opacity: 1; } to { opacity: 0; } }
@@ -237,7 +237,7 @@ img { display: block; }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none; }
   :where(a, button, input, textarea, select, [role="button"], [role="radio"], [role="tab"], [aria-pressed], [aria-selected], [aria-checked]) { transition: none; }
-  .no-vt .phone { animation: none; }
+  .no-vt .phone, .pico-enter .phone { animation: none; }
   .phone > .dim, .phone > .sheet, .phone > .modal, .phone > .toast, .phone > .ov, [data-dissolve] { animation: none; }
 }
 
