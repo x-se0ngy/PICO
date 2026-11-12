@@ -282,6 +282,16 @@ img { display: block; }
 .ox-btns > *:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
 .ox-yes::before, .ox-yes::after { background: var(--paper); }
 
+/* ---------- 알림 카드 (Figma 3.2.1 카드 저장 알림 모양 그대로) ----------
+   파란 종이 칸 290x45 + 뒤에 검은 칸(+5.35 / +6). 아이콘 24px + 한 줄. window.picoToast(글, 아이콘)가 화면 아래쪽에 띄워요. */
+.tcard { position: absolute; left: 39.71px; bottom: 76px; width: 295.33px; height: 50px; z-index: 42; pointer-events: none;
+  transition: opacity var(--dur) var(--ease); animation: pico-dissolve var(--dissolve) var(--ease-slow); }
+.tcard::before { content: ''; position: absolute; left: 5.35px; top: 5.99px; width: 290px; height: 45px; background: var(--ink); border: 1px solid var(--ink); box-sizing: border-box; }
+.tcard-face { position: absolute; left: 0; top: 0; width: 290px; height: 45px; background: #00b7ff; border: 1px solid var(--ink); box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 1px 0 0 14px; font-size: 14px; line-height: normal; white-space: nowrap; }
+.tcard-face img { width: 24px; height: 24px; }
+.tcard.is-out { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .tcard { animation: none; transition: none; } }
+
 /* ---------- 홈 화면에 설치해서 열었을 때 (standalone) ----------
    진짜 상태바가 화면 위에 겹쳐 보이니 가짜 9:41 상태바와 홈 인디케이터는 숨겨요 (자리는 그대로 둬서 레이아웃은 같아요). */
 @media (display-mode: standalone) {

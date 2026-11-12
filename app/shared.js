@@ -165,16 +165,38 @@
     if (h) window.picoSwap(function () { document.querySelectorAll(h.getAttribute('data-hide')).forEach(function (n) { n.hidden = true; }); });
   });
   // <a data-confirm="관찰을 중단할까요?"> → 중단 확인 팝업 (Figma .ox팝업): 취소 closes, 네 follows the link
-  window.picoConfirm = function (title, href) {
-    var ph = document.querySelector('.phone'); if (!ph) { location.href = href; return; }
+  //   picoConfirm(글, 링크)                         → 링크로 가는 확인창 (관찰 중단)
+  //   picoConfirm(글, null, { yes: '저장', no: '취소', onYes: fn })  → 링크 없이 누르면 fn을 하는 확인창 (도감 카드 저장)
+  window.picoConfirm = function (title, href, opt) {
+    opt = opt || {};
+    var ph = document.querySelector('.phone'); if (!ph) { if (href) location.href = href; return; }
     var dim = document.createElement('div'); dim.className = 'ox-dim';
     var box = document.createElement('div'); box.className = 'ox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
-    box.innerHTML = '<p class="ox-title"></p><div class="ox-btns"><button type="button" class="ox-no">취소</button><a class="ox-yes">네</a></div>';
-    box.querySelector('.ox-title').textContent = title; box.querySelector('.ox-yes').href = href;
+    box.innerHTML = '<p class="ox-title"></p><div class="ox-btns"><button type="button" class="ox-no"></button>' + (href ? '<a class="ox-yes"></a>' : '<button type="button" class="ox-yes"></button>') + '</div>';
+    var yes = box.querySelector('.ox-yes');
+    box.querySelector('.ox-title').textContent = title; box.querySelector('.ox-no').textContent = opt.no || '취소'; yes.textContent = opt.yes || '네';
+    if (href) yes.href = href;
     function close() { dim.remove(); box.remove(); }
+    if (!href) yes.addEventListener('click', function () { close(); if (opt.onYes) opt.onYes(); });
     dim.addEventListener('click', close); box.querySelector('.ox-no').addEventListener('click', close);
     ph.appendChild(dim); ph.appendChild(box); box.querySelector('.ox-no').focus();
   };
+  // 알림 카드 (Figma 3.2.1 카드 저장 알림과 같은 모양): 화면 아래쪽에 잠깐 떴다가 사라져요. picoToast('글', '아이콘 주소', 머무는 ms)
+  var tcardEl = null, tcardTimer = 0;
+  window.picoToast = function (text, icon, ms) {
+    var ph = document.querySelector('.phone'); if (!ph) return;
+    clearTimeout(tcardTimer); if (tcardEl) tcardEl.remove();
+    var el = tcardEl = document.createElement('div'); el.className = 'tcard'; el.setAttribute('role', 'status');
+    el.innerHTML = '<div class="tcard-face">' + (icon ? '<img alt="">' : '') + '<span></span></div>';
+    if (icon) el.querySelector('img').src = icon;
+    el.querySelector('span').textContent = text;
+    ph.appendChild(el);
+    tcardTimer = setTimeout(function () {
+      el.classList.add('is-out');
+      setTimeout(function () { el.remove(); if (tcardEl === el) tcardEl = null; }, (window.picoDur ? picoDur() : 300) + 30);
+    }, ms || 2000);
+  };
+  window.picoToastHide = function () { clearTimeout(tcardTimer); if (tcardEl) { tcardEl.remove(); tcardEl = null; } };
   document.addEventListener('click', function (e) {
     var a = e.target.closest('a[data-confirm]'); if (!a) return;
     e.preventDefault(); window.picoConfirm(a.getAttribute('data-confirm'), a.getAttribute('href'));

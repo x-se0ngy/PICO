@@ -96,8 +96,8 @@
     <div class="nav">
       <a href="dogam.html" aria-label="뒤로"><img src="assets/icons/outline/arrow-left.svg" alt=""></a>
       <div class="nav-actions">
-        <button id="bm" aria-pressed="false" aria-label="저장"><img src="assets/icons/outline/bookmark.svg" alt=""></button>
-        <button aria-label="다운로드"><img src="assets/icons/outline/download.svg" alt=""></button>
+        <button id="bm" aria-pressed="false" aria-label="북마크"><img src="assets/icons/outline/bookmark.svg" alt=""></button>
+        <button id="dl" aria-label="카드 저장"><img src="assets/icons/outline/download.svg" alt=""></button>
       </div>
     </div>
   </div>
@@ -171,6 +171,12 @@
     var on = bm.getAttribute('aria-pressed') !== 'true';
     bm.setAttribute('aria-pressed', on);
     bm.querySelector('img').src = on ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg';
+    picoToast(on ? '북마크에 담았어요.' : '북마크에서 뺐어요.', bm.querySelector('img').src);   // 북마크를 누르면 알림 카드
+  });
+  // 저장: 먼저 "카드를 저장할까요?" 확인창 → 저장을 누르면 사진첩에 담았다는 알림 카드 (관찰 카드의 저장 알림과 같은 글)
+  document.getElementById('dl').addEventListener('click', function () {
+    picoToastHide();   // 떠 있던 북마크 알림은 확인창 뒤에 남지 않게 치워요
+    picoConfirm('카드를 저장할까요?', null, { yes: '저장', no: '취소', onYes: function () { picoToast('사진첩에 카드를 저장했어요.', 'assets/capture/card-toast-icon.png'); } });
   });
   // ---------- 내 그림이 화면을 돌아다녀요 (누르면 도망) ----------
   // 이 곤충 이름으로 내가 그려서 들판에 놓아준 그림이 있으면 그걸, 없으면 예시 그림을 써요.
