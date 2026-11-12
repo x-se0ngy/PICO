@@ -25,10 +25,10 @@
 </script>
 <style>
   .nav-actions { display: flex; gap: 10px; align-items: center; }
-  /* Figma 3198:18395 관찰 카드 완성 — 라임 카드 + 뒤에 3.37° 기울어진 종이 한 장, 아래 노트 */
+  /* Figma 3683:19821 관찰 카드 완성 — 라임 카드(잉크 선) + 뒤에 3.37° 기울어진 라임 종이 한 장(검정 선), 아래 노트 */
   .headline { position: absolute; left: 0; top: 118px; width: 375px; text-align: center; font-family: var(--font-hand); font-size: 24px; white-space: nowrap; }
-  .card-back { position: absolute; left: 24.36px; top: 174.3px; width: 326.285px; height: 335px; background: var(--paper); border: 1px solid var(--ink); transform: rotate(3.37deg); }
-  .card { position: absolute; left: 24.2px; top: 174.45px; width: 325.917px; height: 335px; background: var(--lime); border: 1px dashed var(--ink); }
+  .card-back { position: absolute; left: 24.36px; top: 174.3px; width: 326.285px; height: 335px; background: var(--lime); border: 1px solid #000; transform: rotate(3.37deg); }
+  .card { position: absolute; left: 24.2px; top: 174.45px; width: 325.917px; height: 335px; background: var(--lime); border: 1px solid var(--ink); }
   .card-photo { position: absolute; left: 33.15px; top: 187.95px; width: 308px; height: 250px; object-fit: cover; background: #d8ff7d; }
   /* 곤충 단계(사진 왼쪽 위) · 꼼꼼 관찰(이름 줄 오른쪽) */
   .gr.card-gr { left: 39.15px; top: 193.95px; }
@@ -43,14 +43,14 @@
   .diary-lines { position: absolute; left: 33.31px; top: 566.58px; width: 310px; display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
   .diary-lines p { padding: 0 0 0 26px; font-family: var(--font-hand); font-size: 14px; line-height: 20px; white-space: nowrap; max-width: 310px; overflow: hidden; text-overflow: ellipsis; }
   .diary-lines img { width: 310px; }
-  /* Figma 3198:18429: 4단계에서 그린 그림을 담은 작은 액자 (7.96° 기울임, 검은 그림자 +2.45/+3.98) */
+  /* Figma 3683:19821: 그린 그림을 담은 작은 액자 (검은 그림자 11.9° · 연두 액자 7.96° · 크림 창 7.96°) */
   .pico-frame > * { position: absolute; transform: rotate(7.96deg); border: 1px solid var(--ink); }
-  .pf-shadow { left: 179.53px; top: 418.05px; width: 55.893px; height: 62.88px; background: var(--ink); }
-  .pf-face { left: 177.08px; top: 414.07px; width: 55.893px; height: 62.88px; background: var(--lime); }
-  .pf-win { left: 181.34px; top: 418.34px; width: 48.929px; height: 48.008px; background: var(--surface); overflow: hidden; }
+  .pf-shadow { left: 185.78px; top: 418.25px; width: 55.893px; height: 62.88px; background: var(--ink); transform: rotate(11.9deg); }
+  .pf-face { left: 184.07px; top: 416.51px; width: 55.893px; height: 62.88px; background: var(--lime); }
+  .pf-win { left: 188.32px; top: 420.78px; width: 48.929px; height: 48.008px; background: #fffad7; overflow: hidden; }
   .pf-win img { width: 100%; height: 100%; object-fit: contain; }
   /* 그린 그림이 없을 때(바로 이 화면을 열었을 때)는 시안의 접은 무당벌레 */
-  .pf-sample { position: absolute; left: 181.53px; top: 420.52px; width: 48.541px; height: 43.641px; }
+  .pf-sample { position: absolute; left: 188.51px; top: 422.96px; width: 48.541px; height: 43.641px; }
   /* 3.2.1 save toast */
   .save-toast { position: absolute; left: 39.71px; top: 640.68px; width: 295.33px; height: 50px; z-index: 42; transition: opacity var(--dur) var(--ease); }
   .save-toast::before { content: ''; position: absolute; left: 5.35px; top: 5.99px; width: 290px; height: 45px; background: var(--ink); border: 1px solid var(--ink); box-sizing: border-box; }
@@ -58,7 +58,7 @@
   .save-toast-face img { width: 24px; height: 24px; }
 </style>
 </head><body>
-<div class="phone warm" style="--h:812px">
+<div class="phone soft" style="--h:812px">
 
   <div class="top">
     <div class="status"><span class="status-time">9:41</span>

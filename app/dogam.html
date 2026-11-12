@@ -78,7 +78,7 @@
   .icard .album .sh { display: none; }
   .icard .album .fc { left: 95.57px; top: 14.52px; width: 45.32px; height: 50.98px; background: var(--tc); }
   .icard .album .pic { left: 99.11px; top: 18px; width: 39.67px; height: 38.93px; background: var(--paper); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .icard .album .pic img, .icard .album .pic svg { width: 32px; height: 32px; display: block; transform: rotate(-7.97deg); }
+  .icard .album .pic img, .icard .album .pic svg { width: 32px; height: 32px; display: block; transform: rotate(-7.97deg); object-fit: contain; }
   .empty { margin-top: 30px; width: 335px; text-align: center; font-size: 14px; }
 
   /* PICO TIP: 종이 띠 (위·아래 점선) */
@@ -213,13 +213,14 @@
     { name: '상제나비', doodle: 'butterfly3', date: '2027.09.12', img: 'card-blackveined', c: 'cyan' },
     { name: '물방개', doodle: 'beetle', date: '2027.09.05', img: 'card-divingbeetle' }
   ];
-  // 사진첩 안 그림: 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있으면 그걸, 없으면 예시 그림
+  // 사진첩 안 그림 (Figma 3683:16567): 내가 그려서 들판에 놓아준 그림(이름이 같은 곤충)이 있을 때만 그림이 들어가요.
+  //  아직 안 그린 곤충은 빈 액자로 두고, 예시로는 칠성무당벌레 한 장만 그려 둬요.
   var mine = {};
   ((window.PicoField && PicoField.list()) || []).forEach(function (m) { if (m.species) mine[m.species.replace(/\s+/g, '')] = m.src; });
   function drawing(it) {
     var src = mine[it.name.replace(/\s+/g, '')];
     if (src) return '<img src="' + src + '" alt="내가 그린 ' + it.name + '">';
-    return window.PicoField ? PicoField.doodle(it.doodle) : '';
+    return it.doodle === 'ladybug' ? '<img src="assets/capture/card-pico-sample.png" alt="">' : '';
   }
   // 오른쪽 위 접힌 귀퉁이 (Figma Rectangle 556): 뒷면 = 단계 색
   var FLAG = '<svg class="flag" viewBox="0 0 17.3 23.3" aria-hidden="true"><polygon points="0.5,0.5 16.8,14.4 4,22.8" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';

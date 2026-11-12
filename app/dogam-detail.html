@@ -21,17 +21,17 @@
   .nav-actions { display: flex; gap: 10px; align-items: center; }
   .nav a img, .nav button img { width: 32px; height: 32px; }
 
-  /* 도감 카드: 연두 종이 두 장 (Figma 3338:5876) */
+  /* 도감 카드: 연두 종이 두 장 · 검정 선과 글씨 (Figma 3683:15281) */
   .sheet-b { left: 18.2px; top: 139.77px; width: 338.57px; height: 393.47px; display: flex; align-items: center; justify-content: center; }
-  .sheet-b::before { content: ''; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid var(--grey56); transform: rotate(2.46deg); }
-  .sheet-f { left: 26.19px; top: 146.5px; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid var(--grey56); }
-  .dcard { left: 32.5px; top: 166.5px; width: 310px; display: flex; flex-direction: column; gap: 8px; color: var(--grey56); }
+  .sheet-b::before { content: ''; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid #000; transform: rotate(2.46deg); }
+  .sheet-f { left: 26.19px; top: 146.5px; width: 322.59px; height: 380px; background: var(--lime); border: 1px solid #000; }
+  .dcard { left: 32.5px; top: 166.5px; width: 310px; display: flex; flex-direction: column; gap: 8px; color: #000; }
   .dhead { display: flex; justify-content: space-between; align-items: flex-end; }
   .dhead .nm { display: flex; flex-direction: column; gap: 5px; white-space: nowrap; }
   .dhead .no { display: flex; gap: 4px; font-size: 16px; line-height: normal; }
   .dhead .name { font-size: 20px; line-height: normal; }
-  .date-pick { display: flex; align-items: center; justify-content: flex-end; gap: 5px; width: 83px; font-size: 12px; line-height: normal; white-space: nowrap; color: var(--grey56); }
-  .date-pick img { width: 18px; height: 18px; flex: none; filter: brightness(0) invert(.56); }
+  .date-pick { display: flex; align-items: center; justify-content: flex-end; gap: 5px; width: 83px; font-size: 12px; line-height: normal; white-space: nowrap; color: #000; }
+  .date-pick img { width: 18px; height: 18px; flex: none; }
   .photo { display: block; width: 310px; height: 150px; border: 1px solid var(--ink); object-fit: cover; }
   .rec { height: 126px; display: flex; flex-direction: column; justify-content: flex-end; gap: 13px; }
   .rec h3 { padding: 0 10px; font-size: 16px; line-height: normal; }
@@ -40,7 +40,7 @@
   .rec .row > div { display: flex; align-items: flex-end; justify-content: space-between; padding: 0 10px; white-space: nowrap; }
   .rec .row .l { display: flex; align-items: center; gap: 14px; }
   .rec .row .d { font-size: 14px; line-height: normal; } .rec .row .pl { font-size: 12px; line-height: 19px; } .rec .row .w { font-size: 10px; line-height: normal; }
-  .rec .row hr { margin: 0; border: 0; border-top: 1px dashed var(--grey56); height: 0; }
+  .rec .row hr { margin: 0; border: 0; border-top: 1px dotted #000; height: 0; }
 
   /* 아래 묶음: 내 관찰 기록 · 관찰 정보 · PICO가 알려줘요 · 더 알아보기 */
   .col { left: 0; top: 553.24px; width: 375px; display: flex; flex-direction: column; align-items: center; gap: 30px; }

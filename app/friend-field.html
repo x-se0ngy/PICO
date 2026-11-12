@@ -32,13 +32,9 @@
   .tagnote::before { content: ''; position: absolute; top: 0; bottom: 0; left: 16px; border-left: 1px solid var(--rule-pink); }
   .tagnote small { position: absolute; left: 24px; top: 8px; font-size: 11px; display: flex; gap: 4px; align-items: center; }
   .tagnote p { position: absolute; left: 24px; top: 30px; margin: 0; font-family: var(--font-hand); font-size: 16px; line-height: 24px; }
-  .cta-send { left: 20px; top: 712px; width: 335px; height: 52px; z-index: 5; color: inherit; text-decoration: none; }
-  .cta-send::before { content: ''; position: absolute; inset: 0; background: var(--lime); border: 1px solid var(--ink); transform: rotate(-1.8deg); }
-  .cta-send i { position: absolute; inset: 0; background: url('assets/onboarding/ob-paper-full.jpg') -20px -712px / 375px 812px, var(--paper); background-blend-mode: multiply; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; gap: 6px; font-style: normal; font-weight: 700; font-size: 16px; }
-  .cta-send img { width: 18px; height: 18px; }
 </style>
 </head><body>
-<div class="phone flat" style="--h:812px">
+<div class="phone warm" style="--h:812px">
   <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
@@ -49,7 +45,7 @@
   <svg class="abs" viewBox="0 0 375 812" width="375" height="812" style="left:0;top:0;pointer-events:none" aria-hidden="true"><polyline points="0,418 60,400 120,385 180,374 240,366 300,360 375,358" fill="none" stroke="#211b17" stroke-width="1" stroke-dasharray="5 4"/><polyline points="0,464 60,466 120,470 180,476 240,486 300,498 375,517" fill="none" stroke="#211b17" stroke-width="1" stroke-dasharray="5 4"/></svg>
   <div class="abs field-tex" aria-hidden="true"></div>
   <div id="ffPics"></div>
-  <a class="abs cta-send" href="capture-card.html"><i><span id="ffSend">쪽지 날리기</span><img src="assets/icons/outline/arrow-right.svg" alt=""></i></a>
+  <a class="cta" href="capture-card.html" style="top:707.17px"><span class="cta-face"><span id="ffSend">쪽지 날리기</span> <img src="assets/icons/outline/arrow-right.svg" alt=""></span></a>
   <img class="home-ind" src="assets/common/home-indicator.png" alt="">
 </div>
 <script src="shared.js"></script>

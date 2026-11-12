@@ -281,8 +281,8 @@ img { display: block; }
    나타날 때·사라질 때 모두 디졸브. */
 .ai-wait { position: absolute; inset: 0; z-index: 60;
   animation: pico-dissolve var(--dissolve) var(--ease-slow) both; transition: opacity var(--dissolve) var(--ease-slow); }
-.ai-wait::before { content: ''; position: absolute; inset: 0; opacity: .8;
-  background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px no-repeat, var(--paper); background-blend-mode: multiply; }
+/* 디졸브 바탕은 구김 없는 종이색 한 겹 (Figma 3683:19533 · 21636 · 20923 · 20202) */
+.ai-wait::before { content: ''; position: absolute; inset: 0; opacity: .8; background: var(--paper); }
 .ai-wait.is-out { opacity: 0; }
 .ai-board { position: absolute; left: 96.6px; top: 267.8px; width: 182.395px; height: 183.026px; }
 .ai-lime { position: absolute; left: 5.37px; top: 7.37px; width: 171.48px; height: 171.48px; background: var(--lime); border: 1px dashed var(--ink); }

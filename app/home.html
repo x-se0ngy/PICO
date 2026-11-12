@@ -112,7 +112,8 @@
   @keyframes scrim-out { from { opacity: 1; } to { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .phone > .sheet.place, .phone > .sheet.place.is-closing, .phone > .dim.scrim.is-closing { animation: none; } }
   .home-ind { z-index: 45; }
-  .place .sheet-handle { position: absolute; left: 147.5px; top: 17px; margin: 0; }
+  .sheet.place { background: url('assets/onboarding/ob-paper-bottom.jpg') center bottom / cover no-repeat, var(--paper); background-blend-mode: multiply; }
+  .place .sheet-handle { position: absolute; left: 162.5px; top: 17px; width: 50px; margin: 0; }
   .place-row { position: absolute; left: 19.03px; top: 54px; display: flex; align-items: center; gap: 15px; }
   .place-row .thumb { width: 71.786px; height: 50px; }
   .place-row div { width: 200px; height: 50px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
@@ -157,21 +158,29 @@
   .pf-bug.is-bye .pf-name { opacity: 0; transition: opacity calc(var(--dur) * .6) var(--ease); }
   @keyframes pf-bye { from { transform: scale(1) rotate(0); opacity: 1; } to { transform: scale(.2) rotate(-25deg) translateY(-24px); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .pf-bug.is-bye .pf-body { animation: none; opacity: 0; } }
-  .place.bugsheet { top: 550px; height: 262px; }
-  .bs-tile { position: absolute; left: 19.5px; top: 46px; width: 96px; height: 96px; background: var(--paper); border: 1px solid var(--ink); box-shadow: 4px 5px 0 var(--ink); display: flex; align-items: center; justify-content: center; }
-  .bs-tile img, .bs-tile svg { display: block; width: 80px; height: 80px; object-fit: contain; }
-  .bs-info, .bs-ask { position: absolute; left: 139px; top: 50px; width: 216px; }
-  .bs-info h2 { font-size: 22px; line-height: 26px; white-space: nowrap; }
-  .bs-info p { font-size: 14px; line-height: 18px; margin-top: 8px; }
-  .bs-info .bs-date { font-size: 12px; line-height: 16px; margin-top: 6px; }
+  /* 들판의 친구 정보 시트 (Figma 3683:14910): 높이 264 · 작은 종이 액자 + 이름·종류·한 줄 정보 + 원본 버튼 */
+  .place.bugsheet { top: 548px; height: 264px; }
+  .bs-tile { position: absolute; left: 19.5px; top: 61.7px; width: 72.404px; height: 72.654px; }
+  .bs-tile::before { content: ''; position: absolute; left: 2.38px; top: 3.18px; width: 67.57px; height: 67.57px; background: var(--lime); border: .5px solid var(--ink); box-sizing: border-box; }
+  .bs-tile::after { content: ''; position: absolute; left: 2.55px; top: 2.54px; width: 67.298px; height: 67.57px; background: var(--paper); border: .5px solid var(--ink); box-sizing: border-box; transform: rotate(4.51deg); }
+  .bs-tile > * { position: absolute; z-index: 1; left: 8.16px; top: 9px; width: 54.4px; height: 54.4px; display: block; object-fit: contain; }
+  .bs-tile > svg { overflow: visible; }
+  .bs-tile > img.is-sample { top: 13.28px; height: 47.454px; }
+  .bs-info, .bs-ask { position: absolute; left: 106.9px; width: 250px; }
+  .bs-info { top: 66.5px; display: flex; flex-direction: column; gap: 10px; }
+  .bs-info h2 { font-size: 22px; line-height: 20px; font-weight: 400; white-space: nowrap; }
+  .bs-info p { font-size: 14px; line-height: 12px; margin: 0; white-space: nowrap; }
+  .bs-ask { top: 66px; }
   .bs-ask h2 { font-size: 18px; line-height: 22px; font-weight: 700; }
   .bs-ask p { font-size: 14px; line-height: 18px; margin-top: 8px; }
-  .bs-btns { position: absolute; left: 19.5px; top: 166px; width: 336px; display: flex; gap: 16px; }
-  .bs-btn { flex: 1; height: 50px; background: var(--paper); border: 1px solid var(--ink); box-shadow: 3px 4px 0 var(--ink); font-size: 16px; font-weight: 700; }
-  .bs-btn.is-lime { background: var(--lime); }
-  .bs-btn.is-rose { background: #f8addb; }
-  .bs-btn:active { transform: translate(3px, 4px); box-shadow: none; }
-  .bs-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  /* 버튼은 원본 버튼(PICO/Button/Original): 연두 면 + 뒤에 −1.8° 기울어진 한 장 */
+  .bs-btns { position: absolute; left: 21.06px; top: 154.57px; width: 335px; height: 65.13px; display: flex; gap: 16px; }
+  .bs-btn { position: relative; flex: 1; height: 65.13px; padding: 0; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
+  .bs-btn::before { content: ''; position: absolute; left: -1.1px; top: 0; width: 100%; height: 100%; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box; transform: rotate(-1.8deg); }
+  .bs-btn:not(.is-lime):not(.is-rose)::before, .bs-btn:not(.is-lime):not(.is-rose) .cta-face { background: var(--paper); }
+  .bs-btn.is-rose::before, .bs-btn.is-rose .cta-face { background: #f8addb; }
+  .bs-btn:active .cta-face { transform: rotate(-1.8deg); }
+  .bs-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
   .bugsheet.is-sample #bugDel { display: none; }
   .bs-toast { top: 204px; z-index: 46; }
   .bugsheet:focus { outline: none; }
@@ -268,12 +277,12 @@
       <p id="bugAskSub"></p>
     </div>
     <div class="bs-btns" id="bugBtnsInfo">
-      <button type="button" class="bs-btn" id="bugDel">삭제하기</button>
-      <button type="button" class="bs-btn is-lime" id="bugClose">닫기</button>
+      <button type="button" class="bs-btn" id="bugDel"><span class="cta-face">삭제하기</span></button>
+      <button type="button" class="bs-btn is-lime" id="bugClose"><span class="cta-face">닫기</span></button>
     </div>
     <div class="bs-btns" id="bugBtnsAsk" hidden>
-      <button type="button" class="bs-btn" id="bugNo">취소</button>
-      <button type="button" class="bs-btn is-rose" id="bugYes">삭제하기</button>
+      <button type="button" class="bs-btn" id="bugNo"><span class="cta-face">취소</span></button>
+      <button type="button" class="bs-btn is-rose" id="bugYes"><span class="cta-face">삭제하기</span></button>
     </div>
   </div>
   <div class="toast bs-toast" id="bugToast" role="status" hidden>들판에서 삭제했어요.</div>
@@ -450,7 +459,7 @@
   function openBug(b) {
     clearTimeout(bugTimer);
     curBug = b;
-    $('bugTile').innerHTML = b.mine ? '<img src="' + b.src + '" alt="">' : b.html;
+    $('bugTile').innerHTML = b.mine ? '<img src="' + b.src + '" alt="">' : (b.name === '빨강 점박이' ? '<img class="is-sample" src="assets/capture/card-pico-sample.png" alt="">' : b.html);
     $('bugName').textContent = b.name;
     $('bugSpecies').textContent = b.species || '';
     $('bugSpecies').hidden = !$('bugSpecies').textContent;
