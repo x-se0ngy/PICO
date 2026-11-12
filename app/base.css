@@ -141,7 +141,7 @@ img { display: block; }
 /* 뒤에 한 장 더 (Figma 3261:7742): 71.61° 기울어진 종이가 접을 종이 밑에 깔려 있어요 — 앱 곳곳의 "종이 두 장"과 같은 언어.
    접기 시작하면 밑장은 살짝 사라지고 위 종이만 접혀요. */
 .tab-cam.is-origami::before { transform: rotate(71.61deg); transition: opacity 200ms ease;
-  background: var(--paper-img-top) center / 100% 100%, var(--paper-img-base) center / cover, var(--paper); background-blend-mode: multiply, normal, normal; }
+  background: var(--paper-img-top) center / 100% 100%, var(--paper-img-base) center / cover, var(--paper); background-blend-mode: multiply, luminosity, normal; }
 .tab-cam.is-origami:has(.paper.f1)::before { opacity: 0; }
 .tab-cam .origami { position: absolute; left: -0.683px; top: -0.683px; width: 70px; height: 70px; perspective: 240px; transition: transform 120ms ease; }
 .tab-cam:active .origami { transform: scale(.95); }
@@ -155,7 +155,7 @@ img { display: block; }
 .tab-cam .q.right { left: 25px; transform-origin: 0 50%; transform: translateZ(0px) rotateY(0deg); transition: transform var(--fold-ms) var(--fold-ease); }
 .tab-cam .pface { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 /* 앞면: 50×50 종이 전체에 그림을 깔고 조각(--qx · --qy)마다 제자리 부분만 보여요 */
-.tab-cam .pface.front { background-image: var(--paper-img-top), var(--paper-img-base); background-blend-mode: multiply, normal; background-size: 50px 50px, 50px 108.16px;
+.tab-cam .pface.front { background-image: var(--paper-img-top), var(--paper-img-base); background-blend-mode: multiply, luminosity; background-size: 50px 50px, 50px 108.16px;
   background-position: calc(var(--qx) * -1) calc(var(--qy) * -1), calc(var(--qx) * -1) calc(-29.08px - var(--qy)); background-color: var(--paper); }
 .tab-cam .pface svg { position: absolute; display: block; }
 .tab-cam .pface.back { transform: rotateY(180deg); }
