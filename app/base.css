@@ -201,7 +201,7 @@ img { display: block; }
 .step-title.cap .q { display: block; font-size: 16px; line-height: 22px; }
 .step-title.cap .sub { line-height: 20px; }
 /* 이름표: 아래 '다음' 버튼(.cta)과 같은 모양 — 연두 종이 + 뒤에 살짝 기울어진 연두 종이 한 장 */
-.kind { position: relative; isolation: isolate; width: fit-content; height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 17px; font-weight: 700; line-height: 1; white-space: nowrap; }
+.kind { position: relative; isolation: isolate; width: fit-content; height: 26px; padding: 0 11px; display: flex; align-items: center; font-size: 14px; font-weight: 400; line-height: 1; white-space: nowrap; }
 .kind::before, .kind::after { content: ""; position: absolute; top: 0; height: 100%; width: 100%; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box; }
 .kind::before { left: -1.1px; transform: rotate(-1.8deg); z-index: -2; }
 .kind::after { left: 0; z-index: -1; }
