@@ -71,6 +71,7 @@
 <script src="shared.js"></script>
 <script src="photo.js"></script>
 <script src="field.js"></script>
+<script src="stickers.js"></script>
 <script>
   document.getElementById('refToggle').addEventListener('click', function () {
     var on = this.getAttribute('aria-pressed') !== 'true';
@@ -79,11 +80,13 @@
   });
 </script>
 <script>
+  // 색연필 목록. base = 관찰 색 8개(PicoLens.COLORS) 중 같은/가까운 번호 (없으면 -1), s = 일기 단어로 쓰는 말.
+  // 색연필을 늘리거나 바꿀 땐 여기에 한 줄만 더하면 돼요 (그림 이미지는 assets/capture/s4-crayon-<name>.png).
   var PALETTE = [
-    { name: 'red', label: '빨강', c: '#e32d3d' }, { name: 'orange', label: '주황', c: '#fca436' },
-    { name: 'yellow', label: '노랑', c: '#f4d159' }, { name: 'leaf', label: '연두', c: '#a7c049' },
-    { name: 'teal', label: '청록', c: '#48b2bb' }, { name: 'blue', label: '파랑', c: '#2c70d1' },
-    { name: 'purple', label: '보라', c: '#6b4eac' }, { name: 'gray', label: '회색', c: '#4e4e4e' }
+    { name: 'red', label: '빨강', c: '#e32d3d', base: 0, s: '빨간색이에요.' }, { name: 'orange', label: '주황', c: '#fca436', base: 1, s: '주황색이에요.' },
+    { name: 'yellow', label: '노랑', c: '#f4d159', base: 2, s: '노란색이에요.' }, { name: 'leaf', label: '연두', c: '#a7c049', base: 3, s: '연두색이에요.' },
+    { name: 'teal', label: '청록', c: '#48b2bb', base: -1, s: '청록색이에요.' }, { name: 'blue', label: '파랑', c: '#2c70d1', base: 4, s: '파란색이에요.' },
+    { name: 'purple', label: '보라', c: '#6b4eac', base: -1, s: '보라색이에요.' }, { name: 'gray', label: '회색', c: '#4e4e4e', base: -1, s: '회색이에요.' }
   ];
   var color = PALETTE[0].c, box = document.getElementById('crayons');
   // 색연필은 한 번만 만들고 눌림 상태(aria-pressed)만 바꿔요.
@@ -204,10 +207,23 @@
   // 다음: 그린 그림을 PICO 스티커로 저장 (가장 많이 쓴 색 이름은 PICO 이름에 써요)
   document.querySelector('.cta').addEventListener('click', function () {
     finishFill();
-    var top = null, n = 0;
-    PALETTE.forEach(function (p) { if ((used[p.c] || 0) > n) { n = used[p.c]; top = p.label; } });
+    var top = null, n = 0, topPal = null;
+    PALETTE.forEach(function (p) { if ((used[p.c] || 0) > n) { n = used[p.c]; top = p.label; topPal = p; } });
     window.PicoField && PicoField.saveDraft(cv, top);
+    saveColor(topPal);
   });
+  // 02에서는 색을 묻지 않아요: 가장 많이 쓴 색연필이 이 곤충의 색 답이 돼요 (아무것도 안 그렸으면 색 답 없음)
+  function saveColor(pal) {
+    if (!window.PicoLens) return;
+    var a = PicoLens.answers(), c = PicoLens.custom(), COLOR = 0;
+    if (!pal) { delete a[COLOR]; delete c[COLOR]; }
+    else {
+      a[COLOR] = pal.base;                                   // 8색 중 가까운 번호 (없으면 -1 → 꼼꼼 관찰 계산에서는 빠져요)
+      if (pal.base > -1 && PicoLens.COLORS[pal.base].n === pal.label) delete c[COLOR];   // 8색과 똑같으면 기본 말을 써요
+      else c[COLOR] = { t: pal.s, hex: pal.c, name: pal.label, exact: false };
+    }
+    PicoLens.saveAnswers(a); PicoLens.saveCustom(c);
+  }
 </script>
 <span id="pico-ready"></span>
 </body></html>
