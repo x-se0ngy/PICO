@@ -8,7 +8,7 @@
     else { p.style.transform = ''; }
   }
   // Pages taller than 812 (--h) scroll inside the frame. Fixed layers stay direct children of .phone.
-  var FIXED = '.top[data-fixed], .tabbar, .home-ind, .dim, .sheet, .modal, .toast, .ov, .ox, .ox-dim, [data-fixed], script';
+  var FIXED = '.top[data-fixed], .tabbar, .home-ind, .dim, .sheet, .modal, .toast, .tcard, .ov, .ox, .ox-dim, [data-fixed], script';
   function wrap() {
     var p = document.querySelector('.phone'); if (!p || p.querySelector(':scope > .scroll')) return;
     var hv = parseFloat(getComputedStyle(p).getPropertyValue('--h')) || 812;
@@ -182,14 +182,19 @@
     ph.appendChild(dim); ph.appendChild(box); box.querySelector('.ox-no').focus();
   };
   // 알림 카드 (Figma 3742:32594 · 3742:32576): 화면 아래쪽에 잠깐 떴다가 사라져요. picoToast('글', 머무는 ms)
+  // picoToastFill(요소, '글') — 화면에 미리 놓아 둔 <div class="tcard is-fixed" hidden>에 같은 모양을 채워요 (숨김은 hidden으로 켜고 꺼요)
+  window.picoToastFill = function (el, text) {
+    el.innerHTML = '<img class="tcard-back" src="assets/toast/toast-back.svg" alt=""><img class="tcard-face" src="assets/toast/toast-front.svg" alt="">' +
+      '<div class="tcard-row"><span class="tcard-ico"><img src="assets/toast/toast-alert.svg" alt=""></span><span class="tcard-text"></span></div>';
+    el.querySelector('.tcard-text').textContent = text;
+    return el;
+  };
   var tcardEl = null, tcardTimer = 0;
   window.picoToast = function (text, ms) {
     var ph = document.querySelector('.phone'); if (!ph) return;
     clearTimeout(tcardTimer); if (tcardEl) tcardEl.remove();
     var el = tcardEl = document.createElement('div'); el.className = 'tcard'; el.setAttribute('role', 'status');
-    el.innerHTML = '<img class="tcard-back" src="assets/toast/toast-back.svg" alt=""><img class="tcard-face" src="assets/toast/toast-front.svg" alt="">' +
-      '<div class="tcard-row"><span class="tcard-ico"><img src="assets/toast/toast-alert.svg" alt=""></span><span class="tcard-text"></span></div>';
-    el.querySelector('.tcard-text').textContent = text;
+    picoToastFill(el, text);
     ph.appendChild(el);
     tcardTimer = setTimeout(function () {
       el.classList.add('is-out');

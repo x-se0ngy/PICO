@@ -52,11 +52,6 @@
   .pf-win img { width: 100%; height: 100%; object-fit: contain; }
   /* 그린 그림이 없을 때(바로 이 화면을 열었을 때)는 시안의 접은 무당벌레 */
   .pf-sample { position: absolute; left: 188.51px; top: 422.96px; width: 48.541px; height: 43.641px; }
-  /* 3.2.1 save toast */
-  .save-toast { position: absolute; left: 39.71px; top: 640.68px; width: 295.33px; height: 50px; z-index: 42; transition: opacity var(--dur) var(--ease); }
-  .save-toast::before { content: ''; position: absolute; left: 5.35px; top: 5.99px; width: 290px; height: 45px; background: var(--ink); border: 1px solid var(--ink); box-sizing: border-box; }
-  .save-toast-face { position: absolute; left: 0; top: 0; width: 290px; height: 45px; background: #00b7ff; border: 1px solid var(--ink); display: flex; align-items: center; gap: 10px; padding: 1px 0 0 14px; font-size: 14px; line-height: normal; white-space: nowrap; }
-  .save-toast-face img { width: 24px; height: 24px; }
 </style>
 </head><body>
 <div class="phone soft" style="--h:812px">
@@ -94,9 +89,7 @@
   <img class="note-pink" src="assets/capture/card-note-pink.svg" alt="">
   <div class="diary-lines" id="diaryLines"></div>
 
-  <div class="save-toast" id="toast" role="status" hidden>
-    <div class="save-toast-face"><img src="assets/capture/card-toast-icon.png" alt=""><span>사진첩에 카드를 저장했어요.</span></div>
-  </div>
+  <div class="tcard is-fixed" id="toast" role="status" hidden></div>
 
   <!-- 종이로 접는 중 (Figma Warm-Up 촬영 8~10): html.fold-pending 일 때만 보여요 -->
   <div class="ai-wait fold-wait" id="foldWait" role="status" aria-live="polite">
@@ -230,7 +223,7 @@
     }, leave);
   })();
 
-  var toast = document.getElementById('toast'), timer;
+  var toast = picoToastFill(document.getElementById('toast'), '사진첩에 카드를 저장했어요.'), timer;
   function showToast(ms) {
     toast.hidden = false; clearTimeout(timer);
     if (ms) timer = setTimeout(function () { toast.hidden = true; }, ms);

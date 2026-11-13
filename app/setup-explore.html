@@ -35,11 +35,6 @@
   /* disabled CTA look (1.3.1). Still clickable so the toast can explain why. */
   /* look lives in base.css (.cta.is-off) */
 
-  /* info toast (1.3.3) — blue card with offset shadow, not the base black pill */
-  .toast.toast--info { left: 39.83px; top: 640.68px; transform: none; width: 290px; height: 45px; padding: 0 0 0 13.17px;
-    gap: 10px; background: #00b7ff; color: var(--ink); border: 1px solid var(--ink); box-shadow: 5.34px 4.99px 0 var(--ink); }
-  .toast--info img { width: 24px; height: 24px; }
-
 </style>
 </head><body>
 <div class="phone soft setup dim-status" style="--h:812px">
@@ -59,7 +54,7 @@
 
   <div class="pick-grid" id="cards" role="radiogroup" aria-label="곤충을 얼마나 아는지 (하나 고르기)"></div>
 
-  <div class="toast toast--info" id="toast" role="status" hidden><img src="assets/onboarding/toast-alert.png" alt=""><span>답변을 선택해주세요.</span></div>
+  <div class="tcard is-fixed" id="toast" role="status" hidden></div>
 
   <a class="skip-link" href="home.html">건너뛰기</a>
 
@@ -78,7 +73,7 @@
   var state = document.documentElement.dataset.state;
   var picked = state === 'picked' ? [0] : []; // nothing picked until the child chooses → grey CTA
   var grid = document.getElementById('cards'), next = document.getElementById('next'),
-      arrow = document.getElementById('nextArrow'), toast = document.getElementById('toast'), toastTimer;
+      arrow = document.getElementById('nextArrow'), toast = picoToastFill(document.getElementById('toast'), '답변을 선택해주세요.'), toastTimer;
   var QUIT = '프로필 설정을 중단할까요?';
   function openQuit() { if (!document.querySelector('.phone > .ox')) window.picoConfirm(QUIT, 'home.html'); }
 
