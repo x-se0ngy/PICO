@@ -16,10 +16,8 @@
 <link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
-  /* 사진이 화면 맨 위부터 가로 끝까지(375×483) 깔려요. 머리말 자리(위쪽)는 종이색 막으로 연하게 덮어서 글자가 읽혀요 (02·04와 같아요) */
-  .photo { position: absolute; left: 0; top: 0; width: 375px; height: 483px; background: transparent; border: 0 solid var(--ink); border-bottom-width: 1px; }
-  .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(255, 252, 228, .6) 0, rgba(255, 252, 228, .6) 236px, rgba(255, 252, 228, 0) 272px); pointer-events: none; }
-  .kind.step-kind, .progress, .step-title { z-index: 3; }
+  /* 사진 칸이 가로 끝까지(375×239) 이어져요. 머리말은 깨끗한 종이 위에 두고 사진은 y 244부터 시작해요 (02와 같아요) */
+  .photo { position: absolute; left: 0; top: 244px; width: 375px; height: 239px; background: transparent; border: 0 solid var(--ink); border-width: 1px 0; }
   .photo.has-photo { background-position: center; background-size: cover; background-repeat: no-repeat; }
   .label { position: absolute; left: 20px; top: 490.5px; font-size: 14px; line-height: normal; white-space: nowrap; }
   /* 단어가 많아도 한 줄 (옆으로 밀어 보기) — 일기 칸이 바로 아래라서 줄바꿈하지 않아요 */
