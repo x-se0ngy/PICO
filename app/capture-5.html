@@ -16,20 +16,29 @@
 <link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
-  /* 그림판: 아이들 손가락이 작은 칸에 갇히지 않게 화면 가로 끝까지(375) 크게 — 위·아래 선만 있어요 */
-  .board { position: absolute; left: 0; top: 244px; width: 375px; height: 340px; background: transparent; border: 1px solid var(--ink); border-width: 1px 0; z-index: 2; }
-  /* 사진이 처음부터 연하게 비쳐 보여요(따라 그리기). 사진 버튼을 누르면 숨기고 빈 종이로 그려요.
-     저장되는 건 그린 선뿐이라 사진은 그림에 섞이지 않아요. */
-  .board .ref { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .4; transition: opacity var(--dur) var(--ease); pointer-events: none; }
+  /* 사진이 그림판이에요: 사진을 화면 맨 위(상태바 뒤)부터 색연필 위(y 588)까지 깔고, 상태바·뒤로가기 줄 아래(y 118~588, 375×470)에 바로 그려요.
+     사진이 연하게 비쳐 보여요(따라 그리기). 사진 버튼을 누르면 숨기고 빈 종이로 그려요. 저장되는 건 그린 선뿐이라 사진은 그림에 섞이지 않아요. */
+  .board { position: absolute; left: 0; top: 118px; width: 375px; height: 470px; background: transparent; z-index: 2; }
+  .board::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--ink); pointer-events: none; }
+  .board .ref { position: absolute; left: 0; top: -118px; width: 375px; height: 588px; background-size: cover; background-position: center; opacity: .4; transition: opacity var(--dur) var(--ease); pointer-events: none; }
   .board.hide-ref .ref { opacity: 0; }
-  .board canvas { position: relative; display: block; width: 375px; height: 338px; touch-action: none; cursor: crosshair; }
-  /* Figma Warm-Up 촬영 5: 색연필 8자루(32.685 폭, 간격 4)가 (22, 601)부터 끝까지 다 보이고, 그 오른쪽 10px에
-     아이콘 두 개(사진 보기 · 모두 지우기)가 아래쪽 맞춤으로 세로로 놓여요. */
-  .crayons { position: absolute; left: 22px; top: 601px; height: 92.18px; display: flex; gap: 4px; }
+  .board canvas { position: relative; display: block; width: 375px; height: 470px; touch-action: none; cursor: crosshair; transition: opacity var(--dur) var(--ease); }
+  /* 무지개 색연필로 색 뽑는 중: 사진을 진하게(원래 색 그대로) 보여 주고, 그린 그림은 연하게 */
+  .board.is-picking .ref { opacity: 1; }
+  .board.is-picking canvas { opacity: .3; }
+  .pick-hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); margin: 0; padding: 7px 14px; background: var(--paper); border: 1px solid var(--ink); font-size: 14px; line-height: 1; white-space: nowrap; display: none; pointer-events: none; z-index: 3; }
+  .board.is-picking .pick-hint { display: block; }
+  .pick-ring { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: var(--c); border: 3px solid #fff; box-shadow: 0 0 0 1.5px #111, inset 0 0 0 1.5px #111; pointer-events: none; z-index: 3; transition: opacity var(--dur) var(--ease); }
+  .pick-ring.out { opacity: 0; }
+  /* 머리말은 사진 위에 얹혀요 — 손가락은 글자를 통과해서 그림판에 닿아요 */
+  .kind.step-kind, .progress, .step-title { z-index: 3; pointer-events: none; }
+  /* Figma Warm-Up 촬영 5: 색연필(32.685 폭, 간격 4)이 아래에 한 줄. 무지개 색연필까지 9자루라서 가운데 맞춤해요 */
+  .crayons { position: absolute; left: 24.4px; top: 601px; height: 92.18px; display: flex; gap: 4px; }
   .crayon { width: 32.685px; height: 92.18px; position: relative; flex: none; transition: transform var(--dur) var(--ease); }
   .crayon img { position: absolute; left: -.2px; top: 0; width: 33.6px; height: auto; max-width: none; }
   .crayon[aria-pressed="true"] { transform: translateY(-12px); }
-  .tools { position: absolute; left: 321.5px; top: 619.18px; display: flex; flex-direction: column; gap: 10px; }
+  /* 아이콘 두 개(사진 보기 · 모두 지우기)는 그림판 오른쪽 아래에 떠 있어요 */
+  .tools { position: absolute; left: 323px; top: 498px; display: flex; flex-direction: column; gap: 10px; z-index: 4; }
   .tools button, .tools img { display: block; width: 32px; height: 32px; }
   .ref-toggle img { transition: opacity var(--dur) var(--ease); }
   .ref-toggle[aria-pressed="true"] { background: var(--brand-soft); outline: 1px solid var(--ink); }
@@ -56,7 +65,7 @@
     <p class="sub">자유롭게 그려 보세요. 똑같지 않아도 괜찮아요.</p>
   </div>
 
-  <div class="board" id="board"><div class="ref" data-photo></div><canvas id="pad" width="375" height="338" aria-label="그림판"></canvas></div>
+  <div class="board" id="board"><div class="ref" data-photo></div><canvas id="pad" width="375" height="470" aria-label="그림판"></canvas><p class="pick-hint" id="pickHint">사진을 눌러 색을 뽑아요</p></div>
 
   <div class="crayons" id="crayons" role="radiogroup" aria-label="색연필"></div>
   <div class="tools">
@@ -88,28 +97,132 @@
     { name: 'teal', label: '청록', c: '#48b2bb', base: -1, s: '청록색이에요.' }, { name: 'blue', label: '파랑', c: '#2c70d1', base: 4, s: '파란색이에요.' },
     { name: 'purple', label: '보라', c: '#6b4eac', base: -1, s: '보라색이에요.' }, { name: 'gray', label: '회색', c: '#4e4e4e', base: -1, s: '회색이에요.' }
   ];
-  var color = PALETTE[0].c, box = document.getElementById('crayons');
+  // 무지개 색연필: 누르고 사진을 눌러 색을 뽑으면 그 색 색연필이 돼요 (색연필 끝이 뽑은 색으로 바뀌어요)
+  var RAINBOW = { name: 'rainbow', label: '무지개', rainbow: true };
+  var CRAYONS = PALETTE.concat([RAINBOW]);
+  var W = 375, H = 470, TOP = 118;   // 그림판 크기 (CSS px) · 사진은 그림판보다 TOP만큼 위에서부터 깔려 있어요
+  var pen = PALETTE[0], picked = null, color = pen.c, picking = false, pickDown = false, ring = null;
+  var board = document.getElementById('board'), box = document.getElementById('crayons');
+
   // 색연필은 한 번만 만들고 눌림 상태(aria-pressed)만 바꿔요.
   // 누를 때마다 새로 그리면 transition이 끊겨서 집어 올리는 모션이 안 보여요.
-  box.innerHTML = PALETTE.map(function (p) {
-    return '<button class="crayon" type="button" role="radio" data-c="' + p.c + '" aria-pressed="' + (p.c === color) + '" aria-checked="' + (p.c === color) + '" aria-label="' + p.label + '">' +
-      '<img src="assets/capture/s4-crayon-' + p.name + '.png" alt=""></button>';
+  box.innerHTML = CRAYONS.map(function (p, i) {
+    return '<button class="crayon" type="button" role="radio" data-i="' + i + '" aria-pressed="' + (p === pen) + '" aria-checked="' + (p === pen) + '" aria-label="' + (p.rainbow ? '무지개 (사진에서 색 뽑기)' : p.label) + '">' +
+      '<img src="assets/capture/s4-crayon-' + p.name + '.png" alt=""' + (p.rainbow ? ' id="rainbowImg"' : '') + '></button>';
   }).join('');
-  function pick(c) {
-    color = c;
+  function selectPen(p) {
+    var again = pen === p;
+    finishFill();
+    pen = p;
     Array.prototype.forEach.call(box.children, function (b) {
-      var on = b.dataset.c === c;
+      var on = CRAYONS[+b.dataset.i] === p;
       b.setAttribute('aria-pressed', on); b.setAttribute('aria-checked', on);
     });
+    if (p.rainbow) { if (!picked || again) enterPick(); else exitPick(); }   // 처음이거나 한 번 더 누르면 색을 새로 뽑아요
+    else exitPick();
+    color = p.rainbow ? (picked && picked.hex) : p.c;
   }
-  box.addEventListener('click', function (e) { var b = e.target.closest('.crayon'); if (b) pick(b.dataset.c); });
+  box.addEventListener('click', function (e) { var b = e.target.closest('.crayon'); if (b) selectPen(CRAYONS[+b.dataset.i]); });
+
+  // ---- 그린 색 기록: 가장 많이 쓴 색이 이 곤충의 색 답이 돼요 ----
+  var used = {}, infos = {};   // 색 이름별로 쓴 횟수 · 그 색의 설명 (뽑은 색은 가까운 이름으로 묶어요)
+  function curInfo() {
+    if (!pen.rainbow) return { label: pen.label, base: pen.base, s: pen.s, hex: pen.c };
+    return { label: picked.name, base: picked.base, s: picked.s, hex: picked.hex };
+  }
+  function bump() { var i = curInfo(); used[i.label] = (used[i.label] || 0) + 1; if (!infos[i.label]) infos[i.label] = i; }
+
+  // ---- 사진에서 색 뽑기 (무지개 색연필) ----
+  var pix = null, map = null;
+  (function loadPix() {
+    var im = new Image();
+    im.onload = function () {
+      try {
+        var sc = Math.min(1, 640 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(im.naturalWidth * sc)); c.height = Math.max(1, Math.round(im.naturalHeight * sc));
+        var g = c.getContext('2d'); g.drawImage(im, 0, 0, c.width, c.height);
+        pix = { w: c.width, h: c.height, d: g.getImageData(0, 0, c.width, c.height).data };
+        map = PicoLens.cover(W, H + TOP, c.width, c.height);   // 사진은 화면 맨 위부터 그림판 끝까지 가득(cover)으로 깔려 있어요
+      } catch (err) { pix = null; }
+    };
+    im.src = (window.PicoPhoto && PicoPhoto.get()) || (window.PicoPhoto ? PicoPhoto.FALLBACK : '');
+  })();
+  function hsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn, h = 0, s = 0;
+    if (d) { s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
+    return { h: h, s: s, l: l };
+  }
+  // 뽑은 색 → 이름 · 가까운 8색 번호(없으면 -1) · 일기 단어
+  function colorName(r, g, b) {
+    var c = hsl(r, g, b), h = c.h, s = c.s, l = c.l, n, base = -1;
+    if (l < 0.12) { n = '검정'; base = 6; }
+    else if (s < 0.12) { if (l > 0.85) { n = '흰색'; base = 7; } else if (l < 0.3) { n = '검정'; base = 6; } else { n = '회색'; } }
+    else if (l > 0.9) { n = '흰색'; base = 7; }
+    else if (h < 25 || h >= 345) { if (l < 0.3 || (l < 0.4 && s < 0.5)) { n = '갈색'; base = 5; } else if (l > 0.72) { n = '분홍'; } else { n = '빨강'; base = 0; } }   // 어둡고 탁한 빨강·주황은 갈색
+    else if (h < 45) { if (l < 0.3 || (l < 0.5 && s < 0.55)) { n = '갈색'; base = 5; } else { n = '주황'; base = 1; } }
+    else if (h < 70) { if (l < 0.3 || (l < 0.4 && s < 0.5)) { n = '갈색'; base = 5; } else { n = '노랑'; base = 2; } }
+    else if (h < 100) { n = '연두'; base = 3; }
+    else if (h < 170) { n = '초록'; base = 3; }
+    else if (h < 205) { n = '하늘'; base = 4; }
+    else if (h < 260) { n = '파랑'; base = 4; }
+    else if (h < 300) { n = '보라'; }
+    else { n = l > 0.45 ? '분홍' : '보라'; }
+    var exact = base > -1 && PicoLens.COLORS[base].n === n;
+    var sent = exact ? PicoLens.COLORS[base].s : (n === '하늘' ? '하늘색이에요.' : n + (n === '연두' || n === '보라' || n === '분홍' || n === '회색' ? '색이에요.' : '이에요.'));
+    return { name: n, base: base, sent: sent };
+  }
+  // 무지개 색연필 끝을 뽑은 색으로 다시 칠해요 (파랑 색연필 그림에서 파랑 부분만 새 색으로: 검은 테두리와 섞인 가장자리까지 비율대로)
+  var tpl = new Image(), tplReady = false, tintRaf = 0;
+  tpl.onload = function () { tplReady = true; if (picked) tint(); };
+  tpl.src = 'assets/capture/s4-crayon-blue.png';
+  function tint() {
+    if (!tplReady || !picked || tintRaf) return;
+    tintRaf = requestAnimationFrame(function () {
+      tintRaf = 0;
+      try {
+        var c = document.createElement('canvas'); c.width = tpl.naturalWidth; c.height = tpl.naturalHeight;
+        var g = c.getContext('2d'); g.drawImage(tpl, 0, 0);
+        var im = g.getImageData(0, 0, c.width, c.height), d = im.data, ob = [44, 112, 209], oo = ob[0] * ob[0] + ob[1] * ob[1] + ob[2] * ob[2], nw = [picked.r, picked.g, picked.b];
+        for (var i = 0; i < d.length; i += 4) {
+          if (!d[i + 3]) continue;
+          var k = (d[i] * ob[0] + d[i + 1] * ob[1] + d[i + 2] * ob[2]) / oo;
+          var er = Math.sqrt(Math.pow(d[i] - k * ob[0], 2) + Math.pow(d[i + 1] - k * ob[1], 2) + Math.pow(d[i + 2] - k * ob[2], 2));
+          if (er < 14 && k > 0.02 && k <= 1.06) { k = Math.min(1, k); d[i] = nw[0] * k; d[i + 1] = nw[1] * k; d[i + 2] = nw[2] * k; }
+        }
+        g.putImageData(im, 0, 0);
+        document.getElementById('rainbowImg').src = c.toDataURL('image/png');
+      } catch (err) {}
+    });
+  }
+  function enterPick() { finishFill(); picking = true; board.classList.add('is-picking'); }
+  function exitPick() {
+    picking = false; pickDown = false; board.classList.remove('is-picking');
+    if (ring) { var r = ring; ring = null; r.classList.add('out'); setTimeout(function () { r.remove(); }, 400); }
+  }
+  function pickAt(e) {
+    if (!pix || !map) return;
+    var r = cv.getBoundingClientRect(), x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
+    var uv = map.toImg(x, y + TOP), u = Math.max(0, Math.min(1, uv.u)), v = Math.max(0, Math.min(1, uv.v));
+    var cx = Math.min(pix.w - 1, Math.round(u * (pix.w - 1))), cy = Math.min(pix.h - 1, Math.round(v * (pix.h - 1)));
+    var R = 0, G = 0, B = 0, n = 0;
+    for (var yy = -2; yy <= 2; yy++) for (var xx = -2; xx <= 2; xx++) {   // 5×5칸 평균으로 한 점의 잡티를 줄여요
+      var X = Math.max(0, Math.min(pix.w - 1, cx + xx)), Y = Math.max(0, Math.min(pix.h - 1, cy + yy)), o = (Y * pix.w + X) * 4;
+      R += pix.d[o]; G += pix.d[o + 1]; B += pix.d[o + 2]; n++;
+    }
+    R = Math.round(R / n); G = Math.round(G / n); B = Math.round(B / n);
+    var cn = colorName(R, G, B), hex = '#' + [R, G, B].map(function (q) { return ('0' + q.toString(16)).slice(-2); }).join('');
+    picked = { hex: hex, r: R, g: G, b: B, name: cn.name, base: cn.base, s: cn.sent };
+    color = hex; tint();
+    if (!ring) { ring = document.createElement('i'); ring.className = 'pick-ring'; board.appendChild(ring); }
+    ring.style.left = x + 'px'; ring.style.top = y + 'px'; ring.style.setProperty('--c', hex);
+  }
 
   // Drawing pad (pointer events, HiDPI)
-  var cv = document.getElementById('pad'), ctx = cv.getContext('2d'), dpr = window.devicePixelRatio || 1;
-  var W = 375, H = 338;   // 그림판 크기 (CSS px)
+  var cv = document.getElementById('pad'), ctx = cv.getContext('2d'), dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
   ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5;
-  var drawing = false, last = null, used = {}, pts = [];
+  var drawing = false, last = null, pts = [];
   function pt(e) {
     var r = cv.getBoundingClientRect();
     return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
@@ -166,7 +279,7 @@
     var f = { shapes: shapes, color: color, snap: ctx.getImageData(0, 0, cv.width, cv.height), t0: 0, raf: 0 };
     var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var dur = still ? 0 : (window.picoDur ? picoDur() : 500);
-    used[color] = (used[color] || 0) + 1;
+    bump();
     if (!dur) { paint(f, 1); return; }
     fill = f;
     f.raf = requestAnimationFrame(function step(now) {
@@ -180,17 +293,23 @@
 
   cv.addEventListener('pointerdown', function (e) {
     finishFill();
+    if (picking) {                                  // 무지개 색연필: 사진을 눌러 색을 뽑아요 (누른 채 끌면 색이 바뀌어요)
+      pickDown = true; try { cv.setPointerCapture(e.pointerId); } catch (err) {} pickAt(e); return;
+    }
+    if (!color) return;
     drawing = true; last = pt(e); pts = [last]; cv.setPointerCapture(e.pointerId);
-    used[color] = (used[color] || 0) + 1;
+    bump();
     ctx.fillStyle = color; ctx.beginPath(); ctx.arc(last.x, last.y, ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill();
   });
   cv.addEventListener('pointermove', function (e) {
+    if (pickDown) { pickAt(e); return; }
     if (!drawing) return;
     var p = pt(e); ctx.strokeStyle = color;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p;
     var q = pts[pts.length - 1]; if (Math.hypot(p.x - q.x, p.y - q.y) >= 2) pts.push(p);
   });
   function end(close) {
+    if (pickDown) { if (picked) exitPick(); else pickDown = false; return; }   // 색을 뽑았으면 바로 그릴 수 있어요
     if (!drawing) return;
     drawing = false;
     var shapes = close ? closedShapes(pts) : [];
@@ -201,29 +320,30 @@
   cv.addEventListener('pointercancel', function () { end(false); });
   document.getElementById('clear').addEventListener('click', function () {
     if (fill) { cancelAnimationFrame(fill.raf); fill = null; }
-    ctx.clearRect(0, 0, W, H); used = {};
+    ctx.clearRect(0, 0, W, H); used = {}; infos = {};
   });
 
   // 다음: 그린 그림을 PICO 스티커로 저장 (가장 많이 쓴 색 이름은 PICO 이름에 써요)
   document.querySelector('.cta').addEventListener('click', function () {
     finishFill();
-    var top = null, n = 0, topPal = null;
-    PALETTE.forEach(function (p) { if ((used[p.c] || 0) > n) { n = used[p.c]; top = p.label; topPal = p; } });
+    var top = null, n = 0;
+    Object.keys(used).forEach(function (k) { if (used[k] > n) { n = used[k]; top = k; } });
     window.PicoField && PicoField.saveDraft(cv, top);
-    saveColor(topPal);
+    saveColor(top ? infos[top] : null);
   });
-  // 02에서는 색을 묻지 않아요: 가장 많이 쓴 색연필이 이 곤충의 색 답이 돼요 (아무것도 안 그렸으면 색 답 없음)
-  function saveColor(pal) {
+  // 02에서는 색을 묻지 않아요: 가장 많이 쓴 색이 이 곤충의 색 답이 돼요 (아무것도 안 그렸으면 색 답 없음)
+  function saveColor(inf) {
     if (!window.PicoLens) return;
     var a = PicoLens.answers(), c = PicoLens.custom(), COLOR = 0;
-    if (!pal) { delete a[COLOR]; delete c[COLOR]; }
+    if (!inf) { delete a[COLOR]; delete c[COLOR]; }
     else {
-      a[COLOR] = pal.base;                                   // 8색 중 가까운 번호 (없으면 -1 → 꼼꼼 관찰 계산에서는 빠져요)
-      if (pal.base > -1 && PicoLens.COLORS[pal.base].n === pal.label) delete c[COLOR];   // 8색과 똑같으면 기본 말을 써요
-      else c[COLOR] = { t: pal.s, hex: pal.c, name: pal.label, exact: false };
+      a[COLOR] = inf.base;                                   // 8색 중 가까운 번호 (없으면 -1 → 꼼꼼 관찰 계산에서는 빠져요)
+      if (inf.base > -1 && PicoLens.COLORS[inf.base].n === inf.label) delete c[COLOR];   // 8색과 똑같으면 기본 말을 써요
+      else c[COLOR] = { t: inf.s, hex: inf.hex, name: inf.label, exact: false };
     }
     PicoLens.saveAnswers(a); PicoLens.saveCustom(c);
   }
 </script>
+
 <span id="pico-ready"></span>
 </body></html>
