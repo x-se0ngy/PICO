@@ -155,10 +155,12 @@
   .pf-bug.is-fly .pf-body { animation-name: pf-flutter; animation-duration: .9s; }
   .pf-bug.is-hop.is-moving .pf-body { animation-name: pf-hop; animation-duration: .7s; }
   .pf-bug.is-poke .pf-flip { animation: pf-poke .5s ease; }
+  .pf-bug.is-knock .pf-body { animation: pf-knock .52s ease-out both; }   /* 눌리면 납작해졌다가 튕겨 나가며 한 바퀴 흔들 */
   .pf-bug.is-arrive .pf-body { animation: pf-drop 1.2s cubic-bezier(.3,1.4,.5,1) both; }
   @keyframes pf-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   @keyframes pf-flutter { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
   @keyframes pf-hop { 0%,100% { transform: translateY(0); } 40% { transform: translateY(-14px); } }
+  @keyframes pf-knock { 0% { transform: scale(1); } 14% { transform: scale(1.22,.78); } 40% { transform: translateY(-16px) rotate(18deg) scale(1.08); } 70% { transform: translateY(0) rotate(-8deg) scale(1.04,.94); } 100% { transform: none; } }
   @keyframes pf-poke { 0% { transform: scale(1); } 40% { transform: scale(1.18) rotate(-6deg); } 100% { transform: scale(1); } }
   @keyframes pf-drop { 0% { transform: translateY(-260px) scale(.6) rotate(-20deg); opacity: 0; } 30% { opacity: 1; } 100% { transform: none; } }
   @media (prefers-reduced-motion: reduce) { .pf-body, .pf-bug.is-arrive .pf-body { animation: none; } }
@@ -519,7 +521,7 @@
   // 홈은 항상 내 들판으로 열려요. 내 근처는 토글이나 ?state=radar|picked 로만.
   setMode('field');
   if (st === 'sheet') { setMode('field'); openSheet(); }
-  if (st === 'bug') setTimeout(function () { var el = document.querySelector('.pf-bug.is-mine') || document.querySelector('.pf-bug'); if (el) el.click(); }, 80);
+  if (st === 'bug') setTimeout(function () { var el = document.querySelector('.pf-bug.is-mine') || document.querySelector('.pf-bug'); if (el) { el.click(); el.click(); } }, 80);   // 한 번 누르면 튕기니, 정보 시트를 바로 보려면 두 번
 })();
 </script>
 <span id="pico-ready"></span>

@@ -45,7 +45,10 @@
   .sum-n b { font-size: 40px; line-height: 40px; }
   .sum-n span { font-size: 15px; line-height: normal; }
   .tiers { display: flex; gap: 10px; }
-  .tier { display: flex; flex-direction: column; gap: 5px; width: 97.34px; }
+  .tier { display: flex; flex-direction: column; gap: 5px; width: 97.34px; text-align: left; -webkit-tap-highlight-color: transparent; transition: opacity var(--dur) var(--ease); }
+  /* 단계를 누르면 그 색 곤충만 보여요 — 고른 단계만 또렷하게, 나머지는 흐리게 (다시 누르면 전체) */
+  .tiers.is-filtered .tier:not([aria-pressed="true"]) { opacity: .35; }
+  .tier:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
   /* Figma 3279:24356: 제목 줄 21.41px · 막대는 5px 아래 바깥 높이 10px (합 36.41px). 마크는 기울어진 상자(20.17×21.41) 기준으로 1.9px 아래 */
   .tier .th { display: flex; align-items: center; gap: 4px; height: 21.41px; white-space: nowrap; }
   .tier .mk { width: 18.23px; height: 19.62px; flex: none; margin: 0 1px; transform: translateY(1.9px) rotate(-5.97deg); overflow: visible; }
@@ -200,16 +203,24 @@
   var G = PicoGrade, TC = { common: 'var(--lime)', normal: 'var(--rule-cyan)', rare: 'var(--rule-pink)' };
   var MARK = '<svg class="mk" viewBox="0 0 18.23 19.62" aria-hidden="true"><polygon points="3.79,0.5 16.59,5.53 17.73,16.48 5.74,19.12 0.5,8.89" style="fill:var(--tc)" stroke="#211b17" stroke-width="1" stroke-linejoin="round"/></svg>';
   // 만난 수 = 아래 목록(insects)에 있는 곤충을 단계별로 센 값
+  // 카드 색(깃발·액자) = 단계 색: 연두(it.c 없음) · 하늘(cyan) · 분홍(pink). 위 숫자도 이 색으로 세요 → 단계를 눌러 걸러 낸 카드 수와 같아요
+  function colorOf(it) { return it.c === 'cyan' ? 'normal' : it.c === 'pink' ? 'rare' : 'common'; }
+  var tierFilter = null;   // null = 전체 · 'common' | 'normal' | 'rare' = 그 색 곤충만
+  function markTiers() {
+    var box = document.getElementById('tiers'); box.classList.toggle('is-filtered', !!tierFilter);
+    Array.prototype.forEach.call(box.querySelectorAll('.tier'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-k') === tierFilter)); });
+  }
   function drawTiers(list) {
     var gotAll = 0;
     G.ORDER.forEach(function (k) { G.TIERS[k].got = 0; });
-    list.forEach(function (it) { G.TIERS[G.of(it.name)].got++; });
+    list.forEach(function (it) { G.TIERS[colorOf(it)].got++; });
     document.getElementById('tiers').innerHTML = G.ORDER.map(function (k) {
       var t = G.TIERS[k]; gotAll += t.got;
-      return '<div class="tier" style="--tc:' + TC[k] + '"><p class="th">' + MARK + '<span class="tn">' + t.label + '</span><span class="tc">' + t.got + '</span></p>' +
-        '<span class="bar" role="img" aria-label="' + t.label + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></div>';
+      return '<button type="button" class="tier" data-k="' + k + '" aria-pressed="false" style="--tc:' + TC[k] + '"><span class="th">' + MARK + '<span class="tn">' + t.label + '</span><span class="tc">' + t.got + '</span></span>' +
+        '<span class="bar" role="img" aria-label="' + t.label + ' 곤충 ' + t.total + '종 중 ' + t.got + '종"><i style="width:' + Math.round(t.got / t.total * 100) + '%"></i></span></button>';
     }).join('');
     document.getElementById('allGot').textContent = gotAll;
+    markTiers();
   }
 
   // 시안(Figma 3279:24356) 순서 그대로. 처음 8장은 TIP 위, 나머지는 TIP 아래. 카드 색 = 시안의 깃발·액자 색
@@ -275,6 +286,7 @@
   document.getElementById('allTotal').textContent = '/ ' + DEX_TOTAL + '종';
   // 543칸을 한꺼번에 그리면 무거워서, 처음엔 24칸만 그리고 아래로 내려가는 만큼 30칸씩 이어서 붙여요
   var unmetShown = 24, UNMET_STEP = 30;
+  var unmetList = UNMET;   // 단계를 골랐으면 그 색의 못 만난 곤충 칸만
   function utile(u) {
     var n = u[0], k = u[1], c = k === 'normal' ? ' c-cyan' : k === 'rare' ? ' c-pink' : '';   // 아직 못 만났어도 단계 색은 보여 줘요
     return '<div class="utile' + c + '"><span class="blank"></span><span class="label"><span class="meta"><b>No. ' + n + '</b><span>아직 못 만난 곤충</span></span></span>' + FLAG + '<img src="assets/icons/outline/help.svg" alt=""></div>';
@@ -284,14 +296,15 @@
   var oldest = false, phone = document.querySelector('.phone'), list = document.getElementById('list');
   function render() {
     var v = q.value.replace(/\s+/g, '');
-    var shown = insects.filter(function (it) { return !v || it.name.replace(/\s+/g, '').indexOf(v) !== -1; });
     var searching = phone.classList.contains('searching');
+    var tf = searching ? null : tierFilter;   // 찾기 화면에서는 단계 거르기를 쓰지 않아요
+    var shown = insects.filter(function (it) { return (!v || it.name.replace(/\s+/g, '').indexOf(v) !== -1) && (!tf || colorOf(it) === tf); });
     if (searching && !v) shown = [];   // 찾기 화면은 쓰기 전엔 비워 둬요
     if (oldest) shown = shown.slice().reverse();
     cards.innerHTML = shown.slice(0, 8).map(cardHTML).join('');   // TIP 위에 8장 (Figma 3279:24356)
     // Figma order of the unmet tiles: No.25, No.27 in the last card grid, then No.26, No.28
     // unmet insects (Figma 곤충목록: same order for 최근순 and 오래된순)
-    cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : UNMET.slice(0, unmetShown).map(utile).join(''));
+    cards2.innerHTML = shown.slice(8).map(cardHTML).join('') + (v || searching ? '' : unmetList.slice(0, unmetShown).map(utile).join(''));
     empty.hidden = shown.length > 0 || (searching && !v);
     fit(); more();
     if (window.picoFade) picoFade(list);
@@ -300,9 +313,9 @@
   function fit() { phone.style.setProperty('--h', Math.max(812, Math.ceil(list.offsetTop + list.offsetHeight + 130)) + 'px'); }
   // 목록 끝이 화면 아래 1800px 안으로 들어오면 못 만난 곤충 칸을 더 붙여요 (찾는 중에는 안 붙여요)
   function more() {
-    for (var g = 0; g < 30 && unmetShown < UNMET.length && !q.value && !phone.classList.contains('searching') && cards2.getBoundingClientRect().bottom - window.innerHeight < 1800; g++) {
-      var to = Math.min(UNMET.length, unmetShown + UNMET_STEP);
-      cards2.insertAdjacentHTML('beforeend', UNMET.slice(unmetShown, to).map(utile).join(''));
+    for (var g = 0; g < 30 && unmetShown < unmetList.length && !q.value && !phone.classList.contains('searching') && cards2.getBoundingClientRect().bottom - window.innerHeight < 1800; g++) {
+      var to = Math.min(unmetList.length, unmetShown + UNMET_STEP);
+      cards2.insertAdjacentHTML('beforeend', unmetList.slice(unmetShown, to).map(utile).join(''));
       unmetShown = to; fit();
     }
   }
@@ -382,6 +395,18 @@
   window.addEventListener('pageshow', function () {
     document.querySelectorAll('.hop-out').forEach(function (n) { n.remove(); });
     document.querySelectorAll('.icard.hopping').forEach(function (n) { n.classList.remove('hopping'); });
+  });
+
+  // 단계(쉽게 만나요 · 찾아야 해요 · 어려워요)를 누르면 그 색 곤충만, 같은 단계를 다시 누르면 전체
+  document.getElementById('tiers').addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('.tier'); if (!t) return;
+    var k = t.getAttribute('data-k');
+    window.picoSwap(function () {
+      tierFilter = tierFilter === k ? null : k;
+      unmetList = tierFilter ? UNMET.filter(function (u) { return u[1] === tierFilter; }) : UNMET;
+      unmetShown = Math.min(24, unmetList.length);
+      markTiers(); render();
+    });
   });
 
   // sort: 최근순 <-> 오래된순

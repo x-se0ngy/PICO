@@ -4,7 +4,7 @@
 //   capture-5.html  → PicoField.saveDraft(canvas, colorName)
 //   capture-card    → PicoField.saveFolded(png)    (origami.js로 접은 모습을 그림에 붙여요)
 //                     PicoField.release(species)   (그림이 없으면 들판에 보내지 않음)
-//   home.html       → PicoField.mount(layerEl, { onTap })   (누르면 정보 · 삭제: PicoField.remove(id) + 돌려받은 ctl.remove(id))
+//   home.html       → PicoField.mount(layerEl, { onTap })   (한 번 누르면 튕겨 나가고, 두 번 누르면 onTap = 정보 · 삭제: PicoField.remove(id) + 돌려받은 ctl.remove(id))
 (function () {
   var DRAFT = 'pico.drawing';          // 이번 관찰에서 그린 그림 (sessionStorage)
   var LIST = 'pico.field';             // 들판에 사는 내 PICO 목록 (localStorage)
@@ -100,6 +100,23 @@
     return { x: rnd(area.x0, area.x1), y: area.y0 };
   }
 
+  var TAP_WINDOW = 3000, KNOCK_MS = 520;                       // 첫 누름 뒤 두 번째 누름을 기다리는 시간 · 튕겨 나가는 시간
+  function easeOutBack(p) { var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); }   // 튕기듯 조금 넘어갔다 돌아와요
+  function clampN(v, a, z) { return Math.max(a, Math.min(z, v)); }
+  // 눌린 곳(from) 반대쪽으로 100~135px, 걷는 구역 안에서 연못·토글 버튼은 피해서 (너무 짧게 가는 방향은 제외)
+  function knockTarget(b, from) {
+    var cx = b.pos.x + 32, cy = b.pos.y + 32, A = b.area, D = rnd(100, 135), best = null, bs = -1e9, base;
+    base = from && Math.hypot(cx - from.x, cy - from.y) > 4 ? Math.atan2(cy - from.y, cx - from.x) : rnd(0, Math.PI * 2);
+    for (var k = -6; k <= 6; k++) {
+      var a = base + k * Math.PI / 12, t = { x: clampN(b.pos.x + Math.cos(a) * D, A.x0, A.x1), y: clampN(b.pos.y + Math.sin(a) * D, A.y0, A.y1) };
+      var run = Math.hypot(t.x - b.pos.x, t.y - b.pos.y);
+      if (run < 60 || (A === GROUND && (inRect(t, POND) || inRect(t, TOGGLE)))) continue;
+      var sc = Math.cos(a - base) * 100 + run * 0.5;               // 눌린 반대쪽일수록 · 멀리 갈수록 좋아요
+      if (sc > bs) { bs = sc; best = t; }
+    }
+    return best || pick(A);
+  }
+
   function mount(layer, opts) {
     opts = opts || {};
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -122,9 +139,25 @@
       b.speed = b.slow ? 6 : b.fly ? rnd(26, 36) : rnd(12, 20);
       b.wait = rnd(0, 1500);
       el.style.animationDelay = (-i * 0.37) + 's';
-      el.addEventListener('click', function () {
+      // 한 번 누르면 눌린 곳 반대쪽으로 튕겨 나가고, 잠깐(TAP_WINDOW) 가만히 기다려요. 그 안에 한 번 더 누르면 자세한 정보가 나와요.
+      el.addEventListener('click', function (e) {
         el.classList.remove('is-poke'); void el.offsetWidth; el.classList.add('is-poke');
-        if (opts.onTap) { b.hold = true; el.classList.remove('is-moving'); opts.onTap(b); }   // 정보를 보는 동안 그 친구는 가만히 있어요
+        if (!opts.onTap) return;
+        clearTimeout(b.tapTimer);
+        if (b.tapAt && Date.now() - b.tapAt < TAP_WINDOW) {                 // 두 번째 → 자세히 (보는 동안 그 친구는 가만히 있어요)
+          b.tapAt = 0; b.knock = null; b.hold = true; el.classList.remove('is-moving', 'is-knock'); opts.onTap(b); return;
+        }
+        var r = layer.getBoundingClientRect(), kk = r.width / (layer.clientWidth || 375) || 1;
+        var from = (e.clientX || e.clientY) ? { x: (e.clientX - r.left) / kk, y: (e.clientY - r.top) / kk } : null;   // 키보드로 눌렀으면 아무 쪽으로나
+        var to = knockTarget(b, from);
+        b.tapAt = Date.now(); b.hold = true; el.classList.remove('is-moving');
+        b.flip.style.transform = to.x < b.pos.x ? 'scaleX(-1)' : 'scaleX(1)';
+        el.classList.remove('is-knock');
+        if (reduce) { b.pos = to; place(b); }
+        else { b.knock = { fx: b.pos.x, fy: b.pos.y, tx: to.x, ty: to.y, t0: performance.now() }; void el.offsetWidth; el.classList.add('is-knock'); }
+        b.tapTimer = setTimeout(function () {                                 // 아무도 안 눌렀으면 다시 돌아다녀요 (다음엔 또 첫 번째 누름)
+          b.tapAt = 0; b.hold = false; b.wait = rnd(300, 800); el.classList.remove('is-knock');
+        }, TAP_WINDOW);
       });
       place(b);
       if (b.mine && b.id === newId) {                           // 방금 놓아준 친구: 위에서 폴짝 내려와요
@@ -173,6 +206,13 @@
       var dt = lastT ? Math.min(0.05, (t - lastT) / 1000) : 0; lastT = t;
       if (layer.offsetParent !== null) {                        // 들판이 보일 때만 움직여요
         bugs.forEach(function (b) {
+          if (b.knock) {                                          // 튕겨 나가는 중: 정해 둔 자리까지 톡 튀어 나가요
+            var kn = b.knock, p = clampN((t - kn.t0) / KNOCK_MS, 0, 1), e2 = easeOutBack(p);
+            b.pos.x = kn.fx + (kn.tx - kn.fx) * e2; b.pos.y = kn.fy + (kn.ty - kn.fy) * e2;
+            b.el.style.zIndex = Math.round(b.pos.y); place(b);
+            if (p >= 1) { b.knock = null; b.el.classList.remove('is-knock'); b.to = pickFree(b); }
+            return;
+          }
           if (b.hold) { b.el.classList.remove('is-moving'); return; }
           if (b.wait > 0) { b.wait -= dt * 1000; b.el.classList.remove('is-moving'); return; }
           var dx = b.to.x - b.pos.x, dy = b.to.y - b.pos.y, d = Math.hypot(dx, dy);

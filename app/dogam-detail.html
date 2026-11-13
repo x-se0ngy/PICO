@@ -18,6 +18,7 @@
 <style>
   :root { --font-hand: 'SejongGeulggot', var(--font); --grey56: #8e8e8e; --pink-rule: #facade; --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 310 3' preserveAspectRatio='none'%3E%3Cpath d='M0 1.6C38 .7 78 2.5 118 1.5S200 .8 242 1.8 292 1 310 1.5' fill='none' stroke='%23c2ddf4' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
   .abs { position: absolute; }
+  .top[data-fixed] { height: 118px; background: var(--paper); }   /* 스크롤해도 상단바는 그 자리 · 뒤로 카드가 비치지 않게 */
   .nav { padding: 0 24px 5px; }
   .nav-actions { display: flex; gap: 10px; align-items: center; }
   .nav a img, .nav button img { width: 32px; height: 32px; }
@@ -90,7 +91,7 @@
 </head><body>
 <div class="phone flat" style="--h:1305px">
 
-  <div class="top">
+  <div class="top" data-fixed>
     <div class="status"><span class="status-time">9:41</span>
       <span class="status-icons"><img class="sig" src="assets/common/signal.png" alt=""><img class="wifi" src="assets/common/wifi.png" alt=""><img class="bat" src="assets/common/battery.png" alt=""></span></div>
     <div class="nav">
@@ -173,10 +174,9 @@
     bm.querySelector('img').src = on ? 'assets/icons/filled/bookmark.svg' : 'assets/icons/outline/bookmark.svg';
     picoToast(on ? '북마크에 담았어요.' : '북마크에서 뺐어요.');   // 북마크를 누르면 알림 카드
   });
-  // 저장: 먼저 "카드를 저장할까요?" 확인창 → 저장을 누르면 사진첩에 담았다는 알림 카드 (관찰 카드의 저장 알림과 같은 글)
+  // 저장: 물어보지 않고 바로 사진첩에 담고, 담았다는 알림 카드만 띄워요 (관찰 카드의 저장 알림과 같은 글)
   document.getElementById('dl').addEventListener('click', function () {
-    picoToastHide();   // 떠 있던 북마크 알림은 확인창 뒤에 남지 않게 치워요
-    picoConfirm('카드를 저장할까요?', null, { yes: '저장', no: '취소', onYes: function () { picoToast('사진첩에 카드를 저장했어요.'); } });
+    picoToast('사진첩에 카드를 저장했어요.');
   });
   // ---------- 내 그림이 화면을 돌아다녀요 (누르면 도망) ----------
   // 이 곤충 이름으로 내가 그려서 들판에 놓아준 그림이 있으면 그걸, 없으면 예시 그림을 써요.
