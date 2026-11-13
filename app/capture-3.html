@@ -16,9 +16,9 @@
 <link rel="expect" href="#pico-ready" blocking="render">
 <link rel="stylesheet" href="base.css">
 <style>
-  /* 질문 헤더: 초록 이름표(02-1 · 공통 관찰) / 질문 / 한 줄 안내 — 이름표 모양은 base.css(.kind), 다른 촬영 화면과 같아요 */
-  .hd { position: absolute; left: 20px; top: 154px; width: 335px; }
-  .hd h2 { margin: 8px 0 0; font-size: 16px; line-height: 22px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* 질문 헤더: 질문 / 한 줄 안내 (초록 이름표 02-1 · 공통 관찰은 진행 바 위에 있어요 — 모양은 base.css .kind, 다른 촬영 화면과 같아요) */
+  .hd { position: absolute; left: 20px; top: 182px; width: 335px; }
+  .hd h2 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hd .sub { margin: 2px 0 0; font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hd.swap h2, .hd.swap .sub { animation: opt-in var(--dur) var(--ease) both; }
   /* 사진을 크게 보며 질문에 답해요: 사진 칸(335×250)은 그대로, 안쪽 .zoom만 확대해요 */
@@ -76,10 +76,10 @@
     </div>
   </div>
 
-  <div class="progress" aria-label="4단계 중 2단계"><span class="on"></span><span class="on"></span><span></span><span></span></div>
+  <span class="kind step-kind" id="kind"></span>
+  <div class="progress low" aria-label="4단계 중 2단계"><span class="on"></span><span class="on"></span><span></span><span></span></div>
 
   <div class="hd" id="hd">
-    <span class="kind" id="kind"></span>
     <h2 id="prompt" aria-live="polite"></h2>
     <p class="sub" id="guide"></p>
   </div>

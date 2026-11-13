@@ -195,9 +195,9 @@ img { display: block; }
 .step-title { position: absolute; left: 20px; top: 161.4px; width: 335px; display: flex; flex-direction: column; gap: 4px; }
 .step-title .q { display: flex; gap: 14px; font-weight: 700; font-size: 18px; }
 .step-title .sub { font-size: 14px; }
-/* 촬영 1~5 머리말: 초록 이름표(번호 · 주제) → 질문 → 한 줄 안내. 위에서부터 y 154, 끝은 y 236 (내용은 y 244부터) */
-.step-title.cap { top: 154px; gap: 2px; }
-.step-title.cap .kind { margin-bottom: 6px; }
+/* 촬영 1~5 머리말: 초록 이름표(번호 · 주제, y 124) → 진행 바(y 160) → 질문 → 한 줄 안내(y 182~226). 내용은 y 244부터 */
+.progress.low { top: 160px; }
+.step-title.cap { top: 182px; gap: 2px; }
 .step-title.cap .q { display: block; font-size: 16px; line-height: 22px; }
 .step-title.cap .sub { line-height: 20px; }
 /* 이름표: 아래 '다음' 버튼(.cta)과 같은 모양 — 연두 종이 + 뒤에 살짝 기울어진 연두 종이 한 장 */
@@ -205,6 +205,7 @@ img { display: block; }
 .kind::before, .kind::after { content: ""; position: absolute; top: 0; height: 100%; width: 100%; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box; }
 .kind::before { left: -1.1px; transform: rotate(-1.8deg); z-index: -2; }
 .kind::after { left: 0; z-index: -1; }
+.kind.step-kind { position: absolute; left: 20px; top: 124px; }
 
 /* ---------- overlays ---------- */
 .dim { position: absolute; inset: 0; background: var(--dim); z-index: 40; }
