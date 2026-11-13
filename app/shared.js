@@ -181,15 +181,15 @@
     dim.addEventListener('click', close); box.querySelector('.ox-no').addEventListener('click', close);
     ph.appendChild(dim); ph.appendChild(box); box.querySelector('.ox-no').focus();
   };
-  // 알림 카드 (Figma 3.2.1 카드 저장 알림과 같은 모양): 화면 아래쪽에 잠깐 떴다가 사라져요. picoToast('글', '아이콘 주소', 머무는 ms)
+  // 알림 카드 (Figma 3742:32594 · 3742:32576): 화면 아래쪽에 잠깐 떴다가 사라져요. picoToast('글', 머무는 ms)
   var tcardEl = null, tcardTimer = 0;
-  window.picoToast = function (text, icon, ms) {
+  window.picoToast = function (text, ms) {
     var ph = document.querySelector('.phone'); if (!ph) return;
     clearTimeout(tcardTimer); if (tcardEl) tcardEl.remove();
     var el = tcardEl = document.createElement('div'); el.className = 'tcard'; el.setAttribute('role', 'status');
-    el.innerHTML = '<div class="tcard-face">' + (icon ? '<img alt="">' : '') + '<span></span></div>';
-    if (icon) el.querySelector('img').src = icon;
-    el.querySelector('span').textContent = text;
+    el.innerHTML = '<img class="tcard-back" src="assets/toast/toast-back.svg" alt=""><img class="tcard-face" src="assets/toast/toast-front.svg" alt="">' +
+      '<div class="tcard-row"><span class="tcard-ico"><img src="assets/toast/toast-alert.svg" alt=""></span><span class="tcard-text"></span></div>';
+    el.querySelector('.tcard-text').textContent = text;
     ph.appendChild(el);
     tcardTimer = setTimeout(function () {
       el.classList.add('is-out');
