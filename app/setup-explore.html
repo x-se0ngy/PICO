@@ -19,7 +19,7 @@
   .nav-quit { display: block; padding: 0; }
   /* Figma 1.2.2 / 1.2.3 선택 카드: 162.5×74, 테두리만 있는 종이.
      고르면 라임 종이가 되고, 뒤에 -1.8° 기울어진 종이 한 장이 비쳐요 (큰 버튼과 같은 두 장 종이). */
-  .pick-grid { position: absolute; left: 20px; top: 228.02px; width: 335px; display: grid; grid-template-columns: 162.5px 162.5px; column-gap: 9.92px; row-gap: 10px; }
+  .pick-grid { position: absolute; left: 20px; top: 244.02px; width: 335px; display: grid; grid-template-columns: 162.5px 162.5px; column-gap: 9.92px; row-gap: 10px; }
   .pick { position: relative; width: 162.5px; height: 74px; text-align: left; border: 1px solid var(--ink); background: transparent;
     display: flex; flex-direction: column; align-items: flex-start; padding: 0 0 0 11.8px; }
   .pick::before { content: ''; position: absolute; left: -1.62px; top: -1px; width: 160.541px; height: 74px; background: var(--lime); border: 1px solid var(--ink); box-sizing: border-box;
@@ -30,7 +30,7 @@
   .pick { padding-top: 16.73px; gap: 5px; padding-left: 7.8px; }
   .pick .t { font-size: 20px; line-height: 22.46px; white-space: nowrap; }
   .pick .s { font-size: 14px; line-height: 13.46px; white-space: nowrap; }
-  .pick-grid { left: 21.93px; top: 228.02px; column-gap: 8.76px; row-gap: 10.36px; }
+  .pick-grid { left: 21.93px; top: 244.02px; column-gap: 8.76px; row-gap: 10.36px; }
 
   /* disabled CTA look (1.3.1). Still clickable so the toast can explain why. */
   /* look lives in base.css (.cta.is-off) */
@@ -48,10 +48,11 @@
     <div class="nav nav--center"><a class="nav-quit" href="home.html" data-confirm="프로필 설정을 중단할까요?" aria-label="프로필 설정 중단"><img class="logo" src="assets/common/logo-mark.png" alt="PICO"></a></div>
   </div>
 
-  <div class="progress" aria-label="3단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+  <span class="kind step-kind">03 · 곤충 아는 정도</span>
+  <div class="progress low" aria-label="3단계 중 3단계"><span class="on"></span><span class="on"></span><span class="on"></span></div>
 
-  <div class="step-title" style="top:174px">
-    <p class="q"><span>03.</span><span>곤충에 대해 얼마나 아나요?</span></p>
+  <div class="step-title cap">
+    <p class="q">곤충에 대해 얼마나 아나요?</p>
     <p class="sub">알려 주면 관찰 질문과 TIP을 내 수준에 맞춰 줄게요.</p>
   </div>
 

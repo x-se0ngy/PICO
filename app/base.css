@@ -196,7 +196,7 @@ img { display: block; }
 .step-title .q { display: flex; gap: 14px; font-weight: 700; font-size: 18px; }
 .step-title .sub { font-size: 14px; }
 /* 촬영 1~5 머리말: 초록 이름표(번호 · 주제, y 120) → 진행 바(y 158) → 질문 → 한 줄 안내(y 190~234). 바와 질문 사이는 22px. 내용은 y 244부터 */
-.progress.low { top: 158px; }
+.phone > .progress.low { top: 158px; }   /* (개인 설정 .phone.setup > .progress 의 114px보다 우선) */
 .step-title.cap { top: 190px; gap: 2px; }
 .step-title.cap .q { display: block; font-size: 16px; line-height: 22px; }
 .step-title.cap .sub { line-height: 20px; }
