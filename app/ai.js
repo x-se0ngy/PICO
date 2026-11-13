@@ -4,7 +4,7 @@
 (function () {
   var KEY = 'pico.analysis';
   var MIN_WAIT = 1400;      // "AI가 분석중이에요"를 적어도 이만큼은 보여줘요
-  var TIMEOUT = 20000;
+  var TIMEOUT = 7000;       // 이만큼 기다려도 답이 없으면 멈추고 예시 분석으로 넘어가요 (로딩이 길어지지 않게)
 
   // 예시 분석: 키가 없을 때 쓰는 기존 관찰 카드 내용 (Figma 3.1.6)
   var DEMO = {

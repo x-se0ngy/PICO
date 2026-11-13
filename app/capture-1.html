@@ -19,9 +19,9 @@
   .nav a, .nav button { display: block; width: 32px; height: 32px; }
   .step-title .q, .step-title .sub { white-space: nowrap; }
 
-  /* viewfinder · Figma Warm-Up 촬영 5~9 (3198:17975 …): 가로 전체 375×468 at y 214.5, 위·아래 점선, 종이색 바탕.
+  /* viewfinder · Figma Warm-Up 촬영 5~9 (3198:17975 …): 가로 전체 375×438.5 at y 244 (머리말에 초록 이름표가 생겨 아래로 내려왔어요), 위·아래 점선, 종이색 바탕.
      배율 칩(y 622.5)은 뷰파인더 안에 떠 있어요 */
-  .finder { position: absolute; left: 0; top: 214.5px; width: 375px; height: 468px; background: var(--paper); border: 0 dashed var(--ink); border-width: 1px 0; overflow: hidden; }
+  .finder { position: absolute; left: 0; top: 244px; width: 375px; height: 438.5px; background: var(--paper); border: 0 dashed var(--ink); border-width: 1px 0; overflow: hidden; }
   .finder video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
   .finder video.live { opacity: 1; }
 
@@ -73,7 +73,7 @@
   .tip .box { width: 95px; height: 95px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; }
   .tip .box img { width: 32px; height: 32px; }
   .tip p { font-size: 14px; line-height: normal; text-align: center; white-space: nowrap; }
-  .use-photo { position: absolute; left: .25px; right: -.25px; top: 357px; margin: 0; text-align: center; font-size: 12px; line-height: normal; text-decoration: underline; text-underline-position: from-font; }
+  .use-photo { position: absolute; left: .25px; right: -.25px; top: 370px; margin: 0; text-align: center; font-size: 12px; line-height: normal; text-decoration: underline; text-underline-position: from-font; }
 </style>
 </head><body>
 <div class="phone warm" style="--h:812px">
@@ -89,7 +89,8 @@
 
   <div class="progress" aria-label="4단계 중 1단계"><span class="on"></span><span></span><span></span><span></span></div>
   <div class="step-title cap">
-    <div class="q"><span>01.</span><span>무엇을 발견했나요?</span></div>
+    <span class="kind">01 · 발견하기</span>
+    <div class="q">무엇을 발견했나요?</div>
     <p class="sub">곤충을 만지지 말고, 화면을 키워서 찍어보세요.</p>
   </div>
 
