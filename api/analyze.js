@@ -5,6 +5,7 @@
 //                               관찰 질문 4개 = 공통 관찰(색·위치) + 맞춤 관찰(움직임·특징), 사진과 가장 가까운 보기 번호(match)
 //                               위치(보기 3개)·특징(보기 4개)은 AI가 질문/보기를 만들고(특징은 "점이 몇 개 있나요?"처럼 세어 보는 질문),
 //                               색(8색)·움직임(4가지)은 보기가 앱에 고정이라 AI는 번호만 알려 줘요.
+//   mode "quick"     (촬영 1, identify와 동시에) : 곤충 이름·분류만 짧게. 답이 빨라서 "○○ 같아요!" 화면을 먼저 보여 줘요.
 //   mode "stickers"  (예전 스티커 단계용, 지금 화면은 쓰지 않아요) : 스티커를 붙인 자리에 맞는 선택지 4개
 //
 // 준비: Vercel 프로젝트 Settings → Environment Variables 에 아래 중 하나를 넣어 주세요.
@@ -27,6 +28,18 @@ const STYLE = [
   '독이 있거나 쏘는 곤충이면 "손대지 말고 눈으로만 봐요" 같은 안전 한마디를 분석글에 넣어.',
   '반드시 JSON 하나만 출력해. 설명, 마크다운, 코드 블록은 쓰지 마.'
 ].join('\n');
+
+// 짧은 질문: 이름과 분류만 (출력이 짧아서 답이 빨라요)
+function quickPrompt() {
+  return [
+    '이 사진 속 생물을 살펴봐 줘. 아래 모양의 JSON으로만 답해.',
+    '{ "is_insect": true, "name": "칠성무당벌레", "group": "딱정벌레류", "confidence": "high" }',
+    '- is_insect: 곤충이나 거미·지렁이·달팽이 같은 작은 생물이 보이면 true, 안 보이거나 너무 흐리면 false',
+    '- name: 우리말 이름 (12자 이내). 종까지 모르겠으면 "무당벌레 무리"처럼 넓게',
+    `- group: 다음 중 하나: ${GROUPS.join(', ')}`,
+    '- confidence: high | medium | low'
+  ].join('\n');
+}
 
 function identifyPrompt() {
   return [
@@ -92,7 +105,7 @@ function four(list, max, n = 4) {
   return out.length === n ? out : null;
 }
 
-async function askClaude(image, prompt) {
+async function askClaude(image, prompt, maxTokens) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -102,7 +115,7 @@ async function askClaude(image, prompt) {
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 1100,
+      max_tokens: maxTokens || 1100,
       system: STYLE,
       messages: [{ role: 'user', content: [
         { type: 'image', source: { type: 'base64', media_type: image.media_type, data: image.data } },
@@ -160,7 +173,7 @@ async function askGemini(image, prompt) {
 }
 
 // 키가 있는 쪽을 써요 (Claude 우선)
-function ask(image, prompt) { return process.env.ANTHROPIC_API_KEY ? askClaude(image, prompt) : askGemini(image, prompt); }
+function ask(image, prompt, maxTokens) { return process.env.ANTHROPIC_API_KEY ? askClaude(image, prompt, maxTokens) : askGemini(image, prompt); }
 
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -183,6 +196,18 @@ module.exports = async function handler(req, res) {
       const options = {};
       stickers.forEach(s => { const o = four(j.options && j.options[String(s.k)], 14); if (o) options[s.k] = o; });
       res.status(200).json({ ok: true, options });
+      return;
+    }
+
+    if (body.mode === 'quick') {
+      const q = await ask(image, quickPrompt(), 200);
+      res.status(200).json({
+        ok: true,
+        is_insect: q.is_insect !== false,
+        name: clean(q.name, 20) || '이름 모를 곤충',
+        group: GROUPS.includes(q.group) ? q.group : '기타',
+        confidence: ['high', 'medium', 'low'].includes(q.confidence) ? q.confidence : 'medium'
+      });
       return;
     }
 

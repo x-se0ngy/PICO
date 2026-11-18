@@ -206,6 +206,28 @@
     var a = e.target.closest('a[data-confirm]'); if (!a) return;
     e.preventDefault(); window.picoConfirm(a.getAttribute('data-confirm'), a.getAttribute('href'));
   });
+  // 전시용: 한동안 아무도 만지지 않으면 홈으로 돌아가요 (HIN 프로토타입과 같은 60초).
+  // 만들던 관찰(사진 · 분석 · 답 · 일기 · 그림 초안)은 비워서 다음 관객이 처음부터 시작해요. 들판에 놓아 준 PICO(저장된 기록)는 그대로예요.
+  // 홈·스플래시에서는 하지 않아요. 시간은 아래 IDLE_MS 하나만 바꾸면 돼요.
+  var IDLE_MS = 60000;
+  var thisPage = location.pathname.split('/').pop() || 'index.html';
+  if (thisPage !== 'home.html' && thisPage !== 'splash.html') {
+    var lastTouch = Date.now();
+    var touched = function () { lastTouch = Date.now(); };
+    ['pointerdown', 'pointermove', 'touchstart', 'touchmove', 'keydown', 'wheel', 'scroll', 'input'].forEach(function (ev) {
+      window.addEventListener(ev, touched, { passive: true, capture: true });
+    });
+    setInterval(function () {
+      if (Date.now() - lastTouch < IDLE_MS) return;
+      lastTouch = Date.now();        // 이동하는 동안 다시 세지 않게
+      try {
+        Object.keys(sessionStorage).forEach(function (k) {
+          if (/^pico\.capture\./.test(k) || k === 'pico.photo' || k === 'pico.analysis' || k === 'pico.drawing') sessionStorage.removeItem(k);
+        });
+      } catch (e) {}
+      location.href = 'home.html';
+    }, 1000);
+  }
   // 홈 화면에 설치하는 앱(PWA): 서비스워커 등록
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' }).catch(function () {}); });

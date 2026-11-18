@@ -340,6 +340,18 @@ img { display: block; }
 @keyframes ai-dot { 0% { background-color: var(--lime); transform: translateY(2.11px); } 33.34%, 100% { background-color: var(--paper); transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ai-wait:not(.fold-wait) .ai-dots i { animation: none; } .ai-wait:not(.fold-wait) .ai-dots i:first-child { background-color: var(--lime); transform: translateY(2.11px); } }
 
+/* 분석중 → "○○ 같아요!" (촬영 1, ai.js found): HIN 분석 화면처럼 짧은 디졸브(350ms)로 나타나고, 같은 화면에서 글만 바뀌어요.
+   점은 사라지고 종이판이 톡 올라오고, '다음' 버튼은 다음 화면(02)의 큰 버튼과 같은 자리에 나타나요 (화면이 바뀌어도 버튼은 제자리) */
+.ai-wait:not(.fold-wait) { --dissolve: 350ms; }
+.ai-text { transition: opacity 175ms var(--ease); }
+.ai-text.is-swap { opacity: 0; }
+.ai-dots { transition: opacity 175ms var(--ease); }
+.ai-wait.is-found .ai-dots { opacity: 0; }
+.ai-wait.is-found .ai-title { white-space: normal; text-align: center; }
+.ai-wait.is-found .ai-board { animation: fold-pop 350ms var(--ease); }
+.ai-wait > .ai-next { view-transition-name: pico-cta; animation: pico-dissolve 350ms var(--ease) both; }
+@media (prefers-reduced-motion: reduce) { .ai-wait.is-found .ai-board, .ai-wait > .ai-next { animation: none; } .ai-text, .ai-dots { transition: none; } }
+
 /* 종이로 접는 중 (관찰 카드): 첫 프레임부터 떠 있어야 해서 따로 페이드인하지 않아요 (페이지 전환이 디졸브해 줘요) */
 .fold-wait { display: none; animation: none; }
 .fold-pending .fold-wait { display: block; }

@@ -219,14 +219,16 @@
     finder.insertBefore(img, flash);
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
     if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
-    // 찍은 사진이 잠깐 멈춰 보인 뒤 "AI가 분석중이에요" → 곤충이 보이면 다음 단계, 안 보이면 다시 찍기 안내
+    // 셔터를 누르자마자 분석을 보내요 (이름만 받는 짧은 분석 + 전체 분석 동시에).
+    // 찍은 사진이 잠깐 멈춰 보인 뒤 "AI가 분석중이에요" → 곤충 이름이 오면 같은 화면에서 "○○ 같아요!" + 다음 버튼 / 곤충이 안 보이면 다시 찍기 안내
+    var job = PicoAI.start(url);
     setTimeout(function () {
       var w = PicoAI.wait('AI가 분석중이에요.', '사진 속 친구를 살펴보고 있어요.');
-      PicoAI.analyze(url).then(function (r) {
+      job.first.then(function (r) {
         if (r.is_insect === false) { w.done().then(function () { busy = false; open(error); }); }
-        else { w.done(true).then(function () { location.href = 'capture-3.html'; }); }
+        else { w.found(r, job.full, 'capture-3.html'); }
       });
-    }, 450);
+    }, 250);
   }
   // 다시 시작하기: 멈춘 사진을 치우고 카메라를 다시 켜요
   function resetShot() { finder.querySelectorAll('.shot').forEach(function (n) { n.remove(); }); video.classList.remove('live'); startCam(); }
@@ -249,6 +251,7 @@
   // coming back with the back button (page restored from cache): clear the frozen shot and reopen the camera
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
+    document.querySelectorAll('.ai-wait').forEach(function (n) { n.remove(); }); busy = false;   // 분석 화면을 남겨 둔 채 떠났다면 치우고 다시 찍을 수 있게
     finder.querySelectorAll('.shot').forEach(function (n) { n.remove(); });
     video.classList.remove('live'); startCam();
   });
