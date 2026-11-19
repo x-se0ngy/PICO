@@ -170,7 +170,8 @@
 
   // 4단계에서 그린 그림을 액자에 넣어요 (그림이 없으면 빈 액자)
   // 관찰을 마치면 그 그림이 종이로 접혀요: 처음 한 번만 "접는 중이에요" 화면을 보여주고, 접은 모습을 액자와 들판에 써요.
-  var FOLD_SECONDS = 8;   // "종이로 접는 중이에요"를 일부러 아주 길게 (초)
+  var FOLD_SECONDS = 3;   // "종이로 접는 중이에요"가 접히는 시간 (초). 전시에서 오래 기다리지 않게 줄였어요 (예전 8초)
+  var DONE_HOLD = 1000;   // "완성됐어요!"를 보여 주고 카드로 넘어가기까지 (ms). 눌러서 먼저 넘어갈 수도 있어요
   (function () {
     var win = document.getElementById('picoWin'), el = document.getElementById('foldWait');
     function leave() { document.documentElement.classList.remove('fold-pending'); }   // 로딩 화면 치우기
@@ -215,11 +216,11 @@
           onProgress: function (p) { step(p < .5 ? 0 : 1); },
           onDone: function () {
             step(2); el.classList.add('is-done');
-            setTimeout(close, 2000);
+            setTimeout(close, DONE_HOLD);
           }
         });
       }, 450);
-      el.addEventListener('click', function () { if (el.classList.contains('is-done')) close(); });   // 접는 동안엔 끝까지 기다려요 (일부러 길게)
+      el.addEventListener('click', function () { if (el.classList.contains('is-done')) close(); });   // 접는 동안엔 끝까지 기다려요
     }, leave);
   })();
 
