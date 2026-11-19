@@ -211,7 +211,19 @@
   // 홈·스플래시에서는 하지 않아요. 시간은 아래 IDLE_MS 하나만 바꾸면 돼요.
   var IDLE_MS = 60000;
   var thisPage = location.pathname.split('/').pop() || 'index.html';
-  if (thisPage !== 'home.html' && thisPage !== 'splash.html') {
+  // 전시 자동 재생(데모) 모드: 주소 끝에 ?demo=1 로 한 번 열면 이 폰에 켜져요 (끄기: ?demo=0). 켜져 있으면 demo.js가 혼자 돌리고, 아래 60초 규칙 대신 demo.js의 안내 화면을 써요.
+  var demoOn = false;
+  try {
+    var dq = new URLSearchParams(location.search).get('demo');
+    if (dq === '1') localStorage.setItem('pico.demo', '1'); else if (dq === '0') localStorage.removeItem('pico.demo');
+    demoOn = localStorage.getItem('pico.demo') === '1';
+  } catch (e) {}
+  if (demoOn && thisPage !== 'splash.html') {
+    // 화면이 처음 나타날 때부터 제목 화면이 덮여 있도록, 읽는 중이면 그 자리에서 바로 불러와요
+    if (document.readyState === 'loading') document.write('<script src="demo.js"><\/script>');
+    else { var ds = document.createElement('script'); ds.src = 'demo.js'; document.body.appendChild(ds); }
+  }
+  if (!demoOn && thisPage !== 'home.html' && thisPage !== 'splash.html') {
     var lastTouch = Date.now();
     var touched = function () { lastTouch = Date.now(); };
     ['pointerdown', 'pointermove', 'touchstart', 'touchmove', 'keydown', 'wheel', 'scroll', 'input'].forEach(function (ev) {

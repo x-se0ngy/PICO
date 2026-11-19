@@ -297,7 +297,7 @@
       pickDown = true; try { cv.setPointerCapture(e.pointerId); } catch (err) {} pickAt(e); return;
     }
     if (!color) return;
-    drawing = true; last = pt(e); pts = [last]; cv.setPointerCapture(e.pointerId);
+    drawing = true; last = pt(e); pts = [last]; try { cv.setPointerCapture(e.pointerId); } catch (err) {}
     bump();
     ctx.fillStyle = color; ctx.beginPath(); ctx.arc(last.x, last.y, ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill();
   });
