@@ -91,11 +91,9 @@
   //   first = 먼저 도착한 곤충 이름·분류 (quick, 안 되면 전체 분석 · 예시)
   //   full  = 전체 분석 (결과가 sessionStorage에 저장돼요. 이름·분류는 first와 같게 맞춰요)
   var gen = 0;
-  // 전시 자동 재생 중(demo.js)에는 서버에 묻지 않고 예시 분석으로 바로 가요 (폰 여러 대가 하루 종일 돌려도 AI 사용량이 안 늘어요). 관객이 직접 만지는 중이면 평소대로 분석해요.
-  function autoDemo() { try { return localStorage.getItem('pico.demo') === '1' && sessionStorage.getItem('pico.demo.mode') !== 'user'; } catch (e) { return false; } }
   function start(photo) {
     var my = ++gen;
-    if (!photo || autoDemo()) { write(DEMO); var d = Promise.resolve(DEMO); return { first: d, full: d }; }
+    if (!photo) { write(DEMO); var d = Promise.resolve(DEMO); return { first: d, full: d }; }
     var small = shrink(photo);
     var quickP = small.then(fetchQuick);
     var fullP = small.then(fetchFull);
