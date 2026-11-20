@@ -95,7 +95,9 @@
   function autoDemo() { try { return localStorage.getItem('pico.demo') === '1' && sessionStorage.getItem('pico.demo.mode') !== 'user'; } catch (e) { return false; } }
   function start(photo) {
     var my = ++gen;
-    if (!photo || autoDemo()) { write(DEMO); var d = Promise.resolve(DEMO); return { first: d, full: d }; }
+    // 전시 모드에서 예시 곤충을 찍었다면(samples.js) 그 곤충의 분석을 바로 써요 (서버에 묻지 않아요)
+    var sm = photo && window.PicoSamples && PicoSamples.on() && PicoSamples.current();
+    if (!photo || sm || autoDemo()) { var base = sm ? sm.analysis : DEMO; write(base); var d = Promise.resolve(base); return { first: d, full: d }; }
     var small = shrink(photo);
     var quickP = small.then(fetchQuick);
     var fullP = small.then(fetchFull);

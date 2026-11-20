@@ -137,7 +137,7 @@
   // ---------- 처음부터 다시 (새 관객 · 새 바퀴) ----------
   function reset() {
     try {
-      Object.keys(sessionStorage).forEach(function (k) { if (/^pico\.(capture\.|photo|analysis|drawing|demo\.dogam)/.test(k)) sessionStorage.removeItem(k); });
+      Object.keys(sessionStorage).forEach(function (k) { if (/^pico\.(capture\.|photo|analysis|drawing|sample\.cur|demo\.dogam)/.test(k)) sessionStorage.removeItem(k); });
       localStorage.removeItem('pico.safetyAccepted');            // 안전 약속 시트부터 다시 보여 줘요
     } catch (e) {}
   }
@@ -155,7 +155,9 @@
       if (window.PicoField) ids.forEach(function (id) { PicoField.remove(id); });
     } catch (e) {}
   }
-  async function feedPhoto() {                                    // 카메라 대신 예시 사진을 넣어요 (사진첩에서 고른 것과 같은 길)
+  function sample() { try { return JSON.parse(sessionStorage.getItem('pico.sample.cur') || 'null'); } catch (e) { return null; } }   // 이번에 찍은 예시 곤충 {k, n, c}
+  async function feedPhoto() {                                    // 카메라 대신 예시 곤충을 "찍어요" (samples.js 5종 중 차례대로)
+    if (window.picoShoot && window.picoShoot()) return;
     var inp = $('#pickAlbum'); if (!inp) return;
     var b = await (await fetch(SAMPLE)).blob(), dt = new DataTransfer();
     dt.items.add(new File([b], 'ladybug.png', { type: 'image/png' })); inp.files = dt.files;
@@ -197,7 +199,7 @@
         }], ['wait', 900], ['tap', '.cta.step']];
     },
     'capture-5.html': function () {
-      var body = BODY[rnd(BODY.length)];
+      var sm = sample(), body = (sm && sm.c) || BODY[rnd(BODY.length)];   // 찍은 곤충 색에 맞는 색연필로 칠해요
       return [['wait', 1200], ['tap', crayon(body)], ['wait', 500],
         ['do', function (t) { return drag($('#pad'), circle(.5, .5, .27, .2, 36), 24, t); }], ['wait', 1500],       // 몸통을 그리면 색이 채워져요
         ['do', async function (t) {                                                                              // 머리 · 날개 (같은 색)
@@ -222,7 +224,10 @@
       if (ssGet(DG) === '1') return [['wait', 1200], ['tap', tab('친구')]];                                          // 카드를 보고 돌아왔다면 → 03 친구로
       ssSet(DG, '1');
       return [['intro'], ['wait', 600], ['do', function (t) { return scrollTo(560, 1900, t); }], ['wait', 500], ['do', function (t) { return scrollTo(0, 1300, t); }], ['wait', 700],
-        ['tap', function () { var c = all('.icard'); return c.filter(function (x) { return /무당벌레/.test(x.getAttribute('data-name') || ''); })[0] || c[0]; }]];
+        ['tap', function () {                                                                                    // 방금 관찰한 곤충 카드를 열어 봐요 (없으면 무당벌레)
+          var c = all('.icard'), sm = sample(), nm = function (x) { return (x.getAttribute('data-name') || '').replace(/\s+/g, ''); };
+          return (sm && c.filter(function (x) { return nm(x) === sm.n.replace(/\s+/g, ''); })[0]) || c.filter(function (x) { return /무당벌레/.test(nm(x)); })[0] || c[0];
+        }]];
     },
     'dogam-detail.html': function () {
       return [['wait', 1300], ['do', function (t) { return scrollTo('end', 7000, t); }], ['wait', 900], ['tap', 'a[aria-label="뒤로"]']];

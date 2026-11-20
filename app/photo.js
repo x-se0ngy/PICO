@@ -39,16 +39,18 @@
   }
 
   // 원본(video 프레임 또는 이미지)을 sw x sh 비율로 가운데 잘라서 JPEG data URL로 만들어요.
-  function crop(src, srcW, srcH, aspect, zoom) {
+  //   focus = 가로로 긴 원본에서 어느 쪽을 보여 줄지 (0 왼쪽 · 1 오른쪽, 기본 .5 가운데) · upTo = 긴 변을 이 크기까지 키워요 (작은 예시 사진용)
+  function crop(src, srcW, srcH, aspect, zoom, focus, upTo) {
     zoom = Math.max(1, zoom || 1);
     var w = srcW, h = srcW / aspect;
     if (h > srcH) { h = srcH; w = srcH * aspect; }
     w /= zoom; h /= zoom;
-    var sx = (srcW - w) / 2, sy = (srcH - h) / 2;
-    var scale = Math.min(1, MAX / Math.max(w, h));
+    var sx = (srcW - w) * (focus == null ? .5 : focus), sy = (srcH - h) / 2;
+    var scale = upTo ? Math.min(MAX, upTo) / Math.max(w, h) : Math.min(1, MAX / Math.max(w, h));
     var c = document.createElement('canvas');
     c.width = Math.round(w * scale); c.height = Math.round(h * scale);
     var ctx = c.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(src, sx, sy, w, h, 0, 0, c.width, c.height);
     try { grain(ctx, c.width, c.height); } catch (e) {}   // 알갱이를 못 입혀도 사진은 그대로 써요
     return c.toDataURL('image/jpeg', 0.88);
@@ -73,6 +75,18 @@
     });
   }
 
+  // 앱 안에 들어 있는 예시 사진(주소)을 사진틀 비율로 잘라서 찍은 사진처럼 만들어요 (전시용 예시 곤충: samples.js)
+  function fromUrl(url, aspect, focus) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        try { resolve(crop(img, img.naturalWidth, img.naturalHeight, aspect, 1, focus, 890)); } catch (e) { reject(e); }
+      };
+      img.onerror = function () { reject(new Error('bad image')); };
+      img.src = url;
+    });
+  }
+
   // [data-photo] → 배경으로, img[data-photo] → src로 채워요.
   function fill(root) {
     var url = get() || FALLBACK;
@@ -82,6 +96,6 @@
     });
   }
 
-  window.PicoPhoto = { get: get, set: set, fromVideo: fromVideo, fromFile: fromFile, fill: fill, FALLBACK: FALLBACK };
+  window.PicoPhoto = { get: get, set: set, fromVideo: fromVideo, fromFile: fromFile, fromUrl: fromUrl, fill: fill, FALLBACK: FALLBACK };
   document.addEventListener('DOMContentLoaded', function () { fill(); });
 })();

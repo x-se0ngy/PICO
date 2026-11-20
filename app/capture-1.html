@@ -151,6 +151,7 @@ s.textContent=c;d.head.appendChild(s)})();</script>
 <script src="shared.js"></script>
 <script src="photo.js"></script>
 <script src="ai.js"></script>
+<script src="samples.js"></script>
 <script>
 (function () {
   var KEY = 'pico.safetyAccepted';
@@ -237,6 +238,17 @@ s.textContent=c;d.head.appendChild(s)})();</script>
       });
     }, 250);
   }
+  // 전시 모드: 진짜 곤충은 찍을 수 없어서, 셔터 · 사진첩을 누르면 예시 곤충(samples.js 5종)이 차례로 찍혀요. 분석도 그 곤충 것으로 이어져요.
+  var shooting = false;
+  function shoot() {
+    var P = window.PicoSamples; if (!P || !P.on()) return false;
+    if (shooting || busy) return true;
+    shooting = true;
+    var s = P.next();
+    PicoPhoto.fromUrl(s.photo, ASPECT, s.focus).then(done, function () { open(error); }).then(function () { shooting = false; }, function () { shooting = false; });
+    return true;
+  }
+  window.picoShoot = shoot;   // 자동 재생(demo.js)도 같은 길로 찍어요
   // 다시 시작하기: 멈춘 사진을 치우고 카메라를 다시 켜요
   function resetShot() { finder.querySelectorAll('.shot').forEach(function (n) { n.remove(); }); video.classList.remove('live'); startCam(); }
   error.querySelector('[data-close]').addEventListener('click', resetShot);
@@ -250,15 +262,16 @@ s.textContent=c;d.head.appendChild(s)})();</script>
   var pickCam = document.getElementById('pickCam'), pickAlbum = document.getElementById('pickAlbum');
   fromPicker(pickCam); fromPicker(pickAlbum);
   document.getElementById('shutter').addEventListener('click', function () {
+    if (shoot()) return;
     var url = video.classList.contains('live') ? PicoPhoto.fromVideo(video, ASPECT, currentZoom()) : null;
     if (url) done(url);
     else pickCam.click();          // no live camera (permission denied / desktop): use the phone camera or a file
   });
-  gallery.addEventListener('click', function () { pickAlbum.click(); });
+  gallery.addEventListener('click', function () { if (shoot()) return; pickAlbum.click(); });
   // coming back with the back button (page restored from cache): clear the frozen shot and reopen the camera
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
-    document.querySelectorAll('.ai-wait').forEach(function (n) { n.remove(); }); busy = false;   // 분석 화면을 남겨 둔 채 떠났다면 치우고 다시 찍을 수 있게
+    document.querySelectorAll('.ai-wait').forEach(function (n) { n.remove(); }); busy = false; shooting = false;   // 분석 화면을 남겨 둔 채 떠났다면 치우고 다시 찍을 수 있게
     finder.querySelectorAll('.shot').forEach(function (n) { n.remove(); });
     video.classList.remove('live'); startCam();
   });
