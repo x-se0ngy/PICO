@@ -9,13 +9,15 @@
 // 켜고 끄기: 전시 폰에서 주소 끝에 ?demo=1 로 한 번 열면 그 폰에 저장돼요 (끄기 ?demo=0). shared.js가 켜져 있을 때만 이 파일을 불러와요.
 // 자동으로 누르는 건 가짜 터치(isTrusted = false)라서, 진짜 손가락만 "만졌다"고 쳐요.
 (function () {
+  function page_() { return location.pathname.split('/').pop() || 'index.html'; }
   var MODE = 'pico.demo.mode';      // sessionStorage: 'user' = 관객이 만지는 중 (없으면 자동 재생)
   var BASE = 'pico.demo.base';      // sessionStorage: 자동 재생이 들판에 놓기 전의 내 PICO 목록 (재생이 놓은 것만 알아내려고)
   var AUTO = 'pico.demo.auto';      // sessionStorage: 자동 재생이 들판에 놓은 PICO 번호 (다음 바퀴 처음에 이것만 치워요)
   var DG = 'pico.demo.dogam';       // sessionStorage: 이번 바퀴에 도감을 이미 둘러봤는지
-  var USER_IDLE_MS = 20000;         // 관객이 마지막으로 만진 뒤 이만큼 지나면 종료 안내
+  var USER_IDLE_MS = page_() === 'capture-1.html' ? 25000 : 12000;   // 관객이 마지막으로 만진 뒤 이만큼 지나면 종료 안내 (카메라로 곤충을 겨누는 화면은 조금 더 기다려요)
   var END_COUNT = 3;                // 종료 안내 카운트다운 (초)
-  var INTRO_MS = 5800;              // 이야기 제목 화면을 보여 주는 시간
+  var INTRO_MS = 3500;              // 이야기 제목 화면을 보여 주는 시간
+  var STUCK_MS = 75000;             // 한 화면에서 이만큼 지나도 안 넘어가면 홈으로 돌아가 처음부터 다시 흘러요
   var SAMPLE = 'assets/capture/card-photo-ladybug.png';
 
   var phone = document.querySelector('.phone'); if (!phone) return;
@@ -34,7 +36,7 @@
     '.demo-end h3{margin:0 0 14px;font-size:24px;line-height:32px;font-weight:700}' +
     '.demo-end p{margin:0;font-size:16px;line-height:24px}' +
     '.demo-end p.sm{margin-top:28px;font-size:14px;opacity:.7}' +
-    '.demo-intro{position:absolute;left:0;top:0;width:100%;height:812px;z-index:901;background:#fff;color:#000;font-family:var(--font,inherit);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:1;transition:opacity .35s ease-in-out}' +
+    '.demo-intro{position:absolute;left:0;top:0;width:100%;height:812px;z-index:901;background:rgba(255,252,228,.7);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--ink,#000);font-family:var(--font,inherit);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:1;transition:opacity .4s ease-in-out}' +
     '.demo-intro.off{opacity:0;pointer-events:none}' +
     '.demo-intro h2{margin:0 0 12px;font-size:32px;line-height:40px;font-weight:400}' +
     '.demo-intro p{margin:0;font-size:16px;line-height:24px;white-space:nowrap}';
@@ -238,14 +240,17 @@
 
   async function run(ops, t) {
     for (var i = 0; i < ops.length; i++) {
-      var op = ops[i], k = op[0], a = typeof op[1] === 'function' && k === 'wait' ? op[1]() : op[1], ok = true;
-      if (k === 'wait') ok = await sleep(a, t);
-      else if (k === 'intro') { if (introEl) { ok = await sleep(INTRO_MS, t); if (ok) { hideIntro(); ok = await sleep(420, t); } } }
-      else if (k === 'tap') ok = await tap(a, t, op[2]);
-      else if (k === 'until') ok = await waitFor(a, t, op[2]);
-      else if (k === 'do') { var r = await a(t); ok = r !== false && t === tok; }
-      else if (k === 'if') { if (a()) ok = await run(op[2], t); }
-      else if (k === 'go') { location.href = a; return false; }
+      var op = ops[i], k = op[0], ok = true;
+      try {                                                                                      // 한 동작이 폰에서 안 돼도 멈추지 않고 다음 동작으로 넘어가요
+        var a = typeof op[1] === 'function' && k === 'wait' ? op[1]() : op[1];
+        if (k === 'wait') ok = await sleep(a, t);
+        else if (k === 'intro') { if (introEl) { ok = await sleep(INTRO_MS, t); if (ok) { hideIntro(); ok = await sleep(420, t); } } }
+        else if (k === 'tap') ok = await tap(a, t, op[2]);
+        else if (k === 'until') ok = await waitFor(a, t, op[2]);
+        else if (k === 'do') { var r = await a(t); ok = r !== false && t === tok; }
+        else if (k === 'if') { if (a()) ok = await run(op[2], t); }
+        else if (k === 'go') { location.href = a; return false; }
+      } catch (err) { ok = t === tok; hideIntro(true); }
       if (!ok) return false;
     }
     return true;
@@ -278,7 +283,11 @@
     while (!document.getElementById('pico-ready')) await new Promise(function (r) { setTimeout(r, 50); });
     if (getMode() === 'user') { armUser(); return; }
     var t = ++tok;
+    // 어떤 이유로든 한 화면에서 오래 안 넘어가면 홈으로 돌아가 처음부터 다시 흘러요
+    setTimeout(function () { if (t === tok && getMode() === 'auto') { location.href = 'home.html'; } }, STUCK_MS);
     if (!(await sleep(700, t))) return;                                                         // 화면이 나타나는 디졸브가 끝나도록
-    await run((SCRIPTS[page] || OTHER)(), t);
+    var done = await run((SCRIPTS[page] || OTHER)(), t);
+    // 동작을 다 했는데도 이 화면에 남아 있다면(누를 곳을 못 찾은 경우 등) 잠깐 뒤 홈으로
+    if (done && page !== 'friend-field.html') { await sleep(8000, t); if (t === tok && getMode() === 'auto') location.href = 'home.html'; }
   })();
 })();

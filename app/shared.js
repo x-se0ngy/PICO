@@ -5,8 +5,10 @@
     var p = document.querySelector('.phone'); if (!p) return;
     var w = window.innerWidth, h = window.innerHeight;
     if (!w || !h || h < 200) return;     // 아이폰은 화면이 자리 잡기 전에 엉뚱한 크기를 줄 때가 있어서, 그런 값은 건너뛰고 다시 계산해요
-    if (w < 500) { p.style.transform = 'scale(' + Math.min(w / 375, h / 812) + ')'; }
-    else { p.style.transform = ''; }
+    if (w >= 500) { p.style.transform = ''; return; }
+    // 홈 화면에 추가해서 열 때는 화면 크기가 열릴 때마다 조금씩 달라 보일 수 있어서, 기기 화면 크기(13 mini = 375×812)를 기준으로 고정해요 (head 의 picoScale)
+    var k = window.picoScale ? window.picoScale() : Math.min(w / 375, h / 812);
+    if (k) p.style.transform = 'scale(' + k + ')';
   }
   // 화면 크기는 열릴 때·주소창이 줄거나 늘 때·가로세로가 바뀔 때·뒤로 가기로 돌아올 때 바뀔 수 있어서, 그때마다 다시 맞춰요 (페이지마다 어긋나던 것 방지)
   function fitSoon() { fit(); setTimeout(fit, 120); setTimeout(fit, 500); }

@@ -29,6 +29,13 @@
   .is-error.name-note { border-color: #e32d3d; }
   .is-error .name-count { color: #e32d3d; }
 </style>
+<script>/* 첫 화면부터 크기를 맞춰요: shared.js 가 불러와지기 전에 틀이 크게 보였다가 작아지는 것을 막고, 문서 전환은 Chrome 계열만 브라우저 것을 써요 */
+(function(){var d=document,s=d.createElement('style'),c='';
+var ch=!!(navigator.userAgentData&&navigator.userAgentData.brands&&navigator.userAgentData.brands.some(function(b){return/Chromium/.test(b.brand)}));
+if(!ch||!('CSSViewTransitionRule' in window))c+='@view-transition{navigation:none}';
+window.picoScale=function(){var w=innerWidth,h=innerHeight;try{if(navigator.standalone||matchMedia('(display-mode: standalone)').matches){w=Math.max(w,screen.width);h=Math.max(h,screen.height)}}catch(x){}if(!w||!h||h<200||w>=500)return 0;return Math.min(w/375,h/812)};
+var k=window.picoScale();if(k)c+='.phone{transform:scale('+k+')}';
+s.textContent=c;d.head.appendChild(s)})();</script>
 </head><body>
 <div class="phone soft setup dim-status" style="--h:812px">
   <div class="top">

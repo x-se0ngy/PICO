@@ -226,7 +226,7 @@ img { display: block; }
      Figma 스마트 애니메이트처럼 화면이 바뀌어도 제자리에 그대로 있고, 달라진 부분만 부드럽게 바뀌어요.
    - 같은 화면 안(팝업 · 시트 · 카드 바뀜): 같은 --dur · ease in-out으로 나타나고 사라져요. */
 :root { --dur: 500ms; --ease: ease-in-out; --dissolve: var(--dur); --page-dissolve: var(--dur); --ease-slow: var(--ease); --ease-spring-slow: var(--ease); }
-@view-transition { navigation: auto; }
+@supports not (-webkit-touch-callout: none) { @view-transition { navigation: auto; } }   /* 아이폰(WebKit)은 브라우저 전환을 끄고 앱의 디졸브만 써요 — 전환 중 화면이 작아졌다 커지는 것 방지 */
 ::view-transition-group(*) { animation-duration: var(--dur); animation-timing-function: var(--ease); }
 ::view-transition-old(root) { animation: none; }
 ::view-transition-new(root) { animation: pico-dissolve var(--dur) var(--ease) both; }
