@@ -4,9 +4,16 @@
   function fit() {
     var p = document.querySelector('.phone'); if (!p) return;
     var w = window.innerWidth, h = window.innerHeight;
+    if (!w || !h || h < 200) return;     // 아이폰은 화면이 자리 잡기 전에 엉뚱한 크기를 줄 때가 있어서, 그런 값은 건너뛰고 다시 계산해요
     if (w < 500) { p.style.transform = 'scale(' + Math.min(w / 375, h / 812) + ')'; }
     else { p.style.transform = ''; }
   }
+  // 화면 크기는 열릴 때·주소창이 줄거나 늘 때·가로세로가 바뀔 때·뒤로 가기로 돌아올 때 바뀔 수 있어서, 그때마다 다시 맞춰요 (페이지마다 어긋나던 것 방지)
+  function fitSoon() { fit(); setTimeout(fit, 120); setTimeout(fit, 500); }
+  window.addEventListener('load', fitSoon);
+  window.addEventListener('pageshow', fitSoon);
+  window.addEventListener('orientationchange', function () { setTimeout(fitSoon, 250); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
   // Pages taller than 812 (--h) scroll inside the frame. Fixed layers stay direct children of .phone.
   var FIXED = '.top[data-fixed], .tabbar, .home-ind, .dim, .sheet, .modal, .toast, .tcard, .ov, .ox, .ox-dim, [data-fixed], script';
   function wrap() {
@@ -66,7 +73,7 @@
     });
   });
   window.addEventListener('resize', fit);
-  document.addEventListener('DOMContentLoaded', function () { wrap(); fit(); });
+  document.addEventListener('DOMContentLoaded', function () { wrap(); fitSoon(); });
   // 왼쪽 위 PICO 로고를 누르면 스플래시로 가요. 가운데 로고(설정 화면 .nav--center)와 이미 링크·버튼 안에 있는 로고는 그대로 둬요.
   function logoOf(t) {
     var l = t && t.closest ? t.closest('.nav .logo') : null;
