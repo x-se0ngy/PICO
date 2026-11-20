@@ -251,7 +251,11 @@
   }
   // 홈 화면에 설치하는 앱(PWA): 서비스워커 등록
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    window.addEventListener('load', function () { navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' }).catch(function () {}); });
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' }).catch(function () {});
+      // 화면이 다 뜬 몇 초 뒤, 모든 그림을 미리 받아 두라고 서비스워커에 알려요 (이미 받은 건 건너뛰어요)
+      setTimeout(function () { navigator.serviceWorker.ready.then(function (reg) { var w = navigator.serviceWorker.controller || reg.active; if (w) w.postMessage({ type: 'warm' }); }).catch(function () {}); }, 4000);
+    });
   }
   // ?state=xxx → body[data-state] so a page can open in a specific Figma-frame state
   var st = new URLSearchParams(location.search).get('state'); if (st) document.documentElement.setAttribute('data-state', st);

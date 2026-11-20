@@ -29,18 +29,15 @@
     '.demo-tap.go{animation:demo-tap 900ms cubic-bezier(.4,0,.2,1) forwards}' +
     '.demo-tap.hold{opacity:1;transform:scale(.8);animation:none}' +
     '@keyframes demo-tap{0%{opacity:0;transform:scale(1.7)}35%{opacity:1;transform:scale(1)}58%{opacity:1;transform:scale(.8)}100%{opacity:0;transform:scale(.8)}}' +
-    '.demo-end{position:absolute;left:0;top:0;width:100%;height:812px;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--ink,#000);font-family:var(--font,inherit);background:rgba(255,252,228,.98);opacity:0;visibility:hidden;transition:opacity .4s ease-in-out,visibility 0s .4s}' +
+    '.demo-end{position:absolute;left:0;top:0;width:100%;height:812px;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--ink,#000);font-family:var(--font,inherit);background:rgba(255,252,228,.7);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .4s ease-in-out,visibility 0s .4s}' +
     '.demo-end.on{opacity:1;visibility:visible;transition:opacity .4s ease-in-out}' +
     '.demo-end h3{margin:0 0 14px;font-size:24px;line-height:32px;font-weight:700}' +
     '.demo-end p{margin:0;font-size:16px;line-height:24px}' +
     '.demo-end p.sm{margin-top:28px;font-size:14px;opacity:.7}' +
-    '.demo-intro{position:absolute;left:0;top:0;width:100%;height:812px;z-index:901;background:#fff;color:#000;font-family:var(--font,inherit);opacity:1;transition:opacity .35s ease-in-out}' +
+    '.demo-intro{position:absolute;left:0;top:0;width:100%;height:812px;z-index:901;background:#fff;color:#000;font-family:var(--font,inherit);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:1;transition:opacity .35s ease-in-out}' +
     '.demo-intro.off{opacity:0;pointer-events:none}' +
-    '.demo-intro h2{position:absolute;left:24px;right:24px;top:78px;margin:0;font-size:28px;line-height:38px;font-weight:400}' +
-    '.demo-intro h2 span{display:block}' +
-    '.demo-intro div{position:absolute;left:24px;right:24px;bottom:58px}' +
-    '.demo-intro p{margin:0 0 14px;font-size:15px;line-height:23px;word-break:keep-all}' +
-    '.demo-intro p:last-child{margin-bottom:0}';
+    '.demo-intro h2{margin:0 0 12px;font-size:32px;line-height:40px;font-weight:400}' +
+    '.demo-intro p{margin:0;font-size:16px;line-height:24px;white-space:nowrap}';
   document.head.appendChild(css);
   var ring = document.createElement('div'); ring.className = 'demo-tap'; phone.appendChild(ring);
   var endEl = document.createElement('div'); endEl.className = 'demo-end'; endEl.setAttribute('role', 'status'); endEl.setAttribute('aria-live', 'polite');
@@ -50,16 +47,15 @@
 
   // ---------- 이야기 제목 화면 (01 · 02 · 03) ----------
   var INTRO = [null,
-    { n: '01. Explore', t: '발견하고 그리는 즐거운 관찰', p: ['발견한 곤충을 촬영하고 AI를 통해 특징을 자세히 살펴봅니다. 관찰한 내용을 직접 그림과 메모로 기록하며 자신만의 관찰 카드를 완성합니다.', '사진을 찍고 정보 확인하는 것을 넘어, 스스로 관찰하고 표현하는 능동적인 경험을 제공합니다.'] },
-    { n: '02. Collect', t: '접어서 모으는 나만의 도감', p: ['직접 그린 곤충은 종이접기 형태의 피코로 완성되어 도감에 모입니다. 같은 곤충을 다시 발견하면 기존 카드에 새로운 관찰 기록이 쌓입니다.', '작은 발견이 하나의 특별한 기록으로 이어지고, 탐험을 거듭할수록 나만의 도감이 풍성해집니다.'] },
-    { n: '03. Connect', t: '쪽지로 이어지는 우리의 탐험', p: ['발견한 곤충과 관찰 기록을 쪽지에 담아 친구와 주고받을 수 있습니다. 함께하는 탐험 목표를 통해 진행 상황을 확인하고 서로의 발견을 공유합니다.', '같은 곤충을 서로 다른 시선으로 바라보며, 친구와 함께하는 탐험 경험으로 확장합니다.'] }
+    { n: '01. Explore', t: '발견하고 그리는 즐거운 관찰' },
+    { n: '02. Collect', t: '접어서 모으는 나만의 도감' },
+    { n: '03. Connect', t: '쪽지로 이어지는 우리의 탐험' }
   ];
   var introEl = null;
   function showIntro(n) {
     var d = INTRO[n]; introEl = document.createElement('div'); introEl.className = 'demo-intro'; introEl.setAttribute('role', 'status');
-    introEl.innerHTML = '<h2><span></span><span></span></h2><div></div>';
-    var sp = introEl.querySelectorAll('h2 span'); sp[0].textContent = d.n; sp[1].textContent = d.t;
-    d.p.forEach(function (x) { var p = document.createElement('p'); p.textContent = x; introEl.lastChild.appendChild(p); });
+    introEl.innerHTML = '<h2></h2><p></p>';
+    introEl.querySelector('h2').textContent = d.n; introEl.querySelector('p').textContent = d.t;
     phone.appendChild(introEl);
   }
   function hideIntro(fast) {
