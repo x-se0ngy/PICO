@@ -217,6 +217,8 @@
     var dq = new URLSearchParams(location.search).get('demo');
     if (dq === '1') localStorage.setItem('pico.demo', '1'); else if (dq === '0') localStorage.removeItem('pico.demo');
     demoOn = localStorage.getItem('pico.demo') === '1';
+    // 아이폰에서 이 주소로 '홈 화면에 추가'하면, 아이콘을 열 때마다 전시 모드(?demo=1)로 시작해요 (홈 화면 앱은 주소창이 없어서)
+    if (dq === '1' || dq === '0') { var ml = document.querySelector('link[rel="manifest"]'); if (ml) ml.setAttribute('href', dq === '1' ? '/app/manifest-demo.json' : '/app/manifest.json'); }
   } catch (e) {}
   if (demoOn && thisPage !== 'splash.html') {
     // 화면이 처음 나타날 때부터 제목 화면이 덮여 있도록, 읽는 중이면 그 자리에서 바로 불러와요

@@ -78,7 +78,7 @@ img { display: block; }
 .phone > .scroll > .canvas { position: relative; width: 375px; height: var(--h, 812px); }
 .phone > .top[data-fixed] { z-index: 15; }
 @media (min-width: 500px) { body { padding: 24px 0; } .phone { box-shadow: 0 10px 40px rgba(0,0,0,.4); } }
-@media (max-width: 499px) { body { overflow: hidden; height: 100vh; height: 100dvh; } }
+@media (max-width: 499px) { body { overflow: hidden; height: 100vh; height: 100dvh; background: #fffad3; } }   /* 폰에서는 틀 양옆(화면 비율이 안 맞아 남는 자리)도 종이색으로 — 어두운 띠가 보이지 않게 */
 
 /* Figma Warm-Up 종이 바탕: 회색조 종이 질감을 #FFFCE4 위에 multiply (온보딩과 같은 방식) */
 .phone.warm { background: url('assets/onboarding/ob-paper-full.jpg') 0 0 / 375px 812px no-repeat, var(--paper); background-blend-mode: multiply; }
